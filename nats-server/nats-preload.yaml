@@ -76,7 +76,7 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - name: nats
-        image: nats:2.1.0
+        image: nats:2.1.0-alpine3.10
         ports:
         - containerPort: 4222
           name: client
@@ -138,7 +138,7 @@ spec:
               # the same amount as the terminationGracePeriodSeconds to allow
               # the NATS Server to gracefully terminate the client connections.
               #
-              command: ["/nats-server", "-sl=ldm=/var/run/nats/nats.pid"]
+              command: ["/bin/sh", "-c", "/nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 60"]
 
       #################################
       #                               #
