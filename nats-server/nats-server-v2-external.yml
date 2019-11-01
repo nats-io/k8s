@@ -206,6 +206,12 @@ spec:
             name: advertiseconfig
             subPath: advertise
 
+        # Disable all cpu limits for the server.
+        #
+        resources:
+          requests:
+            cpu: 0
+
         # Liveness/Readiness probes against the monitoring
         #
         livenessProbe:
