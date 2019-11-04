@@ -28,6 +28,7 @@ spec:
         command:
          - "/nats-surveyor"
          - "-s=nats://nats:4222"
+         - "-c=3"
          - "-creds=/etc/nats-config/creds/sys.creds"
         volumeMounts:
           - name: creds-volume
