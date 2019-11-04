@@ -39,10 +39,11 @@ spec:
           requests:
             cpu: 0
 ---
+# Service used by Grafana as a datasource
 apiVersion: v1
 kind: Service
 metadata:
-  name: nats-surveyor
+  name: nats-surveyor-prom
 spec:
   selector:
     prometheus: nats-surveyor
@@ -52,6 +53,21 @@ spec:
     port: 9090
     protocol: TCP
     targetPort: web
+---
+# Service used by Prometheus Operator to find the metrics endpoint.
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-surveyor
+spec:
+  selector:
+    app: nats-surveyor
+  clusterIP: None
+  ports:
+  - name: metrics
+    port: 7777
+    protocol: TCP
+    targetPort: 7777
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
