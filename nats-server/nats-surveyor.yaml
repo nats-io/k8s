@@ -45,6 +45,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nats-surveyor-prom
+  labels:
+    app: nats-surveyor-prom
 spec:
   selector:
     prometheus: nats-surveyor
@@ -60,15 +62,17 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nats-surveyor
-spec:
-  selector:
+  labels:
     app: nats-surveyor
+spec:
   clusterIP: None
   ports:
   - name: metrics
     port: 7777
     protocol: TCP
     targetPort: 7777
+  selector:
+    app: nats-surveyor
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
