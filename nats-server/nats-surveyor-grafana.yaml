@@ -6,11 +6,11 @@ metadata:
 spec:
   type: NodePort
   selector:
-    prometheus: nats-surveyor
+    app: nats-surveyor-grafana
   ports:
   - name: web
-    nodePort: 30900
-    port: 9090
+    nodePort: 30300
+    port: 3000
     protocol: TCP
     targetPort: web
 ---
