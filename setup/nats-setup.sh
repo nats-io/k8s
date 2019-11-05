@@ -21,16 +21,16 @@ kubectl create secret generic nats-sys-creds  --from-file /nsc/nkeys/creds/KO/SY
 kubectl create configmap nats-accounts --from-file /nsc/config/resolver.conf
 
 # Install NATS Server
-kubectl apply -f 'https://raw.githubusercontent.com/nats-io/nats.k8s/sts/nats-server/nats-server-v2-external.yml?token=AAAGMU3HLE3S3MWJBZRWYOK5ZI6IQ'
+kubectl apply -f https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-server-v2-external.yml
 
 # Install Prometheus Operator
-kubectl apply -f 'https://raw.githubusercontent.com/nats-io/nats.k8s/sts/nats-server/prometheus-operator.yml?token=AAAGMU2LN4MDGEOS3XSTBSK5ZI6PQ'
+kubectl apply -f https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/prometheus-operator.yml
 
 # Create Prometheus instance for NATS usage
-kubectl apply -f 'https://raw.githubusercontent.com/nats-io/nats.k8s/sts/nats-server/nats-prometheus.yml?token=AAAGMU43WUQHUYIJKH2CS7S5ZI6RO'
+kubectl apply -f https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-prometheus.yml
 
 # Deploy NATS Surveyor
-kubectl apply -f 'https://raw.githubusercontent.com/nats-io/nats.k8s/sts/nats-server/nats-surveyor.yaml?token=AAAGMU756KJWFQVKGXVBGWS5ZI6TK'
+kubectl apply -f https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml
 
 # Deploy NATS Surveyor Grafana instance
-kubectl apply -f 'https://raw.githubusercontent.com/nats-io/nats.k8s/sts/nats-server/nats-surveyor-grafana.yaml?token=AAAGMU5R46ML2KBTYBTQZWC5ZI6TS'
+kubectl apply -f https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor-grafana.yml
