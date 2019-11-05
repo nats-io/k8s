@@ -23,7 +23,7 @@ data:
     }
 
     # Load the trusted operator setup.
-    include "accounts/preload.conf"
+    include "accounts/resolver.conf"
 ---
 apiVersion: v1
 kind: Service
