@@ -38,7 +38,13 @@ rules:
   resources:
   - deployments
   - statefulsets
-  verbs: ["create", "watch", "get", "patch", "update", "delete", "list"]
+  verbs: ["get", "create", "watch", "get", "patch", "update", "delete", "list"]
+
+# Allowed actions on Statefulsets and Deployments
+- apiGroups: ["extensions"]
+  resources:
+  - deployments
+  verbs: ["get", "create", "watch", "get", "patch", "update", "delete", "list"]
 
 # Allowed actions on Services
 - apiGroups: [""]
