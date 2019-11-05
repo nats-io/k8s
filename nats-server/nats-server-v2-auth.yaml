@@ -12,8 +12,6 @@ data:
     cluster {
       port: 6222
 
-      # Use explicit static routes to avoid intermittent DNS issues
-      # that could cause partitions via gossip while bootstrapping.
       routes [
         nats://nats-0.nats:6222
         nats://nats-1.nats:6222
@@ -21,26 +19,11 @@ data:
       ]
 
       cluster_advertise: $CLUSTER_ADVERTISE
-      connect_retries: 60
+      connect_retries: 30
     }
 
-    #############################################
-    # Advertise the public ip of the Kubelet    #
-    # where this NATS Server node is running    #
-    #############################################
-    leafnodes {
-      listen: "0.0.0.0:7422"
-      include "advertise/gateway_advertise.conf"
-    }
-    include "advertise/client_advertise.conf"
-
-    #############################################
-    #                                           #
-    # Accounts resolver config                  #
-    #                                           #
-    #############################################
+    # Load the trusted operator setup.
     include "accounts/resolver.conf"
-
 ---
 apiVersion: v1
 kind: Service
@@ -91,39 +74,10 @@ spec:
           name: nats-accounts
       - name: pid
         emptyDir: {}
-      - name: advertiseconfig
-        emptyDir: {}
 
       # Required to be able to HUP signal and apply config reload
       # to the server without restarting the pod.
       shareProcessNamespace: true
-
-      # Required to be able to lookup external public ip
-      # that is setup as the client advertise.
-      serviceAccountName: nats-server
-
-      # Initializer container required to be able to lookup
-      # the external ip on which this node is running.
-      initContainers:
-      - name: bootconfig
-        command:
-        - nats-pod-bootconfig
-        - -f
-        - /etc/nats-config/advertise/client_advertise.conf
-        - -gf
-        - /etc/nats-config/advertise/gateway_advertise.conf
-        env:
-        - name: KUBERNETES_NODE_NAME
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: spec.nodeName
-        image: connecteverything/nats-boot-config:0.5.2
-        imagePullPolicy: IfNotPresent
-        volumeMounts:
-        - mountPath: /etc/nats-config/advertise
-          name: advertiseconfig
-          subPath: advertise
 
       #################
       #               #
@@ -147,8 +101,8 @@ spec:
           name: monitor
         - containerPort: 7777
           name: metrics
-        command:
-         - "nats-server"
+        args:
+         - "/nats-server"
          - "--config"
          - "/etc/nats-config/nats.conf"
 
@@ -173,15 +127,6 @@ spec:
             mountPath: /etc/nats-config/accounts
           - name: pid
             mountPath: /var/run/nats
-          - mountPath: /etc/nats-config/advertise
-            name: advertiseconfig
-            subPath: advertise
-
-        # Disable all cpu limits for the server.
-        #
-        resources:
-          requests:
-            cpu: 0
 
         # Liveness/Readiness probes against the monitoring
         #
@@ -223,7 +168,7 @@ spec:
          - "-config"
          - "/etc/nats-config/nats.conf"
          - "-config"
-         - "/etc/nats-config/accounts/resolver.conf"
+         - "/etc/nats-config/accounts/preload.conf"
         volumeMounts:
           - name: config-volume
             mountPath: /etc/nats-config
@@ -251,32 +196,3 @@ spec:
         ports:
         - containerPort: 7777
           name: metrics
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: nats-server
-  namespace: default
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: nats-server
-rules:
-- apiGroups: [""]
-  resources:
-  - nodes
-  verbs: ["get"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: nats-server-binding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: nats-server
-subjects:
-- kind: ServiceAccount
-  name: nats-server
-  namespace: default
