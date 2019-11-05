@@ -29,25 +29,25 @@ set_secrets() {
 }
 
 install_nats_server() {
-	kubectl apply -f https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-server-v2-external.yml
+	kubectl apply --filename https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-server-v2-external.yml
 }
 
 install_prometheus() {
 	# Install Prometheus Operator
-	kubectl apply -f https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/prometheus-operator.yml
+	kubectl apply --filename https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/prometheus-operator.yml
 
 	# Create Prometheus instance for NATS usage
-	kubectl apply -f https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-prometheus.yml
+	kubectl apply --filename https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-prometheus.yml
 }
 
 install_nats_surveyor() {
 	install_prometheus
 
 	# Deploy NATS Surveyor
-	kubectl apply -f https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml
+	kubectl apply --filename https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml
 
 	# Deploy NATS Surveyor Grafana instance
-	kubectl apply -f https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor-grafana.yml
+	kubectl apply --filename https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor-grafana.yml
 }
 
 main() {
@@ -73,6 +73,7 @@ main() {
 	echo "install nats surveyor: $with_surveyor"
 	echo "install tls: $with_tls"
 
+	get_nsc_creds
 	install_nats_server
 
 	if [ $with_surveyor = true ]; then
