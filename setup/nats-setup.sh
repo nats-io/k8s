@@ -50,6 +50,10 @@ install_nats_surveyor() {
 	kubectl apply --filename https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor-grafana.yml
 }
 
+install_tls() {
+	echo "tls support not implemented yet..."
+}
+
 main() {
 	with_surveyor=true
 	with_tls=true
@@ -82,7 +86,7 @@ main() {
 	fi
 
 	if [ $with_tls = true ]; then
-		echo "tls support not implemented yet..."
+		install_tls
 	fi
 }
 
