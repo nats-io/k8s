@@ -74,6 +74,7 @@ main() {
 	echo "install tls: $with_tls"
 
 	get_nsc_creds
+	set_secrets
 	install_nats_server
 
 	if [ $with_surveyor = true ]; then
