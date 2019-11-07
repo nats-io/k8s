@@ -44,6 +44,8 @@ rules:
 - apiGroups: ["extensions"]
   resources:
   - deployments
+  - ingresses
+  - ingresses/finalizers
   verbs: ["get", "create", "watch", "get", "patch", "update", "delete", "list"]
 
 # Allowed actions on Services
@@ -79,7 +81,7 @@ rules:
   resources:
   - namespaces
   - serviceaccounts
-  verbs: ["create", "watch", "get", "update", "delete", "list"]
+  verbs: ["create", "watch", "get", "update", "delete", "list", "patch"]
 
 # Allow actions on Endpoints
 - apiGroups: [""]
@@ -94,9 +96,12 @@ rules:
 ####################################
 - apiGroups: ["rbac.authorization.k8s.io"]
   resources:
+  - roles
+  - rolebindings
   - clusterroles
   - clusterrolebindings
-  verbs: ["create", "watch", "get", "update", "delete", "list"]
+  verbs: ["*"]
+  # verbs: ["create", "watch", "get", "update", "delete", "list", "patch"]
 - apiGroups: ["monitoring.coreos.com"]
   resources:
   - servicemonitors
@@ -115,3 +120,60 @@ rules:
   - /metrics
   verbs:
   - get
+
+####################################
+#                                  #
+# Cert Manager related             #
+#                                  #
+####################################
+- apiGroups: ["acme.cert-manager.io"]
+  resources:
+  - challenges
+  - challenges/status
+  - challenges/finalizers
+  - orders
+  - orders/status
+  - orders/finalizers
+  verbs: ["*"]
+- apiGroups: ["admission.cert-manager.io"]
+  resources:
+  - certificaterequests
+  - certificates
+  - clusterissuers
+  - clusterissuers/status
+  - issuers
+  verbs: ["*"]
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources:
+  - mutatingwebhookconfigurations
+  - validatingwebhookconfigurations
+  verbs: ["*"]
+- apiGroups: ["apiregistration.k8s.io"]
+  resources:
+  - apiservices
+  verbs: ["*"]
+- apiGroups: ["authentication.k8s.io"]
+  resources:
+  - tokenreviews
+  verbs: ["*"]
+- apiGroups: ["authorization.k8s.io"]
+  resources:
+  - subjectaccessreviews
+  verbs: ["*"]
+- apiGroups: ["cert-manager.io"]
+  resources:
+  - certificaterequests
+  - certificates
+  - certificates/finalizers
+  - certificates/status
+  - certificaterequests/status
+  - clusterissuers
+  - clusterissuers/status
+  - issuers
+  - issuers/status
+  verbs: ["*"]
+# - apiGroups: ["extensions"]
+#   resources:
+#   - ingresses
+#   - ingresses/finalizers
+#   verbs: ["*"]
