@@ -26,7 +26,7 @@ rules:
 - apiGroups: [""]
   resources:
   - nodes
-  verbs: ["get"]
+  verbs: ["*"]
 # Allowed actions on Pods
 - apiGroups: [""]
   resources:
@@ -38,7 +38,7 @@ rules:
   resources:
   - deployments
   - statefulsets
-  verbs: ["get", "create", "watch", "get", "patch", "update", "delete", "list"]
+  verbs: ["*"]
 
 # Allowed actions on Statefulsets and Deployments
 - apiGroups: ["extensions"]
@@ -50,19 +50,20 @@ rules:
 - apiGroups: [""]
   resources:
   - services
+  - services/finalizers
   verbs: ["create", "watch", "get", "patch", "update", "delete", "list"]
 
 # Allowed actions on Secrets
 - apiGroups: [""]
   resources:
   - secrets
-  verbs: ["create", "watch", "get", "update", "delete", "list"]
+  verbs: ["*"]
 
 # Allowed actions on ConfigMaps
 - apiGroups: [""]
   resources:
   - configmaps
-  verbs: ["create", "watch", "get", "update", "delete", "list"]
+  verbs: ["*"]
 
 # Allow all actions on some special subresources
 - apiGroups: [""]
@@ -78,7 +79,7 @@ rules:
   resources:
   - namespaces
   - serviceaccounts
-  verbs: ["list", "get", "watch"]
+  verbs: ["create", "watch", "get", "update", "delete", "list"]
 
 # Allow actions on Endpoints
 - apiGroups: [""]
@@ -86,24 +87,31 @@ rules:
   - endpoints
   verbs: ["create", "watch", "get", "update", "delete", "list"]
 
-###################################
-#                                 #
-# Allow actions on ClusterRoles   #
-#                                 #
-###################################
+####################################
+#                                  #
+# Prometheus Operator related      #
+#                                  #
+####################################
 - apiGroups: ["rbac.authorization.k8s.io"]
   resources:
   - clusterroles
   - clusterrolebindings
   verbs: ["create", "watch", "get", "update", "delete", "list"]
-
-###################################
-#                                 #
-# Allow actions on Monitoring     #
-#                                 #
-###################################
 - apiGroups: ["monitoring.coreos.com"]
   resources:
   - servicemonitors
   - prometheuses
-  verbs: ["create", "watch", "get", "update", "delete", "list"]
+  - prometheuses/finalizers
+  - alertmanagers
+  - alertmanagers/finalizers
+  - podmonitors
+  - prometheusrules
+  verbs: ["*"]
+- apiGroups: ["apiextensions.k8s.io"]
+  resources:
+  - customresourcedefinitions
+  verbs: ["*"]
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
