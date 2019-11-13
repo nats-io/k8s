@@ -3,7 +3,7 @@ set -eu
 
 NATS_SERVER_YML=${DEFAULT_NATS_SERVER_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-server-v2-external.yml}
 
-NATS_SERVER_TLS_YML=${DEFAULT_NATS_SERVER_TLS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-server-v2-external.yml}
+NATS_SERVER_TLS_YML=${DEFAULT_NATS_SERVER_TLS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/31642afaed81575dc7ab218568beea1d5ae8c5d7/nats-server-v2-tls.yml}
 
 PROMETHEUS_OPERATOR_YML=${DEFAULT_PROMETHEUS_OPERATOR_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/prometheus-operator.yml}
 
@@ -13,7 +13,7 @@ NATS_SURVEYOR_YML=${DEFAULT_NATS_SURVEYOR_YML:=https://gist.githubusercontent.co
 
 NATS_GRAFANA_YML=${DEFAULT_NATS_GRAFANA_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor-grafana.yml}
 
-CERT_MANAGER_YML=${DEFAULT_CERT_MANAGER_YML:=$(pwd)/nats-server/cert-manager.yaml}
+CERT_MANAGER_YML=${DEFAULT_CERT_MANAGER_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/7da870beb441fb9cfc00a4dede6d03f9eedc6973/cert-manager.yml}
 
 NSC_DIR=${DEFAULT_NSC_DIR:=$(pwd)/nsc}
 
