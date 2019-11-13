@@ -52,5 +52,3 @@ spec:
   - '*.nats'
   - '*.nats.default'
   - '*.nats.default.svc'
-  # - sf.k8s.nats.io
-  # - tokyo.k8s.nats.io
