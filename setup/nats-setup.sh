@@ -24,17 +24,12 @@ export NKEYS_PATH=$NSC_DIR/nkeys
 export NSC_HOME=$NSC_DIR/accounts
 
 create_creds() {
-    echo a
         mkdir -p $NKEYS_PATH
-    echo aaa
         mkdir -p $NSC_HOME
-    echo aaaaa
-echo $NATS_CONFIG_HOME
-echo $NSC_HOME
         mkdir -p $NATS_CONFIG_HOME
 
         nsc add operator --name KO
-    echo aaaaaaaaaaa
+
         # Create system account
         nsc add account --name SYS
         nsc add user --name sys
@@ -94,9 +89,10 @@ install_cert_manager() {
 
 show_usage() {
     echo "Usage: $0 [options]
+
     --without-tls             Setup the cluster without TLS enabled
     --without-auth            Setup the cluster without Auth enabled
-    --without-surveyor        Skips installing surveyor
+    --without-surveyor        Skips installing NATS surveyor
     --without-cert-manager    Skips installing the cert manager componenrt
     "
 }
