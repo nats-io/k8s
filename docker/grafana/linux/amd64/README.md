@@ -1,4 +1,4 @@
-# Makefile for building the NATS Surveyor docker image
+# Makefile for building the NATS Surveyor Grafana docker image
 
 In order to simplify the Kubernetes install of Surveyor, a nats-surveyor-grafana
 docker image is built.  The makefile has `build` and `push` targets.
