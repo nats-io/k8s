@@ -64,6 +64,17 @@ spec:
       labels:
         app: nats
     spec:
+      # Common volumes for the containers
+      volumes:
+      - name: config-volume
+        configMap:
+          name: nats-config
+      - name: accounts-volume
+        configMap:
+          name: nats-accounts
+      - name: pid
+        emptyDir: {}
+
       # Required to be able to HUP signal and apply config reload
       # to the server without restarting the pod.
       shareProcessNamespace: true
@@ -80,8 +91,10 @@ spec:
         ports:
         - containerPort: 4222
           name: client
+          hostPort: 4222
         - containerPort: 7422
           name: leafnodes
+          hostPort: 7422
         - containerPort: 6222
           name: cluster
         - containerPort: 8222
@@ -89,6 +102,7 @@ spec:
         - containerPort: 7777
           name: metrics
         args:
+         - "/nats-server"
          - "--config"
          - "/etc/nats-config/nats.conf"
 
@@ -182,12 +196,3 @@ spec:
         ports:
         - containerPort: 7777
           name: metrics
-      volumes:
-      - name: config-volume
-        configMap:
-          name: nats-config
-      - name: accounts-volume
-        configMap:
-          name: nats-accounts
-      - name: pid
-        emptyDir: {}
