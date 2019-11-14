@@ -22,9 +22,9 @@ data:
       # Use explicit static routes to avoid intermittent DNS issues
       # that could cause partitions via gossip while bootstrapping.
       routes [
-        nats://nats-0.nats:6222
-        nats://nats-1.nats:6222
-        nats://nats-2.nats:6222
+        nats://nats-0.nats.default.svc:6222
+        nats://nats-1.nats.default.svc:6222
+        nats://nats-2.nats.default.svc:6222
       ]
 
       tls: {
@@ -39,13 +39,15 @@ data:
     }
 
     #############################################
+    #                                           #
     # Advertise the public ip of the Kubelet    #
     # where this NATS Server node is running    #
+    #                                           #
     #############################################
-    # leafnodes {
-    #   listen: "0.0.0.0:7422"
-    #   include "advertise/gateway_advertise.conf"
-    # }
+    leafnodes {
+      listen: "0.0.0.0:7422"
+      include "advertise/gateway_advertise.conf"
+    }
     include "advertise/client_advertise.conf"
 
     #############################################
@@ -53,7 +55,7 @@ data:
     # Accounts resolver config                  #
     #                                           #
     #############################################
-    # include "accounts/resolver.conf"
+    include "accounts/resolver.conf"
 
 ---
 apiVersion: v1
@@ -77,6 +79,8 @@ spec:
     port: 7777
   - name: leafnodes
     port: 7422
+  - name: gateways
+    port: 7522
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -106,9 +110,9 @@ spec:
       - name: config-volume
         configMap:
           name: nats-config
-      # - name: accounts-volume
-      #   configMap:
-      #     name: nats-accounts
+      - name: accounts-volume
+        configMap:
+          name: nats-accounts
       - name: pid
         emptyDir: {}
       - name: advertiseconfig
@@ -189,8 +193,8 @@ spec:
         volumeMounts:
           - name: config-volume
             mountPath: /etc/nats-config
-          # - name: accounts-volume
-          #   mountPath: /etc/nats-config/accounts
+          - name: accounts-volume
+            mountPath: /etc/nats-config/accounts
           - name: nats-server-tls-volume
             mountPath: /etc/nats-server-tls-certs
           - name: pid

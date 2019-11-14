@@ -13,17 +13,14 @@ data:
       port: 6222
 
       routes [
-        nats://nats-0.nats:6222
-        nats://nats-1.nats:6222
-        nats://nats-2.nats:6222
+        nats://nats-0.nats.default.svc:6222
+        nats://nats-1.nats.default.svc:6222
+        nats://nats-2.nats.default.svc:6222
       ]
 
       cluster_advertise: $CLUSTER_ADVERTISE
       connect_retries: 30
     }
-
-    # Load the trusted operator setup.
-    include "accounts/resolver.conf"
 ---
 apiVersion: v1
 kind: Service
@@ -46,6 +43,8 @@ spec:
     port: 7777
   - name: leafnodes
     port: 7422
+  - name: gateways
+    port: 7522
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -69,9 +68,6 @@ spec:
       - name: config-volume
         configMap:
           name: nats-config
-      - name: accounts-volume
-        configMap:
-          name: nats-accounts
       - name: pid
         emptyDir: {}
 
@@ -101,8 +97,8 @@ spec:
           name: monitor
         - containerPort: 7777
           name: metrics
-        args:
-         - "/nats-server"
+        command:
+         - "nats-server"
          - "--config"
          - "/etc/nats-config/nats.conf"
 
@@ -123,8 +119,6 @@ spec:
         volumeMounts:
           - name: config-volume
             mountPath: /etc/nats-config
-          - name: accounts-volume
-            mountPath: /etc/nats-config/accounts
           - name: pid
             mountPath: /var/run/nats
 
@@ -167,13 +161,9 @@ spec:
          - "/var/run/nats/nats.pid"
          - "-config"
          - "/etc/nats-config/nats.conf"
-         - "-config"
-         - "/etc/nats-config/accounts/preload.conf"
         volumeMounts:
           - name: config-volume
             mountPath: /etc/nats-config
-          - name: accounts-volume
-            mountPath: /etc/nats-config/accounts
           - name: pid
             mountPath: /var/run/nats
 
