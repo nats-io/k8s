@@ -53,7 +53,7 @@ spec:
         volumeMounts:
           - name: creds-volume
             mountPath: /var/run/nats/creds/sys
-          - name: nats-client-tls-volume
+          - name: nats-server-tls-volume
             mountPath: /etc/nats/certs
 
         # Disable all cpu limits for the server.
