@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# set -exuo pipefail
 set -euo pipefail
 
 NATS_BOOTSTRAP_YML=${DEFAULT_NATS_BOOTSTRAP_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/b19d5aac2bc37b09f75f9d4410d6c3806f410ef3/nats-bootstrap-sa.yaml}
