@@ -9,7 +9,7 @@ spec:
     app: nats-surveyor-grafana
   ports:
   - name: web
-    nodePort: 30300
+    # nodePort: 30300
     port: 3000
     protocol: TCP
     targetPort: web
@@ -50,9 +50,17 @@ spec:
       containers:
       - name: nats-surveyor-grafana
         image: synadia/nats-surveyor-grafana:0.0.1-alpha1
+        env:
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "true"
+        - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+          value: "Admin"
+        - name: GF_AUTH_DISABLE_LOGIN_FORM
+          value: "true"
+
         ports:
         - containerPort: 3000
-          name: web
+          name: wep
 
         # Disable all cpu limits for the server.
         #

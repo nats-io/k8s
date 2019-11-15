@@ -55,9 +55,9 @@ create_creds() {
           nsc generate config --mem-resolver --sys-account SYS > resolver.conf
         )
 
-	if [ $SKIP_NSC_DIR_CHOWN != "true" ]; then
-	        chown -R 1000:1000 $NSC_DIR
-	fi
+        if [ $SKIP_NSC_DIR_CHOWN != "true" ]; then
+                chown -R 1000:1000 $NSC_DIR
+        fi
 }
 
 create_secrets() {
@@ -242,17 +242,33 @@ main() {
 
         echo "=== Getting started"
         echo
-        echo "You can now start receiving and sending messages using the nats-box instance deployed into your namespace."
+        echo "You can now start receiving and sending messages using "
+        echo "the nats-box instance deployed into your namespace."
         echo
 
         if [ $with_tls = false ] && [ $with_auth = false ]; then
-        echo '
-   kubectl exec -it nats-box /bin/sh
-   nats-sub -s nats://nats:4222 greetings &
-   nats-pub -s nats://nats:4222 greetings Hello
-'
+                echo 'TODO'
+        elif [ $with_auth = true ]; then
+                echo 'TODO'
+        else
+        echo
+        echo "  kubectl exec -it deployment/nats-box /bin/sh"
+        echo "  nats-sub -s nats://nats:4222 greetings &"
+        echo "  nats-pub -s nats://nats:4222 greetings Hello"
+        echo
         fi
 
+        if [ $with_surveyor = true ]; then
+                echo
+                echo "You can also connect to your monitoring dashboard:"
+                echo
+                echo "  kubectl port-forward deployments/nats-surveyor-grafana 3000:3000"
+                echo
+                echo "Then to open in your browser:"
+                echo
+                echo "http://127.0.0.1:3000/d/GGxJ_5oZy/nats-surveyor?refresh=5s&orgId=1"
+                echo
+        fi
 }
 
 main "$@"
