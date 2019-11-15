@@ -36,9 +36,9 @@ spec:
       - name: creds-volume
         secret:
           secretName: nats-sys-creds
-      - name: nats-client-tls-volume
+      - name: nats-server-tls-volume
         secret:
-          secretName: nats-client-tls
+          secretName: nats-server-tls
       containers:
       - name: nats-surveyor
         image: synadia/nats-surveyor:0.0.1-alpha3
