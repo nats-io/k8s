@@ -13,6 +13,9 @@ spec:
   - name: creds-volume
     secret:
       secretName: nats-test-creds
+  - name: stan-creds-volume
+    secret:
+      secretName: stan-creds
   - name: nats-client-tls-volume
     secret:
       secretName: nats-server-tls
@@ -29,5 +32,7 @@ spec:
         mountPath: /var/run/nats/creds/sys
       - name: creds-volume
         mountPath: /var/run/nats/creds/test
+      - name: stan-creds-volume
+        mountPath: /var/run/nats/creds/stan
       - name: nats-client-tls-volume
         mountPath: /etc/nats/certs
