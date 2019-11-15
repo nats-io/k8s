@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-box
+  labels:
+    app: nats-box
+spec:
+  selector:
+    matchLabels:
+      app: nats-box
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nats-box
+    spec:
+      volumes:
+      - name: creds-volume
+        secret:
+          secretName: nats-sys-creds
+      containers:
+      - name: nats-box
+        image: synadia/nats-box:latest
+        command:
+         - "tail"
+         - "-f"
+         - "/dev/null"
+        volumeMounts:
+          - name: creds-volume
+            mountPath: /etc/nats-config/creds

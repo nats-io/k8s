@@ -12,3 +12,4 @@ kubectl exec nats-setup -- nats-setup.sh $@
 kubectl cp nats-setup:/nsc nsc
 kubectl delete -f $NATS_BOOTSTRAP_YML
 kubectl delete pod nats-setup --grace-period=0 --force
+kubectl exec -it deployment/nats-box /bin/sh

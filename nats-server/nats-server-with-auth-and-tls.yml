@@ -165,6 +165,9 @@ spec:
         - containerPort: 7422
           name: leafnodes
           hostPort: 7422
+        - containerPort: 7522
+          name: gateways
+          hostPort: 7522
         - containerPort: 6222
           name: cluster
         - containerPort: 8222
@@ -248,13 +251,13 @@ spec:
          - "/var/run/nats/nats.pid"
          - "-config"
          - "/etc/nats-config/nats.conf"
-         # - "-config"
-         # - "/etc/nats-config/accounts/resolver.conf"
+         - "-config"
+         - "/etc/nats-config/accounts/resolver.conf"
         volumeMounts:
           - name: config-volume
-            mountPath: /etc/nats-config
-          # - name: accounts-volume
-          #   mountPath: /etc/nats-config/accounts
+            mountPath: /etc/nats-confign
+          - name: accounts-volume
+            mountPath: /etc/nats-config/accounts
           - name: pid
             mountPath: /var/run/nats
 

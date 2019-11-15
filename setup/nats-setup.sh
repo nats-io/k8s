@@ -11,13 +11,22 @@ PROMETHEUS_OPERATOR_YML=${DEFAULT_PROMETHEUS_OPERATOR_YML:=https://gist.githubus
 
 NATS_PROMETHEUS_YML=${DEFAULT_NATS_PROMETHEUS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-prometheus.yml}
 
-NATS_SURVEYOR_YML=${DEFAULT_NATS_SURVEYOR_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml}
-
 NATS_GRAFANA_YML=${DEFAULT_NATS_GRAFANA_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor-grafana.yml}
 
 CERT_MANAGER_YML=${DEFAULT_CERT_MANAGER_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/7da870beb441fb9cfc00a4dede6d03f9eedc6973/cert-manager.yml}
+CERT_MANAGER_RELEASE_YML=${DEFAULT_CERT_MANAGER_RELEASE_YML:=https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml}
+
+# With certs and creds, just auth no TLS, and plain examples.
+NATS_BOX_AUTH_TLS_YML=${DEFAULT_NATS_BOX_AUTH_TLS_YML:=""}
+NATS_BOX_AUTH_YML=${DEFAULT_NATS_BOX_AUTH_YML:=""}
+NATS_BOX_YML=${DEFAULT_NATS_BOX_YML:=""}
+
+NATS_SURVEYOR_TLS_YML=${DEFAULT_NATS_SURVEYOR_TLS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml}
+NATS_SURVEYOR_YML=${DEFAULT_NATS_SURVEYOR_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml}
 
 NSC_DIR=${DEFAULT_NSC_DIR:=$(pwd)/nsc}
+
+SKIP_NSC_DIR_CHOWN=${DEFAULT_SKIP_NSC_DIR_CHOWN:=false}
 
 export NATS_CONFIG_HOME=$NSC_DIR/config
 
@@ -46,7 +55,9 @@ create_creds() {
           nsc generate config --mem-resolver --sys-account SYS > resolver.conf
         )
 
-        chown -R 1000:1000 $NSC_DIR
+        if [ $SKIP_NSC_DIR_CHOWN != "true" ]; then
+                chown -R 1000:1000 $NSC_DIR
+        fi
 }
 
 create_secrets() {
@@ -62,14 +73,19 @@ install_prometheus() {
         kubectl apply --filename $NATS_PROMETHEUS_YML
 }
 
-install_nats_surveyor() {
+install_nats_surveyor_components() {
         install_prometheus
-
-        # Deploy NATS Surveyor
-        kubectl apply --filename $NATS_SURVEYOR_YML
 
         # Deploy NATS Surveyor Grafana instance
         kubectl apply --filename $NATS_GRAFANA_YML
+}
+
+install_nats_surveyor_with_tls() {
+        kubectl apply --filename $NATS_SURVEYOR_TLS_YML
+}
+
+install_nats_surveyor() {
+        kubectl apply --filename $NATS_SURVEYOR_YML
 }
 
 install_nats_server_with_auth() {
@@ -90,7 +106,15 @@ install_cert_manager() {
                 kubectl create namespace cert-manager
         }
 
-        kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml
+        kubectl apply --validate=false -f $CERT_MANAGER_RELEASE_YML
+}
+
+install_nats_box_with_auth() {
+        kubectl apply --validate=false -f $NATS_BOX_AUTH_YML
+}
+
+install_nats_box() {
+        kubectl apply --validate=false -f $NATS_BOX_YML
 }
 
 show_usage() {
@@ -107,22 +131,11 @@ show_usage() {
 }
 
 main() {
-        echo "
- #############################################
- #                                           #
- #  _   _    _  _____ ____   _  _____ ____   #
- # | \ | |  / \|_   _/ ___| | |/ ( _ ) ___|  #
- # |  \| | / _ \ | | \___ \ | ' // _ \___ \  #
- # | |\  |/ ___ \| |  ___) || . \ (_) |__) | #
- # |_| \_/_/   \_\_| |____(_)_|\_\___/____/  #
- #                                           #
- #############################################
-"
         with_surveyor=true
         with_tls=true
         with_auth=true
         with_cert_manager=true
-	with_stan=true
+        with_stan=true
 
         while [ ! $# -eq 0 ]; do
                 case $1 in
@@ -131,7 +144,7 @@ main() {
                                 exit 0
                                 ;;
                         --without-surveyor)
-				# In case of deploying multiple clusters, only need a single instance.
+                                # In case of deploying multiple clusters, only need a single instance.
                                 with_surveyor=false
                                 ;;
                         --without-tls)
@@ -139,7 +152,7 @@ main() {
                                 with_cert_manager=false
                                 ;;
                         --without-cert-manager)
-				# In case cert manager has already been installed.
+                                # In case cert manager has already been installed.
                                 with_cert_manager=false
                                 ;;
                         --without-auth)
@@ -162,10 +175,21 @@ main() {
                 shift
         done
 
-	echo
-	echo " +---------------------+---------------------+"
-	echo " |                 OPTIONS                   |"
-	echo " +---------------------+---------------------+"
+
+        echo
+        echo "##############################################"
+        echo "#                                            #"
+        echo "#  _   _    _  _____ ____   _  _____ ____    #"
+        echo "# | \ | |  / \|_   _/ ___| | |/ ( _ ) ___|   #"
+        echo "# |  \| | / _ \ | | \___ \ | ' // _ \___ \   #"
+        echo "# | |\  |/ ___ \| |  ___) || . \ (_) |__) |  #"
+        echo "# |_| \_/_/   \_\_| |____(_)_|\_\___/____/   #"
+        echo "#                                            #"
+        echo "##############################################"
+        echo
+        echo " +---------------------+---------------------+"
+        echo " |                 OPTIONS                   |"
+        echo " +---------------------+---------------------+"
         echo "         nats server   | true                "
         echo "         nats surveyor | $with_surveyor      "
         echo "         nats tls      | $with_tls           "
@@ -177,7 +201,7 @@ main() {
         echo " | Starting setup...                         |"
         echo " |                                           |"
         echo " +-------------------------------------------+"
-	echo 
+        echo
 
         if [ $with_auth = true ]; then
                 create_creds
@@ -190,38 +214,61 @@ main() {
 
         if [ $with_tls = true ] && [ $with_auth = true ]; then
                 install_nats_server_with_auth_and_tls
-	elif [ $with_auth = true ]; then
+        elif [ $with_auth = true ]; then
                 install_nats_server_with_auth
-	else
+                install_nats_box_with_auth
+        else
+                install_nats_box
                 install_insecure_nats_server
         fi
 
         if [ $with_surveyor = true ]; then
-                install_nats_surveyor
+                if [ $with_tls = true ]; then
+                        install_nats_surveyor_with_tls
+                else
+                        install_nats_surveyor
+                fi
+
+                install_nats_surveyor_components
         fi
 
-        # Confirm setup by sending some messages using the system account.
-	echo
+        echo
         echo " +------------------------------------------+"
         echo " |                                          |"
         echo " | Done. Enjoy your new NATS cluster!       |"
         echo " |                                          |"
         echo " +------------------------------------------+"
-	echo
+        echo
 
-	echo "=== Getting started
+        echo "=== Getting started"
+        echo
+        echo "You can now start receiving and sending messages using "
+        echo "the nats-box instance deployed into your namespace."
+        echo
 
-You start receiving and sending messages using the nats-box instance deployed into your namespace.
-"
+        if [ $with_tls = false ] && [ $with_auth = false ]; then
+                echo 'TODO'
+        elif [ $with_auth = true ]; then
+                echo 'TODO'
+        else
+        echo
+        echo "  kubectl exec -it deployment/nats-box /bin/sh"
+        echo "  nats-sub -s nats://nats:4222 greetings &"
+        echo "  nats-pub -s nats://nats:4222 greetings Hello"
+        echo
+        fi
 
-	if [ $with_tls = false ] && [ $with_auth = false ]; then
-	echo '
-   kubectl exec -it nats-box /bin/sh
-   nats-sub -s nats://nats:4222 greetings &
-   nats-pub -s nats://nats:4222 greetings Hello
-'
-	fi
-
+        if [ $with_surveyor = true ]; then
+                echo
+                echo "You can also connect to your monitoring dashboard:"
+                echo
+                echo "  kubectl port-forward deployments/nats-surveyor-grafana 3000:3000"
+                echo
+                echo "Then open the following in your browser:"
+                echo
+                echo "  http://127.0.0.1:3000/d/GGxJ_5oZy/nats-surveyor?refresh=5s&orgId=1"
+                echo
+        fi
 }
 
 main "$@"
