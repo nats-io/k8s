@@ -253,12 +253,12 @@ main() {
         echo "the nats-box instance deployed into your namespace:"
         echo
 	echo "  kubectl exec -it pod/nats-box /bin/sh"
+	echo 
         if [ $with_tls = true ] && [ $with_auth = true ]; then
 		echo "TODO"
         elif [ $with_tls = true ] && [ $with_auth = false ]; then
 		echo "TODO"
         elif [ $with_tls = false ] && [ $with_auth = true ]; then
-	        echo
 		echo "Using the test user account:"
 		echo 
 	        echo "  nats-sub -creds /var/run/nats/creds/test/test.creds -s nats://nats:4222 'test.>' &"
@@ -266,14 +266,19 @@ main() {
 	        echo
 		echo "Using the system account:"
 		echo
-	        echo "  nats-sub -creds /var/run/nats/creds/sys/sys.creds-s nats://nats:4222 '>'"
+	        echo "  nats-sub -creds /var/run/nats/creds/sys/sys.creds -s nats://nats:4222 '>'"
                 echo
         else
-	        echo
 	        echo "  nats-sub -s nats://nats:4222 '>' &"
 	        echo "  nats-pub -s nats://nats:4222 hello world"
 	        echo
         fi
+	echo "The nats-box also includes nats-top which you can use to"
+	echo "inspect the flow of messages from one of the members"
+	echo "of the cluster."
+	echo
+	echo "  nats-top -s nats"
+	echo
 
 	# 
 	# TODO: NATS Streaming stan-pub/stan-sub

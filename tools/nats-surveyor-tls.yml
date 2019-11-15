@@ -36,6 +36,9 @@ spec:
       - name: creds-volume
         secret:
           secretName: nats-sys-creds
+      - name: nats-client-tls-volume
+        secret:
+          secretName: nats-client-tls
       containers:
       - name: nats-surveyor
         image: synadia/nats-surveyor:0.0.1-alpha3
@@ -50,6 +53,8 @@ spec:
         volumeMounts:
           - name: creds-volume
             mountPath: /var/run/nats/creds/sys
+          - name: nats-client-tls-volume
+            mountPath: /etc/nats/certs
 
         # Disable all cpu limits for the server.
         #

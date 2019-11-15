@@ -47,6 +47,13 @@ data:
     leafnodes {
       listen: "0.0.0.0:7422"
       include "advertise/gateway_advertise.conf"
+
+      tls: {
+        ca_file: "/etc/nats-server-tls-certs/ca.crt",
+        cert_file: "/etc/nats-server-tls-certs/tls.crt",
+        key_file: "/etc/nats-server-tls-certs/tls.key",
+        timeout: 3
+      }
     }
     include "advertise/client_advertise.conf"
 
@@ -255,7 +262,7 @@ spec:
          - "/etc/nats-config/accounts/resolver.conf"
         volumeMounts:
           - name: config-volume
-            mountPath: /etc/nats-confign
+            mountPath: /etc/nats-config
           - name: accounts-volume
             mountPath: /etc/nats-config/accounts
           - name: pid

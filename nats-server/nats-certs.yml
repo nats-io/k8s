@@ -42,7 +42,7 @@ spec:
     name: nats-ca
     kind: Issuer
   organization:
-  - Your organization
+  - NATS.io
   commonName: nats.default.svc.cluster.local
   dnsNames:
   - nats
@@ -52,3 +52,18 @@ spec:
   - '*.nats'
   - '*.nats.default'
   - '*.nats.default.svc'
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: nats-client-tls
+spec:
+  secretName: nats-client-tls
+  duration: 2160h # 90 days
+  renewBefore: 240h # 10 days
+  issuerRef:
+    name: nats-ca
+    kind: Issuer
+  organization:
+  - NATS.io
+  commonName: sample-nats-client
