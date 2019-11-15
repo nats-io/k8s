@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nats-box
+  labels:
+    app: nats-box
+spec:
+  volumes:
+  - name: syscreds-volume
+    secret:
+      secretName: nats-sys-creds
+  - name: creds-volume
+    secret:
+      secretName: nats-test-creds
+  - name: nats-client-tls-volume
+    secret:
+      secretName: nats-server-tls
+  containers:
+  - name: nats-box
+    image: synadia/nats-box:0.1.0
+    imagePullPolicy: Always
+    command:
+     - "tail"
+     - "-f"
+     - "/dev/null"
+    volumeMounts:
+      - name: syscreds-volume
+        mountPath: /var/run/nats/creds/sys
+      - name: creds-volume
+        mountPath: /var/run/nats/creds/test
+      - name: nats-client-tls-volume
+        mountPath: /etc/nats/certs

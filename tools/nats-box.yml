@@ -6,22 +6,11 @@ metadata:
   labels:
     app: nats-box
 spec:
-  volumes:
-  - name: syscreds-volume
-    secret:
-      secretName: nats-sys-creds
-  - name: creds-volume
-    secret:
-      secretName: nats-test-creds
   containers:
   - name: nats-box
-    image: synadia/nats-box:latest
+    image: synadia/nats-box:0.1.0
+    imagePullPolicy: Always
     command:
      - "tail"
      - "-f"
      - "/dev/null"
-    volumeMounts:
-      - name: syscreds-volume
-        mountPath: /var/run/nats/creds/sys
-      - name: creds-volume
-        mountPath: /var/run/nats/creds/test

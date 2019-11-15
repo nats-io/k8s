@@ -115,6 +115,10 @@ install_cert_manager() {
         kubectl apply --validate=false -f $CERT_MANAGER_RELEASE_YML
 }
 
+install_nats_box_with_auth_and_tls() {
+        kubectl apply --validate=false -f $NATS_BOX_AUTH_TLS_YML
+}
+
 install_nats_box_with_auth() {
         kubectl apply --validate=false -f $NATS_BOX_AUTH_YML
 }
@@ -219,12 +223,13 @@ main() {
 
         if [ $with_tls = true ] && [ $with_auth = true ]; then
                 install_nats_server_with_auth_and_tls
+                install_nats_box_with_auth_and_tls
         elif [ $with_auth = true ]; then
                 install_nats_server_with_auth
                 install_nats_box_with_auth
         else
-                install_nats_box
                 install_insecure_nats_server
+                install_nats_box
         fi
 	
         if [ $with_surveyor = true ]; then
@@ -246,7 +251,6 @@ main() {
         echo " |                                          |"
         echo " +------------------------------------------+"
         echo
-
         echo "=== Getting started"
         echo
         echo "You can now start receiving and sending messages using "
@@ -255,9 +259,27 @@ main() {
 	echo "  kubectl exec -it pod/nats-box /bin/sh"
 	echo 
         if [ $with_tls = true ] && [ $with_auth = true ]; then
-		echo "TODO"
+		echo "Using the test user account:"
+	        echo '  
+  nats-sub -s tls://nats:4222 \
+           -cacert /etc/nats/certs/ca.crt -cert /etc/nats/certs/tls.crt -key /etc/nats/certs/tls.key \
+           -creds /var/run/nats/creds/test/test.creds \
+           "test.>" &
+
+  nats-pub -s tls://nats:4222 \
+           -cacert /etc/nats/certs/ca.crt -cert /etc/nats/certs/tls.crt -key /etc/nats/certs/tls.key \
+           -creds /var/run/nats/creds/test/test.creds \
+           test.hi "Hello World"
+
+Using the system account to listen to all server events:
+
+  nats-sub -s tls://nats:4222 \
+           -cacert /etc/nats/certs/ca.crt -cert /etc/nats/certs/tls.crt -key /etc/nats/certs/tls.key \
+           -creds /var/run/nats/creds/sys/sys.creds ">"
+
+'
         elif [ $with_tls = true ] && [ $with_auth = false ]; then
-		echo "TODO"
+		echo ""
         elif [ $with_tls = false ] && [ $with_auth = true ]; then
 		echo "Using the test user account:"
 		echo 
