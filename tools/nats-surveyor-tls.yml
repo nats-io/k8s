@@ -45,11 +45,13 @@ spec:
         ports:
         - containerPort: 7777
           name: metrics
-        command:
-         - "/nats-surveyor"
-         - "-s=nats://nats:4222"
-         - "-c=3"
-         - "-creds=/var/run/nats/creds/sys/sys.creds"
+        command: ["/bin/sh", "-c"]
+        args:
+        - set -x;
+          cp /etc/nats/certs/ca.crt /usr/local/share/ca-certificates;
+          ls -al /usr/local/share/ca-certificates;
+          update-ca-certificates;
+         /nats-surveyor -s=tls://nats:4222 -c=3 -creds=/var/run/nats/creds/sys/sys.creds;
         volumeMounts:
           - name: creds-volume
             mountPath: /var/run/nats/creds/sys
