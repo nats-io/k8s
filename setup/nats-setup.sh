@@ -11,19 +11,22 @@ PROMETHEUS_OPERATOR_YML=${DEFAULT_PROMETHEUS_OPERATOR_YML:=https://gist.githubus
 
 NATS_PROMETHEUS_YML=${DEFAULT_NATS_PROMETHEUS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-prometheus.yml}
 
-NATS_SURVEYOR_YML=${DEFAULT_NATS_SURVEYOR_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml}
-
 NATS_GRAFANA_YML=${DEFAULT_NATS_GRAFANA_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor-grafana.yml}
 
 CERT_MANAGER_YML=${DEFAULT_CERT_MANAGER_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/7da870beb441fb9cfc00a4dede6d03f9eedc6973/cert-manager.yml}
-
 CERT_MANAGER_RELEASE_YML=${DEFAULT_CERT_MANAGER_RELEASE_YML:=https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml}
 
+# With certs and creds, just auth no TLS, and plain examples.
+NATS_BOX_AUTH_TLS_YML=${DEFAULT_NATS_BOX_AUTH_TLS_YML:=""}
 NATS_BOX_AUTH_YML=${DEFAULT_NATS_BOX_AUTH_YML:=""}
-
 NATS_BOX_YML=${DEFAULT_NATS_BOX_YML:=""}
 
+NATS_SURVEYOR_TLS_YML=${DEFAULT_NATS_SURVEYOR_TLS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml}
+NATS_SURVEYOR_YML=${DEFAULT_NATS_SURVEYOR_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml}
+
 NSC_DIR=${DEFAULT_NSC_DIR:=$(pwd)/nsc}
+
+SKIP_NSC_DIR_CHOWN=${DEFAULT_SKIP_NSC_DIR_CHOWN:=false}
 
 export NATS_CONFIG_HOME=$NSC_DIR/config
 
@@ -52,7 +55,9 @@ create_creds() {
           nsc generate config --mem-resolver --sys-account SYS > resolver.conf
         )
 
-        chown -R 1000:1000 $NSC_DIR
+	if [ $SKIP_NSC_DIR_CHOWN != "true" ]; then
+	        chown -R 1000:1000 $NSC_DIR
+	fi
 }
 
 create_secrets() {
@@ -68,14 +73,19 @@ install_prometheus() {
         kubectl apply --filename $NATS_PROMETHEUS_YML
 }
 
-install_nats_surveyor() {
+install_nats_surveyor_components() {
         install_prometheus
-
-        # Deploy NATS Surveyor
-        kubectl apply --filename $NATS_SURVEYOR_YML
 
         # Deploy NATS Surveyor Grafana instance
         kubectl apply --filename $NATS_GRAFANA_YML
+}
+
+install_nats_surveyor_with_tls() {
+        kubectl apply --filename $NATS_SURVEYOR_TLS_YML
+}
+
+install_nats_surveyor() {
+        kubectl apply --filename $NATS_SURVEYOR_YML
 }
 
 install_nats_server_with_auth() {
@@ -100,11 +110,11 @@ install_cert_manager() {
 }
 
 install_nats_box_with_auth() {
-	kubectl apply --validate=false -f $NATS_BOX_AUTH_YML
+        kubectl apply --validate=false -f $NATS_BOX_AUTH_YML
 }
 
 install_nats_box() {
-	kubectl apply --validate=false -f $NATS_BOX_YML
+        kubectl apply --validate=false -f $NATS_BOX_YML
 }
 
 show_usage() {
@@ -206,14 +216,20 @@ main() {
                 install_nats_server_with_auth_and_tls
         elif [ $with_auth = true ]; then
                 install_nats_server_with_auth
-		install_nats_box_with_auth
+                install_nats_box_with_auth
         else
                 install_nats_box
                 install_insecure_nats_server
         fi
 
         if [ $with_surveyor = true ]; then
-                install_nats_surveyor
+                if [ $with_tls = true ]; then
+                        install_nats_surveyor_with_tls
+                else
+                        install_nats_surveyor
+                fi
+
+                install_nats_surveyor_components
         fi
 
         echo

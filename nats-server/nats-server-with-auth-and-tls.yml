@@ -255,9 +255,9 @@ spec:
          - "/etc/nats-config/accounts/resolver.conf"
         volumeMounts:
           - name: config-volume
-            mountPath: /etc/nats-config
-          # - name: accounts-volume
-          #   mountPath: /etc/nats-config/accounts
+            mountPath: /etc/nats-confign
+          - name: accounts-volume
+            mountPath: /etc/nats-config/accounts
           - name: pid
             mountPath: /var/run/nats
 

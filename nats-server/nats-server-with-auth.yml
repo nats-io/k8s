@@ -91,10 +91,39 @@ spec:
           name: nats-accounts
       - name: pid
         emptyDir: {}
+      - name: advertiseconfig
+        emptyDir: {}
 
       # Required to be able to HUP signal and apply config reload
       # to the server without restarting the pod.
       shareProcessNamespace: true
+
+      # Required to be able to lookup external public ip
+      # that is setup as the client advertise.
+      serviceAccountName: nats-server
+
+      # Initializer container required to be able to lookup
+      # the external ip on which this node is running.
+      initContainers:
+      - name: bootconfig
+        command:
+        - nats-pod-bootconfig
+        - -f
+        - /etc/nats-config/advertise/client_advertise.conf
+        - -gf
+        - /etc/nats-config/advertise/gateway_advertise.conf
+        env:
+        - name: KUBERNETES_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        image: connecteverything/nats-boot-config:0.5.2
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - mountPath: /etc/nats-config/advertise
+          name: advertiseconfig
+          subPath: advertise
 
       #################
       #               #
@@ -147,6 +176,9 @@ spec:
             mountPath: /etc/nats-config/accounts
           - name: pid
             mountPath: /var/run/nats
+          - mountPath: /etc/nats-config/advertise
+            name: advertiseconfig
+            subPath: advertise
 
         # Liveness/Readiness probes against the monitoring
         #
