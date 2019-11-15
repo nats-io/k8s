@@ -24,6 +24,9 @@ NATS_BOX_YML=${DEFAULT_NATS_BOX_YML:=""}
 NATS_SURVEYOR_TLS_YML=${DEFAULT_NATS_SURVEYOR_TLS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml}
 NATS_SURVEYOR_YML=${DEFAULT_NATS_SURVEYOR_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml}
 
+NATS_STREAMING_AUTH_TLS_YML=${DEFAULT_NATS_STREAMING_AUTH_TLS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/31642afaed81575dc7ab218568beea1d5ae8c5d7/nats-server-v2-tls.yml}
+NATS_STREAMING_AUTH_YML=${DEFAULT_NATS_STREAMING_AUTH_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-server-v2-external.yml}
+
 NSC_DIR=${DEFAULT_NSC_DIR:=$(pwd)/nsc}
 
 SKIP_NSC_DIR_CHOWN=${DEFAULT_SKIP_NSC_DIR_CHOWN:=false}
@@ -127,6 +130,14 @@ install_nats_box() {
         kubectl apply --validate=false -f $NATS_BOX_YML
 }
 
+install_nats_streaming_with_auth_and_tls() {
+        kubectl apply --validate=false -f $NATS_STREAMING_AUTH_TLS_YML
+}
+
+install_nats_streaming_with_auth() {
+        kubectl apply --validate=false -f $NATS_STREAMING_AUTH_YML
+}
+
 show_usage() {
     echo "Usage: $0 [options]
 
@@ -212,8 +223,8 @@ main() {
         echo
 
         if [ $with_auth = true ]; then
-		# Skip  if directory already exists
-		[ ! -d "$NSC_DIR" ] && create_creds
+                # Skip  if directory already exists
+                [ ! -d "$NSC_DIR" ] && create_creds
                 create_secrets
         fi
 
@@ -224,14 +235,22 @@ main() {
         if [ $with_tls = true ] && [ $with_auth = true ]; then
                 install_nats_server_with_auth_and_tls
                 install_nats_box_with_auth_and_tls
+
+                if [ $with_stan = true ]; then
+                        install_nats_streaming_with_auth_and_tls
+                fi
         elif [ $with_auth = true ]; then
                 install_nats_server_with_auth
                 install_nats_box_with_auth
+
+                if [ $with_stan = true ]; then
+                        install_nats_streaming_with_auth
+                fi
         else
                 install_insecure_nats_server
                 install_nats_box
         fi
-	
+
         if [ $with_surveyor = true ]; then
                 install_nats_surveyor_components
                 if [ $with_tls = true ]; then
@@ -240,8 +259,11 @@ main() {
                         install_nats_surveyor
                 fi
         fi
-	kubectl wait --for=condition=Ready pod/nats-0   --timeout=60s
-	kubectl wait --for=condition=Ready pod/nats-box --timeout=60s
+        kubectl wait --for=condition=Ready pod/nats-0   --timeout=60s
+        kubectl wait --for=condition=Ready pod/nats-box --timeout=60s
+
+
+
 
         echo
         echo " +------------------------------------------+"
@@ -255,55 +277,38 @@ main() {
         echo "You can now start receiving and sending messages using "
         echo "the nats-box instance deployed into your namespace:"
         echo
-	echo "  kubectl exec -it pod/nats-box /bin/sh"
-	echo 
-        if [ $with_tls = true ] && [ $with_auth = true ]; then
-		echo "Using the test user account:"
-	        echo '  
-  nats-sub -s tls://nats:4222 \
-           -cacert /etc/nats/certs/ca.crt -cert /etc/nats/certs/tls.crt -key /etc/nats/certs/tls.key \
-           -creds /var/run/nats/creds/test/test.creds \
-           "test.>" &
-
-  nats-pub -s tls://nats:4222 \
-           -cacert /etc/nats/certs/ca.crt -cert /etc/nats/certs/tls.crt -key /etc/nats/certs/tls.key \
-           -creds /var/run/nats/creds/test/test.creds \
-           test.hi "Hello World"
-
-Using the system account to listen to all server events:
-
-  nats-sub -s tls://nats:4222 \
-           -cacert /etc/nats/certs/ca.crt -cert /etc/nats/certs/tls.crt -key /etc/nats/certs/tls.key \
-           -creds /var/run/nats/creds/sys/sys.creds ">"
-
-'
-        elif [ $with_tls = true ] && [ $with_auth = false ]; then
-		echo ""
-        elif [ $with_tls = false ] && [ $with_auth = true ]; then
-		echo "Using the test user account:"
-		echo 
-	        echo "  nats-sub -creds /var/run/nats/creds/test/test.creds -s nats://nats:4222 'test.>' &"
-	        echo "  nats-pub -creds /var/run/nats/creds/test/test.creds -s nats://nats:4222 test.hi 'Hello World'"
-	        echo
-		echo "Using the system account:"
-		echo
-	        echo "  nats-sub -creds /var/run/nats/creds/sys/sys.creds -s nats://nats:4222 '>'"
+        echo "  kubectl exec -it pod/nats-box /bin/sh"
+        echo
+        if [ $with_auth = true ]; then
+                echo "Using the test user account:"
+                echo
+                echo "  nats-sub -creds /var/run/nats/creds/test/test.creds -s nats 'test.>' &"
+                echo "  nats-pub -creds /var/run/nats/creds/test/test.creds -s nats test.hi 'Hello World'"
+                echo
+                echo "Using the system account:"
+                echo
+                echo "  nats-sub -creds /var/run/nats/creds/sys/sys.creds -s nats://nats:4222 '>'"
                 echo
         else
-	        echo "  nats-sub -s nats://nats:4222 '>' &"
-	        echo "  nats-pub -s nats://nats:4222 hello world"
-	        echo
+                echo "  nats-sub -s nats://nats:4222 '>' &"
+                echo "  nats-pub -s nats://nats:4222 hello world"
+                echo
         fi
-	echo "The nats-box also includes nats-top which you can use to"
-	echo "inspect the flow of messages from one of the members"
-	echo "of the cluster."
-	echo
-	echo "  nats-top -s nats"
-	echo
+        echo "The nats-box also includes nats-top which you can use to"
+        echo "inspect the flow of messages from one of the members"
+        echo "of the cluster."
+        echo
+        echo "  nats-top -s nats"
+        echo
 
-	# 
-	# TODO: NATS Streaming stan-pub/stan-sub
-	# 
+        if [ $with_stan = true ]; then
+                echo "NATS Streaming with persistence is also available as part of your cluster."
+                echo "It is installed under the STAN account so you can use the following credentials:"
+                echo
+                echo "  stan-pub -creds /var/run/nats/creds/stan/stan.creds -s nats test.hi 'Hello World'"
+                echo "  stan-sub -creds /var/run/nats/creds/stan/stan.creds -s nats 'test.>'"
+                echo
+        fi
 
         if [ $with_surveyor = true ]; then
                 echo "You can also connect to your monitoring dashboard:"
