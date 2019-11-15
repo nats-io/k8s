@@ -54,7 +54,7 @@ spec:
           name: metrics
         command:
          - "/nats-surveyor"
-         - "-s=nats://nats:4222"
+         - "-s=tls://nats:4222"
          - "-c=3"
          - "-creds=/var/run/nats/creds/sys/sys.creds"
         volumeMounts:
