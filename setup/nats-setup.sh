@@ -233,13 +233,12 @@ main() {
         fi
 	
         if [ $with_surveyor = true ]; then
+                install_nats_surveyor_components
                 if [ $with_tls = true ]; then
                         install_nats_surveyor_with_tls
                 else
                         install_nats_surveyor
                 fi
-
-                install_nats_surveyor_components
         fi
 	kubectl wait --for=condition=Ready pod/nats-0   --timeout=60s
 	kubectl wait --for=condition=Ready pod/nats-box --timeout=60s
