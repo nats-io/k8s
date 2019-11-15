@@ -264,9 +264,9 @@ main() {
                 echo
                 echo "  kubectl port-forward deployments/nats-surveyor-grafana 3000:3000"
                 echo
-                echo "Then to open in your browser:"
+                echo "Then open the following in your browser:"
                 echo
-                echo "http://127.0.0.1:3000/d/GGxJ_5oZy/nats-surveyor?refresh=5s&orgId=1"
+                echo "  http://127.0.0.1:3000/d/GGxJ_5oZy/nats-surveyor?refresh=5s&orgId=1"
                 echo
         fi
 }
