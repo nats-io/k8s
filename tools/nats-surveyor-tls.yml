@@ -42,6 +42,13 @@ spec:
       containers:
       - name: nats-surveyor
         image: synadia/nats-surveyor:0.0.1-alpha3
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - cp /etc/nats/certs/ca.crt /usr/local/share/ca-certificates && update-ca-certificates
         ports:
         - containerPort: 7777
           name: metrics

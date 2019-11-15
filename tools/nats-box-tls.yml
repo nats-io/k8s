@@ -23,6 +23,13 @@ spec:
   - name: nats-box
     image: synadia/nats-box:0.1.0
     imagePullPolicy: Always
+    lifecycle:
+      postStart:
+        exec:
+          command:
+          - /bin/sh
+          - -c
+          - cp /etc/nats/certs/ca.crt /usr/local/share/ca-certificates && update-ca-certificates
     command:
      - "tail"
      - "-f"
