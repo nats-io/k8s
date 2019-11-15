@@ -43,11 +43,15 @@ create_creds() {
 
         # Create system account
         nsc add account --name SYS
-        nsc add user --name sys
+        nsc add user    --name sys
 
-        # Create test account
+        # Create account for testing purposes
         nsc add account --name TEST
-        nsc add user --name test
+        nsc add user    --name test --allow-pubsub 'test.>'
+
+        # Create account for STAN purposes
+        nsc add account --name STAN
+        nsc add user    --name stan
 
         # Generate accounts resolver config using the preload config
         (
@@ -61,7 +65,9 @@ create_creds() {
 }
 
 create_secrets() {
-        kubectl create secret generic nats-sys-creds  --from-file $NSC_DIR/nkeys/creds/KO/SYS/sys.creds
+        kubectl create secret generic nats-sys-creds   --from-file $NSC_DIR/nkeys/creds/KO/SYS/sys.creds
+        kubectl create secret generic nats-test-creds  --from-file $NSC_DIR/nkeys/creds/KO/TEST/test.creds
+        kubectl create secret generic stan-creds       --from-file $NSC_DIR/nkeys/creds/KO/STAN/stan.creds
         kubectl create configmap nats-accounts --from-file $NSC_DIR/config/resolver.conf
 }
 
@@ -124,10 +130,8 @@ show_usage() {
     --without-auth            Setup the cluster without Auth enabled
     --without-surveyor        Skips installing NATS surveyor
     --without-cert-manager    Skips installing the cert manager component
-    --without-external-access Setup the cluster without external access
     --without-nats-streaming  Setup the cluster without NATS Streaming
-
-    "
+"
 }
 
 main() {
@@ -221,7 +225,7 @@ main() {
                 install_nats_box
                 install_insecure_nats_server
         fi
-
+	
         if [ $with_surveyor = true ]; then
                 if [ $with_tls = true ]; then
                         install_nats_surveyor_with_tls
@@ -231,6 +235,8 @@ main() {
 
                 install_nats_surveyor_components
         fi
+	kubectl wait --for=condition=Ready pod/nats-0   --timeout=60s
+	kubectl wait --for=condition=Ready pod/nats-box --timeout=60s
 
         echo
         echo " +------------------------------------------+"
@@ -243,23 +249,36 @@ main() {
         echo "=== Getting started"
         echo
         echo "You can now start receiving and sending messages using "
-        echo "the nats-box instance deployed into your namespace."
+        echo "the nats-box instance deployed into your namespace:"
         echo
-
-        if [ $with_tls = false ] && [ $with_auth = false ]; then
-                echo 'TODO'
-        elif [ $with_auth = true ]; then
-                echo 'TODO'
+	echo "  kubectl exec -it deployment/nats-box /bin/sh"
+        if [ $with_tls = true ] && [ $with_auth = true ]; then
+		echo "TODO"
+        elif [ $with_tls = true ] && [ $with_auth = false ]; then
+		echo "TODO"
+        elif [ $with_tls = false ] && [ $with_auth = true ]; then
+	        echo
+		echo "Using the test user account:"
+		echo 
+	        echo "  nats-sub -creds /var/run/nats/creds/test/test.creds -s nats://nats:4222 'test.>' &"
+	        echo "  nats-pub -creds /var/run/nats/creds/test/test.creds -s nats://nats:4222 test.hi 'Hello World'"
+	        echo
+		echo "Using the system account:"
+		echo
+	        echo "  nats-sub -creds /var/run/nats/creds/sys/sys.creds-s nats://nats:4222 >"
+                echo
         else
-        echo
-        echo "  kubectl exec -it deployment/nats-box /bin/sh"
-        echo "  nats-sub -s nats://nats:4222 greetings &"
-        echo "  nats-pub -s nats://nats:4222 greetings Hello"
-        echo
+	        echo
+	        echo "  nats-sub -s nats://nats:4222 > &"
+	        echo "  nats-pub -s nats://nats:4222 hello world"
+	        echo
         fi
 
+	# 
+	# TODO: NATS Streaming stan-pub/stan-sub
+	# 
+
         if [ $with_surveyor = true ]; then
-                echo
                 echo "You can also connect to your monitoring dashboard:"
                 echo
                 echo "  kubectl port-forward deployments/nats-surveyor-grafana 3000:3000"
