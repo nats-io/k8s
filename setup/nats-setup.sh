@@ -305,8 +305,8 @@ main() {
                 echo "NATS Streaming with persistence is also available as part of your cluster."
                 echo "It is installed under the STAN account so you can use the following credentials:"
                 echo
-                echo "  stan-pub -creds /var/run/nats/creds/stan/stan.creds -s nats test.hi 'Hello World'"
-                echo "  stan-sub -creds /var/run/nats/creds/stan/stan.creds -s nats 'test.>'"
+                echo "  stan-pub -creds /var/run/nats/creds/stan/stan.creds -s nats -c stan test.hi 'Hello World'"
+                echo "  stan-sub -creds /var/run/nats/creds/stan/stan.creds -s nats -c stan 'test.>'"
                 echo
         fi
 
