@@ -1,4 +1,21 @@
 ---
+# Service used by Grafana as a datasource
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-surveyor-prometheus
+  labels:
+    app: nats-surveyor-prometheus
+spec:
+  selector:
+    prometheus: nats-surveyor
+  clusterIP: None
+  ports:
+  - name: web
+    port: 9090
+    protocol: TCP
+    targetPort: web
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -39,23 +56,6 @@ spec:
         resources:
           requests:
             cpu: 0
----
-# Service used by Grafana as a datasource
-apiVersion: v1
-kind: Service
-metadata:
-  name: nats-surveyor-prom
-  labels:
-    app: nats-surveyor-prom
-spec:
-  selector:
-    prometheus: nats-surveyor
-  clusterIP: None
-  ports:
-  - name: web
-    port: 9090
-    protocol: TCP
-    targetPort: web
 ---
 # Service used by Prometheus Operator to find the metrics endpoint.
 apiVersion: v1

@@ -14,23 +14,6 @@ spec:
     protocol: TCP
     targetPort: web
 ---
-# Service used by Grafana as a datasource
-apiVersion: v1
-kind: Service
-metadata:
-  name: prometheus
-  labels:
-    app: prometheus
-spec:
-  selector:
-    prometheus: nats-surveyor
-  clusterIP: None
-  ports:
-  - name: web
-    port: 9090
-    protocol: TCP
-    targetPort: web
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -49,7 +32,8 @@ spec:
     spec:
       containers:
       - name: nats-surveyor-grafana
-        image: synadia/nats-surveyor-grafana:0.0.1-alpha1
+        image: connecteverything/nats-surveyor-grafana:0.1.0
+        imagePullPolicy: Always
         env:
         - name: GF_AUTH_ANONYMOUS_ENABLED
           value: "true"

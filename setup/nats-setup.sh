@@ -208,7 +208,8 @@ main() {
         echo
 
         if [ $with_auth = true ]; then
-                create_creds
+		# Skip  if directory already exists
+		[ ! -d "$NSC_DIR" ] && create_creds
                 create_secrets
         fi
 
@@ -251,7 +252,7 @@ main() {
         echo "You can now start receiving and sending messages using "
         echo "the nats-box instance deployed into your namespace:"
         echo
-	echo "  kubectl exec -it deployment/nats-box /bin/sh"
+	echo "  kubectl exec -it pod/nats-box /bin/sh"
         if [ $with_tls = true ] && [ $with_auth = true ]; then
 		echo "TODO"
         elif [ $with_tls = true ] && [ $with_auth = false ]; then
@@ -265,11 +266,11 @@ main() {
 	        echo
 		echo "Using the system account:"
 		echo
-	        echo "  nats-sub -creds /var/run/nats/creds/sys/sys.creds-s nats://nats:4222 >"
+	        echo "  nats-sub -creds /var/run/nats/creds/sys/sys.creds-s nats://nats:4222 '>'"
                 echo
         else
 	        echo
-	        echo "  nats-sub -s nats://nats:4222 > &"
+	        echo "  nats-sub -s nats://nats:4222 '>' &"
 	        echo "  nats-pub -s nats://nats:4222 hello world"
 	        echo
         fi
@@ -285,7 +286,7 @@ main() {
                 echo
                 echo "Then open the following in your browser:"
                 echo
-                echo "  http://127.0.0.1:3000/d/GGxJ_5oZy/nats-surveyor?refresh=5s&orgId=1"
+                echo "  http://127.0.0.1:3000/d/nats/nats-surveyor?refresh=5s&orgId=1"
                 echo
         fi
 }

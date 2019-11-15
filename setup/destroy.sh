@@ -22,7 +22,7 @@ kubectl delete svc nats
 kubectl delete svc grafana
 kubectl delete svc nats-surveyor
 kubectl delete svc nats-prometheus
-kubectl delete svc nats-surveyor-prom
+kubectl delete svc nats-surveyor-prometheus
 kubectl delete svc prometheus
 kubectl delete svc prometheus-operator
 kubectl delete secret nats-ca
