@@ -52,7 +52,7 @@ create_creds() {
           nsc generate config --mem-resolver --sys-account SYS > resolver.conf
         )
 
-        # chown -R 1000:1000 $NSC_DIR
+        chown -R 1000:1000 $NSC_DIR
 }
 
 create_secrets() {
