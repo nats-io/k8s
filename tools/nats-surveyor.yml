@@ -21,7 +21,7 @@ spec:
           secretName: nats-sys-creds
       containers:
       - name: nats-surveyor
-        image: synadia/nats-surveyor:latest
+        image: synadia/nats-surveyor:0.0.1-alpha3
         ports:
         - containerPort: 7777
           name: metrics

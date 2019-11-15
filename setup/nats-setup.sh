@@ -17,6 +17,12 @@ NATS_GRAFANA_YML=${DEFAULT_NATS_GRAFANA_YML:=https://gist.githubusercontent.com/
 
 CERT_MANAGER_YML=${DEFAULT_CERT_MANAGER_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/7da870beb441fb9cfc00a4dede6d03f9eedc6973/cert-manager.yml}
 
+CERT_MANAGER_RELEASE_YML=${DEFAULT_CERT_MANAGER_RELEASE_YML:=https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml}
+
+NATS_BOX_AUTH_YML=${DEFAULT_NATS_BOX_AUTH_YML:=""}
+
+NATS_BOX_YML=${DEFAULT_NATS_BOX_YML:=""}
+
 NSC_DIR=${DEFAULT_NSC_DIR:=$(pwd)/nsc}
 
 export NATS_CONFIG_HOME=$NSC_DIR/config
@@ -46,7 +52,7 @@ create_creds() {
           nsc generate config --mem-resolver --sys-account SYS > resolver.conf
         )
 
-        chown -R 1000:1000 $NSC_DIR
+        # chown -R 1000:1000 $NSC_DIR
 }
 
 create_secrets() {
@@ -90,7 +96,15 @@ install_cert_manager() {
                 kubectl create namespace cert-manager
         }
 
-        kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml
+        kubectl apply --validate=false -f $CERT_MANAGER_RELEASE_YML
+}
+
+install_nats_box_with_auth() {
+	kubectl apply --validate=false -f $NATS_BOX_AUTH_YML
+}
+
+install_nats_box() {
+	kubectl apply --validate=false -f $NATS_BOX_YML
 }
 
 show_usage() {
@@ -107,22 +121,11 @@ show_usage() {
 }
 
 main() {
-        echo "
- #############################################
- #                                           #
- #  _   _    _  _____ ____   _  _____ ____   #
- # | \ | |  / \|_   _/ ___| | |/ ( _ ) ___|  #
- # |  \| | / _ \ | | \___ \ | ' // _ \___ \  #
- # | |\  |/ ___ \| |  ___) || . \ (_) |__) | #
- # |_| \_/_/   \_\_| |____(_)_|\_\___/____/  #
- #                                           #
- #############################################
-"
         with_surveyor=true
         with_tls=true
         with_auth=true
         with_cert_manager=true
-	with_stan=true
+        with_stan=true
 
         while [ ! $# -eq 0 ]; do
                 case $1 in
@@ -131,7 +134,7 @@ main() {
                                 exit 0
                                 ;;
                         --without-surveyor)
-				# In case of deploying multiple clusters, only need a single instance.
+                                # In case of deploying multiple clusters, only need a single instance.
                                 with_surveyor=false
                                 ;;
                         --without-tls)
@@ -139,7 +142,7 @@ main() {
                                 with_cert_manager=false
                                 ;;
                         --without-cert-manager)
-				# In case cert manager has already been installed.
+                                # In case cert manager has already been installed.
                                 with_cert_manager=false
                                 ;;
                         --without-auth)
@@ -162,10 +165,21 @@ main() {
                 shift
         done
 
-	echo
-	echo " +---------------------+---------------------+"
-	echo " |                 OPTIONS                   |"
-	echo " +---------------------+---------------------+"
+
+        echo
+        echo "##############################################"
+        echo "#                                            #"
+        echo "#  _   _    _  _____ ____   _  _____ ____    #"
+        echo "# | \ | |  / \|_   _/ ___| | |/ ( _ ) ___|   #"
+        echo "# |  \| | / _ \ | | \___ \ | ' // _ \___ \   #"
+        echo "# | |\  |/ ___ \| |  ___) || . \ (_) |__) |  #"
+        echo "# |_| \_/_/   \_\_| |____(_)_|\_\___/____/   #"
+        echo "#                                            #"
+        echo "##############################################"
+        echo
+        echo " +---------------------+---------------------+"
+        echo " |                 OPTIONS                   |"
+        echo " +---------------------+---------------------+"
         echo "         nats server   | true                "
         echo "         nats surveyor | $with_surveyor      "
         echo "         nats tls      | $with_tls           "
@@ -177,7 +191,7 @@ main() {
         echo " | Starting setup...                         |"
         echo " |                                           |"
         echo " +-------------------------------------------+"
-	echo 
+        echo
 
         if [ $with_auth = true ]; then
                 create_creds
@@ -190,9 +204,11 @@ main() {
 
         if [ $with_tls = true ] && [ $with_auth = true ]; then
                 install_nats_server_with_auth_and_tls
-	elif [ $with_auth = true ]; then
+        elif [ $with_auth = true ]; then
                 install_nats_server_with_auth
-	else
+		install_nats_box_with_auth
+        else
+                install_nats_box
                 install_insecure_nats_server
         fi
 
@@ -200,27 +216,26 @@ main() {
                 install_nats_surveyor
         fi
 
-        # Confirm setup by sending some messages using the system account.
-	echo
+        echo
         echo " +------------------------------------------+"
         echo " |                                          |"
         echo " | Done. Enjoy your new NATS cluster!       |"
         echo " |                                          |"
         echo " +------------------------------------------+"
-	echo
+        echo
 
-	echo "=== Getting started
+        echo "=== Getting started"
+        echo
+        echo "You can now start receiving and sending messages using the nats-box instance deployed into your namespace."
+        echo
 
-You start receiving and sending messages using the nats-box instance deployed into your namespace.
-"
-
-	if [ $with_tls = false ] && [ $with_auth = false ]; then
-	echo '
+        if [ $with_tls = false ] && [ $with_auth = false ]; then
+        echo '
    kubectl exec -it nats-box /bin/sh
    nats-sub -s nats://nats:4222 greetings &
    nats-pub -s nats://nats:4222 greetings Hello
 '
-	fi
+        fi
 
 }
 
