@@ -262,9 +262,6 @@ main() {
         kubectl wait --for=condition=Ready pod/nats-0   --timeout=60s
         kubectl wait --for=condition=Ready pod/nats-box --timeout=60s
 
-
-
-
         echo
         echo " +------------------------------------------+"
         echo " |                                          |"
