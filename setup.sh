@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-NATS_BOOTSTRAP_YML=${DEFAULT_NATS_BOOTSTRAP_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/b19d5aac2bc37b09f75f9d4410d6c3806f410ef3/nats-bootstrap-sa.yaml}
+NATS_K8S_VERSION=${DEFAULT_NATS_K8S_VERSION:=https://github.com/nats-io/k8s/blob/47b50c48403ceb3b13a0f4beed55c4467d25e2b3}
+NATS_BOOTSTRAP_YML=${DEFAULT_NATS_BOOTSTRAP_YML:=$NATS_K8S_RELEASE/setup/bootstrap-policy.yml}
 NATS_SETUP_IMAGE=${DEFAULT_NATS_SETUP_IMAGE:=synadia/nats-setup:latest}
 
 kubectl apply -f $NATS_BOOTSTRAP_YML
