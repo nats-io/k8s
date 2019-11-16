@@ -1,31 +1,33 @@
 #!/bin/sh
 set -eu
 
-NATS_SERVER_YML=${DEFAULT_NATS_SERVER_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-server-v2-external.yml}
+NATS_K8S_VERSION=https://raw.githubusercontent.com/nats-io/nats.k8s/afe90c5392dfd8e24d970587c217f90a917bf567
 
-NATS_SERVER_TLS_YML=${DEFAULT_NATS_SERVER_TLS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/31642afaed81575dc7ab218568beea1d5ae8c5d7/nats-server-v2-tls.yml}
+NATS_SERVER_YML=${DEFAULT_NATS_SERVER_YML:=$NATS_K8S_VERSION/nats-server/nats-server-with-auth.yml}
 
-NATS_SERVER_INSECURE_YML=${DEFAULT_NATS_SERVER_INSECURE_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-server-v2-external.yml}
+NATS_SERVER_TLS_YML=${DEFAULT_NATS_SERVER_TLS_YML:=$NATS_K8S_VERSION/nats-server/nats-server-with-auth-and-tls.yml}
 
-PROMETHEUS_OPERATOR_YML=${DEFAULT_PROMETHEUS_OPERATOR_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/prometheus-operator.yml}
+NATS_SERVER_INSECURE_YML=${DEFAULT_NATS_SERVER_INSECURE_YML:=$NATS_K8S_VERSION/nats-server-plain.yml}
 
-NATS_PROMETHEUS_YML=${DEFAULT_NATS_PROMETHEUS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-prometheus.yml}
+PROMETHEUS_OPERATOR_YML=${DEFAULT_PROMETHEUS_OPERATOR_YML:=$NATS_K8S_VERSION/tools/prometheus-operator.yml}
 
-NATS_GRAFANA_YML=${DEFAULT_NATS_GRAFANA_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor-grafana.yml}
+NATS_PROMETHEUS_YML=${DEFAULT_NATS_PROMETHEUS_YML:=$NATS_K8S_VERSION/tools/nats-prometheus.yml}
 
-CERT_MANAGER_YML=${DEFAULT_CERT_MANAGER_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/7da870beb441fb9cfc00a4dede6d03f9eedc6973/cert-manager.yml}
+NATS_GRAFANA_YML=${DEFAULT_NATS_GRAFANA_YML:=$NATS_K8S_VERSION/tools/nats-surveyor-grafana.yml}
+
+CERT_MANAGER_YML=${DEFAULT_CERT_MANAGER_YML:=$NATS_K8S_VERSION/nats-server/nats-certs.yml}
 CERT_MANAGER_RELEASE_YML=${DEFAULT_CERT_MANAGER_RELEASE_YML:=https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml}
 
 # With certs and creds, just auth no TLS, and plain examples.
-NATS_BOX_AUTH_TLS_YML=${DEFAULT_NATS_BOX_AUTH_TLS_YML:=""}
-NATS_BOX_AUTH_YML=${DEFAULT_NATS_BOX_AUTH_YML:=""}
-NATS_BOX_YML=${DEFAULT_NATS_BOX_YML:=""}
+NATS_BOX_AUTH_TLS_YML=${DEFAULT_NATS_BOX_AUTH_TLS_YML:=$NATS_K8S_VERSION/tools/nats-box-tls.yml}
+NATS_BOX_AUTH_YML=${DEFAULT_NATS_BOX_AUTH_YML:=$NATS_K8S_VERSION/tools/nats-box-auth.yml}
+NATS_BOX_YML=${DEFAULT_NATS_BOX_YML:=$NATS_K8S_VERSION/tools/nats-box.yml}
 
-NATS_SURVEYOR_TLS_YML=${DEFAULT_NATS_SURVEYOR_TLS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml}
-NATS_SURVEYOR_YML=${DEFAULT_NATS_SURVEYOR_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-surveyor.yml}
+NATS_SURVEYOR_TLS_YML=${DEFAULT_NATS_SURVEYOR_TLS_YML:=$NATS_K8S_VERSION/tools/nats-surveyor-tls.yml}
+NATS_SURVEYOR_YML=${DEFAULT_NATS_SURVEYOR_YML:=$NATS_K8S_VERSION/tools/nats-surveyor.yml}
 
-NATS_STREAMING_AUTH_TLS_YML=${DEFAULT_NATS_STREAMING_AUTH_TLS_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/31642afaed81575dc7ab218568beea1d5ae8c5d7/nats-server-v2-tls.yml}
-NATS_STREAMING_AUTH_YML=${DEFAULT_NATS_STREAMING_AUTH_YML:=https://gist.githubusercontent.com/wallyqs/3df5f9fb1a652d59344c65f0be04e48c/raw/643adae0e20351f79dcac1d2214d666c9842f309/nats-server-v2-external.yml}
+NATS_STREAMING_AUTH_TLS_YML=${DEFAULT_NATS_STREAMING_AUTH_TLS_YML:=$NATS_K8S_VERSION/nats-streaming-server/nats-streaming-auth-and-tls.yml}
+NATS_STREAMING_AUTH_YML=${DEFAULT_NATS_STREAMING_AUTH_YML:=$NATS_K8S_VERSION/nats-streaming-server/nats-streaming-auth.yml}
 
 NSC_DIR=${DEFAULT_NSC_DIR:=$(pwd)/nsc}
 
