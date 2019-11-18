@@ -39,6 +39,37 @@ export NKEYS_PATH=$NSC_DIR/nkeys
 
 export NSC_HOME=$NSC_DIR/accounts
 
+kctl() {
+	i=0
+	until [ $i -ge 10 ]
+	do
+		kubectl "$@" && break
+		i=$[$i+1]
+
+		if [ $i -ge 2 ]; then
+			echo -ne "Retrying in 3 seconds ($i attempts so far)"
+		else
+			echo -ne "Retrying in 3 seconds"
+		fi
+
+		sleep 1
+		echo -ne '.'
+		sleep 1
+		echo -ne '.'
+		sleep 1
+		echo -ne '.'
+		echo 
+	done
+
+	if [ $i -ge 10 ]; then
+		RED='\033[0;31m'
+		NC='\033[0m'
+		echo -ne "${RED}Could not finish setting up NATS due to errors in the cluster${NC}"
+		echo
+		exit 1
+	fi
+}
+
 create_creds() {
         mkdir -p $NKEYS_PATH
         mkdir -p $NSC_HOME
@@ -70,74 +101,74 @@ create_creds() {
 }
 
 create_secrets() {
-        kubectl create secret generic nats-sys-creds   --from-file $NSC_DIR/nkeys/creds/KO/SYS/sys.creds
-        kubectl create secret generic nats-test-creds  --from-file $NSC_DIR/nkeys/creds/KO/TEST/test.creds
-        kubectl create secret generic stan-creds       --from-file $NSC_DIR/nkeys/creds/KO/STAN/stan.creds
-        kubectl create configmap nats-accounts --from-file $NSC_DIR/config/resolver.conf
+        kctl create secret generic nats-sys-creds   --from-file $NSC_DIR/nkeys/creds/KO/SYS/sys.creds
+        kctl create secret generic nats-test-creds  --from-file $NSC_DIR/nkeys/creds/KO/TEST/test.creds
+        kctl create secret generic stan-creds       --from-file $NSC_DIR/nkeys/creds/KO/STAN/stan.creds
+        kctl create configmap nats-accounts --from-file $NSC_DIR/config/resolver.conf
 }
 
 install_prometheus() {
         # Install Prometheus Operator
-        kubectl apply --filename $PROMETHEUS_OPERATOR_YML
+        kctl apply --filename $PROMETHEUS_OPERATOR_YML
 
         # Create Prometheus instance for NATS usage
-        kubectl apply --filename $NATS_PROMETHEUS_YML
+        kctl apply --filename $NATS_PROMETHEUS_YML
 }
 
 install_nats_surveyor_components() {
         install_prometheus
 
         # Deploy NATS Surveyor Grafana instance
-        kubectl apply --filename $NATS_GRAFANA_YML
+        kctl apply --filename $NATS_GRAFANA_YML
 }
 
 install_nats_surveyor_with_tls() {
-        kubectl apply --filename $NATS_SURVEYOR_TLS_YML
+        kctl apply --filename $NATS_SURVEYOR_TLS_YML
 }
 
 install_nats_surveyor() {
-        kubectl apply --filename $NATS_SURVEYOR_YML
+        kctl apply --filename $NATS_SURVEYOR_YML
 }
 
 install_nats_server_with_auth() {
-        kubectl apply --filename $NATS_SERVER_YML
+        kctl apply --filename $NATS_SERVER_YML
 }
 
 install_nats_server_with_auth_and_tls() {
-        kubectl apply --filename $CERT_MANAGER_YML
-        kubectl apply --filename $NATS_SERVER_TLS_YML
+        kctl apply --filename $CERT_MANAGER_YML
+        kctl apply --filename $NATS_SERVER_TLS_YML
 }
 
 install_insecure_nats_server() {
-        kubectl apply --filename $NATS_SERVER_INSECURE_YML
+        kctl apply --filename $NATS_SERVER_INSECURE_YML
 }
 
 install_cert_manager() {
-        kubectl get ns cert-manager > /dev/null 2> /dev/null || {
-                kubectl create namespace cert-manager
+        kctl get ns cert-manager > /dev/null 2> /dev/null || {
+                kctl create namespace cert-manager
         }
 
-        kubectl apply --validate=false -f $CERT_MANAGER_RELEASE_YML
+        kctl apply --validate=false -f $CERT_MANAGER_RELEASE_YML
 }
 
 install_nats_box_with_auth_and_tls() {
-        kubectl apply --validate=false -f $NATS_BOX_AUTH_TLS_YML
+        kctl apply --validate=false -f $NATS_BOX_AUTH_TLS_YML
 }
 
 install_nats_box_with_auth() {
-        kubectl apply --validate=false -f $NATS_BOX_AUTH_YML
+        kctl apply --validate=false -f $NATS_BOX_AUTH_YML
 }
 
 install_nats_box() {
-        kubectl apply --validate=false -f $NATS_BOX_YML
+        kctl apply --validate=false -f $NATS_BOX_YML
 }
 
 install_nats_streaming_with_auth_and_tls() {
-        kubectl apply --validate=false -f $NATS_STREAMING_AUTH_TLS_YML
+        kctl apply --validate=false -f $NATS_STREAMING_AUTH_TLS_YML
 }
 
 install_nats_streaming_with_auth() {
-        kubectl apply --validate=false -f $NATS_STREAMING_AUTH_YML
+        kctl apply --validate=false -f $NATS_STREAMING_AUTH_YML
 }
 
 show_usage() {
@@ -191,6 +222,8 @@ main() {
                                 ;;
                         *)
                                 echo "unknown flag: $1"
+				show_usage
+				exit 1
                                 ;;
                 esac
                 shift
@@ -263,8 +296,8 @@ main() {
                         install_nats_surveyor
                 fi
         fi
-        kubectl wait --for=condition=Ready pod/nats-0   --timeout=60s
-        kubectl wait --for=condition=Ready pod/nats-box --timeout=60s
+        kctl wait --for=condition=Ready pod/nats-0   --timeout=60s
+        kctl wait --for=condition=Ready pod/nats-box --timeout=60s
 
         echo -e "${CYAN}"
         echo " +------------------------------------------+"
