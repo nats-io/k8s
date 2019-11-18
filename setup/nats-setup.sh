@@ -7,7 +7,7 @@ NATS_SERVER_YML=${DEFAULT_NATS_SERVER_YML:=$NATS_K8S_VERSION/nats-server/nats-se
 
 NATS_SERVER_TLS_YML=${DEFAULT_NATS_SERVER_TLS_YML:=$NATS_K8S_VERSION/nats-server/nats-server-with-auth-and-tls.yml}
 
-NATS_SERVER_INSECURE_YML=${DEFAULT_NATS_SERVER_INSECURE_YML:=$NATS_K8S_VERSION/nats-server-plain.yml}
+NATS_SERVER_INSECURE_YML=${DEFAULT_NATS_SERVER_INSECURE_YML:=$NATS_K8S_VERSION/nats-server/nats-server-plain.yml}
 
 PROMETHEUS_OPERATOR_YML=${DEFAULT_PROMETHEUS_OPERATOR_YML:=$NATS_K8S_VERSION/tools/prometheus-operator.yml}
 
@@ -295,7 +295,7 @@ main() {
         fi
         echo "The nats-box also includes nats-top which you can use to"
         echo "inspect the flow of messages from one of the members"
-        echo "of the cluster."
+        echo "of the cluster (press 'q' to exit)."
         echo
         echo "  nats-top -s nats"
         echo
