@@ -182,34 +182,34 @@ pod/nats-box condition met
 You can now start receiving and sending messages using 
 the nats-box instance deployed into your namespace:
 
-  kubectl exec -it pod/nats-box /bin/sh
+  kubectl exec -it pod/nats-box -- /bin/sh -l 
 
-Using the test user account:
-
-  nats-sub -creds /var/run/nats/creds/test/test.creds -s nats 'test.>' &
-  nats-pub -creds /var/run/nats/creds/test/test.creds -s nats test.hi 'Hello World'
-
-Using the system account:
-
-  nats-sub -creds /var/run/nats/creds/sys/sys.creds -s nats://nats:4222 '>'
-
+Using the test account user:
+  
+  nats-sub test &
+  nats-pub test 'Hello World'
+  
+Or try using the system account user to inspect all events in the cluster:
+  
+  nats-sub -creds /var/run/nats/creds/sys/sys.creds '>'
+  
 The nats-box also includes nats-top which you can use to
 inspect the flow of messages from one of the members
-of the cluster.
+of the cluster (press 'q' to exit).
 
-  nats-top -s nats
+  nats-top
 
 NATS Streaming with persistence is also available as part of your cluster.
 It is installed under the STAN account so you can use the following credentials:
-
-  stan-pub -creds /var/run/nats/creds/stan/stan.creds -s nats -c stan test.hi 'Hello World'
-  stan-sub -creds /var/run/nats/creds/stan/stan.creds -s nats -c stan 'test.>'
-
+ 
+  stan-pub test 'Hello World'
+  stan-sub test -all
+ 
 You can also connect to your monitoring dashboard:
-
+ 
   kubectl port-forward deployments/nats-surveyor-grafana 3000:3000
-
+ 
 Then open the following in your browser:
-
+ 
   http://127.0.0.1:3000/d/nats/nats-surveyor?refresh=5s&orgId=1
 ```
