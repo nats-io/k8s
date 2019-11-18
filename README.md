@@ -16,7 +16,7 @@ and deploy a NATS cluster on Kubernetes with external access, TLS and
 decentralized authorization.
 
 By default, the installer will deploy the [Prometheus Operator](https://github.com/coreos/prometheus-operator) and the
-[Cert Manager]()https://github.com/jetstack/cert-manager for metrics and TLS support, and the NATS instances will
+[Cert Manager](https://github.com/jetstack/cert-manager) for metrics and TLS support, and the NATS instances will
 also bind the 4222 host port for external access.
 
 You can customize the installer to install without TLS or without Auth
