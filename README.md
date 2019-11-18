@@ -5,7 +5,7 @@ and NATS Streaming on Kubernetes.
 
 ### Getting started
 
-The fastest way to get started is to use the one liner script:
+The fastest and easiest way to get started is with just one shell command:
 
 ```sh
 curl -sSL https://nats-io.github.io/k8s/setup.sh | sh
@@ -15,8 +15,8 @@ This will run a `nats-setup` container with the [required policy](https://github
 and deploy a NATS cluster on Kubernetes with external access, TLS and
 decentralized authorization.
 
-By default, the installer will deploy the Prometheus Operator and the
-Cert Manager for metrics and TLS support, and the NATS instances will
+By default, the installer will deploy the [Prometheus Operator](https://github.com/coreos/prometheus-operator) and the
+[Cert Manager]()https://github.com/jetstack/cert-manager for metrics and TLS support, and the NATS instances will
 also bind the 4222 host port for external access.
 
 You can customize the installer to install without TLS or without Auth
@@ -30,7 +30,7 @@ curl -sSL https://nats-io.github.io/k8s/setup.sh | sh -s -- --without-tls
 curl -sSL https://nats-io.github.io/k8s/setup.sh | sh -s -- --without-tls --without-auth
 ```
 
-*Note*: Since NATS Streaming will be running as a leafnode to NATS
+**Note**: Since NATS Streaming will be running as a leafnode to NATS
 (under the STAN account) and that NATS Surveyor requires the system
 account to monitor events, disabling auth also means that NATS
 Streaming and NATS Surveyor based monitoring will be disabled.
@@ -213,4 +213,3 @@ Then open the following in your browser:
 
   http://127.0.0.1:3000/d/nats/nats-surveyor?refresh=5s&orgId=1
 ```
-
