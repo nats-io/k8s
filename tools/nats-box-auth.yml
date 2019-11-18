@@ -20,6 +20,15 @@ spec:
   - name: nats-box
     image: synadia/nats-box:0.1.0
     imagePullPolicy: Always
+    env:
+    - name: NATS_URL
+      value: nats
+    - name: STAN_CLUSTER
+      value: stan
+    - name: STAN_CREDS
+      value: /var/run/nats/creds/stan/stan.creds
+    - name: USER_CREDS
+      value: /var/run/nats/creds/test/test.creds
     command:
      - "tail"
      - "-f"
