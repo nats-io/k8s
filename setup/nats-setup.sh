@@ -52,7 +52,7 @@ create_creds() {
 
         # Create account for testing purposes
         nsc add account --name TEST
-        nsc add user    --name test --allow-pubsub 'test.>'
+        nsc add user    --name test --allow-pubsub 'test.>' --allow-pubsub 'test' --allow-pubsub '_INBOX.>'
 
         # Create account for STAN purposes
         nsc add account --name STAN
@@ -179,7 +179,7 @@ main() {
                         --without-auth)
                                 with_auth=false
 
-                                # Surveyor and NATS Streaming both require auth
+                                # Surveyor and NATS Streaming both require auth.
                                 with_surveyor=false
                                 with_stan=false
                                 ;;
@@ -196,8 +196,9 @@ main() {
                 shift
         done
 
-
-        echo
+	CYAN='\033[0;36m'
+	NC='\033[0m'
+        echo "${CYAN}"
         echo "##############################################"
         echo "#                                            #"
         echo "#  _   _    _  _____ ____   _  _____ ____    #"
@@ -223,6 +224,7 @@ main() {
         echo " |                                           |"
         echo " +-------------------------------------------+"
         echo
+	echo "${NC}"
 
         if [ $with_auth = true ]; then
                 # Skip  if directory already exists
@@ -264,60 +266,61 @@ main() {
         kubectl wait --for=condition=Ready pod/nats-0   --timeout=60s
         kubectl wait --for=condition=Ready pod/nats-box --timeout=60s
 
-        echo
+        echo "${CYAN}"
         echo " +------------------------------------------+"
         echo " |                                          |"
         echo " | Done. Enjoy your new NATS cluster!       |"
         echo " |                                          |"
         echo " +------------------------------------------+"
-        echo
+        echo "${NC}"
         echo "=== Getting started"
         echo
         echo "You can now start receiving and sending messages using "
         echo "the nats-box instance deployed into your namespace:"
         echo
-        echo "  kubectl exec -it pod/nats-box /bin/sh"
+        echo "  ${CYAN}kubectl exec -it pod/nats-box -- /bin/sh -l ${NC}"
         echo
         if [ $with_auth = true ]; then
-                echo "Using the test user account:"
-                echo
-                echo "  nats-sub -creds /var/run/nats/creds/test/test.creds -s nats 'test.>' &"
-                echo "  nats-pub -creds /var/run/nats/creds/test/test.creds -s nats test.hi 'Hello World'"
-                echo
-                echo "Using the system account:"
-                echo
-                echo "  nats-sub -creds /var/run/nats/creds/sys/sys.creds -s nats://nats:4222 '>'"
-                echo
+                echo "Using the test account user:"
+                echo "  ${CYAN}"
+                echo "  nats-sub test &"
+                echo "  nats-pub test 'Hello World'"
+                echo "  ${NC}"
+                echo "Or try using the system account user to inspect all events in the cluster:"
+                echo "  ${CYAN}"
+                echo "  nats-sub -creds /var/run/nats/creds/sys/sys.creds '>'"
+                echo "  ${NC}"
         else
-                echo "  nats-sub -s nats://nats:4222 '>' &"
-                echo "  nats-pub -s nats://nats:4222 hello world"
-                echo
+                echo "  ${CYAN}"
+                echo "  nats-sub test &"
+                echo "  nats-pub test 'Hello World'"
+                echo "  ${NC}"
         fi
         echo "The nats-box also includes nats-top which you can use to"
         echo "inspect the flow of messages from one of the members"
         echo "of the cluster (press 'q' to exit)."
         echo
-        echo "  nats-top -s nats"
+        echo "  ${CYAN}nats-top${NC}"
         echo
 
         if [ $with_stan = true ]; then
                 echo "NATS Streaming with persistence is also available as part of your cluster."
                 echo "It is installed under the STAN account so you can use the following credentials:"
-                echo
-                echo "  stan-pub -creds /var/run/nats/creds/stan/stan.creds -s nats -c stan test.hi 'Hello World'"
-                echo "  stan-sub -creds /var/run/nats/creds/stan/stan.creds -s nats -c stan 'test.>'"
-                echo
+                echo " ${CYAN}"
+                echo "  stan-pub test 'Hello World'"
+                echo "  stan-sub test -all"
+                echo " ${NC}"
         fi
 
         if [ $with_surveyor = true ]; then
                 echo "You can also connect to your monitoring dashboard:"
-                echo
+                echo " ${CYAN}"
                 echo "  kubectl port-forward deployments/nats-surveyor-grafana 3000:3000"
-                echo
+                echo " ${NC}"
                 echo "Then open the following in your browser:"
-                echo
+                echo " ${CYAN}"
                 echo "  http://127.0.0.1:3000/d/nats/nats-surveyor?refresh=5s&orgId=1"
-                echo
+                echo " ${NC}"
         fi
 }
 
