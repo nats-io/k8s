@@ -1,3 +1,17 @@
+```
+  _   _    _  _____ ____   _  _____ ____  
+ | \ | |  / \|_   _/ ___| | |/ ( _ ) ___| 
+ |  \| | / _ \ | | \___ \ | ' // _ \___ \ 
+ | |\  |/ ___ \| |  ___) || . \ (_) |__) |
+ |_| \_/_/   \_\_| |____(_)_|\_\___/____/ 
+                                          
+```
+[![License][License-Image]][License-Url]
+[![Version](https://d25lcipzij17d.cloudfront.net/badge.svg?id=go&type=5&v=0.1.0)](https://github.com/nats-io/k8s/releases/tag/v0.1.0)
+
+[License-Url]: https://www.apache.org/licenses/LICENSE-2.0
+[License-Image]: https://img.shields.io/badge/License-Apache2-blue.svg
+
 # Running NATS on K8S
 
 In this repository you can find several examples of how to deploy NATS
