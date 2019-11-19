@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+echo "Cleaning up..."
 
 kubectl delete sts nats
 kubectl delete sts stan
@@ -20,6 +20,7 @@ kubectl delete prometheuses nats-surveyor
 kubectl delete cm nats-accounts
 kubectl delete cm nats-config
 kubectl delete svc nats
+kubectl delete svc stan
 kubectl delete svc grafana
 kubectl delete svc nats-surveyor
 kubectl delete svc nats-prometheus
@@ -29,3 +30,4 @@ kubectl delete svc prometheus-operator
 kubectl delete secret nats-ca
 kubectl delete secret nats-server-tls
 kubectl delete secret nats-client-tls
+
