@@ -1,7 +1,7 @@
 # Creating a Kubernetes cluster
 
 Below you can find examples of creating a small 3 nodes Kubernetes
-cluster to try NATS on multiple clouds:
+cluster to try NATS on multiple clouds.
 
 ## Google Kubernetes Engine
 
