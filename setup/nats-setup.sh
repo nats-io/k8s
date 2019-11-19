@@ -1,7 +1,11 @@
 #!/bin/sh
 set -eu
 
-NATS_K8S_VERSION=https://raw.githubusercontent.com/nats-io/nats.k8s/9fd463279f8ccafaa50d12977bad583520551852
+VERSION="0.1.2"
+
+NATS_K8S_COMMIT=7ba89b2932ebf03c51232c4780dcc15c98b2fea9
+
+NATS_K8S_VERSION=https://raw.githubusercontent.com/nats-io/k8s/$NATS_K8S_COMMIT
 
 NATS_SERVER_YML=${DEFAULT_NATS_SERVER_YML:=$NATS_K8S_VERSION/nats-server/nats-server-with-auth.yml}
 
@@ -109,7 +113,7 @@ create_secrets() {
 
 install_prometheus() {
         # Install Prometheus Operator
-        kctl apply --filename $PROMETHEUS_OPERATOR_YML
+        kubectl apply --validate=false --filename $PROMETHEUS_OPERATOR_YML
 
         # Create Prometheus instance for NATS usage
         kctl apply --filename $NATS_PROMETHEUS_YML
@@ -144,31 +148,31 @@ install_insecure_nats_server() {
 }
 
 install_cert_manager() {
-        kctl get ns cert-manager > /dev/null 2> /dev/null || {
-                kctl create namespace cert-manager
+        kubectl get ns cert-manager > /dev/null 2> /dev/null || {
+                kubectl create namespace cert-manager
         }
 
-        kctl apply --validate=false -f $CERT_MANAGER_RELEASE_YML
+        kubectl apply --validate=false -f $CERT_MANAGER_RELEASE_YML
 }
 
 install_nats_box_with_auth_and_tls() {
-        kctl apply --validate=false -f $NATS_BOX_AUTH_TLS_YML
+        kctl apply -f $NATS_BOX_AUTH_TLS_YML
 }
 
 install_nats_box_with_auth() {
-        kctl apply --validate=false -f $NATS_BOX_AUTH_YML
+        kctl apply -f $NATS_BOX_AUTH_YML
 }
 
 install_nats_box() {
-        kctl apply --validate=false -f $NATS_BOX_YML
+        kctl apply -f $NATS_BOX_YML
 }
 
 install_nats_streaming_with_auth_and_tls() {
-        kctl apply --validate=false -f $NATS_STREAMING_AUTH_TLS_YML
+        kctl apply -f $NATS_STREAMING_AUTH_TLS_YML
 }
 
 install_nats_streaming_with_auth() {
-        kctl apply --validate=false -f $NATS_STREAMING_AUTH_YML
+        kctl apply -f $NATS_STREAMING_AUTH_YML
 }
 
 show_usage() {
@@ -182,6 +186,10 @@ show_usage() {
 "
 }
 
+show_version() {
+	echo "$0 v$VERSION ($NATS_K8S_COMMIT)"
+}
+
 main() {
         with_surveyor=true
         with_tls=true
@@ -191,6 +199,10 @@ main() {
 
         while [ ! $# -eq 0 ]; do
                 case $1 in
+                        -v)
+                                show_version
+                                exit 0
+                                ;;
                         -h)
                                 show_usage
                                 exit 0
@@ -240,6 +252,7 @@ main() {
         echo "# | |\  |/ ___ \| |  ___) || . \ (_) |__) |  #"
         echo "# |_| \_/_/   \_\_| |____(_)_|\_\___/____/   #"
         echo "#                                            #"
+        echo "#                    nats-setup (v$VERSION)  #"
         echo "##############################################"
         echo
         echo " +---------------------+---------------------+"

@@ -4,7 +4,7 @@ set -euo pipefail
 
 NATS_K8S_VERSION=${DEFAULT_NATS_K8S_VERSION:=https://github.com/nats-io/k8s/blob/9fd463279f8ccafaa50d12977bad583520551852}
 NATS_BOOTSTRAP_YML=${DEFAULT_NATS_BOOTSTRAP_YML:=$NATS_K8S_RELEASE/setup/bootstrap-policy.yml}
-NATS_SETUP_IMAGE=${DEFAULT_NATS_SETUP_IMAGE:=synadia/nats-setup:latest}
+NATS_SETUP_IMAGE=${DEFAULT_NATS_SETUP_IMAGE:=synadia/nats-setup:0.1.2}
 
 # Apply policy required to be able to create the resources.
 kubectl apply -f $NATS_BOOTSTRAP_YML
