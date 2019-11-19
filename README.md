@@ -29,6 +29,8 @@ This will run a `nats-setup` container with the [required policy](https://github
 and deploy a NATS cluster on Kubernetes with external access, TLS and
 decentralized authorization.
 
+[![asciicast](https://asciinema.org/a/282135.svg)](https://asciinema.org/a/282135)
+
 By default, the installer will deploy the [Prometheus Operator](https://github.com/coreos/prometheus-operator) and the
 [Cert Manager](https://github.com/jetstack/cert-manager) for metrics and TLS support, and the NATS instances will
 also bind the 4222 host port for external access.
@@ -44,11 +46,6 @@ curl -sSL https://nats-io.github.io/k8s/setup.sh | sh -s -- --without-tls
 curl -sSL https://nats-io.github.io/k8s/setup.sh | sh -s -- --without-tls --without-auth
 ```
 
-**Note**: Since NATS Streaming will be running as a leafnode to NATS
+**Note**: Since [NATS Streaming](https://github.com/nats-io/nats-streaming-server) will be running as a [leafnode](https://github.com/nats-io/docs/tree/master/leafnodes) to NATS
 (under the STAN account) and that [NATS Surveyor](https://github.com/nats-io/nats-surveyor) 
-requires the system account to monitor events, disabling auth also means that NATS
-Streaming and NATS Surveyor based monitoring will be disabled.
-
-#### Example
-
-[![asciicast](https://asciinema.org/a/282135.svg)](https://asciinema.org/a/282135)
+requires the [system account](https://docs.nats.io/nats-server/nats_admin/sys_accounts) to monitor events, disabling auth also means that NATS Streaming and NATS Surveyor based monitoring will be disabled.
