@@ -58,5 +58,5 @@ Next, open the following URL in your browser:
  
     http://127.0.0.1:3000/d/nats/nats-surveyor?refresh=5s&orgId=1
 
-<img width="1367" alt="monitoring" src="https://user-images.githubusercontent.com/26195/69106650-e4624500-0a23-11ea-82b3-1e7e0f4552e1.png">
+![surveyor](https://user-images.githubusercontent.com/26195/69106844-79fdd480-0a24-11ea-8e0c-213f251fad90.gif)
 
