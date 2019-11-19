@@ -48,9 +48,9 @@ kctl() {
 	until [ $i -ge 10 ]
 	do
 		kubectl "$@" && break
-		i=$[$i+1]
+		i=$((i+1))
 
-		if [ $i -ge 2 ]; then
+		if [ "$i" -ge 2 ]; then
 			echo -ne "Retrying in 3 seconds ($i attempts so far)"
 		else
 			echo -ne "Retrying in 3 seconds"
@@ -62,10 +62,13 @@ kctl() {
 		echo -ne '.'
 		sleep 1
 		echo -ne '.'
-		echo 
+		echo
 	done
 
-	if [ $i -ge 10 ]; then
+	# Try one last time.
+	kubectl "$@" && break
+
+	if [ "$i" -ge 10 ]; then
 		RED='\033[0;31m'
 		NC='\033[0m'
 		echo -ne "${RED}Could not finish setting up NATS due to errors in the cluster${NC}"
@@ -75,9 +78,9 @@ kctl() {
 }
 
 create_creds() {
-        mkdir -p $NKEYS_PATH
-        mkdir -p $NSC_HOME
-        mkdir -p $NATS_CONFIG_HOME
+        mkdir -p "$NKEYS_PATH"
+        mkdir -p "$NSC_HOME"
+        mkdir -p "$NATS_CONFIG_HOME"
 
         nsc add operator --name KO
 
@@ -95,20 +98,20 @@ create_creds() {
 
         # Generate accounts resolver config using the preload config
         (
-          cd $NATS_CONFIG_HOME
+          cd "$NATS_CONFIG_HOME"
           nsc generate config --mem-resolver --sys-account SYS > resolver.conf
         )
 
         if [ $SKIP_NSC_DIR_CHOWN != "true" ]; then
-                chown -R 1000:1000 $NSC_DIR
+                chown -R 1000:1000 "$NSC_DIR"
         fi
 }
 
 create_secrets() {
-        kctl create secret generic nats-sys-creds   --from-file $NSC_DIR/nkeys/creds/KO/SYS/sys.creds
-        kctl create secret generic nats-test-creds  --from-file $NSC_DIR/nkeys/creds/KO/TEST/test.creds
-        kctl create secret generic stan-creds       --from-file $NSC_DIR/nkeys/creds/KO/STAN/stan.creds
-        kctl create configmap nats-accounts --from-file $NSC_DIR/config/resolver.conf
+        kctl create secret generic nats-sys-creds   --from-file "$NSC_DIR/nkeys/creds/KO/SYS/sys.creds"
+        kctl create secret generic nats-test-creds  --from-file "$NSC_DIR/nkeys/creds/KO/TEST/test.creds"
+        kctl create secret generic stan-creds       --from-file "$NSC_DIR/nkeys/creds/KO/STAN/stan.creds"
+        kctl create configmap nats-accounts --from-file "$NSC_DIR/config/resolver.conf"
 }
 
 install_prometheus() {

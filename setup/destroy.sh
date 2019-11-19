@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "Cleaning up..."
 
@@ -10,9 +10,9 @@ kubectl delete deployment/nats-surveyor
 kubectl delete deployment/nats-surveyor-grafana
 kubectl delete deployment/prometheus-operator
 kubectl delete pod nats-box
-kubectl delete secrets nats-sys-creds 
-kubectl delete secrets nats-test-creds 
-kubectl delete secrets stan-creds 
+kubectl delete secrets nats-sys-creds
+kubectl delete secrets nats-test-creds
+kubectl delete secrets stan-creds
 kubectl delete secrets prometheus-nats-prometheus
 kubectl delete secrets prometheus-nats-surveyor
 kubectl delete prometheuses nats-prometheus
