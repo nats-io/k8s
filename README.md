@@ -25,7 +25,7 @@ The fastest and easiest way to get started is with just one shell command:
 curl -sSL https://nats-io.github.io/k8s/setup.sh | sh
 ```
 
-In case you don't have a cluster already, you can find some notes on how to create a small cluster using one of the hosted Kubernetes providers [here](docs/create-k8s-cluster.md).
+*In case you don't have a cluster already, you can find some notes on how to create a small cluster using one of the hosted Kubernetes providers [here](docs/create-k8s-cluster.md).*
 
 This will run a `nats-setup` container with the [required policy](https://github.com/nats-io/k8s/blob/master/setup/bootstrap-policy.yml)
 and deploy a NATS cluster on Kubernetes with external access, TLS and
