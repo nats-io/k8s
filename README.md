@@ -49,3 +49,14 @@ curl -sSL https://nats-io.github.io/k8s/setup.sh | sh -s -- --without-tls --with
 **Note**: Since [NATS Streaming](https://github.com/nats-io/nats-streaming-server) will be running as a [leafnode](https://github.com/nats-io/docs/tree/master/leafnodes) to NATS
 (under the STAN account) and that [NATS Surveyor](https://github.com/nats-io/nats-surveyor) 
 requires the [system account](https://docs.nats.io/nats-server/nats_admin/sys_accounts) to monitor events, disabling auth also means that NATS Streaming and NATS Surveyor based monitoring will be disabled.
+
+The monitoring dashboard setup using NATS Surveyor can be accessed by using port-forward:
+
+    kubectl port-forward deployments/nats-surveyor-grafana 3000:3000
+ 
+Next, open the following URL in your browser:
+ 
+    http://127.0.0.1:3000/d/nats/nats-surveyor?refresh=5s&orgId=1
+
+<img width="1367" alt="monitoring" src="https://user-images.githubusercontent.com/26195/69106650-e4624500-0a23-11ea-82b3-1e7e0f4552e1.png">
+
