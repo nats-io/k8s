@@ -3,7 +3,7 @@ set -eu
 
 VERSION="0.1.4"
 
-NATS_K8S_COMMIT=0829b91a1037b652ae4eb90651bc5b12236c4c73
+NATS_K8S_COMMIT=73eb44407b67e7c1683937a3c391be7777cbbf89
 
 NATS_K8S_VERSION=https://raw.githubusercontent.com/nats-io/k8s/$NATS_K8S_COMMIT
 
