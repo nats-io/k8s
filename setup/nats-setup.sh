@@ -1,9 +1,9 @@
 #!/bin/sh
 set -eu
 
-VERSION="0.1.4"
+VERSION="0.1.6"
 
-NATS_K8S_COMMIT=73eb44407b67e7c1683937a3c391be7777cbbf89
+NATS_K8S_COMMIT=93c2a213bd26791fda29da2b7238e3f3b1ca36e1
 
 NATS_K8S_VERSION=https://raw.githubusercontent.com/nats-io/k8s/$NATS_K8S_COMMIT
 
