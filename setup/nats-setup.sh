@@ -204,7 +204,7 @@ show_usage() {
     echo "Usage: $0 [options]
 
     --without-tls             Setup the cluster without TLS enabled
-    --without-auth            Setup the cluster without Auth enabled
+    --without-auth            Setup the cluster in insecure mode (also disables TLS)
     --without-surveyor        Skips installing NATS surveyor
     --without-cert-manager    Skips installing the cert manager component
     --without-nats-streaming  Setup the cluster without NATS Streaming
@@ -250,6 +250,8 @@ main() {
                                 # Surveyor and NATS Streaming both require auth.
                                 with_surveyor=false
                                 with_stan=false
+                                with_tls=false
+                                with_cert_manager=false
                                 ;;
                         --without-nats-streaming)
                                 with_stan=false
@@ -370,7 +372,7 @@ main() {
                 echo "  nats-req test 'help!'"
                 echo -e "  ${NC}"
         else
-                echo -e "  ${CYAN}"
+                echo -ne "  ${CYAN}"
                 echo "  nats-sub test &"
                 echo "  nats-pub test 'Hello World'"
                 echo -e "  ${NC}"

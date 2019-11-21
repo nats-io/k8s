@@ -65,7 +65,7 @@ spec:
          - "-s=nats://nats:4222"
          - "-c=3"
          - "-creds=/var/run/nats/creds/sys/sys.creds"
-         - "-observations=/etc/nats/observations/"
+         - "-observe=/etc/nats/observations/"
         volumeMounts:
           - name: syscreds-volume
             mountPath: /var/run/nats/creds/sys
