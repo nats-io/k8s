@@ -2,7 +2,7 @@
 
 set -eu
 
-NATS_K8S_VERSION=${DEFAULT_NATS_K8S_VERSION:=https://raw.githubusercontent.com/nats-io/k8s/0829b91a1037b652ae4eb90651bc5b12236c4c73}
+NATS_K8S_VERSION=${DEFAULT_NATS_K8S_VERSION:=https://raw.githubusercontent.com/nats-io/k8s/73eb44407b67e7c1683937a3c391be7777cbbf89}
 NATS_BOOTSTRAP_YML=${DEFAULT_NATS_BOOTSTRAP_YML:=$NATS_K8S_VERSION/setup/bootstrap-policy.yml}
 NATS_SETUP_IMAGE=${DEFAULT_NATS_SETUP_IMAGE:=synadia/nats-setup:0.1.4}
 
