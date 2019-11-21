@@ -1,9 +1,9 @@
 #!/bin/sh
 set -eu
 
-VERSION="0.1.2"
+VERSION="0.1.4"
 
-NATS_K8S_COMMIT=7ba89b2932ebf03c51232c4780dcc15c98b2fea9
+NATS_K8S_COMMIT=0829b91a1037b652ae4eb90651bc5b12236c4c73
 
 NATS_K8S_VERSION=https://raw.githubusercontent.com/nats-io/k8s/$NATS_K8S_COMMIT
 
@@ -44,37 +44,34 @@ export NKEYS_PATH=$NSC_DIR/nkeys
 export NSC_HOME=$NSC_DIR/accounts
 
 kctl() {
-	i=0
-	until [ $i -ge 10 ]
-	do
-		kubectl "$@" && break
-		i=$((i+1))
+        i=0
+        until [ $i -ge 10 ]
+        do
+                kubectl "$@" && break
+                i=$((i+1))
 
-		if [ "$i" -ge 2 ]; then
-			echo -ne "Retrying in 3 seconds ($i attempts so far)"
-		else
-			echo -ne "Retrying in 3 seconds"
-		fi
+                if [ "$i" -ge 2 ]; then
+                        echo -ne "Retrying in 3 seconds ($i attempts so far)"
+                else
+                        echo -ne "Retrying in 3 seconds"
+                fi
 
-		sleep 1
-		echo -ne '.'
-		sleep 1
-		echo -ne '.'
-		sleep 1
-		echo -ne '.'
-		echo
-	done
+                sleep 1
+                echo -ne '.'
+                sleep 1
+                echo -ne '.'
+                sleep 1
+                echo -ne '.'
+                echo
+        done
 
-	# Try one last time.
-	kubectl "$@" && break
-
-	if [ "$i" -ge 10 ]; then
-		RED='\033[0;31m'
-		NC='\033[0m'
-		echo -ne "${RED}Could not finish setting up NATS due to errors in the cluster${NC}"
-		echo
-		exit 1
-	fi
+        if [ "$i" -ge 10 ]; then
+                RED='\033[0;31m'
+                NC='\033[0m'
+                echo -ne "${RED}Could not finish setting up NATS due to errors in the cluster${NC}"
+                echo
+                exit 1
+        fi
 }
 
 create_creds() {
@@ -88,11 +85,35 @@ create_creds() {
         nsc add account --name SYS
         nsc add user    --name sys
 
-        # Create account for testing purposes
-        nsc add account --name TEST
-        nsc add user    --name test --allow-pubsub 'test.>' --allow-pubsub 'test' --allow-pubsub '_INBOX.>'
+        # Create a couple of accounts (A & B) for testing purposes.
+        nsc add account --name A
+        nsc add user -a A \
+                     --name test \
+                     --allow-pubsub 'test.>' \
+                     --allow-pubsub 'test' \
+                     --allow-pubsub '_INBOX.>' \
+                     --allow-pubsub '_R_' \
+                     --allow-pubsub '_R_.>' \
+                     --allow-sub latency.on.test
 
-        # Create account for STAN purposes
+        # Add latency exporting for the test subject from account A.
+        nsc add export  -a A  --latency latency.on.test --sampling 100 --service -s test
+
+        # Add account B that imports services from A.
+        nsc add account --name B
+        nsc add user -a B \
+                     --name test \
+                     --allow-pubsub 'test.>' \
+                     --allow-pubsub 'test' \
+                     --allow-pubsub '_INBOX.>' \
+                     --allow-pubsub '_R_' \
+                     --allow-pubsub '_R_.>'
+
+        nsc add import --account B \
+                       --src-account $(nsc list accounts 2>&1 | awk '$2 == "A" {print $0}' | awk '{print $4}') \
+                       --remote-subject test --service --local-subject test
+
+        # Create account for STAN purposes.
         nsc add account --name STAN
         nsc add user    --name stan
 
@@ -109,9 +130,10 @@ create_creds() {
 
 create_secrets() {
         kctl create secret generic nats-sys-creds   --from-file "$NSC_DIR/nkeys/creds/KO/SYS/sys.creds"
-        kctl create secret generic nats-test-creds  --from-file "$NSC_DIR/nkeys/creds/KO/TEST/test.creds"
+        kctl create secret generic nats-test-creds  --from-file "$NSC_DIR/nkeys/creds/KO/A/test.creds"
+        kctl create secret generic nats-test2-creds --from-file "$NSC_DIR/nkeys/creds/KO/B/test.creds"
         kctl create secret generic stan-creds       --from-file "$NSC_DIR/nkeys/creds/KO/STAN/stan.creds"
-        kctl create configmap nats-accounts --from-file "$NSC_DIR/config/resolver.conf"
+        kctl create configmap nats-accounts         --from-file "$NSC_DIR/config/resolver.conf"
 }
 
 install_prometheus() {
@@ -190,7 +212,7 @@ show_usage() {
 }
 
 show_version() {
-	echo "$0 v$VERSION ($NATS_K8S_COMMIT)"
+        echo "$0 v$VERSION ($NATS_K8S_COMMIT)"
 }
 
 main() {
@@ -237,15 +259,15 @@ main() {
                                 ;;
                         *)
                                 echo "unknown flag: $1"
-				show_usage
-				exit 1
+                                show_usage
+                                exit 1
                                 ;;
                 esac
                 shift
         done
 
-	CYAN='\033[0;36m'
-	NC='\033[0m'
+        CYAN='\033[0;36m'
+        NC='\033[0m'
         echo -e "${CYAN}"
         echo "##############################################"
         echo "#                                            #"
@@ -273,7 +295,7 @@ main() {
         echo " |                                           |"
         echo " +-------------------------------------------+"
         echo
-	echo -e "${NC}"
+        echo -e "${NC}"
 
         if [ $with_auth = true ]; then
                 # Skip  if directory already exists
