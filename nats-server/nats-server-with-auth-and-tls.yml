@@ -19,12 +19,8 @@ data:
     cluster {
       port: 6222
 
-      # Use explicit static routes to avoid intermittent DNS issues
-      # that could cause partitions via gossip while bootstrapping.
       routes [
-        nats://nats-0.nats.default.svc:6222
-        nats://nats-1.nats.default.svc:6222
-        nats://nats-2.nats.default.svc:6222
+        nats://nats:6222
       ]
 
       tls: {
@@ -164,7 +160,7 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - name: nats
-        image: nats:2.1.0-alpine3.10
+        image: nats:2.1.2-alpine3.10
         ports:
         - containerPort: 4222
           name: client

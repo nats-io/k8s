@@ -12,6 +12,7 @@ kubectl delete deployment/prometheus-operator
 kubectl delete pod nats-box
 kubectl delete secrets nats-sys-creds
 kubectl delete secrets nats-test-creds
+kubectl delete secrets nats-test2-creds
 kubectl delete secrets stan-creds
 kubectl delete secrets prometheus-nats-prometheus
 kubectl delete secrets prometheus-nats-surveyor
