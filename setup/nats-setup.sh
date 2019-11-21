@@ -357,9 +357,17 @@ main() {
                 echo "  nats-sub test &"
                 echo "  nats-pub test 'Hello World'"
                 echo -e "  ${NC}"
+
                 echo "Or try using the system account user to inspect all events in the cluster:"
                 echo -e "  ${CYAN}"
                 echo "  nats-sub -creds /var/run/nats/creds/sys/sys.creds '>'"
+                echo -e "  ${NC}"
+
+                echo "To create a sample service and a requestor, tracking service latency:"
+                echo -e "  ${CYAN}"
+                echo "  nats-rply test 'I can help!' &"
+                echo "  nats-sub latency.on.test &"
+                echo "  nats-req test 'help!'"
                 echo -e "  ${NC}"
         else
                 echo -e "  ${CYAN}"
