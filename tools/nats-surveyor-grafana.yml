@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: nats-surveyor-grafana
-        image: connecteverything/nats-surveyor-grafana:0.1.0
+        image: connecteverything/nats-surveyor-grafana:0.1.1
         imagePullPolicy: Always
         env:
         - name: GF_AUTH_ANONYMOUS_ENABLED

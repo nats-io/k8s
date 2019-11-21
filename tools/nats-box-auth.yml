@@ -13,12 +13,15 @@ spec:
   - name: creds-volume
     secret:
       secretName: nats-test-creds
+  - name: creds2-volume
+    secret:
+      secretName: nats-test2-creds
   - name: stan-creds-volume
     secret:
       secretName: stan-creds
   containers:
   - name: nats-box
-    image: synadia/nats-box:0.1.0
+    image: synadia/nats-box:0.2.0
     imagePullPolicy: Always
     env:
     - name: NATS_URL
@@ -29,6 +32,8 @@ spec:
       value: /var/run/nats/creds/stan/stan.creds
     - name: USER_CREDS
       value: /var/run/nats/creds/test/test.creds
+    - name: USER2_CREDS
+      value: /var/run/nats/creds/test2/test.creds
     command:
      - "tail"
      - "-f"
@@ -38,5 +43,7 @@ spec:
         mountPath: /var/run/nats/creds/sys
       - name: creds-volume
         mountPath: /var/run/nats/creds/test
+      - name: creds2-volume
+        mountPath: /var/run/nats/creds/test2
       - name: stan-creds-volume
         mountPath: /var/run/nats/creds/stan

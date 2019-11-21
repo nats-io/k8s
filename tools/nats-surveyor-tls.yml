@@ -16,6 +16,18 @@ spec:
     protocol: TCP
     targetPort: web
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nats-surveyor-observations
+data:
+  test.json: |
+    {
+      "name": "latency.on.test",
+      "topic": "latency.on.test",
+      "credential": "/var/run/nats/creds/test/test.creds"
+    }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,15 +45,21 @@ spec:
         app: nats-surveyor
     spec:
       volumes:
-      - name: creds-volume
+      - name: syscreds-volume
         secret:
           secretName: nats-sys-creds
       - name: nats-server-tls-volume
         secret:
           secretName: nats-server-tls
+      - name: creds-volume
+        secret:
+          secretName: nats-test-creds
+      - name: config-volume
+        configMap:
+          name: nats-surveyor-observations
       containers:
       - name: nats-surveyor
-        image: synadia/nats-surveyor:0.0.1-alpha3
+        image: synadia/nats-surveyor:0.0.1-alpha4
         ports:
         - containerPort: 7777
           name: metrics
@@ -51,12 +69,16 @@ spec:
           cp /etc/nats/certs/ca.crt /usr/local/share/ca-certificates;
           ls -al /usr/local/share/ca-certificates;
           update-ca-certificates;
-         /nats-surveyor -s=tls://nats:4222 -c=3 -creds=/var/run/nats/creds/sys/sys.creds;
+         /nats-surveyor -s=tls://nats:4222 -c=3 -creds=/var/run/nats/creds/sys/sys.creds -observe=/etc/nats/observations/;
         volumeMounts:
-          - name: creds-volume
-            mountPath: /var/run/nats/creds/sys
           - name: nats-server-tls-volume
             mountPath: /etc/nats/certs
+          - name: syscreds-volume
+            mountPath: /var/run/nats/creds/sys
+          - name: creds-volume
+            mountPath: /var/run/nats/creds/test
+          - name: config-volume
+            mountPath: /etc/nats/observations
 
         # Disable all cpu limits for the server.
         #
