@@ -44,7 +44,7 @@ spec:
 
         ports:
         - containerPort: 3000
-          name: wep
+          name: web
 
         # Disable all cpu limits for the server.
         #
