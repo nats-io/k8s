@@ -1,0 +1,115 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stan-config
+data:
+  stan.conf: |
+    port: 4222
+    http: 8222
+
+    streaming {
+     ns: "nats://nats:4222"
+     id: stan
+     store: file
+     dir: /data/stan/store
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stan
+  labels:
+    app: stan
+spec:
+  selector:
+    app: stan
+  clusterIP: None
+  ports:
+  - name: metrics
+    port: 7777
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: stan
+  labels:
+    app: stan
+spec:
+  selector:
+    matchLabels:
+      app: stan
+  serviceName: stan
+  replicas: 1
+  volumeClaimTemplates:
+  - metadata:
+      name: stan-sts-vol
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      volumeMode: "Filesystem"
+      resources:
+        requests:
+          storage: 1Gi
+  template:
+    metadata:
+      labels:
+        app: stan
+    spec:
+      # Prevent NATS Streaming pods running in same host.
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - stan
+      # STAN Server
+      containers:
+      - name: stan
+        image: nats-streaming:0.16.2
+        ports:
+        - containerPort: 8222
+          name: monitor
+        - containerPort: 7777
+          name: metrics
+        args:
+         - "-sc"
+         - "/etc/stan-config/stan.conf"
+
+        # Required to be able to define an environment variable
+        # that refers to other environment variables.  This env var
+        # is later used as part of the configuration file.
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/stan-config
+          - name: stan-sts-vol
+            mountPath: /data/stan
+
+        # Disable CPU limits.
+        resources:
+          requests:
+            cpu: 0
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+      volumes:
+      - name: config-volume
+        configMap:
+          name: stan-config
