@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-VERSION="0.1.6"
+VERSION="0.1.7"
 
 NATS_K8S_COMMIT=93c2a213bd26791fda29da2b7238e3f3b1ca36e1
 
@@ -351,7 +351,7 @@ main() {
         echo "You can now start receiving and sending messages using "
         echo "the nats-box instance deployed into your namespace:"
         echo
-        echo -e "  ${CYAN}kubectl exec -it pod/nats-box -- /bin/sh -l ${NC}"
+        echo -e "  ${CYAN}kubectl exec -it nats-box -- /bin/sh -l ${NC}"
         echo
         if [ $with_auth = true ]; then
                 echo "Using the test account user:"
