@@ -1,10 +1,8 @@
 # NATS Setup
 
 The `setup.sh` script found at the root of the repository will run a
-`nats-setup` container image which will
-
-This will run a `nats-setup` container image which will deploy a
-secure NATS cluster with allowed external access.
+`nats-setup` container image which will deploy a secure NATS cluster 
+of three with allowed external access.
 
 ### Running the script locally
 
