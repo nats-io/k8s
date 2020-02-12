@@ -1,82 +1,77 @@
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nats-config
-data:
-  nats.conf: |
-    pid_file: "/var/run/nats/nats.pid"
-
-    debug = false
-    trace = false
-
-    http: 8222
-
-    cluster {
-      port: 6222
-
-      routes [
-        nats://nats-0.nats.default.svc:6222
-        nats://nats-1.nats.default.svc:6222
-        nats://nats-2.nats.default.svc:6222
-      ]
-
-      cluster_advertise: $CLUSTER_ADVERTISE
-      connect_retries: 30
-    }
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nats
-  labels:
-    app: nats
-spec:
-  selector:
-    app: nats
-  clusterIP: None
-  ports:
-  - name: client
-    port: 4222
-  - name: cluster
-    port: 6222
-  - name: monitor
-    port: 8222
-  - name: metrics
-    port: 7777
-  - name: leafnodes
-    port: 7422
-  - name: gateways
-    port: 7522
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: nats
+  name: {{ template "nats.name" . }}
   labels:
-    app: nats
+    app: {{ template "nats.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
   selector:
     matchLabels:
-      app: nats
+      app: {{ template "nats.name" . }}
+  {{ if .Values.nats.cluster }}
   replicas: 3
-  serviceName: "nats"
+  {{ else }}
+  replicas: 1
+  {{ end }}
+  serviceName: {{ template "nats.name" . }}
   template:
     metadata:
       labels:
-        app: nats
+        app: {{ template "nats.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     spec:
-      # Common volumes for the containers
+      # Common volumes for the containers.
       volumes:
       - name: config-volume
         configMap:
-          name: nats-config
+          name: {{ template "nats.name" . }}-config
+
+      # Local volume shared with the reloader.
       - name: pid
         emptyDir: {}
+      {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
+      # Local volume shared with the advertise config initializer.
+      - name: advertiseconfig
+        emptyDir: {}
+      {{ end }}
 
-      # Required to be able to HUP signal and apply config reload
-      # to the server without restarting the pod.
+      {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
+      # Assume that we only use the service account in case we want to
+      # figure out what is the current external public IP from the server
+      # in order to be able to advertise correctly.
+      serviceAccountName: {{ .Values.nats.serviceAccount }}
+      {{ end }}
+
+      # Required to be able to HUP signal and apply config
+      # reload to the server without restarting the pod.
       shareProcessNamespace: true
+
+      {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
+      # Initializer container required to be able to lookup
+      # the external ip on which this node is running.
+      initContainers:
+      - name: bootconfig
+        command:
+        - nats-pod-bootconfig
+        - -f
+        - /etc/nats-config/advertise/client_advertise.conf
+        - -gf
+        - /etc/nats-config/advertise/gateway_advertise.conf
+        env:
+        - name: KUBERNETES_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        image: {{ .Values.bootconfig.image }}
+        imagePullPolicy: {{ .Values.bootconfig.pullPolicy }}
+        volumeMounts:
+        - mountPath: /etc/nats-config/advertise
+          name: advertiseconfig
+          subPath: advertise
+      {{ end }}
 
       #################
       #               #
@@ -86,14 +81,24 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - name: nats
-        image: nats:2.1.2-alpine3.10
+        image: {{ .Values.nats.image }}
+        imagePullPolicy: {{ .Values.nats.pullPolicy }}
         ports:
         - containerPort: 4222
           name: client
+          {{- if .Values.nats.externalAccess }}
           hostPort: 4222
+          {{- end }}
         - containerPort: 7422
           name: leafnodes
+          {{- if .Values.nats.externalAccess }}
           hostPort: 7422
+          {{- end }}
+        - containerPort: 7522
+          name: gateways
+          {{- if .Values.nats.externalAccess }}
+          hostPort: 7522
+          {{- end }}
         - containerPort: 6222
           name: cluster
         - containerPort: 8222
@@ -118,14 +123,19 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: CLUSTER_ADVERTISE
-          value: $(POD_NAME).nats.$(POD_NAMESPACE).svc
+          value: {{ template "nats.clusterAdvertise" . }}
         volumeMounts:
           - name: config-volume
             mountPath: /etc/nats-config
           - name: pid
             mountPath: /var/run/nats
+          {{- if and .Values.nats.externalAccess .Values.nats.advertise }}
+          - mountPath: /etc/nats-config/advertise
+            name: advertiseconfig
+            subPath: advertise
+          {{- end }}
 
-        # Liveness/Readiness probes against the monitoring
+        # Liveness/Readiness probes against the monitoring.
         #
         livenessProbe:
           httpGet:
@@ -156,8 +166,10 @@ spec:
       #  NATS Configuration Reloader  #
       #                               #
       #################################
+      {{ if .Values.reloader.enabled }}
       - name: reloader
-        image: connecteverything/nats-server-config-reloader:0.6.0
+        image: {{ .Values.reloader.image }}
+        imagePullPolicy: {{ .Values.reloader.pullPolicy }}
         command:
          - "nats-server-config-reloader"
          - "-pid"
@@ -169,14 +181,17 @@ spec:
             mountPath: /etc/nats-config
           - name: pid
             mountPath: /var/run/nats
+      {{ end }}
 
       ##############################
       #                            #
       #  NATS Prometheus Exporter  #
       #                            #
       ##############################
+      {{ if .Values.exporter.enabled }}
       - name: metrics
-        image: synadia/prometheus-nats-exporter:0.5.0
+        image: {{ .Values.exporter.image }}
+        imagePullPolicy: {{ .Values.exporter.pullPolicy }}
         args:
         - -connz
         - -routez
@@ -189,3 +204,4 @@ spec:
         ports:
         - containerPort: 7777
           name: metrics
+      {{ end }}

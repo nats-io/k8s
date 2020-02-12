@@ -1,0 +1,45 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  metadata:
+  name: {{ template "nats.name" . }}-config
+  labels:
+    app: {{ template "nats.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+data:
+  nats.conf: |
+    pid_file: "/var/run/nats/nats.pid"
+
+    http: 8222
+
+    {{ if .Values.nats.cluster }}
+    ###################################
+    #                                 #
+    # NATS Full Mesh clustering setup #
+    #                                 #
+    ###################################
+    cluster {
+      port: 6222
+
+      routes = [
+        {{ template "nats.clusterRoutes" . }}
+      ]
+      cluster_advertise: $CLUSTER_ADVERTISE
+
+      connect_retries: {{ .Values.nats.connectRetries }}
+    }
+    {{ end }}
+
+    {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
+    include "advertise/client_advertise.conf"
+    {{ end }}
+
+    {{ if .Values.leafnodes.enabled }}
+    leafnodes {
+      listen: "0.0.0.0:7422"
+      {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
+      include "advertise/gateway_advertise.conf"
+      {{ end }}
+    }
+    {{ end }}

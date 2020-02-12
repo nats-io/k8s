@@ -1,0 +1,9 @@
+apiVersion: v1
+appVersion: "2.1.4"
+description: A Helm chart for NATS.io
+name: NATS
+version: 0.1.0
+home: http://github.com/nats-io/k8s
+maintainers:
+  - name: Waldemar Quevedo
+    email: wally@nats.io
