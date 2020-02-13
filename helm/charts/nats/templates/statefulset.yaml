@@ -10,11 +10,11 @@ spec:
   selector:
     matchLabels:
       app: {{ template "nats.name" . }}
-  {{ if .Values.nats.cluster }}
+  {{- if .Values.nats.cluster }}
   replicas: 3
-  {{ else }}
+  {{- else }}
   replicas: 1
-  {{ end }}
+  {{- end }}
   serviceName: {{ template "nats.name" . }}
   template:
     metadata:

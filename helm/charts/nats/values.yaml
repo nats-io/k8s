@@ -23,6 +23,29 @@ nats:
   # The number of connect attempts against discovered routes.
   connectRetries: 30
 
+  # How many seconds should pass before sending a PING
+  # to a client that has no activity.
+  pingInterval: 
+
+  # Server settings
+  limits:
+    maxConnections: 
+    maxSubscriptions: 
+    maxControlLine: 
+    maxPayload: 
+
+    writeDeadline: 
+    maxPending: 
+    maxPings: 
+    lameDuckDuration: 
+
+  logging:
+    debug: 
+    trace: 
+    logtime: 
+    connectErrorReports: 
+    reconnectErrorReports: 
+
 # Leafnode connections to extend a cluster:
 #
 # https://docs.nats.io/nats-server/configuration/leafnodes
@@ -35,6 +58,14 @@ leafnodes:
 # the public ips.
 bootconfig:
   image: connecteverything/nats-boot-config:0.5.2
+  pullPolicy: IfNotPresent
+
+# NATS Box
+#
+# https://github.com/nats-io/nats-box
+# 
+natsbox:
+  image: synadia/nats-box:0.3.0
   pullPolicy: IfNotPresent
 
 # The NATS config reloader image to use.

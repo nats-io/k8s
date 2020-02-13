@@ -1,6 +1,21 @@
 
+{{- if or .Values.nats.debug .Values.nats.trace }}
+*WARNING*: Keep in mind that running the server with
+debug and/or trace enabled significantly affects the
+performance of the server!
+{{- end }}
+
 You can find more info about running NATS on Kubernetes
 in the NATS documentation website:
 
   https://docs.nats.io/nats-on-kubernetes/nats-kubernetes
 
+NATS Box has been deployed into your cluster, you can
+the NATS tools within the container:
+
+  kubectl exec -n {{ .Release.Namespace }} -it {{ .Release.Name }}-box -- /bin/sh -l
+  nats-box:~# nats-sub test &
+  nats-box:~# nats-pub test hi
+  nats-box:~# nc {{ .Release.Name }} 4222
+
+Thanks for using NATS!

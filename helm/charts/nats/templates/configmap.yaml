@@ -9,14 +9,21 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 data:
   nats.conf: |
+    # PID file shared with configuration reloader.
     pid_file: "/var/run/nats/nats.pid"
 
+    ###############
+    #             #
+    # Monitoring  #
+    #             #
+    ###############
     http: 8222
+    server_name: $POD_NAME
 
     {{ if .Values.nats.cluster }}
     ###################################
     #                                 #
-    # NATS Full Mesh clustering setup #
+    # NATS Full Mesh Clustering Setup #
     #                                 #
     ###################################
     cluster {
@@ -31,11 +38,11 @@ data:
     }
     {{ end }}
 
-    {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
+    {{- if and .Values.nats.advertise .Values.nats.externalAccess }}
     include "advertise/client_advertise.conf"
-    {{ end }}
+    {{- end }}
 
-    {{ if .Values.leafnodes.enabled }}
+    {{- if .Values.leafnodes.enabled }}
     leafnodes {
       listen: "0.0.0.0:7422"
       {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
@@ -43,3 +50,61 @@ data:
       {{ end }}
     }
     {{ end }}
+
+    ####################
+    #                  #
+    # Logging Options  #
+    #                  #
+    ####################
+    {{- with .Values.nats.logging.debug }}
+    debug: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.logging.trace }}
+    trace:  {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.logging.logtime }}
+    logtime: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.logging.connectErrorReports }}
+    connect_error_reports: {{ . }}
+    {{- end }}
+
+    {{- with .Values.nats.logging.reconnectErrorReports }}
+    reconnect_error_reports: {{ . }}
+    {{- end }}
+
+    ##################
+    #                #
+    # Server Limits  #
+    #                #
+    ##################
+    {{- with .Values.nats.limits.maxConnections }}
+    max_connections: {{ . }}
+    {{- end }}
+    {{- with .Values.nats.limits.maxSubscriptions }}
+    max_subscriptions: {{ . }}
+    {{- end }}
+    {{- with .Values.nats.limits.maxPending }}
+    max_pending: {{ . }}
+    {{- end }}
+    {{- with .Values.nats.limits.maxControlLine }}
+    max_control_line: {{ . }}
+    {{- end }}
+    {{- with .Values.nats.limits.maxPayload }}
+    max_payload: {{ . }}
+    {{- end }}
+    {{- with .Values.nats.pingInterval }}
+    ping_interval: {{ . }}
+    {{- end }}
+    {{- with .Values.nats.maxPings }}
+    ping_max: {{ . }}
+    {{- end }}
+    {{- with .Values.nats.writeDeadline }}
+    write_deadline: {{ . | quote }}
+    {{- end }}
+    {{- with .Values.nats.writeDeadline }}
+    lame_duck_duration:  {{ . | quote }}
+    {{- end }}
