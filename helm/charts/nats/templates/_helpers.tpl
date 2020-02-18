@@ -6,14 +6,14 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
-Return the proper Nats image name
+Return the proper NATS image name
 */}}
 {{- define "nats.clusterAdvertise" -}}
 {{- printf "$(POD_NAME).%s.$(POD_NAMESPACE).svc" (include "nats.name" . ) }}
 {{- end }}
 
 {{/*
-Return the proper Nats image name
+Return the proper NATS image name
 */}}
 {{- define "nats.clusterRoutes" -}}
 {{- range $i, $e := until 3 -}}

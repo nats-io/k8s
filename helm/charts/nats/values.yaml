@@ -6,7 +6,7 @@ nats:
   # Toggle whether to use setup a NATS Cluster of 3 nodes.
   cluster: false
 
-  # Toggle whether to disable external access.
+  # Toggle whether to enable external access.
   # This binds a host port for clients, gateways and leafnodes.
   externalAccess: false
 
@@ -65,6 +65,7 @@ bootconfig:
 # https://github.com/nats-io/nats-box
 # 
 natsbox:
+  enabled: true
   image: synadia/nats-box:0.3.0
   pullPolicy: IfNotPresent
 
