@@ -1,0 +1,48 @@
+---
+{{- if eq .Values.stan.store "sql"}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: '{{.Release.Name}}-stan'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: '{{.Chart.Name}}-stan-init-db'
+  annotations:
+    "helm.sh/hook": "pre-install"
+spec:
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.stan.istioEnabled}}
+        sidecar.istio.io/inject: "false"
+        {{- end}}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: init-database
+          image: postgres:11
+          env:
+          - name: PGPASSWORD
+            value: '{{.Values.stan_sql.dbPassword}}'
+          command: ['psql'] 
+          args: [
+          '--host', '{{.Values.stan_sql.dbHost}}',
+          '-U', '{{.Values.stan_sql.dbUser}}',
+          '-d', '{{.Values.stan_sql.dbName}}',
+          '-p', '{{.Values.stan_sql.dbPort}}',
+          '-c', 'CREATE TABLE IF NOT EXISTS ServerInfo (uniquerow INTEGER DEFAULT 1, id VARCHAR(1024), proto BYTEA, version INTEGER, PRIMARY KEY (uniquerow));
+          CREATE TABLE IF NOT EXISTS Clients (id VARCHAR(1024), hbinbox TEXT, PRIMARY KEY (id));
+          CREATE TABLE IF NOT EXISTS Channels (id INTEGER, name VARCHAR(1024) NOT NULL, maxseq BIGINT DEFAULT 0, maxmsgs INTEGER DEFAULT 0, maxbytes BIGINT DEFAULT 0, maxage BIGINT DEFAULT 0, deleted BOOL DEFAULT FALSE, PRIMARY KEY (id));
+          CREATE INDEX IF NOT EXISTS Idx_ChannelsName ON Channels (name(256));
+          CREATE TABLE IF NOT EXISTS Messages (id INTEGER, seq BIGINT, timestamp BIGINT, size INTEGER, data BYTEA, CONSTRAINT PK_MsgKey PRIMARY KEY(id, seq));
+          CREATE INDEX IF NOT EXISTS Idx_MsgsTimestamp ON Messages (timestamp);
+          CREATE TABLE IF NOT EXISTS Subscriptions (id INTEGER, subid BIGINT, lastsent BIGINT DEFAULT 0, proto BYTEA, deleted BOOL DEFAULT FALSE, CONSTRAINT PK_SubKey PRIMARY KEY(id, subid));
+          CREATE TABLE IF NOT EXISTS SubsPending (subid BIGINT, row BIGINT, seq BIGINT DEFAULT 0, lastsent BIGINT DEFAULT 0, pending BYTEA, acks BYTEA, CONSTRAINT PK_MsgPendingKey PRIMARY KEY(subid, row));
+          CREATE INDEX IF NOT EXISTS Idx_SubsPendingSeq ON SubsPending (seq);
+          CREATE TABLE IF NOT EXISTS StoreLock (id VARCHAR(30), tick BIGINT DEFAULT 0);
+          ALTER TABLE Clients ADD IF NOT EXISTS proto BYTEA;'
+          ]
+          terminationGracePeriodSeconds: 0
+{{- end}}
