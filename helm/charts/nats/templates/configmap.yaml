@@ -20,7 +20,7 @@ data:
     http: 8222
     server_name: $POD_NAME
 
-    {{ if .Values.nats.cluster }}
+    {{ if .Values.cluster.enabled }}
     ###################################
     #                                 #
     # NATS Full Mesh Clustering Setup #

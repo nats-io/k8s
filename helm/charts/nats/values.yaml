@@ -3,9 +3,6 @@ nats:
   image: nats:2.1.4-alpine3.11
   pullPolicy: IfNotPresent
 
-  # Toggle whether to use setup a NATS Cluster of 3 nodes.
-  cluster: false
-
   # Toggle whether to enable external access.
   # This binds a host port for clients, gateways and leafnodes.
   externalAccess: false
@@ -45,6 +42,10 @@ nats:
     logtime: 
     connectErrorReports: 
     reconnectErrorReports: 
+
+# Toggle whether to use setup a NATS Cluster.
+cluster:
+  enabled: false
 
 # Leafnode connections to extend a cluster:
 #

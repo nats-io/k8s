@@ -10,7 +10,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "nats.name" . }}
-  {{- if .Values.nats.cluster }}
+  {{- if .Values.cluster.enabled }}
   replicas: 3
   {{- else }}
   replicas: 1
