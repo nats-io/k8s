@@ -1,0 +1,104 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: '{{.Release.Name}}-stan'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: '{{.Chart.Name}}-stan'
+spec:
+  replicas: {{.Values.stan.replicaCount}}
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-stan'
+  serviceName: '{{.Values.stan.serviceName}}'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-stan'
+    spec:
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          name: '{{.Chart.Name}}-stan-config'
+        name: config-volume
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - stan
+            topologyKey: kubernetes.io/hostname
+      containers:
+        - name: "stan"
+          image: '{{.Values.stan.image}}:{{.Values.stan.imageTag}}'
+          args:
+          - -sc
+          - /etc/stan-config/stan.conf
+          env:
+          - name: POD_NAME
+            value: '{{.Values.stan.podname}}'
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            value: '{{.Values.stan.podnamespace}}'
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          {{- if .Values.stan.enableClustering}}
+          - name: CLUSTER_ADVERTISE
+            value: $(POD_NAME).stan.$(POD_NAMESPACE).svc
+          {{- end}}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{.Values.stan.webuiPort}}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          ports:
+          - containerPort: {{.Values.stan.webuiPort}}
+            name: monitor
+          - containerPort: {{.Values.prometheus.metricsPort}}
+            name: metrics
+          resources:
+            requests:
+              cpu: "0"
+          volumeMounts:
+          - name: config-volume
+            mountPath: /etc/stan-config
+          {{- if eq .Values.stan.store "file"}}
+          - name: stan-pvc
+            mountPath: /data/stan
+          {{- end }}
+        - name: metrics
+          image: '{{.Values.prometheus.imageName}}:{{.Values.prometheus.imageTag}}'
+          args:
+          - -connz
+          - -routez
+          - -subz
+          - -varz
+          - -channelz
+          - -serverz
+          - http://localhost:{{.Values.stan.webuiPort}}
+          ports:
+          - containerPort: {{.Values.prometheus.metricsPort}}
+            name: metrics
+  {{- if eq .Values.stan.store "file"}}
+  volumeClaimTemplates:
+  - metadata:
+      name: stan-pvc
+    spec:
+      volumes:
+        name: stan-pvc
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{.Values.stan.storageSize}}
+  {{- end }}
