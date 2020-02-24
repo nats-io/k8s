@@ -1,0 +1,18 @@
+apiVersion: v1
+entries:
+  NATS:
+  - apiVersion: v2
+    appVersion: 2.1.4
+    created: "2020-02-24T14:08:55.089075-08:00"
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
+      Communications Technology.
+    digest: 7dea5874b4c91db461d471c7641050302335a329801345a1933d83d1d3064678
+    home: http://github.com/nats-io/k8s
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    name: NATS
+    urls:
+    - releases/NATS-0.1.0.tgz
+    version: 0.1.0
+generated: "2020-02-24T14:08:55.086164-08:00"
