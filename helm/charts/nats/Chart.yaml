@@ -1,7 +1,7 @@
 apiVersion: v2
 appVersion: "2.1.4"
 description: A Helm chart for the NATS.io High Speed Cloud Native Distributed Communications Technology.
-name: NATS
+name: nats
 version: 0.1.0
 home: http://github.com/nats-io/k8s
 maintainers:
