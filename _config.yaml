@@ -1,1 +1,2 @@
-exclude: ["helm/charts/nats"]
+exclude:
+  - helm/charts/nats
