@@ -4,8 +4,7 @@ entries:
   - apiVersion: v2
     appVersion: 2.1.4
     created: "2020-02-24T15:22:13.913466-08:00"
-    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
-      Communications Technology.
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed Communications Technology.
     digest: b0267e8a76a7162bc929c39805493d11008c0bc85b25fdc377fe66cd30420354
     home: http://github.com/nats-io/k8s
     maintainers:
