@@ -1,0 +1,207 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "nats.name" . }}
+  labels:
+    app: {{ template "nats.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "nats.name" . }}
+  {{- if .Values.cluster.enabled }}
+  replicas: 3
+  {{- else }}
+  replicas: 1
+  {{- end }}
+  serviceName: {{ template "nats.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "nats.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    spec:
+      # Common volumes for the containers.
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ template "nats.name" . }}-config
+
+      # Local volume shared with the reloader.
+      - name: pid
+        emptyDir: {}
+      {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
+      # Local volume shared with the advertise config initializer.
+      - name: advertiseconfig
+        emptyDir: {}
+      {{ end }}
+
+      {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
+      # Assume that we only use the service account in case we want to
+      # figure out what is the current external public IP from the server
+      # in order to be able to advertise correctly.
+      serviceAccountName: {{ .Values.nats.serviceAccount }}
+      {{ end }}
+
+      # Required to be able to HUP signal and apply config
+      # reload to the server without restarting the pod.
+      shareProcessNamespace: true
+
+      {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
+      # Initializer container required to be able to lookup
+      # the external ip on which this node is running.
+      initContainers:
+      - name: bootconfig
+        command:
+        - nats-pod-bootconfig
+        - -f
+        - /etc/nats-config/advertise/client_advertise.conf
+        - -gf
+        - /etc/nats-config/advertise/gateway_advertise.conf
+        env:
+        - name: KUBERNETES_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        image: {{ .Values.bootconfig.image }}
+        imagePullPolicy: {{ .Values.bootconfig.pullPolicy }}
+        volumeMounts:
+        - mountPath: /etc/nats-config/advertise
+          name: advertiseconfig
+          subPath: advertise
+      {{ end }}
+
+      #################
+      #               #
+      #  NATS Server  #
+      #               #
+      #################
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: nats
+        image: {{ .Values.nats.image }}
+        imagePullPolicy: {{ .Values.nats.pullPolicy }}
+        ports:
+        - containerPort: 4222
+          name: client
+          {{- if .Values.nats.externalAccess }}
+          hostPort: 4222
+          {{- end }}
+        - containerPort: 7422
+          name: leafnodes
+          {{- if .Values.nats.externalAccess }}
+          hostPort: 7422
+          {{- end }}
+        - containerPort: 7522
+          name: gateways
+          {{- if .Values.nats.externalAccess }}
+          hostPort: 7522
+          {{- end }}
+        - containerPort: 6222
+          name: cluster
+        - containerPort: 8222
+          name: monitor
+        - containerPort: 7777
+          name: metrics
+        command:
+         - "nats-server"
+         - "--config"
+         - "/etc/nats-config/nats.conf"
+
+        # Required to be able to define an environment variable
+        # that refers to other environment variables.  This env var
+        # is later used as part of the configuration file.
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CLUSTER_ADVERTISE
+          value: {{ template "nats.clusterAdvertise" . }}
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/nats-config
+          - name: pid
+            mountPath: /var/run/nats
+          {{- if and .Values.nats.externalAccess .Values.nats.advertise }}
+          - mountPath: /etc/nats-config/advertise
+            name: advertiseconfig
+            subPath: advertise
+          {{- end }}
+
+        # Liveness/Readiness probes against the monitoring.
+        #
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+
+        # Gracefully stop NATS Server on pod deletion or image upgrade.
+        #
+        lifecycle:
+          preStop:
+            exec:
+              # Using the alpine based NATS image, we add an extra sleep that is
+              # the same amount as the terminationGracePeriodSeconds to allow
+              # the NATS Server to gracefully terminate the client connections.
+              #
+              command: ["/bin/sh", "-c", "/nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 60"]
+
+      #################################
+      #                               #
+      #  NATS Configuration Reloader  #
+      #                               #
+      #################################
+      {{ if .Values.reloader.enabled }}
+      - name: reloader
+        image: {{ .Values.reloader.image }}
+        imagePullPolicy: {{ .Values.reloader.pullPolicy }}
+        command:
+         - "nats-server-config-reloader"
+         - "-pid"
+         - "/var/run/nats/nats.pid"
+         - "-config"
+         - "/etc/nats-config/nats.conf"
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/nats-config
+          - name: pid
+            mountPath: /var/run/nats
+      {{ end }}
+
+      ##############################
+      #                            #
+      #  NATS Prometheus Exporter  #
+      #                            #
+      ##############################
+      {{ if .Values.exporter.enabled }}
+      - name: metrics
+        image: {{ .Values.exporter.image }}
+        imagePullPolicy: {{ .Values.exporter.pullPolicy }}
+        args:
+        - -connz
+        - -routez
+        - -subz
+        - -varz
+        - -prefix=nats
+        - -use_internal_server_id
+        - -DV
+        - http://localhost:8222/
+        ports:
+        - containerPort: 7777
+          name: metrics
+      {{ end }}
