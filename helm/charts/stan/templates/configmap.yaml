@@ -10,11 +10,11 @@ data:
   stan.conf: |-
     http: 8222
 
-    {{- with .Values.stan.nats.url }}
-    ns: {{ . }}
-    {{- end }}
-
     streaming {
+      {{- with .Values.stan.nats.url }}
+      ns: {{ . }}
+      {{- end }}
+
       {{- if .Values.stan.clusterID }}
       id: {{ .Values.stan.clusterID }}
       {{- else }}
