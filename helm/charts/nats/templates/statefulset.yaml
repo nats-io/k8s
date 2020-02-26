@@ -199,7 +199,6 @@ spec:
         - -varz
         - -prefix=nats
         - -use_internal_server_id
-        - -DV
         - http://localhost:8222/
         ports:
         - containerPort: 7777

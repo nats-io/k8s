@@ -1,29 +1,84 @@
+##################################
+#                                #
+#  NATS Streaming Configuration  #
+#                                #
+##################################
 stan:
-  enableClustering: true
-  clusteringPort: 6222
-  clusterID: "stan"
-  clusterIP: None
-  clientPort: 4222
-  serviceName: stan
-  ftGroup: "stan-cluster"
-  image: nats-streaming
-  imageTag: 0.16.2
-  store: "file"
-  webuiPort: 8222
-  replicaCount: 3 #minimum 3
-  storageSize: 50Gi
-  istioEnabled: false
-  authToken: "s3cr3t"
+  image: nats-streaming:0.17.0
+  pullPolicy: IfNotPresent
 
-prometheus:
-  imageName: synadia/prometheus-nats-exporter
-  imageTag: 0.6.0
-  metricsPort: 7777
+  # Cluster name, generated into a name from the
+  # release name by default.
+  clusterID: 
 
-stan_sql:
-  dbName: "postgres"
-  dbUser: "postgres"
-  dbPassword: "password1234"
-  dbHost: "nats-db-postgresql.postgres.svc.cluster.local"
-  source: "dbname=postgres user=postgres password=password1234 host=nats-db-postgresql.postgres.svc.cluster.local"
-  dbPort: 5432
+  logging:
+    debug: 
+    trace: 
+
+  # In case of NATS not being embedded then
+  # an URL for NATS is required.
+  nats:
+    url:
+
+# Storage configuration
+store:
+  # One value possible out of: file | sql | memory
+  type: file
+
+  cluster:
+    enabled: false
+
+  ft:
+    group:
+
+  # NOTE: Section in snake case since they will become
+  # the same objects.
+  # Look at the NATS Streaming configuration for this.
+  limits:
+
+  memory:
+    # TODO: support setting limits resources.
+
+  file:
+    path: /data/stan/store
+    storageSize: 1Gi
+
+  sql:
+    driver: postgres
+    source: 
+
+    initdb:
+      enabled: false
+      image:
+
+    dbName:
+    dbUser:
+    dbPassword:
+    dbHost: 
+    dbPort:
+
+# NATS Box
+#
+# https://github.com/nats-io/nats-box
+# 
+natsbox:
+  enabled: true
+  image: synadia/nats-box:0.3.0
+  pullPolicy: IfNotPresent
+
+#######################################
+#                                     #
+# Prometheus Exporter configuration   #
+#                                     #
+#######################################
+exporter:
+  image: synadia/prometheus-nats-exporter:0.6.0
+  pullPolicy: IfNotPresent
+
+##################################
+#                                #
+#  Embedded NATS Configuration   #
+#                                #
+##################################
+# TODO: Support NATS embedded mode by including
+# nats chart values.

@@ -1,0 +1,44 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "stan.name" . }}-config
+  labels:
+    app: {{ template "stan.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+data:
+  stan.conf: |-
+    http: 8222
+
+    {{- with .Values.stan.nats.url }}
+    ns: {{ . }}
+    {{- end }}
+
+    streaming {
+      {{- if .Values.stan.clusterID }}
+      id: {{ .Values.stan.clusterID }}
+      {{- else }}
+      id: {{ template "stan.name" . }}
+      {{- end }}
+
+      {{- with .Values.store.ft.group }}
+      ft_group_name: {{ . }}
+      {{- end }}
+
+      {{- if eq .Values.store.type "sql"}}
+      store: "sql"
+      sql_options {
+        driver: {{ .Values.store.sql.driver }}
+        source: '{{.Values.store.sql.source}}'
+      }
+      {{- else }}
+      store: "file"
+      dir: {{ .Values.store.file.path }}
+      {{- end  }}
+    }
+
+    {{- with .Values.store.limits }}
+    store_limits {
+      {{ . | toPrettyJson }}
+    }
+    {{- end }}

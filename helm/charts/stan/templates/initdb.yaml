@@ -1,37 +1,29 @@
 ---
-{{- if eq .Values.stan.store "sql"}}
+{{- if eq .Values.store.type "sql" }}
+{{- if .Values.store.sql.initdb.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  labels:
-    app: '{{.Release.Name}}-stan'
-    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
-    heritage: '{{.Release.Service}}'
-    release: '{{.Release.Name}}'
-  name: '{{.Chart.Name}}-stan-init-db'
+  name: '{{ .Release.Name }}-init-db'
   annotations:
     "helm.sh/hook": "pre-install"
 spec:
   template:
     metadata:
-      annotations:
-        {{- if .Values.stan.istioEnabled}}
-        sidecar.istio.io/inject: "false"
-        {{- end}}
     spec:
       restartPolicy: OnFailure
       containers:
         - name: init-database
-          image: postgres:11
+          image: {{ .Values.store.sql.initdb.image }}
           env:
           - name: PGPASSWORD
-            value: '{{.Values.stan_sql.dbPassword}}'
+            value: {{ .Values.store.sql.dbPassword }}
           command: ['psql'] 
           args: [
-          '--host', '{{.Values.stan_sql.dbHost}}',
-          '-U', '{{.Values.stan_sql.dbUser}}',
-          '-d', '{{.Values.stan_sql.dbName}}',
-          '-p', '{{.Values.stan_sql.dbPort}}',
+          '--host', '{{ .Values.store.sql.dbHost }}',
+          '-U', '{{ .Values.store.sql.dbUser }}',
+          '-d', '{{ .Values.store.sql.dbName }}',
+          '-p', '{{ .Values.stan_sql.dbPort }}',
           '-c', 'CREATE TABLE IF NOT EXISTS ServerInfo (uniquerow INTEGER DEFAULT 1, id VARCHAR(1024), proto BYTEA, version INTEGER, PRIMARY KEY (uniquerow));
           CREATE TABLE IF NOT EXISTS Clients (id VARCHAR(1024), hbinbox TEXT, PRIMARY KEY (id));
           CREATE TABLE IF NOT EXISTS Channels (id INTEGER, name VARCHAR(1024) NOT NULL, maxseq BIGINT DEFAULT 0, maxmsgs INTEGER DEFAULT 0, maxbytes BIGINT DEFAULT 0, maxage BIGINT DEFAULT 0, deleted BOOL DEFAULT FALSE, PRIMARY KEY (id));
@@ -45,4 +37,5 @@ spec:
           ALTER TABLE Clients ADD IF NOT EXISTS proto BYTEA;'
           ]
           terminationGracePeriodSeconds: 0
-{{- end}}
+{{- end }}
+{{- end }}

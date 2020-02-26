@@ -1,7 +1,7 @@
-apiVersion: v1
-appVersion: "1.0"
-description: Nats Streaming deployment using statefulset
-name: nats-streaming
+apiVersion: v2
+appVersion: "0.17.0"
+description: A Helm chart for NATS Streaming
+name: stan
 keywords:
   - nats
   - streaming
@@ -9,10 +9,13 @@ keywords:
   - delivery
   - ratelimit
   - replay
-  - restart
   - statefulset
-version: 0.1.0
+  - cncf
+version: 0.2.0
 maintainers:
+  - name: Waldemar Quevedo
+    github: https://github.com/wallyqs
+    email: wally@nats.io
   - name: rchenzheng
     github: https://github.com/rchenzheng
-icon: https://bitnami.com/assets/stacks/nats/img/nats-stack-110x117.png
+icon: https://nats.io/img/logo.png

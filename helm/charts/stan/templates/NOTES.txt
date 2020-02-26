@@ -1,0 +1,18 @@
+
+You can find more information about running NATS Streaming on Kubernetes
+in the NATS documentation website:
+
+  https://docs.nats.io/nats-on-kubernetes/nats-kubernetes
+
+{{- if .Values.natsbox.enabled }}
+
+NATS Box has been deployed into your cluster, you can
+the NATS tools within the container to connect to NATS Streaming:
+
+  kubectl exec -n {{ .Release.Namespace }} -it {{ .Release.Name }}-box -- /bin/sh -l
+  nats-box:~# stan-sub test &
+  nats-box:~# stan-pub test hi
+
+{{- end }}
+
+Thanks for using NATS Streaming!
