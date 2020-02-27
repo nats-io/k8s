@@ -9,7 +9,8 @@ in the NATS documentation website:
 NATS Box has been deployed into your cluster, you can
 the NATS tools within the container to connect to NATS Streaming:
 
-  kubectl exec -n {{ .Release.Namespace }} -it {{ .Release.Name }}-box -- /bin/sh -l
+  kubectl exec -n {{ .Release.Namespace }} -it {{ template "stan.name" . }}-box -- /bin/sh -l
+
   nats-box:~# stan-sub test &
   nats-box:~# stan-pub test hi
 

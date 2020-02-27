@@ -9,21 +9,22 @@ metadata:
     "helm.sh/hook": "pre-install"
 spec:
   template:
-    metadata:
     spec:
-      restartPolicy: OnFailure
+      terminationGracePeriodSeconds: 0
+      restartPolicy: Never
+      {{- if eq .Values.store.sql.driver "postgres" }}
       containers:
         - name: init-database
           image: {{ .Values.store.sql.initdb.image }}
           env:
           - name: PGPASSWORD
             value: {{ .Values.store.sql.dbPassword }}
-          command: ['psql'] 
+          command: ['psql']
           args: [
           '--host', '{{ .Values.store.sql.dbHost }}',
           '-U', '{{ .Values.store.sql.dbUser }}',
           '-d', '{{ .Values.store.sql.dbName }}',
-          '-p', '{{ .Values.stan_sql.dbPort }}',
+          '-p', '{{ .Values.store.sql.dbPort }}',
           '-c', 'CREATE TABLE IF NOT EXISTS ServerInfo (uniquerow INTEGER DEFAULT 1, id VARCHAR(1024), proto BYTEA, version INTEGER, PRIMARY KEY (uniquerow));
           CREATE TABLE IF NOT EXISTS Clients (id VARCHAR(1024), hbinbox TEXT, PRIMARY KEY (id));
           CREATE TABLE IF NOT EXISTS Channels (id INTEGER, name VARCHAR(1024) NOT NULL, maxseq BIGINT DEFAULT 0, maxmsgs INTEGER DEFAULT 0, maxbytes BIGINT DEFAULT 0, maxage BIGINT DEFAULT 0, deleted BOOL DEFAULT FALSE, PRIMARY KEY (id));
@@ -36,6 +37,6 @@ spec:
           CREATE TABLE IF NOT EXISTS StoreLock (id VARCHAR(30), tick BIGINT DEFAULT 0);
           ALTER TABLE Clients ADD IF NOT EXISTS proto BYTEA;'
           ]
-          terminationGracePeriodSeconds: 0
+     {{- end }}
 {{- end }}
 {{- end }}

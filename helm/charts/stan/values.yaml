@@ -20,45 +20,76 @@ stan:
   nats:
     url:
 
-# Storage configuration
+###########################
+#                         #
+#  Storage configuration  #
+#                         #
+###########################
 store:
-  # One value possible out of: file | sql | memory
+  # One value possible out of: "file" | "sql" | "memory"
   type: file
 
+  # In case of using file or sql storage, sets up a 3 node cluster.
   cluster:
     enabled: false
 
+  # 
+  # Fault tolerance group
+  # 
   ft:
     group:
 
+  # Configures streaming/store_limits as is.
+  # 
   # NOTE: Section in snake case since they will become
   # the same objects.
+  # 
   # Look at the NATS Streaming configuration for this.
+  # 
   limits:
 
-  memory:
-    # TODO: support setting limits resources.
+  # 
+  # Memory storage settings.
+  # TODO: support setting limits resources.
+  memory: 
 
+  # 
+  # File storage settings.
+  # 
   file:
     path: /data/stan/store
     storageSize: 1Gi
 
+  # 
+  # SQL storage settings
+  # 
   sql:
     driver: postgres
-    source: 
 
+    # TODO: Use secret reference and include instead for the password.
+    # 
+    # e.g.
+    # source: "dbname=postgres user=postgres password=stan host=stan-db sslmode=disable"
+    # 
+    source: ""
+
+    # Initialize the database.
     initdb:
       enabled: false
-      image:
 
-    dbName:
-    dbUser:
-    dbPassword:
-    dbHost: 
-    dbPort:
+      # Client to use to init the db.
+      image: postgres:11
 
+    dbName: postgres
+    dbUser: postgres
+    dbPassword: stan
+    dbHost: ""
+    dbPort: 5432
+
+# 
+# 
 # NATS Box
-#
+# 
 # https://github.com/nats-io/nats-box
 # 
 natsbox:
