@@ -29,10 +29,6 @@ store:
   # One value possible out of: "file" | "sql" | "memory"
   type: file
 
-  # In case of using file or sql storage, sets up a 3 node cluster.
-  cluster:
-    enabled: false
-
   # 
   # Fault tolerance group
   # 
@@ -59,6 +55,11 @@ store:
   file:
     path: /data/stan/store
     storageSize: 1Gi
+
+  # In case of using file or sql storage, sets up a 3 node cluster.
+  cluster:
+    enabled: false
+    logPath: /data/stan/log
 
   # 
   # SQL storage settings

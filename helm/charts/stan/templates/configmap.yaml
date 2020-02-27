@@ -25,16 +25,32 @@ data:
       ft_group_name: {{ . }}
       {{- end }}
 
-      {{- if eq .Values.store.type "sql"}}
+      {{- if eq .Values.store.type "sql" }}
       store: "sql"
       sql_options {
         driver: {{ .Values.store.sql.driver }}
         source: '{{.Values.store.sql.source}}'
       }
+      {{- else if eq .Values.store.type "memory" }}
+      store: "memory"
       {{- else }}
       store: "file"
       dir: {{ .Values.store.file.path }}
       {{- end  }}
+
+      {{- if .Values.store.cluster.enabled }}
+      cluster {
+        node_id: $POD_NAME
+        {{- with .Values.store.cluster.logPath }}
+        log_path: {{ . }}
+        {{- end }}
+
+        # Explicit names of resulting peers
+        peers: [
+          {{ template "stan.clusterPeers" . }}
+        ]
+      }
+      {{- end }}
     }
 
     {{- with .Values.store.limits }}

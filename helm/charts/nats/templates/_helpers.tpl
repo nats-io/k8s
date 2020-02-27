@@ -13,7 +13,7 @@ Return the proper NATS image name
 {{- end }}
 
 {{/*
-Return the proper NATS image name
+Return the NATS cluster routes.
 */}}
 {{- define "nats.clusterRoutes" -}}
 {{- range $i, $e := until 3 -}}
