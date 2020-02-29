@@ -42,12 +42,7 @@ store:
   # 
   # Look at the NATS Streaming configuration for this.
   # 
-  limits:
-
-  # 
-  # Memory storage settings.
-  # TODO: support setting limits resources.
-  memory: 
+  limits: {}
 
   # 
   # File storage settings.
@@ -89,12 +84,12 @@ store:
 
 # 
 # 
-# NATS Box
+# NATS Box setup too use with STAN.
 # 
 # https://github.com/nats-io/nats-box
 # 
-natsbox:
-  enabled: true
+stanbox:
+  enabled: false
   image: synadia/nats-box:0.3.0
   pullPolicy: IfNotPresent
 

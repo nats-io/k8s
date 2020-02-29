@@ -54,7 +54,5 @@ data:
     }
 
     {{- with .Values.store.limits }}
-    store_limits {
-      {{ . | toPrettyJson }}
-    }
+    store_limits: {{ toPrettyJson . | indent 4 }}
     {{- end }}

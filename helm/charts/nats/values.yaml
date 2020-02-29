@@ -24,7 +24,7 @@ nats:
   # to a client that has no activity.
   pingInterval: 
 
-  # Server settings
+  # Server settings.
   limits:
     maxConnections: 
     maxSubscriptions: 

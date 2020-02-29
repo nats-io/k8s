@@ -4,15 +4,15 @@ in the NATS documentation website:
 
   https://docs.nats.io/nats-on-kubernetes/nats-kubernetes
 
-{{- if .Values.natsbox.enabled }}
+{{- if .Values.stanbox.enabled }}
 
 NATS Box has been deployed into your cluster, you can
 the NATS tools within the container to connect to NATS Streaming:
 
   kubectl exec -n {{ .Release.Namespace }} -it {{ template "stan.name" . }}-box -- /bin/sh -l
 
-  nats-box:~# stan-sub test &
-  nats-box:~# stan-pub test hi
+  stan-box:~# stan-sub -c {{ template "stan.name" . }} test &
+  stan-box:~# stan-pub -c {{ template "stan.name" . }} test hi
 
 {{- end }}
 
