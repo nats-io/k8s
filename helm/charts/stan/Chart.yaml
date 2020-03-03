@@ -1,0 +1,21 @@
+apiVersion: v2
+appVersion: "0.17.0"
+description: A Helm chart for NATS Streaming
+name: stan
+keywords:
+  - nats
+  - streaming
+  - stan
+  - delivery
+  - ratelimit
+  - replay
+  - statefulset
+  - cncf
+version: 0.2.0
+maintainers:
+  - name: Waldemar Quevedo
+    github: https://github.com/wallyqs
+    email: wally@nats.io
+  - name: rchenzheng
+    github: https://github.com/rchenzheng
+icon: https://nats.io/img/logo.png
