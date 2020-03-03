@@ -3,10 +3,10 @@ entries:
   nats:
   - apiVersion: v2
     appVersion: 2.1.4
-    created: "2020-02-26T15:01:03.824915-08:00"
+    created: "2020-03-02T16:27:15.534712-08:00"
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
-    digest: db6a9696e10242e845165f1b0ba99275de21f677d84aded8bd44669668129823
+    digest: e9538edd22dcfc2e9b491636ad83b37232502c5bf1cea7ef446b1bed58e9fb0f
     home: http://github.com/nats-io/k8s
     icon: https://nats.io/img/logo.png
     keywords:
@@ -16,6 +16,8 @@ entries:
     maintainers:
     - email: wally@nats.io
       name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/nats-0.2.0.tgz
@@ -23,9 +25,9 @@ entries:
   stan:
   - apiVersion: v2
     appVersion: 0.17.0
-    created: "2020-02-26T15:01:03.825976-08:00"
+    created: "2020-03-02T16:27:15.536124-08:00"
     description: A Helm chart for NATS Streaming
-    digest: ef3ae0bb205b9d7657112fbf5399f626e241ec87f3f80c7741b787fb38f97e43
+    digest: 6644a4db18fd26527da7d57ea9dba8ebb1b1e276faccb602b45011626d16bd98
     icon: https://nats.io/img/logo.png
     keywords:
     - nats
@@ -39,9 +41,11 @@ entries:
     maintainers:
     - email: wally@nats.io
       name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
     - name: rchenzheng
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/stan-0.2.0.tgz
     version: 0.2.0
-generated: "2020-02-26T15:01:03.822304-08:00"
+generated: "2020-03-02T16:27:15.530818-08:00"
