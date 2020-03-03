@@ -13,7 +13,7 @@ in the NATS documentation website:
 {{- if .Values.natsbox.enabled }}
 
 NATS Box has been deployed into your cluster, you can
-the NATS tools within the container:
+now use the NATS tools within the container as follows:
 
   kubectl exec -n {{ .Release.Namespace }} -it {{ template "nats.name" . }}-box -- /bin/sh -l
 
