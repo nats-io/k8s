@@ -9,6 +9,11 @@ metadata:
     "helm.sh/hook": "pre-install"
 spec:
   template:
+    metadata:
+      {{- with .Values.store.sql.initdb.annotations }}
+      annotations:
+      {{ toYaml . | indent 8 }}
+      {{- end }}
     spec:
       terminationGracePeriodSeconds: 0
       restartPolicy: Never
