@@ -82,17 +82,6 @@ store:
     dbHost: ""
     dbPort: 5432
 
-# 
-# 
-# NATS Box setup too use with STAN.
-# 
-# https://github.com/nats-io/nats-box
-# 
-stanbox:
-  enabled: false
-  image: synadia/nats-box:0.3.0
-  pullPolicy: IfNotPresent
-
 #######################################
 #                                     #
 # Prometheus Exporter configuration   #
