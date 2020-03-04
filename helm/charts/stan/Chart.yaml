@@ -11,11 +11,14 @@ keywords:
   - replay
   - statefulset
   - cncf
-version: 0.2.0
+version: 0.2.2
 maintainers:
   - name: Waldemar Quevedo
     github: https://github.com/wallyqs
     email: wally@nats.io
+  - name: Colin Sullivan
+    github: https://github.com/ColinSullivan1
+    email: colin@nats.io
   - name: rchenzheng
     github: https://github.com/rchenzheng
 icon: https://nats.io/img/logo.png
