@@ -3,10 +3,10 @@ entries:
   nats:
   - apiVersion: v2
     appVersion: 2.1.4
-    created: "2020-03-02T16:27:15.534712-08:00"
+    created: "2020-03-04T12:58:26.614467-08:00"
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
-    digest: e9538edd22dcfc2e9b491636ad83b37232502c5bf1cea7ef446b1bed58e9fb0f
+    digest: 508e43d33272c1bb98f60b730188015feac4b26102fc5a1133cd4258506b1342
     home: http://github.com/nats-io/k8s
     icon: https://nats.io/img/logo.png
     keywords:
@@ -20,14 +20,33 @@ entries:
       name: Colin Sullivan
     name: nats
     urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.2.2/nats-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v2
+    appVersion: 2.1.4
+    created: "2020-03-04T12:58:26.613712-08:00"
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
+      Communications Technology.
+    digest: 055fba444015ba5e7af72be94e37d29a02efe124a0baff0fdb8aa52d1bc1ed97
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/logo.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    name: nats
+    urls:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/nats-0.2.0.tgz
     version: 0.2.0
   stan:
   - apiVersion: v2
     appVersion: 0.17.0
-    created: "2020-03-02T16:27:15.536124-08:00"
+    created: "2020-03-04T12:58:26.618814-08:00"
     description: A Helm chart for NATS Streaming
-    digest: 6644a4db18fd26527da7d57ea9dba8ebb1b1e276faccb602b45011626d16bd98
+    digest: 8db5333798aff4be6ddbc6db7131a34a9214334a4aab4287dda73b180d6fbb9f
     icon: https://nats.io/img/logo.png
     keywords:
     - nats
@@ -46,6 +65,29 @@ entries:
     - name: rchenzheng
     name: stan
     urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.2.2/stan-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v2
+    appVersion: 0.17.0
+    created: "2020-03-04T12:58:26.615937-08:00"
+    description: A Helm chart for NATS Streaming
+    digest: 843e57c05a1dc345450280eb293721d79440c45374b313eefdcaa3cb59cfaaa2
+    icon: https://nats.io/img/logo.png
+    keywords:
+    - nats
+    - streaming
+    - stan
+    - delivery
+    - ratelimit
+    - replay
+    - statefulset
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    - name: rchenzheng
+    name: stan
+    urls:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/stan-0.2.0.tgz
     version: 0.2.0
-generated: "2020-03-02T16:27:15.530818-08:00"
+generated: "2020-03-04T12:58:26.609239-08:00"

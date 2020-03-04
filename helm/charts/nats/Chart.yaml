@@ -6,10 +6,13 @@ keywords:
   - nats
   - messaging
   - cncf
-version: 0.2.0
+version: 0.2.2
 home: http://github.com/nats-io/k8s
 maintainers:
   - name: Waldemar Quevedo
     github: https://github.com/wallyqs
     email: wally@nats.io
+  - name: Colin Sullivan
+    github: https://github.com/ColinSullivan1
+    email: colin@nats.io
 icon: https://nats.io/img/logo.png
