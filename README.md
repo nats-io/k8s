@@ -17,7 +17,7 @@
 In this repository you can find several examples of how to deploy NATS, NATS Streaming 
 and other tools from the NATS ecosystem on Kubernetes.
 
-### Getting started
+## Getting started via the one-line installer
 
 The fastest and easiest way to get started is with just one shell command:
 
@@ -61,6 +61,22 @@ Next, open the following URL in your browser:
     http://127.0.0.1:3000/d/nats/nats-surveyor?refresh=5s&orgId=1
 
 ![surveyor](https://user-images.githubusercontent.com/26195/69106844-79fdd480-0a24-11ea-8e0c-213f251fad90.gif)
+
+## Helm Charts for NATS
+
+You can also find in this repo Helm 3 based [charts](https://github.com/nats-io/k8s/tree/master/helm/charts) to install NATS and NATS Streaming (STAN).
+
+```sh
+> helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+> helm repo update
+
+> helm repo list
+NAME          	URL 
+nats          	https://nats-io.github.io/k8s/helm/charts/
+
+> helm install my-nats nats/nats
+> helm install my-stan nats/stan --set stan.nats.url=nats://my-nats:4222
+```
 
 ## License
 
