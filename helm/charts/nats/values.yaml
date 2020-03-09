@@ -81,3 +81,10 @@ exporter:
   enabled: true
   image: synadia/prometheus-nats-exporter:0.5.0
   pullPolicy: IfNotPresent
+
+# Setup memory preload config.
+auth:
+  enabled: false
+  resolver:
+    type: memory
+    preload: ""
