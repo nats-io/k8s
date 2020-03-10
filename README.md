@@ -7,7 +7,7 @@
                                           
 ```
 [![License][License-Image]][License-Url]
-[![Version](https://d25lcipzij17d.cloudfront.net/badge.svg?id=go&type=5&v=0.1.4)](https://github.com/nats-io/k8s/releases/tag/v0.1.4)
+[![Version](https://d25lcipzij17d.cloudfront.net/badge.svg?id=go&type=5&v=0.2.2)](https://github.com/nats-io/k8s/releases/tag/v0.2.2)
 
 [License-Url]: https://www.apache.org/licenses/LICENSE-2.0
 [License-Image]: https://img.shields.io/badge/License-Apache2-blue.svg
