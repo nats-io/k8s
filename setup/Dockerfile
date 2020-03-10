@@ -8,5 +8,6 @@ RUN set -eux; \
 	chmod +x /kubectl && mv /kubectl /usr/local/bin/kubectl
 
 COPY nats-setup.sh /usr/local/bin/nats-setup.sh
+COPY nsc-setup.sh /usr/local/bin/nsc-setup.sh
 ENTRYPOINT []
 CMD ["/bin/sleep", "300"]
