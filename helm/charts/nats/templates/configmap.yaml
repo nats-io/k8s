@@ -107,3 +107,15 @@ data:
     {{- with .Values.nats.writeDeadline }}
     lame_duck_duration:  {{ . | quote }}
     {{- end }}
+
+    {{- if .Values.auth.enabled }}
+    ##################
+    #                #
+    # Authorization  #
+    #                #
+    ##################
+    {{- if eq .Values.auth.resolver.type "memory" }}
+    resolver: MEMORY
+    include "accounts/{{ .Values.auth.resolver.configMap.key }}"
+    {{- end }}
+    {{- end }}
