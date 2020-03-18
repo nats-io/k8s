@@ -1,5 +1,4 @@
 #!/bin/sh
-set -eu
 
 [ -z "$NKEYS_PATH" ] && {
     export NKEYS_PATH=$(pwd)/nsc/nkeys
