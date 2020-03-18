@@ -1,5 +1,4 @@
 #!/bin/sh
-set -eu
 
 VERSION="0.2.2"
 
