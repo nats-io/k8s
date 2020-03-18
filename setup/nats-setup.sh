@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu
+
 VERSION="0.2.2"
 
 NATS_K8S_COMMIT=93c2a213bd26791fda29da2b7238e3f3b1ca36e1
