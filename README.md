@@ -12,6 +12,9 @@
 [License-Url]: https://www.apache.org/licenses/LICENSE-2.0
 [License-Image]: https://img.shields.io/badge/License-Apache2-blue.svg
 
+- [Getting started](#getting-started-via-the-one-line-installer)
+- [Helm Charts for NATS](#helm-charts-for-nats)
+
 # Running NATS on K8S
 
 In this repository you can find several examples of how to deploy NATS, NATS Streaming 
