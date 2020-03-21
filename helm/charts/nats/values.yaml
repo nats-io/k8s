@@ -85,8 +85,19 @@ exporter:
 # Authentication setup
 auth:
   enabled: false
+
+  # Operator JWT
+  operator: 
+
+  # Public key of the System Account
+  systemAccount: 
+
   resolver:
-    type: memory
+    type: URL
+
+    # URL resolver settings
+    url: "http://nats-account-server:9090/jwt/v1/accounts/"
+
     # 
     # Use a configmap reference which will be mounted
     # into the container.
