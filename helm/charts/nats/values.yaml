@@ -76,6 +76,11 @@ natsbox:
   image: synadia/nats-box:0.3.0
   pullPolicy: IfNotPresent
 
+  # credentials:
+  #   secret:
+  #     name: nats-sys-creds
+  #     key: sys.creds
+
 # The NATS config reloader image to use.
 reloader:
   enabled: true
@@ -92,22 +97,34 @@ exporter:
 auth:
   enabled: false
 
-  # Operator JWT
-  operator: 
+  # Reference to the Operator JWT.
+  # operatorjwt:
+  #   configMap:
+  #     name: operator-jwt
+  #     key: KO.jwt
 
   # Public key of the System Account
-  systemAccount: 
+  # systemAccount:
 
-  resolver:
-    type: URL
-
-    # URL resolver settings
-    url: "http://nats-account-server:9090/jwt/v1/accounts/"
-
-    # 
-    # Use a configmap reference which will be mounted
-    # into the container.
-    # 
-    configMap:
-      name: nats-accounts
-      key: resolver.conf
+  # resolver:
+  #   ############################
+  #   #                          #
+  #   # Memory resolver settings #
+  #   #                          #
+  #   ##############################
+  #   # type: memory
+  #   # 
+  #   # Use a configmap reference which will be mounted
+  #   # into the container.
+  #   # 
+  #   # configMap:
+  #   #   name: nats-accounts
+  #   #   key: resolver.conf
+  #  
+  #   ##########################
+  #   #                        #
+  #   #  URL resolver settings #
+  #   #                        #
+  #   ##########################
+  #   # type: URL
+  #   # url: "http://nats-account-server:9090/jwt/v1/accounts/"

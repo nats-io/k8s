@@ -8,6 +8,13 @@ metadata:
     app: {{ .Release.Name }}-box
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
+  volumes:
+  {{- if .Values.natsbox.credentials }}
+  - name: nats-sys-creds
+    secret:
+      secretName: {{ .Values.natsbox.credentials.secret.name }}
+  {{- end }}
+
   containers:
   - name: nats-box
     image: {{ .Values.natsbox.image }}
@@ -15,8 +22,17 @@ spec:
     env:
     - name: NATS_URL
       value: {{ .Release.Name }}
+    {{- if .Values.natsbox.credentials }}
+    - name: USER_CREDS
+      value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
+    {{- end }}
     command:
      - "tail"
      - "-f"
      - "/dev/null"
+    {{- if .Values.natsbox.credentials }}
+    volumeMounts:
+    - name: nats-sys-creds
+      mountPath: /etc/nats-config/creds
+    {{- end }}
 {{- end }}
