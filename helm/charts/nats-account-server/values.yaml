@@ -22,26 +22,26 @@ store:
     storageSize: 1Gi
   
 # NATS Server connection settings.
-nats:
-  # NATS Service to which we can connect.
-  url: "nats://nats:4222"
-
-  # Credentials to connect to the NATS Server.
-  credentials:
-    secret:
-      name: nats-sys-creds
-      key: sys.creds
+# nats:
+#   # # NATS Service to which we can connect.
+#   # url: "nats://nats:4222"
+#   # 
+#   # # Credentials to connect to the NATS Server.
+#   # credentials:
+#   #   secret:
+#   #     name: nats-sys-creds
+#   #     key: sys.creds
 
 # Trusted Operator mode settings.
-operator:
-  # Reference to the system account jwt.
-  systemaccountjwt:
-    configMap:
-      name: nats-sys-jwt
-      key: SYS.jwt
-
-  # Reference to the operator jwt.
-  operatorjwt:
-    configMap:
-      name: operator-jwt
-      key: KO.jwt
+# operator:
+#   # # Reference to the system account jwt.
+#   # systemaccountjwt:
+#   #   configMap:
+#   #     name: nats-sys-jwt
+#   #     key: SYS.jwt
+#   # 
+#   # # Reference to the Operator JWT.
+#   # operatorjwt:
+#   #   configMap:
+#   #     name: operator-jwt
+#   #     key: KO.jwt

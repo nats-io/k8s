@@ -17,6 +17,7 @@ data:
     # Operator JWT used to validate the accounts.
     operatorjwtpath: "/etc/nats-config/operator/{{ .Values.operator.operatorjwt.configMap.key }}"
 
+    {{- if .Values.nats.url }}
     # System Account JWT
     systemaccountjwtpath: "/etc/nats-config/sys/{{ .Values.operator.systemaccountjwt.configMap.key }}"
 
@@ -25,6 +26,7 @@ data:
       servers: [{{ .Values.nats.url }}]
       usercredentials: "/etc/nats-config/syscreds/{{ .Values.nats.credentials.secret.key }}"
     }
+    {{- end }}
 
     {{- if eq .Values.store.type "file"}}
     store {

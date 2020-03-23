@@ -39,6 +39,12 @@ spec:
         configMap:
           name: {{ .Values.auth.resolver.configMap.name }}
       {{- end }}
+
+      {{- if eq .Values.auth.resolver.type "URL" }}
+      - name: operator-jwt-volume
+        configMap:
+          name: {{ .Values.auth.operatorjwt.configMap.name }}
+      {{- end }}
       {{- end }}
 
       {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
@@ -149,6 +155,11 @@ spec:
           {{- if eq .Values.auth.resolver.type "memory" }}
           - name: resolver-volume
             mountPath: /etc/nats-config/accounts
+          {{- end }}
+
+          {{- if eq .Values.auth.resolver.type "URL" }}
+          - name: operator-jwt-volume
+            mountPath: /etc/nats-config/operator
           {{- end }}
           {{- end }}
 
