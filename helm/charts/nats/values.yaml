@@ -53,7 +53,21 @@ cluster:
 #
 leafnodes:
   enabled: false
+  # remotes:
+  #   - url: "tls://connect.ngs.global:7422"
 
+# Gateway connections to create a super cluster
+#
+# https://docs.nats.io/nats-server/configuration/gateways
+#
+gateway:
+  enabled: false
+  name: 'default'
+  # List of remote gateways
+  # gateways:
+  #   - name: other
+  #     url: tls://my-gateway-url:7522
+  
 # In case of both external access and advertisements being
 # enabled, an initializer container will be used to gather
 # the public ips.
