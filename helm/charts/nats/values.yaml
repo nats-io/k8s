@@ -72,7 +72,7 @@ gateway:
   # List of remote gateways
   # gateways:
   #   - name: other
-  #     url: tls://my-gateway-url:7522
+  #     url: nats://my-gateway-url:7522
   
 # In case of both external access and advertisements being
 # enabled, an initializer container will be used to gather
