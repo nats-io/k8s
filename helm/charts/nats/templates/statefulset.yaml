@@ -53,6 +53,19 @@ spec:
         emptyDir: {}
       {{ end }}
 
+      {{- if .Values.leafnodes.enabled }}
+      # 
+      # Leafnode credential volumes
+      # 
+      {{- range .Values.leafnodes.remotes }}
+      {{- with .credentials }}
+      - name: {{ .secret.name }}-volume
+        secret:
+          secretName: {{ .secret.name }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+
       {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
       # Assume that we only use the service account in case we want to
       # figure out what is the current external public IP from the server
@@ -160,6 +173,18 @@ spec:
           {{- if eq .Values.auth.resolver.type "URL" }}
           - name: operator-jwt-volume
             mountPath: /etc/nats-config/operator
+          {{- end }}
+
+          {{- if .Values.leafnodes.enabled }}
+          # 
+          # Leafnode credential volumes
+          # 
+          {{- range .Values.leafnodes.remotes }}
+          {{- with .credentials }}
+          - name: {{ .secret.name }}-volume
+            mountPath: /etc/nats-creds/{{ .secret.name }}
+          {{- end }}
+          {{- end }}
           {{- end }}
           {{- end }}
 

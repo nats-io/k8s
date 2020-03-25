@@ -25,6 +25,8 @@ spec:
     {{- if .Values.natsbox.credentials }}
     - name: USER_CREDS
       value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
+    - name: USER2_CREDS
+      value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
     {{- end }}
     command:
      - "tail"
