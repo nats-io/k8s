@@ -48,6 +48,12 @@ nats:
   #  TLS Configuration  #
   #                     #
   #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  # 
+
   # tls:
   #   secret:
   #     name: nats-client-tls
@@ -73,6 +79,12 @@ leafnodes:
   #  TLS Configuration  #
   #                     #
   #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  # 
+
   #
   # tls:
   #   secret:
@@ -103,6 +115,10 @@ gateway:
   #  TLS Configuration  #
   #                     #
   #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
   #
   # tls:
   #   secret:
