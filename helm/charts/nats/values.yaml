@@ -43,6 +43,18 @@ nats:
     connectErrorReports: 
     reconnectErrorReports: 
 
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+
 # Toggle whether to use setup a NATS Cluster.
 cluster:
   enabled: false
@@ -56,6 +68,19 @@ leafnodes:
   # remotes:
   #   - url: "tls://connect.ngs.global:7422"
 
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  #
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+
 # Gateway connections to create a super cluster
 #
 # https://docs.nats.io/nats-server/configuration/gateways
@@ -63,10 +88,28 @@ leafnodes:
 gateway:
   enabled: false
   name: 'default'
-  # List of remote gateways
+
+  #############################
+  #                           #
+  #  List of remote gateways  #
+  #                           #
+  #############################
   # gateways:
   #   - name: other
   #     url: nats://my-gateway-url:7522
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  #
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
   
 # In case of both external access and advertisements being
 # enabled, an initializer container will be used to gather

@@ -19,6 +19,50 @@ data:
     http: 8222
     server_name: $POD_NAME
 
+    {{- if .Values.nats.tls }}
+    #####################
+    #                   #
+    # TLS Configuration #
+    #                   #
+    #####################
+    {{- with .Values.nats.tls }}
+    {{ $secretName := .secret.name }}
+    tls {
+       {{- with .cert }}
+       cert_file: /etc/nats-certs/clients/{{ $secretName }}/{{ . }}
+       {{- end }}
+
+       {{- with .key }}
+       key_file: /etc/nats-certs/clients/{{ $secretName }}/{{ . }}
+       {{- end }}
+
+       {{- with .ca }}
+       ca_file: /etc/nats-certs/clients/{{ $secretName }}/{{ . }}
+       {{- end }}
+
+       {{- with .insecure }}
+       insecure: {{ . }}
+       {{- end }}
+
+       {{- with .verify }}
+       verify: {{ . }}
+       {{- end }}
+
+       {{- with .verifyAndMap }}
+       verify_and_map: {{ . }}
+       {{- end }}
+
+       {{- with .curvePreferences }}
+       curve_preferences: {{ . }}
+       {{- end }}
+
+       {{- with .timeout }}
+       timeout: {{ . }}
+       {{- end }}
+    }
+    {{- end }}
+    {{- end }}
+
     {{ if .Values.cluster.enabled }}
     ###################################
     #                                 #
@@ -27,6 +71,43 @@ data:
     ###################################
     cluster {
       port: 6222
+
+      {{- with .Values.cluster.tls }}
+      {{ $secretName := .secret.name }}
+      tls {
+         {{- with .cert }}
+         cert_file: /etc/nats-certs/cluster/{{ $secretName }}/{{ . }}
+         {{- end }}
+
+         {{- with .key }}
+         key_file: /etc/nats-certs/cluster/{{ $secretName }}/{{ . }}
+         {{- end }}
+
+         {{- with .ca }}
+         ca_file: /etc/nats-certs/cluster/{{ $secretName }}/{{ . }}
+         {{- end }}
+
+         {{- with .insecure }}
+         insecure: {{ . }}
+         {{- end }}
+
+         {{- with .verify }}
+         verify: {{ . }}
+         {{- end }}
+
+         {{- with .verifyAndMap }}
+         verify_and_map: {{ . }}
+         {{- end }}
+
+         {{- with .curvePreferences }}
+         curve_preferences: {{ . }}
+         {{- end }}
+
+         {{- with .timeout }}
+         timeout: {{ . }}
+         {{- end }}
+      }
+      {{- end }}
 
       routes = [
         {{ template "nats.clusterRoutes" . }}
@@ -52,7 +133,44 @@ data:
       {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
       include "advertise/gateway_advertise.conf"
       {{ end }}
-      
+
+      {{- with .Values.leafnodes.tls }}
+      {{ $secretName := .secret.name }}
+      tls {
+         {{- with .cert }}
+         cert_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
+         {{- end }}
+
+         {{- with .key }}
+         key_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
+         {{- end }}
+
+         {{- with .ca }}
+         ca_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
+         {{- end }}
+
+         {{- with .insecure }}
+         insecure: {{ . }}
+         {{- end }}
+
+         {{- with .verify }}
+         verify: {{ . }}
+         {{- end }}
+
+         {{- with .verifyAndMap }}
+         verify_and_map: {{ . }}
+         {{- end }}
+
+         {{- with .curvePreferences }}
+         curve_preferences: {{ . }}
+         {{- end }}
+
+         {{- with .timeout }}
+         timeout: {{ . }}
+         {{- end }}
+      }
+      {{- end }}
+
       remotes: [
       {{- range .Values.leafnodes.remotes }}
       {
@@ -82,6 +200,43 @@ data:
       {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
       include "advertise/gateway_advertise.conf"
       {{ end }}
+
+      {{- with .Values.gateway.tls }}
+      {{ $secretName := .secret.name }}
+      tls {
+         {{- with .cert }}
+         cert_file: /etc/nats-certs/gateways/{{ $secretName }}/{{ . }}
+         {{- end }}
+
+         {{- with .key }}
+         key_file: /etc/nats-certs/gateways/{{ $secretName }}/{{ . }}
+         {{- end }}
+
+         {{- with .ca }}
+         ca_file: /etc/nats-certs/gateways/{{ $secretName }}/{{ . }}
+         {{- end }}
+
+         {{- with .insecure }}
+         insecure: {{ . }}
+         {{- end }}
+
+         {{- with .verify }}
+         verify: {{ . }}
+         {{- end }}
+
+         {{- with .verifyAndMap }}
+         verify_and_map: {{ . }}
+         {{- end }}
+
+         {{- with .curvePreferences }}
+         curve_preferences: {{ . }}
+         {{- end }}
+
+         {{- with .timeout }}
+         timeout: {{ . }}
+         {{- end }}
+      }
+      {{- end }}
 
       # Gateways array here
       gateways: [
