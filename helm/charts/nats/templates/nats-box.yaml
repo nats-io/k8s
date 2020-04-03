@@ -14,6 +14,12 @@ spec:
     secret:
       secretName: {{ .Values.natsbox.credentials.secret.name }}
   {{- end }}
+  {{- with .Values.nats.tls }}
+  {{ $secretName := .secret.name }}
+  - name: {{ $secretName }}-clients-volume
+    secret:
+      secretName: {{ $secretName }}
+  {{- end }}
 
   containers:
   - name: nats-box
@@ -28,6 +34,16 @@ spec:
     - name: USER2_CREDS
       value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
     {{- end }}
+    {{- with .Values.nats.tls }}
+    {{ $secretName := .secret.name }}
+    lifecycle:
+      postStart:
+        exec:
+          command:
+          - /bin/sh
+          - -c
+          - cp /etc/nats-certs/clients/{{ $secretName }}/* /usr/local/share/ca-certificates && update-ca-certificates
+    {{- end }}
     command:
      - "tail"
      - "-f"
@@ -36,5 +52,15 @@ spec:
     volumeMounts:
     - name: nats-sys-creds
       mountPath: /etc/nats-config/creds
+    {{- end }}
+    #######################
+    #                     #
+    #  TLS Volumes Mounts #
+    #                     #
+    #######################
+    {{- with .Values.nats.tls }}
+    {{ $secretName := .secret.name }}
+    - name: {{ $secretName }}-clients-volume
+      mountPath: /etc/nats-certs/clients/{{ $secretName }}
     {{- end }}
 {{- end }}
