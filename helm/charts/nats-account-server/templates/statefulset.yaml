@@ -33,15 +33,24 @@ spec:
       - name: config-volume
         configMap:
           name: {{ template "name" . }}-config
+      {{- with .Values.nats }}
       - name: nats-sys-creds
         secret:
-          secretName: {{ .Values.nats.credentials.secret.name }}
+          secretName: {{ .credentials.secret.name }}
+      {{- end }}
+
+      {{- if .Values.operator }}
+      {{- with .Values.operator.systemaccountjwt }}
       - name: system-account-jwt-volume
         configMap:
-          name: {{ .Values.operator.systemaccountjwt.configMap.name }}
+          name: {{ .configMap.name }}
+      {{- end }}
+      {{- with .Values.operator.operatorjwt }}
       - name: operator-jwt-volume
         configMap:
-          name: {{ .Values.operator.operatorjwt.configMap.name }}
+          name: {{ .configMap.name }}
+      {{- end }}
+      {{- end }}
 
       ########################
       #                      #

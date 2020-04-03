@@ -206,6 +206,28 @@ entries:
   nats-account-server:
   - apiVersion: v2
     appVersion: 0.8.6
+    created: "2020-04-03T15:34:18.169597-07:00"
+    description: A Helm chart for the NATS.io JWT Account Server
+    digest: 75b46ce25c3f7f9eb042be789b6874d26374078534e68f9d5eb5ef9ebab204d2
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/logo.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    - jwt
+    - auth
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
+    name: nats-account-server
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.3.4/nats-account-server-0.3.4.tgz
+    version: 0.3.4
+  - apiVersion: v2
+    appVersion: 0.8.6
     created: "2020-04-03T08:25:32.304898-07:00"
     description: A Helm chart for the NATS.io JWT Account Server
     digest: cc47d5cdca9247d7d13c1a8fc239b630b62b7015c2255ef46797953bd67170e6

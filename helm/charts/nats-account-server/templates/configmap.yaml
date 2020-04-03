@@ -14,17 +14,19 @@ data:
       port: 9090
     }
 
+    {{- with .Values.operator }}
     # Operator JWT used to validate the accounts.
-    operatorjwtpath: "/etc/nats-config/operator/{{ .Values.operator.operatorjwt.configMap.key }}"
+    operatorjwtpath: "/etc/nats-config/operator/{{ .operatorjwt.configMap.key }}"
 
-    {{- if .Values.nats.url }}
     # System Account JWT
-    systemaccountjwtpath: "/etc/nats-config/sys/{{ .Values.operator.systemaccountjwt.configMap.key }}"
+    systemaccountjwtpath: "/etc/nats-config/sys/{{ .systemaccountjwt.configMap.key }}"
+    {{- end }}
 
+    {{- with .Values.nats }}
     # NATS Server connection
     nats {
-      servers: [{{ .Values.nats.url }}]
-      usercredentials: "/etc/nats-config/syscreds/{{ .Values.nats.credentials.secret.key }}"
+      servers: [{{ .url }}]
+      usercredentials: "/etc/nats-config/syscreds/{{ .credentials.secret.key }}"
     }
     {{- end }}
 
