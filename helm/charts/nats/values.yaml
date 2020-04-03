@@ -1,6 +1,10 @@
-# NATS Server Configuration
+###############################
+#                             #
+#  NATS Server Configuration  #
+#                             #
+###############################
 nats:
-  image: nats:2.1.4-alpine3.11
+  image: nats:2.1.6-alpine3.11
   pullPolicy: IfNotPresent
 
   # Toggle whether to enable external access.
@@ -59,7 +63,21 @@ cluster:
 #
 leafnodes:
   enabled: false
+  # remotes:
+  #   - url: "tls://connect.ngs.global:7422"
 
+# Gateway connections to create a super cluster
+#
+# https://docs.nats.io/nats-server/configuration/gateways
+#
+gateway:
+  enabled: false
+  name: 'default'
+  # List of remote gateways
+  # gateways:
+  #   - name: other
+  #     url: nats://my-gateway-url:7522
+  
 # In case of both external access and advertisements being
 # enabled, an initializer container will be used to gather
 # the public ips.
@@ -76,6 +94,11 @@ natsbox:
   image: synadia/nats-box:0.3.0
   pullPolicy: IfNotPresent
 
+  # credentials:
+  #   secret:
+  #     name: nats-sys-creds
+  #     key: sys.creds
+
 # The NATS config reloader image to use.
 reloader:
   enabled: true
@@ -91,12 +114,35 @@ exporter:
 # Authentication setup
 auth:
   enabled: false
-  resolver:
-    type: memory
-    # 
-    # Use a configmap reference which will be mounted
-    # into the container.
-    # 
-    configMap:
-      name: nats-accounts
-      key: resolver.conf
+
+  # Reference to the Operator JWT.
+  # operatorjwt:
+  #   configMap:
+  #     name: operator-jwt
+  #     key: KO.jwt
+
+  # Public key of the System Account
+  # systemAccount:
+
+  # resolver:
+  #   ############################
+  #   #                          #
+  #   # Memory resolver settings #
+  #   #                          #
+  #   ##############################
+  #   # type: memory
+  #   # 
+  #   # Use a configmap reference which will be mounted
+  #   # into the container.
+  #   # 
+  #   # configMap:
+  #   #   name: nats-accounts
+  #   #   key: resolver.conf
+  #  
+  #   ##########################
+  #   #                        #
+  #   #  URL resolver settings #
+  #   #                        #
+  #   ##########################
+  #   # type: URL
+  #   # url: "http://nats-account-server:9090/jwt/v1/accounts/"

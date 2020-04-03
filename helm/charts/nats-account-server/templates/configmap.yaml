@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "name" . }}-config
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+data:
+  accountserver.conf: |
+    # Host/Port for the NATS Account Server
+    http {
+      host: "0.0.0.0"
+      port: 9090
+    }
+
+    # Operator JWT used to validate the accounts.
+    operatorjwtpath: "/etc/nats-config/operator/{{ .Values.operator.operatorjwt.configMap.key }}"
+
+    {{- if .Values.nats.url }}
+    # System Account JWT
+    systemaccountjwtpath: "/etc/nats-config/sys/{{ .Values.operator.systemaccountjwt.configMap.key }}"
+
+    # NATS Server connection
+    nats {
+      servers: [{{ .Values.nats.url }}]
+      usercredentials: "/etc/nats-config/syscreds/{{ .Values.nats.credentials.secret.key }}"
+    }
+    {{- end }}
+
+    {{- if eq .Values.store.type "file"}}
+    store {
+      dir: "/store"
+    }
+    {{- end }}

@@ -41,12 +41,66 @@ data:
     include "advertise/client_advertise.conf"
     {{- end }}
 
+    ################# 
+    #               #
+    # NATS Leafnode #
+    #               #
+    #################
     {{- if .Values.leafnodes.enabled }}
     leafnodes {
       listen: "0.0.0.0:7422"
       {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
       include "advertise/gateway_advertise.conf"
       {{ end }}
+      
+      remotes: [
+      {{- range .Values.leafnodes.remotes }}
+      {
+        {{- with .url }}
+        url: {{ . }}
+        {{- end }}
+
+        {{- with .credentials }}
+        credentials: "/etc/nats-creds/{{ .secret.name }}/{{ .secret.key }}"
+        {{- end }}
+      }
+      {{- end }}
+      ]
+    }
+    {{ end }}
+
+    ################# 
+    #               #
+    # NATS Gateways #
+    #               #
+    #################
+    {{- if .Values.gateway.enabled }}
+    gateway {
+      name: {{ .Values.gateway.name }}
+      port: 7522
+
+      {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
+      include "advertise/gateway_advertise.conf"
+      {{ end }}
+
+      # Gateways array here
+      gateways: [
+        {{- range .Values.gateway.gateways }}
+        {
+          {{- with .name }}
+          name: {{ . }}
+          {{- end }}
+
+          {{- with .url }}
+          url: {{ . | quote }}
+          {{- end }}
+
+          {{- with .urls }}
+          urls: {{ . | quote }}
+          {{- end }}
+        },
+        {{- end }}
+      ]
     }
     {{ end }}
 
@@ -118,4 +172,13 @@ data:
     resolver: MEMORY
     include "accounts/{{ .Values.auth.resolver.configMap.key }}"
     {{- end }}
+
+    {{- if eq .Values.auth.resolver.type "URL" }}
+    {{- with .Values.auth.resolver.url }}
+    resolver: URL({{ . }})
+    {{- end }}
+    operator: /etc/nats-config/operator/{{ .Values.auth.operatorjwt.configMap.key }}
+    system_account: {{ .Values.auth.systemAccount }}
+    {{- end }}
+
     {{- end }}

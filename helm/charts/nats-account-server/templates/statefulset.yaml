@@ -1,0 +1,92 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "name" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "name" . }}
+  replicas: 1
+  serviceName: {{ template "name" . }}
+  {{- if eq .Values.store.type "file"}}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ template "name" . }}-pvc
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.store.file.storageSize }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    spec:
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ template "name" . }}-config
+      - name: nats-sys-creds
+        secret:
+          secretName: {{ .Values.nats.credentials.secret.name }}
+      - name: system-account-jwt-volume
+        configMap:
+          name: {{ .Values.operator.systemaccountjwt.configMap.name }}
+      - name: operator-jwt-volume
+        configMap:
+          name: {{ .Values.operator.operatorjwt.configMap.name }}
+
+      ########################
+      #                      #
+      #  NATS Account Server #
+      #                      #
+      ########################
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: nats-account-server
+        image: {{ .Values.accountserver.image }}
+        imagePullPolicy: {{ .Values.accountserver.pullPolicy }}
+        ports:
+        - containerPort: 9090
+          # hostPort: 9090
+          name: server
+        command:
+         - "nats-account-server"
+         - "-c"
+         - "/etc/nats-config/conf/accountserver.conf"
+
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/nats-config/conf
+          - name: system-account-jwt-volume
+            mountPath: /etc/nats-config/sys
+          - name: operator-jwt-volume
+            mountPath: /etc/nats-config/operator
+          - name: nats-sys-creds
+            mountPath: /etc/nats-config/syscreds
+          {{- if eq .Values.store.type "file"}}
+          - name: {{ template "name" . }}-pvc
+            mountPath: /store
+          {{- end }}
+
+        # Liveness/Readiness probes against the monitoring.
+        #
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 9090
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 9090
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
