@@ -136,4 +136,27 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/stan-0.2.0.tgz
     version: 0.2.0
+  nats-account-server:
+  - apiVersion: v2
+    appVersion: 0.8.6
+    created: "2020-04-02T21:57:47.563808-07:00"
+    description: A Helm chart for the NATS.io JWT Account Server
+    digest: b3160dba852175ed962bd6cabbbd486d328432d1e682dfbf4efa96dfc003f985
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/logo.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    - jwt
+    - auth
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
+    name: nats-account-server
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.3.0/nats-account-server-0.3.0.tgz
+    version: 0.3.0
 generated: "2020-03-04T12:58:26.609239-08:00"
