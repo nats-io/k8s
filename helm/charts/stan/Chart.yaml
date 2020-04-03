@@ -11,7 +11,7 @@ keywords:
   - replay
   - statefulset
   - cncf
-version: 0.2.2
+version: 0.3.0
 maintainers:
   - name: Waldemar Quevedo
     github: https://github.com/wallyqs

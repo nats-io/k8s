@@ -2,6 +2,27 @@ apiVersion: v1
 entries:
   nats:
   - apiVersion: v2
+    appVersion: 2.1.6
+    created: "2020-04-02T21:20:08.662671-07:00"
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
+      Communications Technology.
+    digest: 51d30784678c99981f47d76bc0f697b95b201feaefbc73d81c6cefae028960fb
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/logo.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
+    name: nats
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.3.0/nats-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
     appVersion: 2.1.4
     created: "2020-03-04T12:58:26.614467-08:00"
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
@@ -42,6 +63,31 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/nats-0.2.0.tgz
     version: 0.2.0
   stan:
+  - apiVersion: v2
+    appVersion: 0.17.0
+    created: "2020-04-02T21:22:25.946345-07:00"
+    description: A Helm chart for NATS Streaming
+    digest: f2d6f9f7d8a0001f142a6adb65be2c9249c4183a30bd9a6e80d5798a6762949b
+    icon: https://nats.io/img/logo.png
+    keywords:
+    - nats
+    - streaming
+    - stan
+    - delivery
+    - ratelimit
+    - replay
+    - statefulset
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
+    - name: rchenzheng
+    name: stan
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.3.0/stan-0.3.0.tgz
+    version: 0.3.0
   - apiVersion: v2
     appVersion: 0.17.0
     created: "2020-03-04T12:58:26.618814-08:00"
