@@ -208,6 +208,7 @@ spec:
           - name: operator-jwt-volume
             mountPath: /etc/nats-config/operator
           {{- end }}
+          {{- end }}
 
           #######################
           #                     #
@@ -243,7 +244,6 @@ spec:
           {{- with .credentials }}
           - name: {{ .secret.name }}-volume
             mountPath: /etc/nats-creds/{{ .secret.name }}
-          {{- end }}
           {{- end }}
           {{- end }}
           {{- end }}
