@@ -174,7 +174,9 @@ data:
     {{- end }}
 
     {{- if eq .Values.auth.resolver.type "URL" }}
-    resolver: URL({{ .Values.auth.resolver.url }})
+    {{- with .Values.auth.resolver.url }}
+    resolver: URL({{ . }})
+    {{- end }}
     operator: /etc/nats-config/operator/{{ .Values.auth.operatorjwt.configMap.key }}
     system_account: {{ .Values.auth.systemAccount }}
     {{- end }}

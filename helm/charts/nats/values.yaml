@@ -1,6 +1,10 @@
-# NATS Server Configuration
+###############################
+#                             #
+#  NATS Server Configuration  #
+#                             #
+###############################
 nats:
-  image: nats:2.1.4-alpine3.11
+  image: nats:2.1.6-alpine3.11
   pullPolicy: IfNotPresent
 
   # Toggle whether to enable external access.
