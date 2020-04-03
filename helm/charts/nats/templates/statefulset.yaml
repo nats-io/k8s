@@ -57,6 +57,36 @@ spec:
         emptyDir: {}
       {{ end }}
 
+      #################
+      #               #
+      #  TLS Volumes  #
+      #               #
+      #################
+      {{- with .Values.nats.tls }}
+      {{ $secretName := .secret.name }}
+      - name: {{ $secretName }}-clients-volume
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
+      {{- with .Values.cluster.tls }}
+      {{ $secretName := .secret.name }}
+      - name: {{ $secretName }}-cluster-volume
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
+      {{- with .Values.leafnodes.tls }}
+      {{ $secretName := .secret.name }}
+      - name: {{ $secretName }}-leafnodes-volume
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
+      {{- with .Values.gateway.tls }}
+      {{ $secretName := .secret.name }}
+      - name: {{ $secretName }}-gateways-volume
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
+
       {{- if .Values.leafnodes.enabled }}
       # 
       # Leafnode credential volumes
@@ -177,6 +207,32 @@ spec:
           {{- if eq .Values.auth.resolver.type "URL" }}
           - name: operator-jwt-volume
             mountPath: /etc/nats-config/operator
+          {{- end }}
+
+          #######################
+          #                     #
+          #  TLS Volumes Mounts #
+          #                     #
+          #######################
+          {{- with .Values.nats.tls }}
+          {{ $secretName := .secret.name }}
+          - name: {{ $secretName }}-clients-volume
+            mountPath: /etc/nats-certs/clients/{{ $secretName }}
+          {{- end }}
+          {{- with .Values.cluster.tls }}
+          {{ $secretName := .secret.name }}
+          - name: {{ $secretName }}-cluster-volume
+            mountPath: /etc/nats-certs/cluster/{{ $secretName }}
+          {{- end }}
+          {{- with .Values.leafnodes.tls }}
+          {{ $secretName := .secret.name }}
+          - name: {{ $secretName }}-leafnodes-volume
+            mountPath: /etc/nats-certs/leafnodes/{{ $secretName }}
+          {{- end }}
+          {{- with .Values.gateway.tls }}
+          {{ $secretName := .secret.name }}
+          - name: {{ $secretName }}-gateways-volume
+            mountPath: /etc/nats-certs/gateways/{{ $secretName }}
           {{- end }}
 
           {{- if .Values.leafnodes.enabled }}

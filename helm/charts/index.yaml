@@ -3,6 +3,27 @@ entries:
   nats:
   - apiVersion: v2
     appVersion: 2.1.6
+    created: "2020-04-03T08:25:32.302616-07:00"
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
+      Communications Technology.
+    digest: 633b48eb980b00659579739ff6b32c7576c7ecc339533b92d70a062ea4c85961
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/logo.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
+    name: nats
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.3.2/nats-0.3.2.tgz
+    version: 0.3.2
+  - apiVersion: v2
+    appVersion: 2.1.6
     created: "2020-04-02T21:20:08.662671-07:00"
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
@@ -63,6 +84,31 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/nats-0.2.0.tgz
     version: 0.2.0
   stan:
+  - apiVersion: v2
+    appVersion: 0.17.0
+    created: "2020-04-03T08:25:32.310714-07:00"
+    description: A Helm chart for NATS Streaming
+    digest: 341236096cbef84987ce68373d27a3ec020fa5d4c5d5e3883dd40a65c30c9cab
+    icon: https://nats.io/img/logo.png
+    keywords:
+    - nats
+    - streaming
+    - stan
+    - delivery
+    - ratelimit
+    - replay
+    - statefulset
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
+    - name: rchenzheng
+    name: stan
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.3.2/stan-0.3.2.tgz
+    version: 0.3.2
   - apiVersion: v2
     appVersion: 0.17.0
     created: "2020-04-02T21:22:25.946345-07:00"
@@ -137,6 +183,28 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/stan-0.2.0.tgz
     version: 0.2.0
   nats-account-server:
+  - apiVersion: v2
+    appVersion: 0.8.6
+    created: "2020-04-03T08:25:32.304898-07:00"
+    description: A Helm chart for the NATS.io JWT Account Server
+    digest: cc47d5cdca9247d7d13c1a8fc239b630b62b7015c2255ef46797953bd67170e6
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/logo.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    - jwt
+    - auth
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
+    name: nats-account-server
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.3.2/nats-account-server-0.3.2.tgz
+    version: 0.3.2
   - apiVersion: v2
     appVersion: 0.8.6
     created: "2020-04-02T21:57:47.563808-07:00"
