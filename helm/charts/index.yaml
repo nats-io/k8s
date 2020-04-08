@@ -8,7 +8,7 @@ entries:
       Communications Technology.
     digest: 2667916f7b18047b5015c065828bf61e06916228c287e88e573623e36ddc4d3a
     home: http://github.com/nats-io/k8s
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - messaging
@@ -29,7 +29,7 @@ entries:
       Communications Technology.
     digest: 633b48eb980b00659579739ff6b32c7576c7ecc339533b92d70a062ea4c85961
     home: http://github.com/nats-io/k8s
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - messaging
@@ -50,7 +50,7 @@ entries:
       Communications Technology.
     digest: 51d30784678c99981f47d76bc0f697b95b201feaefbc73d81c6cefae028960fb
     home: http://github.com/nats-io/k8s
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - messaging
@@ -71,7 +71,7 @@ entries:
       Communications Technology.
     digest: 508e43d33272c1bb98f60b730188015feac4b26102fc5a1133cd4258506b1342
     home: http://github.com/nats-io/k8s
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - messaging
@@ -92,7 +92,7 @@ entries:
       Communications Technology.
     digest: 055fba444015ba5e7af72be94e37d29a02efe124a0baff0fdb8aa52d1bc1ed97
     home: http://github.com/nats-io/k8s
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - messaging
@@ -110,7 +110,7 @@ entries:
     created: "2020-04-03T08:25:32.310714-07:00"
     description: A Helm chart for NATS Streaming
     digest: 341236096cbef84987ce68373d27a3ec020fa5d4c5d5e3883dd40a65c30c9cab
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - streaming
@@ -135,7 +135,7 @@ entries:
     created: "2020-04-02T21:22:25.946345-07:00"
     description: A Helm chart for NATS Streaming
     digest: f2d6f9f7d8a0001f142a6adb65be2c9249c4183a30bd9a6e80d5798a6762949b
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - streaming
@@ -160,7 +160,7 @@ entries:
     created: "2020-03-04T12:58:26.618814-08:00"
     description: A Helm chart for NATS Streaming
     digest: 8db5333798aff4be6ddbc6db7131a34a9214334a4aab4287dda73b180d6fbb9f
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - streaming
@@ -185,7 +185,7 @@ entries:
     created: "2020-03-04T12:58:26.615937-08:00"
     description: A Helm chart for NATS Streaming
     digest: 843e57c05a1dc345450280eb293721d79440c45374b313eefdcaa3cb59cfaaa2
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - streaming
@@ -210,7 +210,7 @@ entries:
     description: A Helm chart for the NATS.io JWT Account Server
     digest: 75b46ce25c3f7f9eb042be789b6874d26374078534e68f9d5eb5ef9ebab204d2
     home: http://github.com/nats-io/k8s
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - messaging
@@ -232,7 +232,7 @@ entries:
     description: A Helm chart for the NATS.io JWT Account Server
     digest: cc47d5cdca9247d7d13c1a8fc239b630b62b7015c2255ef46797953bd67170e6
     home: http://github.com/nats-io/k8s
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - messaging
@@ -254,7 +254,7 @@ entries:
     description: A Helm chart for the NATS.io JWT Account Server
     digest: b3160dba852175ed962bd6cabbbd486d328432d1e682dfbf4efa96dfc003f985
     home: http://github.com/nats-io/k8s
-    icon: https://nats.io/img/logo.png
+    icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
     - messaging
