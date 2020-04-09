@@ -55,4 +55,8 @@ data:
       {{- with .Values.store.limits }}
       store_limits: {{ toPrettyJson . | indent 6 }}
       {{- end }}
+
+      {{- with .Values.stan.maxChannels }}
+      max_channels: {{ . }}
+      {{- end }}
     }
