@@ -47,7 +47,9 @@ store:
   # NOTE: Section in snake case since they will become
   # the same objects.
   # 
-  # Look at the NATS Streaming configuration for this.
+  # Look at the NATS Streaming configuration for this:
+  # 
+  # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#store-limits-configuration
   # 
   limits: {}
 
