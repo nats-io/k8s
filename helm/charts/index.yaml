@@ -21,7 +21,7 @@ entries:
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.6/nats-0.3.6.tgz
- - apiVersion: v2
+  - apiVersion: v2
     appVersion: 2.1.6
     created: "2020-04-03T11:38:30.685897-07:00"
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
