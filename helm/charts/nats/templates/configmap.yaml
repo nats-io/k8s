@@ -251,7 +251,7 @@ data:
           {{- end }}
 
           {{- with .urls }}
-          urls: {{ . | quote }}
+          urls: [{{ join "," . }}]
           {{- end }}
         },
         {{- end }}
