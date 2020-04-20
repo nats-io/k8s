@@ -72,6 +72,7 @@ spec:
           - name: {{ template "stan.name" . }}-pvc
             mountPath: {{ .Values.store.file.path }}
           {{- end }}
+        {{ if .Values.exporter.enabled }}
         - name: metrics
           image: {{ .Values.exporter.image }}
           args:
@@ -85,6 +86,7 @@ spec:
           ports:
           - containerPort: 7777
             name: metrics
+        {{ end }}
   {{- if eq .Values.store.type "file"}}
   volumeClaimTemplates:
   - metadata:
