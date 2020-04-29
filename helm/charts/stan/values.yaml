@@ -22,10 +22,11 @@ stan:
 
 # Toggle whether to use setup a Pod Security Context
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-securityContext:
-  fsGroup: 1000
-  runAsUser: 1000
-  runAsNonRoot: true       
+securityContext: null
+# securityContext:
+#   fsGroup: 1000
+#   runAsUser: 1000
+#   runAsNonRoot: true       
 
 ###########################
 #                         #
