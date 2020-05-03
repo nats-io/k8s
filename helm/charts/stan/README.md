@@ -102,7 +102,7 @@ In case of using file storage, this sets up a 3 node cluster,
 each with its own backed persistence volume.
 
 ```yaml
-stan:
+store:
   cluster:
     enabled: true
     logPath: /data/stan/log
