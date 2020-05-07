@@ -162,3 +162,31 @@ securityContext:
   runAsUser: 1000
   runAsNonRoot: true       
 ```
+
+#### Affinity
+
+<https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity>
+
+Match expresstion must be configured according to your setup
+
+```yaml
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node.kubernetes.io/purpose
+              operator: In
+              values:
+                - stan
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - nats
+                - stan
+        topologyKey: "kubernetes.io/hostname"
+```
