@@ -45,6 +45,9 @@ spec:
                 values:
                 - {{ template "stan.name" . }}
             topologyKey: kubernetes.io/hostname
+{{- with .Values.affinity }}
+{{ toYaml . | indent 8 }}
+{{- end }}
       containers:
         - name: stan
           image: {{ .Values.stan.image }}

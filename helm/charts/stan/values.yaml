@@ -28,6 +28,10 @@ securityContext: null
 #   runAsUser: 1000
 #   runAsNonRoot: true       
 
+# Affinity for pod assignment
+# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
 ###########################
 #                         #
 #  Storage configuration  #
