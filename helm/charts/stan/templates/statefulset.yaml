@@ -36,7 +36,6 @@ spec:
           name: {{ template "stan.name".  }}-config
         name: config-volume
       affinity:
-{{- if (not (.Values.affinity)) }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -46,8 +45,8 @@ spec:
                 values:
                 - {{ template "stan.name" . }}
             topologyKey: kubernetes.io/hostname
-{{- else }}
-{{ toYaml .Values.affinity | indent 8 }}
+{{- with .Values.affinity }}
+{{ toYaml . | indent 8 }}
 {{- end }}
       containers:
         - name: stan
