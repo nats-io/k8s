@@ -341,7 +341,7 @@ securityContext:
 
 <https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity>
 
-`matchExpresstion` must be configured according to your setup
+`matchExpression` must be configured according to your setup
 
 ```yaml
 affinity:
