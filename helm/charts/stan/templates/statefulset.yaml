@@ -26,6 +26,9 @@ spec:
         app: {{ template "stan.name" . }}
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     spec:
+      {{- if .Values.stan.nats.serviceRoleAuth.enabled }}
+      serviceAccountName: "nats-streaming"
+      {{- end }}
 {{- with .Values.securityContext }}
       securityContext:
 {{ toYaml . | indent 8 }}
@@ -63,6 +66,17 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          {{- if .Values.stan.nats.serviceRoleAuth.enabled }}
+          - name: NATS_OPERATOR_SERVICE_ACCOUNT
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.serviceAccountName
+          - name: NATS_OPERATOR_BOUND_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: nats-streaming-{{ .Values.stan.nats.serviceRoleAuth.natsClusterName }}-bound-token
+                key: token
+          {{- end }}
           ports:
           - containerPort: 8222
             name: monitor
