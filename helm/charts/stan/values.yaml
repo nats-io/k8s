@@ -19,6 +19,9 @@ stan:
   # an URL for NATS is required.
   nats:
     url:
+    serviceRoleAuth:
+      enabled: false
+      natsClusterName:
 
 # Toggle whether to use setup a Pod Security Context
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -38,7 +41,7 @@ affinity: {}
 #                         #
 ###########################
 store:
-  # One value possible out of: "file" | "sql" | "memory"
+  # One value po  ssible out of: "file" | "sql" | "memory"
   type: file
 
   # 
