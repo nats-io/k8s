@@ -17,15 +17,34 @@ Listening on [foo], clientID=[stan-sub], qgroup=[] durable=[]
 
 ## Basic Configuration
 
-### NATS URL
+### Connecting to NATS Server
 
-A NATS Streaming server **requires a connection to a NATS Server**, you
-can set it as follows:
+A NATS Streaming server **requires a connection to a NATS Server**.
+There are few ways to configure connection to NATS:
 
-```
+#### Without credentials
+
+```yaml
 stan:
   nats:
     url: "nats://my-nats:4222"
+```
+
+#### Authenticate using NatsServiceRole
+
+When using NATS Operator you can configure NATS Service Roles to
+generate credentials for your clients in NATS config. 
+https://github.com/nats-io/nats-operator#using-serviceaccounts
+This will create ServiceAccount and NatsServiceRole and enable
+authentication using "bound-token":
+
+```yaml
+stan:
+  nats:
+    url: "my-nats.nats-namespace:4222" # Do not pass here `nats://` prefix
+    serviceRoleAuth:
+      enabled: "true"
+      natsClusterName: my-nats # Name of NATS cluster created by NATS Operator
 ```
 
 ### Server Image
@@ -41,7 +60,7 @@ stan:
 By default the cluster ID will be the same as the release of the
 NATS Streaming cluster, but you can set a custom one as follows:
 
-```console
+```yaml
 stan:
   clusterID: my-cluster-name
 ```
@@ -52,7 +71,7 @@ This means that in order to connect,
 
 *NOTE*: It is recommended to not enable debug/trace logging in production.
 
-```console
+```yaml
 stan:
   logging:
     debug: true

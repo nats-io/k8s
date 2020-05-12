@@ -11,8 +11,10 @@ data:
     http: 8222
 
     streaming {
-      {{- with .Values.stan.nats.url }}
-      ns: {{ . }}
+      {{- if .Values.stan.nats.serviceRoleAuth.enabled }}
+      ns: $NATS_URL
+      {{ else }}
+      ns: {{ .Values.stan.nats.url }}
       {{- end }}
 
       {{- if .Values.stan.clusterID }}
