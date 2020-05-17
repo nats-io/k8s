@@ -61,12 +61,21 @@ store:
   # 
   limits: {}
 
+  #
+  # Volume claim configuration. Required if the store type is `file` or if
+  # cluster it's enabled.
+  #
+  volume:
+    enabled: true
+    mount: /data/stan
+    storageSize: 100Gi
+    storageClass:
+
   # 
   # File storage settings.
   # 
   file:
     path: /data/stan/store
-    storageSize: 1Gi
 
   # In case of using file or sql storage, sets up a 3 node cluster.
   cluster:
