@@ -47,6 +47,21 @@ stan:
       natsClusterName: my-nats # Name of NATS cluster created by NATS Operator
 ```
 
+### Number of replicas
+
+In case of using fault tolerance mode, you can set the number of replicas
+to be usef in the FT group.
+
+```
+stan:
+  replicas: 2
+
+# Note: in case of using clustering you will always get 3 replicas.
+store:
+  cluster:
+    enabled: true
+```
+
 ### Server Image
 
 ```yaml
@@ -98,6 +113,11 @@ In case of using a shared volume that supports a `readwritemany`,
 you can enable fault tolerance as follows.
 
 ```yaml
+stan:
+  replicas: 2
+  nats:
+    url: "nats://my-nats:4222"
+
 store:
   type: file
 
@@ -105,14 +125,21 @@ store:
   # Fault tolerance group
   # 
   ft:
-    group: 
+    group: foo
 
   # 
   # File storage settings.
   # 
   file:
     path: /data/stan/store
+
+  # volume for EFS
+  volume:
+    mount: /data/stan
     storageSize: 1Gi
+    storageClass: aws-efs
+    accessModes: ReadWriteMany
+
 ```
 
 #### Clustered File Storage

@@ -14,7 +14,9 @@ spec:
   {{- if .Values.store.cluster.enabled }}
   replicas: 3
   {{- else }}
-  replicas: 1
+  {{- with .Values.stan.replicas }}
+  replicas: {{ . }}
+  {{- end }}
   {{- end }}
 
   # NATS Streaming service name
@@ -117,7 +119,9 @@ spec:
       storageClassName: {{ . }}
       {{- end }}
       accessModes:
-      - ReadWriteOnce
+      {{- with .Values.store.volume.accessModes }}
+      - {{ . }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.store.volume.storageSize }}
