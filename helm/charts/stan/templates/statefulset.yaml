@@ -91,9 +91,11 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /etc/stan-config
+          {{- if eq .Values.store.type "file" }}
           {{- if .Values.store.volume.enabled }}
           - name: {{ template "stan.name" . }}-pvc
             mountPath: {{ .Values.store.volume.mount }}
+          {{- end }}
           {{- end }}
         {{ if .Values.exporter.enabled }}
         - name: metrics
