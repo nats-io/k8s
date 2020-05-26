@@ -50,13 +50,16 @@ stan:
 ### Number of replicas
 
 In case of using fault tolerance mode, you can set the number of replicas
-to be usef in the FT group.
+to be used in the FT group.
 
 ```
 stan:
   replicas: 2
+```
 
-# Note: in case of using clustering you will always get 3 replicas.
+Note: in case of using clustering you will always get exactly 3 replicas.
+
+```
 store:
   cluster:
     enabled: true
@@ -114,7 +117,7 @@ you can enable fault tolerance as follows.
 
 ```yaml
 stan:
-  replicas: 2
+  replicas: 2 # One replica will be active, other one in standby.
   nats:
     url: "nats://my-nats:4222"
 
@@ -125,7 +128,7 @@ store:
   # Fault tolerance group
   # 
   ft:
-    group: foo
+    group: my-group
 
   # 
   # File storage settings.
@@ -136,7 +139,7 @@ store:
   # volume for EFS
   volume:
     mount: /data/stan
-    storageSize: 1Gi
+    storageSize: 100Gi
     storageClass: aws-efs
     accessModes: ReadWriteMany
 
