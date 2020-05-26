@@ -14,7 +14,9 @@ spec:
   {{- if .Values.store.cluster.enabled }}
   replicas: 3
   {{- else }}
-  replicas: 1
+  {{- with .Values.stan.replicas }}
+  replicas: {{ . }}
+  {{- end }}
   {{- end }}
 
   # NATS Streaming service name
@@ -89,9 +91,11 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /etc/stan-config
+          {{- if eq .Values.store.type "file" }}
           {{- if .Values.store.volume.enabled }}
           - name: {{ template "stan.name" . }}-pvc
             mountPath: {{ .Values.store.volume.mount }}
+          {{- end }}
           {{- end }}
         {{ if .Values.exporter.enabled }}
         - name: metrics
@@ -108,6 +112,7 @@ spec:
           - containerPort: 7777
             name: metrics
         {{ end }}
+  {{- if eq .Values.store.type "file" }}
   {{- if .Values.store.volume.enabled }}
   volumeClaimTemplates:
   - metadata:
@@ -117,8 +122,11 @@ spec:
       storageClassName: {{ . }}
       {{- end }}
       accessModes:
-      - ReadWriteOnce
+      {{- with .Values.store.volume.accessModes }}
+      - {{ . }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.store.volume.storageSize }}
+  {{- end }}
   {{- end }}

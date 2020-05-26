@@ -6,6 +6,7 @@
 stan:
   image: nats-streaming:0.17.0
   pullPolicy: IfNotPresent
+  replicas: 1
 
   # Cluster name, generated into a name from the
   # release name by default.
@@ -63,13 +64,14 @@ store:
 
   #
   # Volume claim configuration. Required if the store type is `file` or if
-  # cluster it's enabled.
+  # cluster is enabled.
   #
   volume:
     enabled: true
     mount: /data/stan
-    storageSize: 100Gi
-    storageClass:
+    storageSize: 1Gi
+    accessModes: ReadWriteOnce
+    storageClass: 
 
   # 
   # File storage settings.
