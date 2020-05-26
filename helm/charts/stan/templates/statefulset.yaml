@@ -112,6 +112,7 @@ spec:
           - containerPort: 7777
             name: metrics
         {{ end }}
+  {{- if eq .Values.store.type "file" }}
   {{- if .Values.store.volume.enabled }}
   volumeClaimTemplates:
   - metadata:
@@ -127,4 +128,5 @@ spec:
       resources:
         requests:
           storage: {{ .Values.store.volume.storageSize }}
+  {{- end }}
   {{- end }}
