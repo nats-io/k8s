@@ -213,7 +213,7 @@ entries:
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.4.0/stan-0.4.0.tgz
-    version: 0.3.10
+    version: 0.4.0
   - apiVersion: v2
     appVersion: 0.17.0
     created: "2020-05-05T14:33:09.693566-07:00"
