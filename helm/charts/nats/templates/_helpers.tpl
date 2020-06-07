@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "nats.name" -}}
-{{- default .Release.Name -}}
+{{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
