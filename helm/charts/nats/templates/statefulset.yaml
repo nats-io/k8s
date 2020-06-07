@@ -276,7 +276,7 @@ spec:
               # the same amount as the terminationGracePeriodSeconds to allow
               # the NATS Server to gracefully terminate the client connections.
               #
-              command: ["/bin/sh", "-c", "/nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 60"]
+              command: ["/bin/sh", "-c", "nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 60"]
 
       #################################
       #                               #
