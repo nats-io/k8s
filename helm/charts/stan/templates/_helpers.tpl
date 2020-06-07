@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "stan.name" -}}
-{{- default .Release.Name -}}
+{{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
