@@ -48,8 +48,8 @@ spec:
      - "tail"
      - "-f"
      - "/dev/null"
-    {{- if .Values.natsbox.credentials }}
     volumeMounts:
+    {{- if .Values.natsbox.credentials }}
     - name: nats-sys-creds
       mountPath: /etc/nats-config/creds
     {{- end }}
