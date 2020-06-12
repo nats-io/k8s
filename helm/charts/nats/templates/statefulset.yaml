@@ -22,6 +22,10 @@ spec:
         app: {{ template "nats.name" . }}
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     spec:
+{{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{- toYaml . | nindent 8 }}
+{{- end }}
 {{- with .Values.securityContext }}
       securityContext:
 {{ toYaml . | indent 8 }}

@@ -25,6 +25,7 @@ stan:
       natsClusterName:
 
 nameOverride: ""
+imagePullSecrets: []
 
 # Toggle whether to use setup a Pod Security Context
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
