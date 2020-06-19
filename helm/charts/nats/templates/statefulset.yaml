@@ -11,13 +11,19 @@ spec:
     matchLabels:
       app: {{ template "nats.name" . }}
   {{- if .Values.cluster.enabled }}
-  replicas: 3
+  replicas: {{ .Values.cluster.replicas }}
   {{- else }}
   replicas: 1
   {{- end }}
   serviceName: {{ template "nats.name" . }}
   template:
     metadata:
+      {{- if .Values.podAnnotations }}
+      annotations:
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
       labels:
         app: {{ template "nats.name" . }}
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}

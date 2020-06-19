@@ -80,8 +80,14 @@ securityContext: null
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+# Annotations to add to the NATS pods
+# ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+# key: "value"
+
 cluster:
   enabled: false
+  replicas: 3
 
 # Leafnode connections to extend a cluster:
 #
