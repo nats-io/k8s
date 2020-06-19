@@ -80,6 +80,7 @@ https://docs.nats.io/nats-server/configuration/clustering#nats-server-clustering
 ```yaml
 cluster:
   enabled: false
+  replicas: 3
 
   tls:
     secret:
@@ -363,3 +364,14 @@ affinity:
                 - nats
                 - stan
         topologyKey: "kubernetes.io/hostname"
+```
+
+#### Annotations
+
+<https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations>
+
+```yaml
+podAnnotations:
+  key1 : "value1",
+  key2 : "value2"
+```
