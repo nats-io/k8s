@@ -1,5 +1,5 @@
 
-{{- if or .Values.nats.debug .Values.nats.trace }}
+{{- if or .Values.nats.logging.debug .Values.nats.logging.trace }}
 *WARNING*: Keep in mind that running the server with
 debug and/or trace enabled significantly affects the
 performance of the server!

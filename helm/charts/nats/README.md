@@ -375,3 +375,26 @@ podAnnotations:
   key1 : "value1",
   key2 : "value2"
 ```
+
+### Name Overides
+
+Can change the name of the resources as needed with:
+
+```yaml
+nameOverride: "my-nats"
+```
+
+### Image Pull Secrets
+
+```yaml
+imagePullSecrets:
+- name: myRegistry
+```
+
+Adds this to the StatefulSet:
+
+```yaml
+spec:
+  imagePullSecrets:
+    - name: myRegistry
+```

@@ -3,9 +3,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ .Release.Name }}-box
+  name: {{ template "nats.name" . }}-box
   labels:
-    app: {{ .Release.Name }}-box
+    app: {{ template "nats.name" . }}-box
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
   volumes:
