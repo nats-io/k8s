@@ -24,6 +24,12 @@ spec:
 
   template:
     metadata:
+      {{- if .Values.exporter.enabled }}
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "7777"
+        prometheus.io/scrape: "true"
+      {{- end }}
       labels:
         app: {{ template "stan.name" . }}
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
