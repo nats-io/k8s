@@ -18,8 +18,13 @@ spec:
   serviceName: {{ template "nats.name" . }}
   template:
     metadata:
-      {{- if .Values.podAnnotations }}
+      {{- if or .Values.podAnnotations .Values.exporter.enabled }}
       annotations:
+      {{- if .Values.exporter.enabled }}
+        prometheus.io/path: /metrics
+        prometheus.io/port: "7777"
+        prometheus.io/scrape: "true"
+      {{- end }}
       {{- range $key, $value := .Values.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
