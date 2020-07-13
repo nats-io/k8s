@@ -4,7 +4,7 @@
 #                             #
 ###############################
 nats:
-  image: nats:2.1.6-alpine3.11
+  image: nats:2.1.7-alpine3.11
   pullPolicy: IfNotPresent
 
   # Toggle whether to enable external access.
@@ -65,6 +65,9 @@ nats:
   #   cert: "tls.crt"
   #   key: "tls.key"
 
+nameOverride: ""
+imagePullSecrets: []
+
 # Toggle whether to use setup a Pod Security Context
 # ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 securityContext: null
@@ -73,8 +76,18 @@ securityContext: null
 #   runAsUser: 1000
 #   runAsNonRoot: true
 
+# Affinity for pod assignment
+# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+# Annotations to add to the NATS pods
+# ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+# key: "value"
+
 cluster:
   enabled: false
+  replicas: 3
 
 # Leafnode connections to extend a cluster:
 #

@@ -80,6 +80,7 @@ https://docs.nats.io/nats-server/configuration/clustering#nats-server-clustering
 ```yaml
 cluster:
   enabled: false
+  replicas: 3
 
   tls:
     secret:
@@ -335,4 +336,65 @@ securityContext:
   fsGroup: 1000
   runAsUser: 1000
   runAsNonRoot: true
+```
+
+#### Affinity
+
+<https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity>
+
+`matchExpressions` must be configured according to your setup
+
+```yaml
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node.kubernetes.io/purpose
+              operator: In
+              values:
+                - nats
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - nats
+                - stan
+        topologyKey: "kubernetes.io/hostname"
+```
+
+#### Annotations
+
+<https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations>
+
+```yaml
+podAnnotations:
+  key1 : "value1",
+  key2 : "value2"
+```
+
+### Name Overides
+
+Can change the name of the resources as needed with:
+
+```yaml
+nameOverride: "my-nats"
+```
+
+### Image Pull Secrets
+
+```yaml
+imagePullSecrets:
+- name: myRegistry
+```
+
+Adds this to the StatefulSet:
+
+```yaml
+spec:
+  imagePullSecrets:
+    - name: myRegistry
 ```

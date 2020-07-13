@@ -14,7 +14,9 @@ spec:
   {{- if .Values.store.cluster.enabled }}
   replicas: 3
   {{- else }}
-  replicas: 1
+  {{- with .Values.stan.replicas }}
+  replicas: {{ . }}
+  {{- end }}
   {{- end }}
 
   # NATS Streaming service name
@@ -22,10 +24,23 @@ spec:
 
   template:
     metadata:
+      {{- if .Values.exporter.enabled }}
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "7777"
+        prometheus.io/scrape: "true"
+      {{- end }}
       labels:
         app: {{ template "stan.name" . }}
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     spec:
+      {{- if .Values.stan.nats.serviceRoleAuth.enabled }}
+      serviceAccountName: "nats-streaming"
+      {{- end }}
+{{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{- toYaml . | nindent 8 }}
+{{- end }}
 {{- with .Values.securityContext }}
       securityContext:
 {{ toYaml . | indent 8 }}
@@ -45,6 +60,9 @@ spec:
                 values:
                 - {{ template "stan.name" . }}
             topologyKey: kubernetes.io/hostname
+{{- with .Values.affinity }}
+{{ toYaml . | indent 8 }}
+{{- end }}
       containers:
         - name: stan
           image: {{ .Values.stan.image }}
@@ -60,6 +78,21 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          {{- if .Values.stan.nats.serviceRoleAuth.enabled }}
+          - name: NATS_OPERATOR_SERVICE_ACCOUNT
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.serviceAccountName
+          - name: NATS_OPERATOR_BOUND_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: nats-streaming-{{ .Values.stan.nats.serviceRoleAuth.natsClusterName }}-bound-token
+                key: token
+          - name: NATS_SERVICE
+            value: {{ .Values.stan.nats.url }}
+          - name: NATS_URL
+            value: nats://$(NATS_OPERATOR_SERVICE_ACCOUNT):$(NATS_OPERATOR_BOUND_TOKEN)@$(NATS_SERVICE)
+          {{- end }}
           ports:
           - containerPort: 8222
             name: monitor
@@ -68,9 +101,11 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /etc/stan-config
-          {{- if eq .Values.store.type "file"}}
+          {{- if eq .Values.store.type "file" }}
+          {{- if .Values.store.volume.enabled }}
           - name: {{ template "stan.name" . }}-pvc
-            mountPath: {{ .Values.store.file.path }}
+            mountPath: {{ .Values.store.volume.mount }}
+          {{- end }}
           {{- end }}
         {{ if .Values.exporter.enabled }}
         - name: metrics
@@ -87,14 +122,21 @@ spec:
           - containerPort: 7777
             name: metrics
         {{ end }}
-  {{- if eq .Values.store.type "file"}}
+  {{- if eq .Values.store.type "file" }}
+  {{- if .Values.store.volume.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: {{ template "stan.name" . }}-pvc
     spec:
+      {{- with .Values.store.volume.storageClass }}
+      storageClassName: {{ . }}
+      {{- end }}
       accessModes:
-      - ReadWriteOnce
+      {{- with .Values.store.volume.accessModes }}
+      - {{ . }}
+      {{- end }}
       resources:
         requests:
-          storage: {{ .Values.store.file.storageSize }}
+          storage: {{ .Values.store.volume.storageSize }}
+  {{- end }}
   {{- end }}

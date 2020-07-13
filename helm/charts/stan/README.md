@@ -17,15 +17,52 @@ Listening on [foo], clientID=[stan-sub], qgroup=[] durable=[]
 
 ## Basic Configuration
 
-### NATS URL
+### Connecting to NATS Server
 
-A NATS Streaming server **requires a connection to a NATS Server**, you
-can set it as follows:
+A NATS Streaming server **requires a connection to a NATS Server**.
+There are few ways to configure connection to NATS:
 
-```
+#### Without credentials
+
+```yaml
 stan:
   nats:
     url: "nats://my-nats:4222"
+```
+
+#### Authenticate using NatsServiceRole
+
+When using NATS Operator you can configure NATS Service Roles to
+generate credentials for your clients in NATS config. 
+https://github.com/nats-io/nats-operator#using-serviceaccounts
+This will create ServiceAccount and NatsServiceRole and enable
+authentication using "bound-token":
+
+```yaml
+stan:
+  nats:
+    url: "my-nats.nats-namespace:4222" # Do not pass here `nats://` prefix
+    serviceRoleAuth:
+      enabled: "true"
+      natsClusterName: my-nats # Name of NATS cluster created by NATS Operator
+```
+
+### Number of replicas
+
+In case of using fault tolerance mode, you can set the number of replicas
+to be used in the FT group.
+
+```
+stan:
+  replicas: 2
+```
+
+Note: in case of using clustering you will always get exactly 3 replicas.
+
+```
+store:
+  cluster:
+    enabled: true
 ```
 
 ### Server Image
@@ -41,7 +78,7 @@ stan:
 By default the cluster ID will be the same as the release of the
 NATS Streaming cluster, but you can set a custom one as follows:
 
-```console
+```yaml
 stan:
   clusterID: my-cluster-name
 ```
@@ -52,7 +89,7 @@ This means that in order to connect,
 
 *NOTE*: It is recommended to not enable debug/trace logging in production.
 
-```console
+```yaml
 stan:
   logging:
     debug: true
@@ -79,6 +116,11 @@ In case of using a shared volume that supports a `readwritemany`,
 you can enable fault tolerance as follows.
 
 ```yaml
+stan:
+  replicas: 2 # One replica will be active, other one in standby.
+  nats:
+    url: "nats://my-nats:4222"
+
 store:
   type: file
 
@@ -86,14 +128,21 @@ store:
   # Fault tolerance group
   # 
   ft:
-    group: 
+    group: my-group
 
   # 
   # File storage settings.
   # 
   file:
     path: /data/stan/store
-    storageSize: 1Gi
+
+  # volume for EFS
+  volume:
+    mount: /data/stan
+    storageSize: 100Gi
+    storageClass: aws-efs
+    accessModes: ReadWriteMany
+
 ```
 
 #### Clustered File Storage
@@ -102,7 +151,7 @@ In case of using file storage, this sets up a 3 node cluster,
 each with its own backed persistence volume.
 
 ```yaml
-stan:
+store:
   cluster:
     enabled: true
     logPath: /data/stan/log
@@ -161,4 +210,40 @@ securityContext:
   fsGroup: 1000
   runAsUser: 1000
   runAsNonRoot: true       
+```
+
+#### Affinity
+
+<https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity>
+
+`matchExpressions` must be configured according to your setup
+
+```yaml
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node.kubernetes.io/purpose
+              operator: In
+              values:
+                - stan
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - nats
+                - stan
+        topologyKey: "kubernetes.io/hostname"
+```
+
+### Name Overides
+
+Can change the name of the resources as needed with:
+
+```yaml
+nameOverride: "my-stan"
 ```

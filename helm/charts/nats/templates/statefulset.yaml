@@ -11,20 +11,39 @@ spec:
     matchLabels:
       app: {{ template "nats.name" . }}
   {{- if .Values.cluster.enabled }}
-  replicas: 3
+  replicas: {{ .Values.cluster.replicas }}
   {{- else }}
   replicas: 1
   {{- end }}
   serviceName: {{ template "nats.name" . }}
   template:
     metadata:
+      {{- if or .Values.podAnnotations .Values.exporter.enabled }}
+      annotations:
+      {{- if .Values.exporter.enabled }}
+        prometheus.io/path: /metrics
+        prometheus.io/port: "7777"
+        prometheus.io/scrape: "true"
+      {{- end }}
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
       labels:
         app: {{ template "nats.name" . }}
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     spec:
+{{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{- toYaml . | nindent 8 }}
+{{- end }}
 {{- with .Values.securityContext }}
       securityContext:
 {{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{- toYaml  . | nindent 8 }}
 {{- end }}
       # Common volumes for the containers.
       volumes:
@@ -272,7 +291,7 @@ spec:
               # the same amount as the terminationGracePeriodSeconds to allow
               # the NATS Server to gracefully terminate the client connections.
               #
-              command: ["/bin/sh", "-c", "/nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 60"]
+              command: ["/bin/sh", "-c", "nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 60"]
 
       #################################
       #                               #

@@ -6,6 +6,7 @@
 stan:
   image: nats-streaming:0.17.0
   pullPolicy: IfNotPresent
+  replicas: 1
 
   # Cluster name, generated into a name from the
   # release name by default.
@@ -19,6 +20,12 @@ stan:
   # an URL for NATS is required.
   nats:
     url:
+    serviceRoleAuth:
+      enabled: false
+      natsClusterName:
+
+nameOverride: ""
+imagePullSecrets: []
 
 # Toggle whether to use setup a Pod Security Context
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -27,6 +34,10 @@ securityContext: null
 #   fsGroup: 1000
 #   runAsUser: 1000
 #   runAsNonRoot: true       
+
+# Affinity for pod assignment
+# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
 
 ###########################
 #                         #
@@ -54,12 +65,22 @@ store:
   # 
   limits: {}
 
+  #
+  # Volume claim configuration. Required if the store type is `file` or if
+  # cluster is enabled.
+  #
+  volume:
+    enabled: true
+    mount: /data/stan
+    storageSize: 1Gi
+    accessModes: ReadWriteOnce
+    storageClass: 
+
   # 
   # File storage settings.
   # 
   file:
     path: /data/stan/store
-    storageSize: 1Gi
 
   # In case of using file or sql storage, sets up a 3 node cluster.
   cluster:
