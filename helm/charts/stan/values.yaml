@@ -24,6 +24,20 @@ stan:
       enabled: false
       natsClusterName:
 
+  # TLS
+  # Enabled must be true, and a secret name specified for this to work
+  tls:
+    enabled: false
+    # the name of the secret containing the NATS server ca.crt, tls.crt, and tls.key
+    secretName:    
+    # Reference 
+    # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#tls-configuration
+    settings:
+      client_cert: "/etc/nats/certs/tls.crt"
+      client_key: "/etc/nats/certs/tls.key"
+      client_ca: "/etc/nats/certs/ca.crt"
+      timeout: 3
+      
 nameOverride: ""
 imagePullSecrets: []
 

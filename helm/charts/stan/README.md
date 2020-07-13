@@ -47,6 +47,51 @@ stan:
       natsClusterName: my-nats # Name of NATS cluster created by NATS Operator
 ```
 
+#### With TLS
+
+This will cause STAN  to connect to NATS using TLS, given a
+secret containing the ca.crt, tls.crt, and tls.key.
+
+```yaml
+  tls:
+    enabled: true
+    # the name of the secret containing the NATS server ca.crt, tls.crt, and tls.key
+    secretName: "stan-client-tls"
+    # Reference 
+    # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#tls-configuration
+    settings:
+      client_cert: "/etc/nats/certs/tls.crt"
+      client_key: "/etc/nats/certs/tls.key"
+      client_ca: "/etc/nats/certs/ca.crt"
+      timeout: 3
+```
+
+If you're using the [NATS Operator and cert-manager](https://github.com/nats-io/nats-operator#cert-manager), you
+can provision a certificate for STAN like this:
+
+```yaml
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: stan-client-tls
+spec:
+  secretName: stan-client-tls
+  duration: 2160h # 90 days
+  renewBefore: 240h # 10 days
+  usages:
+  - signing
+  - key encipherment
+  - server auth
+  issuerRef:
+    name: nats-ca
+    kind: Issuer
+  organization:
+  - Your organization
+  commonName: stan.default.svc.cluster.local
+  dnsNames:
+  - stan.default.svc
+```
+
 ### Number of replicas
 
 In case of using fault tolerance mode, you can set the number of replicas

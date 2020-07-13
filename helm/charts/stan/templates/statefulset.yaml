@@ -50,6 +50,11 @@ spec:
       - configMap:
           name: {{ template "stan.name".  }}-config
         name: config-volume
+      {{- if and .Values.stan.tls.enabled .Values.stan.tls.secretName }}
+      - name: stan-client-tls-volume
+        secret:
+          secretName: {{ .Values.stan.tls.secretName }}
+      {{- end }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -106,6 +111,10 @@ spec:
           - name: {{ template "stan.name" . }}-pvc
             mountPath: {{ .Values.store.volume.mount }}
           {{- end }}
+          {{- end }}
+          {{- if and .Values.stan.tls.enabled .Values.stan.tls.secretName }}
+          - name: stan-client-tls-volume
+            mountPath: /etc/nats/certs
           {{- end }}
         {{ if .Values.exporter.enabled }}
         - name: metrics
