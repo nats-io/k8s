@@ -55,7 +55,7 @@ secret containing the ca.crt, tls.crt, and tls.key.
 ```yaml
   tls:
     enabled: true
-    # the name of the secret containing the NATS server ca.crt, tls.crt, and tls.key
+    # the secret containing the client ca.crt, tls.crt, and tls.key for STAN
     secretName: "stan-client-tls"
     # Reference 
     # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#tls-configuration

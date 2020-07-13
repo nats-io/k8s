@@ -28,7 +28,7 @@ stan:
   # Enabled must be true, and a secret name specified for this to work
   tls:
     enabled: false
-    # the name of the secret containing the NATS server ca.crt, tls.crt, and tls.key
+    # the secret containing the client ca.crt, tls.crt, and tls.key for STAN
     secretName:    
     # Reference 
     # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#tls-configuration
