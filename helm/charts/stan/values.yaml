@@ -4,7 +4,7 @@
 #                                #
 ##################################
 stan:
-  image: nats-streaming:0.17.0
+  image: nats-streaming:0.18.0
   pullPolicy: IfNotPresent
   replicas: 1
 
@@ -26,6 +26,8 @@ stan:
 
 nameOverride: ""
 imagePullSecrets: []
+
+podAnnotations: {}
 
 # Toggle whether to use setup a Pod Security Context
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -120,7 +122,7 @@ store:
 #######################################
 exporter:
   enabled: true
-  image: synadia/prometheus-nats-exporter:0.6.0
+  image: synadia/prometheus-nats-exporter:0.6.2
   pullPolicy: IfNotPresent
 
 ##################################
