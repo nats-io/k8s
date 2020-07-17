@@ -11,24 +11,23 @@ spec:
     matchLabels:
       app: {{ template "stan.name" . }}
 
-  {{- if .Values.store.cluster.enabled }}
-  replicas: 3
-  {{- else }}
-  {{- with .Values.stan.replicas }}
-  replicas: {{ . }}
-  {{- end }}
-  {{- end }}
+  replicas: {{ include "stan.replicaCount" .  | required ".Values.stan.replicas should be greater or equal to 3 in clustered mode" }}
 
   # NATS Streaming service name
   serviceName: {{ template "stan.name" . }}
 
   template:
     metadata:
-      {{- if .Values.exporter.enabled }}
+      {{- if or .Values.podAnnotations .Values.exporter.enabled }}
       annotations:
+      {{- if .Values.exporter.enabled }}
         prometheus.io/path: /metrics
         prometheus.io/port: "7777"
         prometheus.io/scrape: "true"
+      {{- end }}
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
       {{- end }}
       labels:
         app: {{ template "stan.name" . }}
