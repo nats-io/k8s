@@ -97,14 +97,14 @@ spec:
 In case of using fault tolerance mode, you can set the number of replicas
 to be used in the FT group.
 
-```
+```yaml
 stan:
   replicas: 2
 ```
 
 Note: in case of using clustering you will always get exactly 3 replicas.
 
-```
+```yaml
 store:
   cluster:
     enabled: true
@@ -140,8 +140,6 @@ stan:
     debug: true
     trace: true
 ```
-
-
 
 ## Storage Configuration
 
