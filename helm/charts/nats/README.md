@@ -79,7 +79,7 @@ https://docs.nats.io/nats-server/configuration/clustering#nats-server-clustering
 
 ```yaml
 cluster:
-  enabled: false
+  enabled: true
   replicas: 3
 
   tls:
