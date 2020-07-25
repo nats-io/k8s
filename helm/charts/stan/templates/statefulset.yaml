@@ -54,6 +54,15 @@ spec:
         secret:
           secretName: {{ .Values.stan.tls.secretName }}
       {{- end }}
+
+      {{- if .Values.store.volume.enabled }}
+      {{- if .Values.store.volume.persistentVolumeClaim }}
+      - name: {{ template "stan.name" . }}-pvc
+        persistentVolumeClaim:
+          claimName: {{ .Values.store.volume.persistentVolumeClaim.claimName }}
+      {{- end }}
+      {{- end }}
+
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -132,6 +141,7 @@ spec:
         {{ end }}
   {{- if eq .Values.store.type "file" }}
   {{- if .Values.store.volume.enabled }}
+  {{- if not .Values.store.volume.persistentVolumeClaim -}}
   volumeClaimTemplates:
   - metadata:
       name: {{ template "stan.name" . }}-pvc
@@ -146,5 +156,6 @@ spec:
       resources:
         requests:
           storage: {{ .Values.store.volume.storageSize }}
+  {{- end }}
   {{- end }}
   {{- end }}
