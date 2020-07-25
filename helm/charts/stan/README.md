@@ -114,8 +114,15 @@ store:
 
 ```yaml
 stan:
-  image: nats-streaming:0.17.0
+  image: nats-streaming:0.18.0
   pullPolicy: IfNotPresent
+```
+
+For the alpine image:
+
+```
+stan:
+  image: nats-streaming:alpine
 ```
 
 ### Custom Cluster ID
@@ -156,13 +163,14 @@ store:
 #### Fault Tolerance mode
 
 In case of using a shared volume that supports a `readwritemany`,
-you can enable fault tolerance as follows.
+you can enable fault tolerance as follows.  More info on how to 
+set this up can be found [here]()
 
 ```yaml
 stan:
   replicas: 2 # One replica will be active, other one in standby.
   nats:
-    url: "nats://my-nats:4222"
+    url: "nats://nats:4222"
 
 store:
   type: file
@@ -179,13 +187,16 @@ store:
   file:
     path: /data/stan/store
 
-  # volume for EFS
+  # Volume for EFS
   volume:
-    mount: /data/stan
-    storageSize: 100Gi
-    storageClass: aws-efs
-    accessModes: ReadWriteMany
+    enabled: true
 
+    # Mount path for the volume.
+    mount: /data/stan
+
+    # FT mode requires a single shared ReadWriteMany PVC volume.
+    persistentVolumeClaim:
+      claimName: stan-efs
 ```
 
 #### Clustered File Storage
