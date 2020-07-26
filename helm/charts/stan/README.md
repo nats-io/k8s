@@ -164,7 +164,7 @@ store:
 
 In case of using a shared volume that supports a `readwritemany`,
 you can enable fault tolerance as follows.  More info on how to 
-set this up can be found [here]()
+set this up can be found [here](https://docs.nats.io/nats-on-kubernetes/stan-ft-k8s-aws)
 
 ```yaml
 stan:
