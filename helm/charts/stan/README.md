@@ -199,6 +199,24 @@ store:
       claimName: stan-efs
 ```
 
+Where the persistent volume claim is something like the following for example (using `ReadWriteMany`):
+
+```yaml
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: stan-efs
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "aws-efs"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+```
+
 #### Clustered File Storage
 
 In case of using file storage, this sets up a 3 node cluster,
