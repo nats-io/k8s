@@ -211,6 +211,35 @@ store:
     logPath: /data/stan/log
 ```
 
+Example that will use a volume claim for each pod:
+
+```yaml
+stan:
+  image: nats-streaming:alpine
+  replicas: 3 # At least 3 required.
+  nats:
+    url: "nats://nats:4222"
+
+store:
+  type: file
+
+  cluster:
+    enabled: true
+
+  #
+  # File storage settings.
+  #
+  file:
+    path: /data/stan/store
+
+  # Volume for each pod.
+  volume:
+    enabled: true
+
+    # Mount path for the volume.
+    mount: /data/stan
+```
+
 ### SQL Storage
 
 ```yaml

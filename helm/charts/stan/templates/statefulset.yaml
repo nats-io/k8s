@@ -141,7 +141,7 @@ spec:
         {{ end }}
   {{- if eq .Values.store.type "file" }}
   {{- if .Values.store.volume.enabled }}
-  {{- if not .Values.store.volume.persistentVolumeClaim -}}
+  {{- if not .Values.store.volume.persistentVolumeClaim }}
   volumeClaimTemplates:
   - metadata:
       name: {{ template "stan.name" . }}-pvc
