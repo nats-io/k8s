@@ -114,8 +114,15 @@ store:
 
 ```yaml
 stan:
-  image: nats-streaming:0.17.0
+  image: nats-streaming:0.18.0
   pullPolicy: IfNotPresent
+```
+
+For the alpine image:
+
+```
+stan:
+  image: nats-streaming:alpine
 ```
 
 ### Custom Cluster ID
@@ -156,13 +163,14 @@ store:
 #### Fault Tolerance mode
 
 In case of using a shared volume that supports a `readwritemany`,
-you can enable fault tolerance as follows.
+you can enable fault tolerance as follows.  More info on how to 
+set this up can be found [here](https://docs.nats.io/nats-on-kubernetes/stan-ft-k8s-aws)
 
 ```yaml
 stan:
   replicas: 2 # One replica will be active, other one in standby.
   nats:
-    url: "nats://my-nats:4222"
+    url: "nats://nats:4222"
 
 store:
   type: file
@@ -179,13 +187,34 @@ store:
   file:
     path: /data/stan/store
 
-  # volume for EFS
+  # Volume for EFS
   volume:
-    mount: /data/stan
-    storageSize: 100Gi
-    storageClass: aws-efs
-    accessModes: ReadWriteMany
+    enabled: true
 
+    # Mount path for the volume.
+    mount: /data/stan
+
+    # FT mode requires a single shared ReadWriteMany PVC volume.
+    persistentVolumeClaim:
+      claimName: stan-efs
+```
+
+Where the persistent volume claim is something like the following for example (using `ReadWriteMany`):
+
+```yaml
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: stan-efs
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "aws-efs"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
 ```
 
 #### Clustered File Storage
@@ -198,6 +227,35 @@ store:
   cluster:
     enabled: true
     logPath: /data/stan/log
+```
+
+Example that will use a volume claim for each pod:
+
+```yaml
+stan:
+  image: nats-streaming:alpine
+  replicas: 3 # At least 3 required.
+  nats:
+    url: "nats://nats:4222"
+
+store:
+  type: file
+
+  cluster:
+    enabled: true
+
+  #
+  # File storage settings.
+  #
+  file:
+    path: /data/stan/store
+
+  # Volume for each pod.
+  volume:
+    enabled: true
+
+    # Mount path for the volume.
+    mount: /data/stan
 ```
 
 ### SQL Storage
