@@ -111,6 +111,10 @@ spec:
             name: monitor
           - containerPort: 7777
             name: metrics
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
           - name: config-volume
             mountPath: /etc/stan-config
