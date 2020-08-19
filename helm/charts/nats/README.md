@@ -90,6 +90,12 @@ cluster:
     key: "tls.key"
 ```
 
+Example:
+
+```sh
+$ helm install nats nats/nats --set cluster.enabled=true
+```
+
 ## Leafnodes
 
 Leafnode connections to extend a cluster. More info at:

@@ -10,11 +10,11 @@ stan:
 
   # Cluster name, generated into a name from the
   # release name by default.
-  clusterID: 
+  clusterID:
 
   logging:
-    debug: 
-    trace: 
+    debug:
+    trace:
 
   # In case of NATS not being embedded then
   # an URL for NATS is required.
@@ -29,15 +29,15 @@ stan:
   tls:
     enabled: false
     # the secret containing the client ca.crt, tls.crt, and tls.key for STAN
-    secretName:    
-    # Reference 
+    secretName:
+    # Reference
     # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#tls-configuration
     settings:
       client_cert: "/etc/nats/certs/tls.crt"
       client_key: "/etc/nats/certs/tls.key"
       client_ca: "/etc/nats/certs/ca.crt"
       timeout: 3
-      
+
 nameOverride: ""
 imagePullSecrets: []
 
@@ -49,11 +49,15 @@ securityContext: null
 # securityContext:
 #   fsGroup: 1000
 #   runAsUser: 1000
-#   runAsNonRoot: true       
+#   runAsNonRoot: true
 
 # Affinity for pod assignment
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
+
+# Resource requests and limits for containers
+# ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+resources: {}
 
 ###########################
 #                         #
@@ -64,21 +68,21 @@ store:
   # One value possible out of: "file" | "sql" | "memory"
   type: file
 
-  # 
+  #
   # Fault tolerance group
-  # 
+  #
   ft:
     group:
 
   # Configures streaming/store_limits as is.
-  # 
+  #
   # NOTE: Section in snake case since they will become
   # the same objects.
-  # 
+  #
   # Look at the NATS Streaming configuration for this:
-  # 
+  #
   # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#store-limits-configuration
-  # 
+  #
   limits: {}
 
   #
@@ -90,11 +94,11 @@ store:
     mount: /data/stan
     storageSize: 1Gi
     accessModes: ReadWriteOnce
-    storageClass: 
+    storageClass:
 
-  # 
+  #
   # File storage settings.
-  # 
+  #
   file:
     path: /data/stan/store
 
@@ -103,17 +107,17 @@ store:
     enabled: false
     logPath: /data/stan/log
 
-  # 
+  #
   # SQL storage settings
-  # 
+  #
   sql:
     driver: postgres
 
     # TODO: Use secret reference and include instead for the password.
-    # 
+    #
     # e.g.
     # source: "dbname=postgres user=postgres password=stan host=stan-db sslmode=disable"
-    # 
+    #
     source: ""
 
     # Initialize the database.
