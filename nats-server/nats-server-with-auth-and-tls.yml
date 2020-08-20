@@ -160,7 +160,7 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - name: nats
-        image: nats:2.1.2-alpine3.10
+        image: nats:2.1.7-alpine3.11
         ports:
         - containerPort: 4222
           name: client

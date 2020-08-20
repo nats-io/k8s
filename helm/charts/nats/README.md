@@ -15,7 +15,7 @@ helm install my-nats nats/nats
 
 ```yaml
 nats:
-  image: nats:2.1.6-alpine3.11
+  image: nats:2.1.7-alpine3.11
   pullPolicy: IfNotPresent
 ```
 
