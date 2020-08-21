@@ -23,6 +23,10 @@ data:
       id: {{ template "stan.name" . }}
       {{- end }}
 
+      {{- if .Values.stan.credentials }}
+        credentials: "/etc/stan-creds/{{ .Values.stan.credentials.secret.key }}"
+      {{- end }}
+
       {{- if and .Values.stan.tls.enabled .Values.stan.tls.secretName }}
       tls: {{ mustToJson .Values.stan.tls.settings }}                  
       {{- end }}

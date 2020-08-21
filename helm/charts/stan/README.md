@@ -47,6 +47,21 @@ stan:
       natsClusterName: my-nats # Name of NATS cluster created by NATS Operator
 ```
 
+#### Authenticate with a 'credentials' file
+
+In case of a secured NATS server the NATS Streaming server will need to 
+connect to the server using user credentials. These user credentials are
+managed using the ```nsc``` tool and can be passed to the NATS Streaming
+server using "credentials"
+
+```yaml
+stan:
+  credentials:
+    secret:
+      name: nats-sys-creds
+      key: sys.creds
+```
+
 #### With TLS
 
 This will cause STAN  to connect to NATS using TLS, given a

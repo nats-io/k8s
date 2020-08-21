@@ -62,6 +62,11 @@ spec:
           claimName: {{ .Values.store.volume.persistentVolumeClaim.claimName }}
       {{- end }}
       {{- end }}
+      {{- if .Values.stan.credentials }}
+      - name: stan-sys-creds
+        secret:
+          secretName: {{ .Values.stan.credentials.secret.name }}
+      {{- end }}
 
       affinity:
         podAntiAffinity:
@@ -127,6 +132,10 @@ spec:
           {{- if and .Values.stan.tls.enabled .Values.stan.tls.secretName }}
           - name: stan-client-tls-volume
             mountPath: /etc/nats/certs
+          {{- end }}
+          {{- if .Values.stan.credentials }}
+          - name: stan-sys-creds
+            mountPath: /etc/stan-creds
           {{- end }}
         {{ if .Values.exporter.enabled }}
         - name: metrics

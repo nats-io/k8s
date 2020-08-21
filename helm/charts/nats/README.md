@@ -237,7 +237,7 @@ gateway:
 
 ```yaml
 auth:
-  enabled: false
+  enabled: true
 
   # Reference to the Operator JWT.
   operatorjwt:
@@ -269,7 +269,7 @@ auth:
 
 ```yaml
 auth:
-  enabled: false
+  enabled: true
 
   # Reference to the Operator JWT.
   operatorjwt:
