@@ -62,10 +62,10 @@ spec:
           claimName: {{ .Values.store.volume.persistentVolumeClaim.claimName }}
       {{- end }}
       {{- end }}
-      {{- if .Values.stan.credentials.secret.name }}
+      {{- if .Values.stan.credentials }}
       - name: stan-sys-creds
         secret:
-          secretName: {{ Values.stan.credentials.secret.name }}
+          secretName: {{ .Values.stan.credentials.secret.name }}
       {{- end }}
 
       affinity:
@@ -133,7 +133,7 @@ spec:
           - name: stan-client-tls-volume
             mountPath: /etc/nats/certs
           {{- end }}
-          {{- if .Values.stan.credentials.secret.name }}
+          {{- if .Values.stan.credentials }}
           - name: stan-sys-creds
             mountPath: /etc/stan-creds
           {{- end }}
