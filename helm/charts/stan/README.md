@@ -56,7 +56,10 @@ server using "credentials"
 
 ```yaml
 stan:
-  credentials: "path/to/my.creds"
+  credentials:
+    configMap:
+      name: SYS
+      key: sys.creds
 ```
 
 #### With TLS

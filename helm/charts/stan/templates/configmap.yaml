@@ -23,8 +23,8 @@ data:
       id: {{ template "stan.name" . }}
       {{- end }}
 
-      {{- if .Values.stan.credentials }}
-        id: {{ .Values.stan.credentials }}
+      {{- if .Values.stan.credentials.configMap.name }}
+        credentials: /etc/stan-user.creds
       {{- end }}
 
       {{- if and .Values.stan.tls.enabled .Values.stan.tls.secretName }}

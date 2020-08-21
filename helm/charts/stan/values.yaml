@@ -39,7 +39,10 @@ stan:
       timeout: 3
 
   # The credentials file to load in to connect to the nats server.
-  #credentials: "user.creds"
+  #credentials:
+  #  configMap:
+  #    name: SYS
+  #    key: sys.creds
 
 nameOverride: ""
 imagePullSecrets: []
