@@ -40,8 +40,8 @@ stan:
 
   # The credentials file to load in to connect to the nats server.
   #credentials:
-  #  configMap:
-  #    name: SYS
+  #  secret:
+  #    name: nats-sys-creds
   #    key: sys.creds
 
 nameOverride: ""

@@ -62,11 +62,10 @@ spec:
           claimName: {{ .Values.store.volume.persistentVolumeClaim.claimName }}
       {{- end }}
       {{- end }}
-      {{- if .Values.stan.credentials.configMap.name }}
-      - name: stan-user-volumne
-        configMap:
-          name: {{ .Values.auth.operatorjwt.configMap.name }}
-          key: {{ .Values.auth.operatorjwt.configMap.key }}
+      {{- if .Values.stan.credentials.secret.name }}
+      - name: stan-sys-creds
+        secret:
+          secretName: {{ Values.stan.credentials.secret.name }}
       {{- end }}
 
       affinity:
@@ -134,9 +133,9 @@ spec:
           - name: stan-client-tls-volume
             mountPath: /etc/nats/certs
           {{- end }}
-          {{- if .Values.stan.credentials.configMap.name }}
-          - name: stan-user-volumne
-            mountPath: /etc/stan-user.creds
+          {{- if .Values.stan.credentials.secret.name }}
+          - name: stan-sys-creds
+            mountPath: /etc/stan-creds
           {{- end }}
         {{ if .Values.exporter.enabled }}
         - name: metrics

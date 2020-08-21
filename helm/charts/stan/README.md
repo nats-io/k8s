@@ -57,8 +57,8 @@ server using "credentials"
 ```yaml
 stan:
   credentials:
-    configMap:
-      name: SYS
+    secret:
+      name: nats-sys-creds
       key: sys.creds
 ```
 
