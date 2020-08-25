@@ -139,6 +139,15 @@ store:
     dbHost: ""
     dbPort: 5432
 
+  backup:
+    enabled: true
+    sleepTime: 500
+    s3Path: s3://example-bucket/stan/backups
+    backupScript: |-
+      #!/bin/sh
+      echo backup
+
+
 #######################################
 #                                     #
 # Prometheus Exporter configuration   #

@@ -87,6 +87,12 @@ spec:
           args:
           - -sc
           - /etc/stan-config/stan.conf
+          {{- if eq .Values.store.type "file" }}
+          {{- if .Values.store.backup.enabled }}
+          - --file_slice_archive_script
+          - /etc/stan-config/backup.sh
+          {{- end }}
+          {{- end }}
           env:
           - name: POD_NAME
             valueFrom:
@@ -137,6 +143,34 @@ spec:
           - name: stan-sys-creds
             mountPath: /etc/stan-creds
           {{- end }}
+        {{- if eq .Values.store.type "file" }}
+        {{- if .Values.store.backup.enabled }}
+        - name: backup
+          image: amazon/aws-cli
+          command: ["/bin/sh", "-c"]
+          args:
+          - |
+            while true; do
+              curl -s 127.0.0.1:8222/streaming/serverz | grep 'Leader'
+              RESULT=$?
+              if [ $RESULT -eq 0 ]; then
+                aws s3 cp \
+                {{ .Values.store.volume.mount }}/*.bak \
+                {{ .Values.store.backup.s3Path }}
+              fi
+              rm -rf {{ .Values.store.volume.mount }}/*.bak
+              sleep $(SLEEP_TIME)
+            done
+          env:
+          - name: SLEEP_TIME
+            value: "{{ .Values.store.backup.sleepTime }}"
+          {{- if .Values.store.volume.enabled }}
+          volumeMounts:
+            - name: {{ template "stan.name" . }}-pvc
+              mountPath: {{ .Values.store.volume.mount }}
+          {{- end }}
+        {{- end }}
+        {{- end }}
         {{ if .Values.exporter.enabled }}
         - name: metrics
           image: {{ .Values.exporter.image }}
