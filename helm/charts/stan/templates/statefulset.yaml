@@ -156,7 +156,7 @@ spec:
               if [ $RESULT -eq 0 ]; then
                 aws s3 cp \
                 {{ .Values.store.volume.mount }}/* \
-                {{ .Values.store.backup.s3Path }}
+                {{ required "A valid s3 path is required!" .Values.store.backup.s3Path }}
               fi
               rm -rf {{ .Values.store.volume.mount }}/*.bak
               sleep $(SLEEP_TIME)

@@ -33,7 +33,7 @@ stan:
 #### Authenticate using NatsServiceRole
 
 When using NATS Operator you can configure NATS Service Roles to
-generate credentials for your clients in NATS config. 
+generate credentials for your clients in NATS config.
 https://github.com/nats-io/nats-operator#using-serviceaccounts
 This will create ServiceAccount and NatsServiceRole and enable
 authentication using "bound-token":
@@ -49,7 +49,7 @@ stan:
 
 #### Authenticate with a 'credentials' file
 
-In case of a secured NATS server the NATS Streaming server will need to 
+In case of a secured NATS server the NATS Streaming server will need to
 connect to the server using user credentials. These user credentials are
 managed using the ```nsc``` tool and can be passed to the NATS Streaming
 server using "credentials"
@@ -72,7 +72,7 @@ secret containing the ca.crt, tls.crt, and tls.key.
     enabled: true
     # the secret containing the client ca.crt, tls.crt, and tls.key for STAN
     secretName: "stan-client-tls"
-    # Reference 
+    # Reference
     # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#tls-configuration
     settings:
       client_cert: "/etc/nats/certs/tls.crt"
@@ -150,7 +150,7 @@ stan:
   clusterID: my-cluster-name
 ```
 
-This means that in order to connect, 
+This means that in order to connect,
 
 ### Logging
 
@@ -172,13 +172,13 @@ default "file" storage is used using a persistent volume.
 
 ```yaml
 store:
-  type: file 
+  type: file
 ```
 
 #### Fault Tolerance mode
 
 In case of using a shared volume that supports a `readwritemany`,
-you can enable fault tolerance as follows.  More info on how to 
+you can enable fault tolerance as follows.  More info on how to
 set this up can be found [here](https://docs.nats.io/nats-on-kubernetes/stan-ft-k8s-aws)
 
 ```yaml
@@ -190,15 +190,15 @@ stan:
 store:
   type: file
 
-  # 
+  #
   # Fault tolerance group
-  # 
+  #
   ft:
     group: my-group
 
-  # 
+  #
   # File storage settings.
-  # 
+  #
   file:
     path: /data/stan/store
 
@@ -273,6 +273,29 @@ store:
     mount: /data/stan
 ```
 
+Example that will back up the file store when operating in clustered mode:
+
+```yaml
+store:
+  backup:
+    enabled: true
+    s3Path: s3://example-bucket/stan-backups
+
+    # Create a secret called `aws-creds` with the 3 keys:
+    # awsAccessKeyId
+    # awsSecretKeyId
+    # awsDefaultRegion
+    credentialsSecretName: aws-creds
+```
+
+Alternatively, instead of creating a secret, you can provide an instance profile instead:
+
+```yaml
+podAnnotations:
+  # Configures a role with this name to be assumed by the pods.
+  iam.amazonaws.com/role: "stan-backups"
+```
+
 ### SQL Storage
 
 ```yaml
@@ -281,9 +304,9 @@ store:
     driver: postgres
 
     # For example:
-    # 
+    #
     # source: "dbname=postgres user=postgres password=stan host=stan-db sslmode=disable"
-    # 
+    #
     source: ""
 
     # Initialize the database
@@ -302,7 +325,7 @@ store:
 
 ## Misc
 
-### Prometheus Exporter sidecar 
+### Prometheus Exporter sidecar
 
 You can toggle whether to start the sidecar that can be used to feed metrics to Prometheus:
 
@@ -325,7 +348,7 @@ https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 securityContext:
   fsGroup: 1000
   runAsUser: 1000
-  runAsNonRoot: true       
+  runAsNonRoot: true
 ```
 
 #### Affinity

@@ -142,7 +142,7 @@ store:
   backup:
     enabled: false
     sleepTime: 3600
-    s3Path: s3://example-bucket/stan/backups
+    s3Path: ""
     # To use backup functionality, you are required to either create a secret with the name you define here, or provide an instance profile.
     credentialsSecretName:
     backupScript: |-
