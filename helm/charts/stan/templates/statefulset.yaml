@@ -151,19 +151,20 @@ spec:
           args:
           - |
             while true; do
-              curl -s 127.0.0.1:8222/streaming/serverz | grep 'Leader'
-              RESULT=$?
-              if [ $RESULT -eq 0 ]; then
-                aws s3 cp \
-                {{ .Values.store.volume.mount }}/* \
-                {{ required "A valid s3 path is required!" .Values.store.backup.s3Path }}
-              fi
+              aws s3 cp \
+              {{ .Values.store.volume.mount }}/* \
+              {{ required "A valid s3 path is required!" .Values.store.backup.s3Path }}/{{ template "stan.name" . }}/$(POD_NAME)/
+
               rm -rf {{ .Values.store.volume.mount }}/*.bak
               sleep $(SLEEP_TIME)
             done
           env:
           - name: SLEEP_TIME
             value: "{{ .Values.store.backup.sleepTime }}"
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
           {{- if .Values.store.backup.credentialsSecretName }}
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
