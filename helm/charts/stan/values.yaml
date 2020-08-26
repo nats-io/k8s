@@ -140,7 +140,7 @@ store:
     dbPort: 5432
 
   backup:
-    enabled: true
+    enabled: false
     sleepTime: 500
     s3Path: s3://example-bucket/stan/backups
     backupScript: |-
