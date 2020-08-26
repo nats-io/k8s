@@ -181,6 +181,10 @@ spec:
                 name: {{ .Values.store.backup.credentialsSecretName }}
                 key: awsDefaultRegion
           {{- end }}
+          {{- with .Values.store.backup.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- if .Values.store.volume.enabled }}
           volumeMounts:
             - name: {{ template "stan.name" . }}-pvc

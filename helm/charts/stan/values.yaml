@@ -61,7 +61,7 @@ securityContext: null
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
-# Resource requests and limits for containers
+# Resource requests and limits for primary stan container
 # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 resources: {}
 
@@ -141,13 +141,16 @@ store:
 
   backup:
     enabled: false
-    sleepTime: 500
+    sleepTime: 3600
     s3Path: s3://example-bucket/stan/backups
     # To use backup functionality, you are required to either create a secret with the name you define here, or provide an instance profile.
     credentialsSecretName:
     backupScript: |-
       #!/bin/sh
       echo backup
+    # Resource requests and limits for backup container
+    # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    resources: {}
 
 
 #######################################
