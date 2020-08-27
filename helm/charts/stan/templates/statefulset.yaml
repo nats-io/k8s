@@ -152,10 +152,11 @@ spec:
           - |
             while true; do
               aws s3 cp \
-              {{ .Values.store.volume.mount }}/* \
-              {{ required "A valid s3 path is required!" .Values.store.backup.s3Path }}/{{ template "stan.name" . }}/$(POD_NAME)/
+              {{ .Values.store.file.path }} \
+              {{ required "A valid s3 path is required!" .Values.store.backup.s3Path }}/{{ template "stan.name" . }}/$POD_NAME/ --recursive
 
-              rm -rf {{ .Values.store.volume.mount }}/*.bak
+              find {{ .Values.store.file.path }} -name '*.bak' -delete
+
               sleep $(SLEEP_TIME)
             done
           env:
