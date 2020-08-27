@@ -87,6 +87,12 @@ spec:
           args:
           - -sc
           - /etc/stan-config/stan.conf
+          {{- if eq .Values.store.type "file" }}
+          {{- if .Values.store.backup.enabled }}
+          - --file_slice_archive_script
+          - /etc/stan-config/backup.sh
+          {{- end }}
+          {{- end }}
           env:
           - name: POD_NAME
             valueFrom:
@@ -137,6 +143,56 @@ spec:
           - name: stan-sys-creds
             mountPath: /etc/stan-creds
           {{- end }}
+        {{- if eq .Values.store.type "file" }}
+        {{- if .Values.store.backup.enabled }}
+        - name: backup
+          image: amazon/aws-cli
+          command: ["/bin/sh", "-c"]
+          args:
+          - |
+            while true; do
+              aws s3 cp \
+              {{ .Values.store.volume.mount }}/* \
+              {{ required "A valid s3 path is required!" .Values.store.backup.s3Path }}/{{ template "stan.name" . }}/$(POD_NAME)/
+
+              rm -rf {{ .Values.store.volume.mount }}/*.bak
+              sleep $(SLEEP_TIME)
+            done
+          env:
+          - name: SLEEP_TIME
+            value: "{{ .Values.store.backup.sleepTime }}"
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          {{- if .Values.store.backup.credentialsSecretName }}
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.store.backup.credentialsSecretName }}
+                key: awsAccessKeyId
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.store.backup.credentialsSecretName }}
+                key: awsSecretKeyId
+          - name: AWS_DEFAULT_REGION
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.store.backup.credentialsSecretName }}
+                key: awsDefaultRegion
+          {{- end }}
+          {{- with .Values.store.backup.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.store.volume.enabled }}
+          volumeMounts:
+            - name: {{ template "stan.name" . }}-pvc
+              mountPath: {{ .Values.store.volume.mount }}
+          {{- end }}
+        {{- end }}
+        {{- end }}
         {{ if .Values.exporter.enabled }}
         - name: metrics
           image: {{ .Values.exporter.image }}

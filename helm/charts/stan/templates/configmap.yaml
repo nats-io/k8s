@@ -28,7 +28,7 @@ data:
       {{- end }}
 
       {{- if and .Values.stan.tls.enabled .Values.stan.tls.secretName }}
-      tls: {{ mustToJson .Values.stan.tls.settings }}                  
+      tls: {{ mustToJson .Values.stan.tls.settings }}
       {{- end }}
 
       {{- with .Values.store.ft.group }}
@@ -66,3 +66,4 @@ data:
       store_limits: {{ toPrettyJson . | indent 6 }}
       {{- end }}
     }
+  backup.sh: {{ toYaml .Values.store.backup.backupScript | indent 4 }}
