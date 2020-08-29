@@ -154,11 +154,16 @@ spec:
             while true; do
               aws s3 cp \
               {{ .Values.store.file.path }} \
-              {{ required "A valid s3 path is required!" .Values.store.backup.s3Path }}/{{ template "stan.name" . }}/$POD_NAME/ --recursive
+              {{ required "A valid s3 path is required!" .Values.store.backup.s3Path }}/{{ template "stan.name" . }}/${POD_NAME}/ --recursive
 
-              find {{ .Values.store.file.path }} -name '*.bak' -delete
+              RESULT=$?
+              if [ $RESULT -eq 0 ]; then
+                find {{ .Values.store.file.path }} -name '*.bak' -delete
+              else
+                echo "Error backing up! Do not remove .bak files."
+              fi
 
-              sleep $(SLEEP_TIME)
+              sleep "${SLEEP_TIME}"
             done
           env:
           - name: SLEEP_TIME
