@@ -48,6 +48,7 @@ spec:
       volumes:
       - configMap:
           name: {{ template "stan.name".  }}-config
+          defaultMode: 0755
         name: config-volume
       {{- if and .Values.stan.tls.enabled .Values.stan.tls.secretName }}
       - name: stan-client-tls-volume
