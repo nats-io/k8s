@@ -46,7 +46,10 @@ data:
       {{- else }}
       store: "file"
       dir: {{ .Values.store.file.path }}
-      {{- end  }}
+      {{- with .Values.store.file.options }}
+      file_options: {{ toPrettyJson . | indent 6 }}
+      {{- end }}
+      {{- end }}
 
       {{- if .Values.store.cluster.enabled }}
       cluster {

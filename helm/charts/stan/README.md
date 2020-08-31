@@ -276,7 +276,16 @@ store:
 Example that will back up the file store when operating in clustered mode:
 
 ```yaml
+stan:
+  image: nats-streaming:0.18.0-alpine
 store:
+  limits:
+    max_msgs: 5
+
+  file:
+    options:
+      slice_max_msgs: 0
+
   backup:
     enabled: true
     s3Path: s3://example-bucket/stan-backups

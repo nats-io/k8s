@@ -107,6 +107,16 @@ store:
   #
   file:
     path: /data/stan/store
+    # Configures streaming/file_options as is.
+    #
+    # NOTE: Section in snake case since they will become
+    # the same objects.
+    #
+    # Look at the NATS Streaming configuration for this:
+    #
+    # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#file-options-configuration
+    #
+    options: {}
 
   # In case of using file or sql storage, sets up a 3 node cluster.
   cluster:
