@@ -65,6 +65,14 @@ affinity: {}
 # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 resources: {}
 
+# Readiness probe to determine when nats-streaming is ready
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+readinessProbe:
+  httpGet:
+    path: /streaming/serverz
+    port: monitor
+  timeoutSeconds: 2
+
 ###########################
 #                         #
 #  Storage configuration  #
