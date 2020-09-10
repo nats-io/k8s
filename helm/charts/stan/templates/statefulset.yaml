@@ -128,7 +128,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.readinessProbe }}
-          resources:
+          readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
