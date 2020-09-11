@@ -305,6 +305,41 @@ podAnnotations:
   iam.amazonaws.com/role: "stan-backups"
 ```
 
+#### Readiness Probe for clustering
+
+In case of using an nats-streaming alpine image, the `clusterReadinessProbe` can be enabled to try to ensure that during server upgrades the pods in the statefulsets in the pod are restarted one by one until there is consensus in the quorum.
+
+```yaml
+clusterReadinessProbe:
+  enabled: true
+  # probe: <-- can add custom readinessProbe parameters here.
+
+stan:
+  image: nats-streaming:alpine
+  replicas: 3
+  nats:
+    url: "nats://my-nats:4222"
+
+store:
+  type: file
+
+  cluster:
+    enabled: true
+
+  #
+  # File storage settings.
+  #
+  file:
+    path: /data/stan/store
+
+  # Volume for each pod.
+  volume:
+    enabled: true
+
+    # Mount path for the volume.
+    mount: /data/stan
+```
+
 ### SQL Storage
 
 ```yaml
