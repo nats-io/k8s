@@ -103,6 +103,10 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: STAN_SERVICE_NAME
+            value: {{ template "stan.name" . }}
+          - name: STAN_REPLICAS
+            value: "{{ .Values.stan.replicas }}"
           {{- if .Values.stan.nats.serviceRoleAuth.enabled }}
           - name: NATS_OPERATOR_SERVICE_ACCOUNT
             valueFrom:
@@ -127,10 +131,19 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+
+          {{- if and .Values.store.cluster.enabled .Values.clusterReadinessProbe.enabled }}
+          {{- with .Values.clusterReadinessProbe.probe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- else }}
           {{- with .Values.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- end }}
+
           volumeMounts:
           - name: config-volume
             mountPath: /etc/stan-config
