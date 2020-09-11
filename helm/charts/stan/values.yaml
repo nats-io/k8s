@@ -81,8 +81,8 @@ clusterReadinessProbe:
   enabled: false
   probe:
     exec:
-      command: ["/bin/sh", "-c", "n=$(($STAN_REPLICAS-1)); for i in `seq 0 $n`; do wget -qO-  $STAN_SERVICE_NAME-$i.$STAN_SERVICE_NAME:8222/streaming/serverz 2> /dev/null > /dev/null; done; if [[ $? -ne 0 ]]; then exit 0; fi; wget -qO- 127.0.0.1:8222/streaming/serverz | grep role | awk '{print $2}' | grep '\\(Follower\\|Leader\\)'"]
-    initialDelaySeconds: 10
+      command: ["/bin/sh", "-c", "n=$(($STAN_REPLICAS-1)); for i in `seq 0 $n`; do wget -qO- $STAN_SERVICE_NAME-$i.$STAN_SERVICE_NAME:8222/streaming/serverz 2> /dev/null > /dev/null; done; if [[ $? -ne 0 ]]; then wget -qO- 127.0.0.1:8222/streaming/serverz | grep role | awk '{print $2}' | grep '\\(Candidate\\|Follower\\|Leader\\)'; else wget -qO- 127.0.0.1:8222/streaming/serverz | grep role | awk '{print $2}' | grep '\\(Follower\\|Leader\\)'; fi;"]
+    initialDelaySeconds: 
     periodSeconds: 10
 
 ###########################
