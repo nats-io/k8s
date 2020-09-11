@@ -166,6 +166,24 @@ store:
     backupScript: |-
       #!/bin/sh
       echo backup
+    backupContainerScript: |-
+      while true; do
+        BAK_FILES=$(find ${STORE_FILE_PATH} -name '*.bak')
+        aws s3 cp \
+        ${STORE_FILE_PATH} \
+        ${STORE_BACKUP_S3PATH}/${STAN_NAME}/${POD_NAME}/ --recursive
+
+        RESULT=$?
+        if [ $RESULT -eq 0 ]; then
+          for i in $(echo ${BAK_FILES}); do
+            rm -f ${i}
+          done
+        else
+          echo "Error backing up! Do not remove .bak files."
+        fi
+
+        sleep "${SLEEP_TIME}"
+      done
     # Resource requests and limits for backup container
     # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     resources: {}

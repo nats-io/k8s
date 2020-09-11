@@ -154,21 +154,7 @@ spec:
           image: amazon/aws-cli
           command: ["/bin/sh", "-c"]
           args:
-          - |
-            while true; do
-              aws s3 cp \
-              {{ .Values.store.file.path }} \
-              {{ required "A valid s3 path is required!" .Values.store.backup.s3Path }}/{{ template "stan.name" . }}/${POD_NAME}/ --recursive
-
-              RESULT=$?
-              if [ $RESULT -eq 0 ]; then
-                find {{ .Values.store.file.path }} -name '*.bak' -delete
-              else
-                echo "Error backing up! Do not remove .bak files."
-              fi
-
-              sleep "${SLEEP_TIME}"
-            done
+          - {{ toYaml .Values.store.backup.backupContainerScript | indent 12 }}
           env:
           - name: SLEEP_TIME
             value: "{{ .Values.store.backup.sleepTime }}"
@@ -193,6 +179,12 @@ spec:
                 name: {{ .Values.store.backup.credentialsSecretName }}
                 key: awsDefaultRegion
           {{- end }}
+          - name: STORE_FILE_PATH
+            value: "{{ .Values.store.file.path }}"
+          - name: STORE_BACKUP_S3PATH
+            value: "{{ required "A valid s3 path is required!" .Values.store.backup.s3Path }}"
+          - name: STAN_NAME
+            value: "{{ template "stan.name" . }}"
           {{- with .Values.store.backup.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
