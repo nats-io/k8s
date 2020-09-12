@@ -46,6 +46,7 @@ stan:
 
 nameOverride: ""
 imagePullSecrets: []
+serviceAccountName: ""
 
 podAnnotations: {}
 
