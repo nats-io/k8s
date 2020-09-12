@@ -21,3 +21,10 @@ Return the list of peers in a NATS Streaming cluster.
 {{- end -}}
 {{ print $replicas }}
 {{- end -}}
+
+{{/*
+Define the serviceaccountname
+*/}}
+{{- define "stan.serviceAccountName" -}}
+{{- default "nats-streaming" .Values.serviceAccountName | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

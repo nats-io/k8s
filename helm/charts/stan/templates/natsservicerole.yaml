@@ -3,7 +3,7 @@
 apiVersion: nats.io/v1alpha2
 kind: NatsServiceRole
 metadata:
-  name: {{ template "stan.name" . }}
+  name: {{ template "stan.serviceAccountName" . }}
   labels:
     nats_cluster: {{ .Values.stan.nats.serviceRoleAuth.natsClusterName }}
 spec:
@@ -14,5 +14,5 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ template "stan.name" . }}
+  name: {{ template "stan.serviceAccountName" . }}
 {{- end }}
