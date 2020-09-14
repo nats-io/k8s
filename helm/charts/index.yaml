@@ -254,6 +254,31 @@ entries:
   stan:
   - apiVersion: v2
     appVersion: 0.18.0
+    created: "2020-09-14T16:43:26.649389-07:00"
+    description: A Helm chart for NATS Streaming
+    digest: a1d0914434a48d5234d704456b6fc758cf63ccf7e2481c1af86299eb0c5bafb2
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - streaming
+    - stan
+    - delivery
+    - ratelimit
+    - replay
+    - statefulset
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
+    - name: rchenzheng
+    name: stan
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.5.4/stan-0.5.4.tgz
+    version: 0.5.4
+  - apiVersion: v2
+    appVersion: 0.18.0
     created: "2020-09-04T14:47:19.163319-07:00"
     description: A Helm chart for NATS Streaming
     digest: bc2142852510f7d55a1965ec6727891913bc9178723e95eb9c7a538229ba5cc7
