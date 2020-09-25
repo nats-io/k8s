@@ -23,6 +23,13 @@ data:
       id: {{ template "stan.name" . }}
       {{- end }}
 
+      {{- if .Values.stan.logging.debug }}
+      sd: true
+      {{- end }}
+      {{- if .Values.stan.logging.trace }}
+      sv: true
+      {{- end }}
+
       {{- if .Values.stan.credentials }}
         credentials: "/etc/stan-creds/{{ .Values.stan.credentials.secret.key }}"
       {{- end }}
