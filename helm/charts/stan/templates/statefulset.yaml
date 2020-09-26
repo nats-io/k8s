@@ -115,7 +115,7 @@ spec:
           - name: NATS_OPERATOR_BOUND_TOKEN
             valueFrom:
               secretKeyRef:
-                name: nats-streaming-{{ .Values.stan.nats.serviceRoleAuth.natsClusterName }}-bound-token
+                name: {{ template "stan.serviceAccountName" . }}-{{ .Values.stan.nats.serviceRoleAuth.natsClusterName }}-bound-token
                 key: token
           - name: NATS_SERVICE
             value: {{ .Values.stan.nats.url }}

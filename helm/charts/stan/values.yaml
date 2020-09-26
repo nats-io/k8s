@@ -83,7 +83,7 @@ clusterReadinessProbe:
   probe:
     exec:
       command: ["/bin/sh", "-c", "n=$(($STAN_REPLICAS-1)); for i in `seq 0 $n`; do wget -qO- $STAN_SERVICE_NAME-$i.$STAN_SERVICE_NAME:8222/streaming/serverz 2> /dev/null > /dev/null; done; if [[ $? -ne 0 ]]; then wget -qO- 127.0.0.1:8222/streaming/serverz | grep role | awk '{print $2}' | grep '\\(Candidate\\|Follower\\|Leader\\)'; else wget -qO- 127.0.0.1:8222/streaming/serverz | grep role | awk '{print $2}' | grep '\\(Follower\\|Leader\\)'; fi;"]
-    initialDelaySeconds: 
+    initialDelaySeconds:
     periodSeconds: 10
 
 ###########################
@@ -180,20 +180,20 @@ store:
       #!/bin/sh
       echo backup
     backupContainerScript: |-
+      #!/bin/sh
       while true; do
-        BAK_FILES=$(find ${STORE_FILE_PATH} -name '*.bak')
-        aws s3 cp \
-        ${STORE_FILE_PATH} \
-        ${STORE_BACKUP_S3PATH}/${STAN_NAME}/${POD_NAME}/ --recursive
+        for i in $(find ${STORE_FILE_PATH} -name '*.bak'); do
+          aws s3 cp \
+            ${i} \
+            ${STORE_BACKUP_S3PATH}/${STAN_NAME}/${POD_NAME}${i}
 
-        RESULT=$?
-        if [ $RESULT -eq 0 ]; then
-          for i in $(echo ${BAK_FILES}); do
-            rm -f ${i}
-          done
-        else
-          echo "Error backing up! Do not remove .bak files."
-        fi
+          RESULT=$?
+          if [ $RESULT -eq 0 ]; then
+              rm -f ${i}
+          else
+            echo "Error backing up! Do not remove $i files."
+          fi
+        done
 
         sleep "${SLEEP_TIME}"
       done
