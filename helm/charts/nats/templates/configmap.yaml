@@ -114,6 +114,10 @@ data:
       ]
       cluster_advertise: $CLUSTER_ADVERTISE
 
+      {{- with .Values.cluster.noAdvertise }}      
+      no_advertise: {{ . }}
+      {{- end }}
+
       connect_retries: {{ .Values.nats.connectRetries }}
     }
     {{ end }}
@@ -133,6 +137,10 @@ data:
       {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
       include "advertise/gateway_advertise.conf"
       {{ end }}
+
+      {{- with .Values.leafnodes.noAdvertise }}      
+      no_advertise: {{ . }}
+      {{- end }}
 
       {{- with .Values.leafnodes.tls }}
       {{ $secretName := .secret.name }}
