@@ -7,7 +7,7 @@
                                           
 ```
 [![License][License-Image]][License-Url]
-[![Version](https://d25lcipzij17d.cloudfront.net/badge.svg?id=go&type=5&v=0.5.2)](https://github.com/nats-io/k8s/releases/tag/v0.5.2)
+[![Version](https://d25lcipzij17d.cloudfront.net/badge.svg?id=go&type=5&v=0.5.6)](https://github.com/nats-io/k8s/releases/tag/v0.5.6)
 
 [License-Url]: https://www.apache.org/licenses/LICENSE-2.0
 [License-Image]: https://img.shields.io/badge/License-Apache2-blue.svg
@@ -20,9 +20,25 @@ and other tools from the NATS ecosystem on Kubernetes.
 - [Getting started](#getting-started-via-the-one-line-installer)
 - [Helm Charts for NATS](#helm-charts-for-nats)
 
-## Getting started via the one-line installer
+## Getting started with NATS using Helm
 
-The fastest and easiest way to get started is with just one shell command:
+In this repo you can find the Helm 3 based [charts](https://github.com/nats-io/k8s/tree/master/helm/charts) to install NATS and NATS Streaming (STAN).
+
+```sh
+> helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+> helm repo update
+
+> helm repo list
+NAME          	URL 
+nats          	https://nats-io.github.io/k8s/helm/charts/
+
+> helm install my-nats nats/nats
+> helm install my-stan nats/stan --set stan.nats.url=nats://my-nats:4222
+```
+
+## Quick start using the one-line installer
+
+Another method way to quickly bootstrap a NATS is to use the following command:
 
 ```sh
 curl -sSL https://nats-io.github.io/k8s/setup.sh | sh
@@ -51,9 +67,11 @@ curl -sSL https://nats-io.github.io/k8s/setup.sh | sh -s -- --without-tls
 curl -sSL https://nats-io.github.io/k8s/setup.sh | sh -s -- --without-tls --without-auth
 ```
 
-**Note**: Since [NATS Streaming](https://github.com/nats-io/nats-streaming-server) will be running as a [leafnode](https://github.com/nats-io/docs/tree/master/leafnodes) to NATS
-(under the STAN account) and that [NATS Surveyor](https://github.com/nats-io/nats-surveyor) 
-requires the [system account](https://docs.nats.io/nats-server/nats_admin/sys_accounts) to monitor events, disabling auth also means that NATS Streaming and NATS Surveyor based monitoring will be disabled.
+**Note**: Since [NATS Streaming](https://github.com/nats-io/nats-streaming-server)
+will be running as a [leafnode](https://github.com/nats-io/docs/tree/master/leafnodes) to NATS
+(under the STAN account) and that [NATS Surveyor](https://github.com/nats-io/nats-surveyor)
+requires the [system account](https://docs.nats.io/nats-server/nats_admin/sys_accounts) to monitor events, 
+disabling auth also means that NATS Streaming and NATS Surveyor based monitoring will be disabled.
 
 The monitoring dashboard setup using NATS Surveyor can be accessed by using port-forward:
 
@@ -65,20 +83,10 @@ Next, open the following URL in your browser:
 
 ![surveyor](https://user-images.githubusercontent.com/26195/69106844-79fdd480-0a24-11ea-8e0c-213f251fad90.gif)
 
-## Helm Charts for NATS
-
-You can also find in this repo Helm 3 based [charts](https://github.com/nats-io/k8s/tree/master/helm/charts) to install NATS and NATS Streaming (STAN).
+To cleanup the results you can run:
 
 ```sh
-> helm repo add nats https://nats-io.github.io/k8s/helm/charts/
-> helm repo update
-
-> helm repo list
-NAME          	URL 
-nats          	https://nats-io.github.io/k8s/helm/charts/
-
-> helm install my-nats nats/nats
-> helm install my-stan nats/stan --set stan.nats.url=nats://my-nats:4222
+curl -sSL https://nats-io.github.io/k8s/destroy.sh | sh
 ```
 
 ## License
