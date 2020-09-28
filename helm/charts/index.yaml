@@ -275,9 +275,9 @@ entries:
   stan:
   - apiVersion: v2
     appVersion: 0.18.0
-    created: "2020-09-28T15:03:27.327769-07:00"
+    created: "2020-09-28T15:21:44.878607-07:00"
     description: A Helm chart for NATS Streaming
-    digest: 9fa02592c12c0a3c1cd848ea7b5a6a694bdfe3cd6f2ffb2d57b9a7a775ada903
+    digest: 2651e4faf7d75948d6a19d16ed0c479d70b809143d588a8370fbd4d7b1957401
     icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
