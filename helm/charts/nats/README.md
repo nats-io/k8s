@@ -127,6 +127,8 @@ leafnodes:
 
 ## Setting up External Access
 
+### Using HostPorts
+
 In case of both external access and advertisements being enabled, an
 initializer container will be used to gather the public ips.  This
 container will required to have enough RBAC policy to be able to make a
@@ -191,6 +193,54 @@ The container image of the initializer can be customized via:
 bootconfig:
   image: connecteverything/nats-boot-config:0.5.2
   pullPolicy: IfNotPresent
+```
+
+### Using LoadBalancers
+
+In case of using a load balancer for external access, it is recommended to disable no advertise 
+so that internal ips from the NATS Servers are not advertised to the clients connecting through
+the load balancer.
+
+```yaml
+nats:
+  image: nats:alpine
+
+cluster:
+  enabled: true
+  noAdvertise: true
+
+leafnodes:
+  enabled: true
+  noAdvertise: true
+
+natsbox:
+  enabled: true
+```
+
+Then could use an L4 enabled load balancer to connect to NATS, for example:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: nats
+  ports:
+    - protocol: TCP
+      port: 4222
+      targetPort: 4222
+      name: nats
+    - protocol: TCP
+      port: 7422
+      targetPort: 7422
+      name: leafnodes
+    - protocol: TCP
+      port: 7522
+      targetPort: 7522
+      name: gateways
 ```
 
 ## Gateways
