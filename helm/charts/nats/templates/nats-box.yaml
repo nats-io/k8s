@@ -27,7 +27,7 @@ spec:
     imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
     env:
     - name: NATS_URL
-      value: {{ .Release.Name }}
+      value: {{ template "nats.name" . }}
     {{- if .Values.natsbox.credentials }}
     - name: USER_CREDS
       value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
