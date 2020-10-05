@@ -350,7 +350,7 @@ You can find the image at: https://github.com/nats-io/nats-box
 ```yaml
 natsbox:
   enabled: true
-  image: synadia/nats-box:0.3.0
+  image: synadia/nats-box:latest
   pullPolicy: IfNotPresent
 
   # credentials:

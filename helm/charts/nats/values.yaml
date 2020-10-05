@@ -166,7 +166,7 @@ bootconfig:
 # 
 natsbox:
   enabled: true
-  image: synadia/nats-box:0.3.0
+  image: synadia/nats-box:0.4.0
   pullPolicy: IfNotPresent
 
   # credentials:
