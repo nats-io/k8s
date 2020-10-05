@@ -8,9 +8,6 @@ data:
     pid_file: "/var/run/nats/nats.pid"
     http: 8222
     
-    debug: true
-    trace: true
-
     jetstream {
       store_dir: "/data/jetstream/store"
       max_file_store: 1G
