@@ -8,11 +8,15 @@ helm install nats nats/nats
 helm install nack-jsc nats/nack --set jetstream.nats.url=nats://nats:4222
 ```
 
-The JetStream controllers allows you to manage [NATS JetStream](https://github.com/nats-io/jetstream) [Streams](https://github.com/nats-io/jetstream#streams-1) and [Consumers](https://github.com/nats-io/jetstream#consumers-1) via K8S CRDs.
+The JetStream controllers allows you to manage
+[NATS JetStream](https://github.com/nats-io/jetstream)
+[Streams](https://github.com/nats-io/jetstream#streams-1) and
+[Consumers](https://github.com/nats-io/jetstream#consumers-1) via K8S CRDs.
 
 ### Getting started
 
-First, we'll need to NATS cluster that has enabled JetStream.  You can install one as follows:
+First, we'll need to NATS cluster that has enabled JetStream.  You can install
+one as follows:
 
 ```sh
 # Creates cluster of NATS Servers that are not JetStream enabled
@@ -85,7 +89,7 @@ we set:
 filterSubject: orders.received
 ```
 
-so that's the subject my-pull-consumer` will pull messages from.
+so that's the subject my-pull-consumer will pull messages from.
 
 ```sh
 # Pull first message.
@@ -111,7 +115,8 @@ Next, let's read data using a push-based consumer. In `consumer_push.yml` we set
 deliverSubject: my-push-consumer.orders
 ```
 
-so pushed messages will arrive on that subject. This time all messages arrive automatically.
+so pushed messages will arrive on that subject. This time all messages arrive
+automatically.
 
 ```sh
 $ nats sub my-push-consumer.orders
