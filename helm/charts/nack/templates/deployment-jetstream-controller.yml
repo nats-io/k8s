@@ -1,0 +1,98 @@
+{{- if .Values.jetstream.nats.url }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "jsc.name" . }}
+  labels:
+    app: {{ template "jsc.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "jsc.name" . }}
+
+  # Singleton Replica per JetStream controller
+  replicas: 1
+
+  template:
+    metadata:
+      {{- if .Values.podAnnotations }}
+      annotations:
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      labels:
+        app: {{ template "jsc.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    spec:
+{{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{- toYaml . | nindent 8 }}
+{{- end }}
+{{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.secretName }}
+      - name: jsc-client-tls-volume
+        secret:
+          secretName: {{ .Values.jetstream.tls.secretName }}
+      {{- end }}
+
+      {{- if .Values.jetstream.credentials }}
+      - name: jsc-sys-creds
+        secret:
+          secretName: {{ .Values.jetstream.credentials.secret.name }}
+      {{- end }}
+
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ template "jsc.name" . }}
+            topologyKey: kubernetes.io/hostname
+{{- with .Values.affinity }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+
+      serviceAccountName: {{ template "jsc.serviceAccountName" . }}
+
+      containers:
+        - name: jsc
+          image: {{ .Values.jetstream.image }}
+          command:
+          - /jetstream-controller
+          - -s={{ .Values.jetstream.nats.url }}
+
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          volumeMounts:
+          {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.secretName }}
+          - name: jsc-client-tls-volume
+            mountPath: /etc/nats/certs
+          {{- end }}
+          {{- if .Values.jetstream.credentials }}
+          - name: jsc-sys-creds
+            mountPath: /etc/jsc-creds
+          {{- end }}
+{{- end }}

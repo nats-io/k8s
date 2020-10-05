@@ -47,6 +47,9 @@ nats:
     connectErrorReports: 
     reconnectErrorReports: 
 
+  jetstream:
+    enabled: true
+
   #######################
   #                     #
   #  TLS Configuration  #
