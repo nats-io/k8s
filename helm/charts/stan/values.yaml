@@ -288,7 +288,7 @@ nats:
   #   key: "tls.key"
 
 cluster:
-  enabled: false
+  # NOTE: Recommended to enable if running behind a load balancer.
   noAdvertise: false
 
 # Leafnode connections to extend a cluster:
@@ -360,20 +360,6 @@ gateway:
 bootconfig:
   image: connecteverything/nats-boot-config:0.5.2
   pullPolicy: IfNotPresent
-
-# NATS Box
-#
-# https://github.com/nats-io/nats-box
-# 
-natsbox:
-  enabled: true
-  image: synadia/nats-box:0.4.0
-  pullPolicy: IfNotPresent
-
-  # credentials:
-  #   secret:
-  #     name: nats-sys-creds
-  #     key: sys.creds
 
 # The NATS config reloader image to use.
 reloader:
