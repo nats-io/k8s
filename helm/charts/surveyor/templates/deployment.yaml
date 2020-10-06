@@ -35,10 +35,16 @@ spec:
           args:
             - -p
             - "7777"
-            - --creds
-            - /creds/SYS.creds
-            - -s
-            - $(TARGETS)
+           {{- with .Values.config }}
+           {{- with .credentials }}
+            - --creds=/creds/{{ .secret.name }}/{{ .secret.key }}
+           {{- end }}
+
+           {{- with .servers }}
+            - -s={{ . }}
+           {{- end }}
+           {{- end }}
+
           env:
             - name: TARGETS
               valueFrom:
@@ -64,9 +70,11 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
+        {{- with .Values.config.credentials }}
         - name: creds
           secret:
-            secretName: {{ include "surveyor.fullname" . }}
+            secretName: {{ .secret.name }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

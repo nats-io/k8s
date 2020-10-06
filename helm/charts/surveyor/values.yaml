@@ -69,18 +69,9 @@ tolerations: []
 affinity: {}
 
 config:
-  targets: "nats://127.0.0.1:4222"
-  creds: |
-    -----BEGIN NATS USER JWT-----
-    eyJ0eXAiOiJqd3QiLCJhbGciOiJlZDI1NTE5In0.eyJqdGkiOiJUVlNNTEtTWkJBN01VWDNYQUxNUVQzTjRISUw1UkZGQU9YNUtaUFhEU0oyWlAzNkVMNVJBIiwiaWF0IjoxNTU4MDQ1NTYyLCJpc3MiOiJBQlZTQk0zVTQ1REdZRVVFQ0tYUVM3QkVOSFdHN0tGUVVEUlRFSEFKQVNPUlBWV0JaNEhPSUtDSCIsIm5hbWUiOiJvbWVnYSIsInN1YiI6IlVEWEIyVk1MWFBBU0FKN1pEVEtZTlE3UU9DRldTR0I0Rk9NWVFRMjVIUVdTQUY3WlFKRUJTUVNXIiwidHlwZSI6InVzZXIiLCJuYXRzIjp7InB1YiI6e30sInN1YiI6e319fQ.6TQ2ilCDb6m2ZDiJuj_D_OePGXFyN3Ap2DEm3ipcU5AhrWrNvneJryWrpgi_yuVWKo1UoD5s8bxlmwypWVGFAA
-    ------END NATS USER JWT------
+  servers: "tls://nats:4222"
 
-    ************************* IMPORTANT *************************
-    NKEY Seed printed below can be used to sign and prove identity.
-    NKEYs are sensitive and should be treated as secrets.
-
-    -----BEGIN USER NKEY SEED-----
-    SUAOY5JZ2WJKVR4UO2KJ2P3SW6FZFNWEOIMAXF4WZEUNVQXXUOKGM55CYE
-    ------END USER NKEY SEED------
-
-    *************************************************************
+  credentials:
+    secret:
+      name: nats-sys-creds
+      key: sys.creds
