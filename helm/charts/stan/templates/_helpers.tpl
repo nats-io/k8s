@@ -41,7 +41,7 @@ Return the NATS cluster routes.
 */}}
 {{- define "nats.clusterRoutes" -}}
 {{- $name := default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- range $i, $e := until (.Values.cluster.replicas | int) -}}
+{{- range $i, $e := until (.Values.stan.replicas | int) -}}
 {{- printf "nats://%s-%d.%s.%s.svc:6222," $name $i $name $.Release.Namespace -}}
 {{- end -}}
 {{- end }}

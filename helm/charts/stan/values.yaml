@@ -289,7 +289,6 @@ nats:
 
 cluster:
   enabled: false
-  replicas: 3
   noAdvertise: false
 
 # Leafnode connections to extend a cluster:

@@ -69,6 +69,10 @@ spec:
           secretName: {{ .Values.stan.credentials.secret.name }}
       {{- end }}
 
+      # Local volume shared with the reloader.
+      - name: pid
+        emptyDir: {}
+
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -83,6 +87,9 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
       containers:
+        ####################
+        #  NATS Streaming  #
+        ####################
         - name: stan
           image: {{ .Values.stan.image }}
           args:
@@ -163,8 +170,14 @@ spec:
           - name: stan-sys-creds
             mountPath: /etc/stan-creds
           {{- end }}
+          - name: pid
+            mountPath: /var/run/nats
+
         {{- if eq .Values.store.type "file" }}
         {{- if .Values.store.backup.enabled }}
+        ######################
+        # # Backup Container #
+        ######################
         - name: backup
           image: amazon/aws-cli
           command: ["/bin/sh", "-c"]
@@ -211,7 +224,13 @@ spec:
           {{- end }}
         {{- end }}
         {{- end }}
+
         {{ if .Values.exporter.enabled }}
+        #################################
+        #                               #
+        #  NATS Prometheus Exporter     #
+        #                               #
+        #################################
         - name: metrics
           image: {{ .Values.exporter.image }}
           args:
@@ -226,6 +245,29 @@ spec:
           - containerPort: 7777
             name: metrics
         {{ end }}
+
+        #################################
+        #                               #
+        #  NATS Configuration Reloader  #
+        #                               #
+        #################################
+        {{ if .Values.reloader.enabled }}
+        - name: reloader
+          image: {{ .Values.reloader.image }}
+          imagePullPolicy: {{ .Values.reloader.pullPolicy }}
+          command:
+           - "nats-server-config-reloader"
+           - "-pid"
+           - "/var/run/nats/nats.pid"
+           - "-config"
+           - "/etc/stan-config/stan.conf"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/stan-config
+            - name: pid
+              mountPath: /var/run/nats
+        {{ end }}
+
   {{- if eq .Values.store.type "file" }}
   {{- if .Values.store.volume.enabled }}
   {{- if not .Values.store.volume.persistentVolumeClaim }}
