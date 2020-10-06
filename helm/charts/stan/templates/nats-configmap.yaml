@@ -54,16 +54,9 @@ tls {
 {{- end }}
 {{- end }}
 
-{{- if .Values.nats.jetstream.enabled }}
-###################################
-#                                 #
-# NATS JetStream                  #
-#                                 #
-###################################
-jetstream: {{ .Values.nats.jetstream.enabled }}
-{{- end }}
-
-{{ if or .Values.store.cluster.enabled .Values.store.ft.group }}
+{{- if not .Values.stan.nats.url }}
+{{- if .Values.cluster.enabled }}
+{{- if or .Values.store.cluster.enabled .Values.store.ft.group }}
 ###################################
 #                                 #
 # NATS Full Mesh Clustering Setup #
@@ -120,7 +113,9 @@ cluster {
 
   connect_retries: {{ .Values.nats.connectRetries }}
 }
-{{ end }}
+{{- end }}
+{{- end }}
+{{- end }}
 
 {{- if and .Values.nats.advertise .Values.nats.externalAccess }}
 include "advertise/client_advertise.conf"
@@ -131,9 +126,12 @@ include "advertise/client_advertise.conf"
 # NATS Leafnode #
 #               #
 #################
-{{- if .Values.leafnodes.enabled }}
+{{- if .Values.leafnodes }}
 leafnodes {
+  {{- if .Values.leafnodes.enabled }}
   listen: "0.0.0.0:7422"
+  {{- end }}
+
   {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
   include "advertise/gateway_advertise.conf"
   {{ end }}

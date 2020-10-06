@@ -140,9 +140,12 @@ data:
     # NATS Leafnode #
     #               #
     #################
-    {{- if .Values.leafnodes.enabled }}
+    {{- if .Values.leafnodes }}
     leafnodes {
+      {{- if .Values.leafnodes.enabled }}
       listen: "0.0.0.0:7422"
+      {{- end }}
+
       {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
       include "advertise/gateway_advertise.conf"
       {{ end }}
