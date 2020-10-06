@@ -63,7 +63,7 @@ tls {
 jetstream: {{ .Values.nats.jetstream.enabled }}
 {{- end }}
 
-{{ if .Values.cluster.enabled }}
+{{ if or .Values.store.cluster.enabled .Values.store.ft.group }}
 ###################################
 #                                 #
 # NATS Full Mesh Clustering Setup #
