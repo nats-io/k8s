@@ -1,0 +1,7 @@
+
+You can find more information about running NATS JetStream Controller on
+Kubernetes here:
+
+  https://github.com/nats-io/nack
+
+Thanks for using NATS JetStream Controller!

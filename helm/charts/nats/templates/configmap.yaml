@@ -63,6 +63,15 @@ data:
     {{- end }}
     {{- end }}
 
+    {{- if .Values.nats.jetstream.enabled }}
+    ###################################
+    #                                 #
+    # NATS JetStream                  #
+    #                                 #
+    ###################################
+    jetstream: {{ .Values.nats.jetstream.enabled }}
+    {{- end }}
+
     {{ if .Values.cluster.enabled }}
     ###################################
     #                                 #
