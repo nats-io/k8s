@@ -728,24 +728,4 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.0/nats-account-server-0.3.0.tgz
     version: 0.3.0
-  nack:
-  - apiVersion: v2
-    appVersion: 0.1.0
-    created: "2020-10-05T16:32:32.445402-07:00"
-    description: A Helm chart for NACK
-    digest: 055a3b2ca3c23fbdbc72d5657dc55c213a561779daacfda43d8f13dcc1faf0ef
-    icon: https://nats.io/img/nats-icon-color.png
-    keywords:
-    - nats
-    - jetstream
-    - cncf
-    maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: jaime@nats.io
-      name: Jaime Piña
-    name: nack
-    urls:
-    - https://github.com/nats-io/k8s/releases/download/v0.5.6/nack-0.5.6.tgz
-    version: 0.5.6
 generated: "2020-10-05T12:58:26.609239-08:00"
