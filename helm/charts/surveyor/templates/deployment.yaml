@@ -37,20 +37,13 @@ spec:
             - "7777"
            {{- with .Values.config }}
            {{- with .credentials }}
-            - --creds=/creds/{{ .secret.name }}/{{ .secret.key }}
+            - --creds=/creds/{{ .secret.key }}
            {{- end }}
 
            {{- with .servers }}
             - -s={{ . }}
            {{- end }}
            {{- end }}
-
-          env:
-            - name: TARGETS
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "surveyor.fullname" . }}
-                  key: targets
           ports:
             - name: http
               containerPort: 7777

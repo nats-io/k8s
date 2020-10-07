@@ -69,8 +69,10 @@ tolerations: []
 affinity: {}
 
 config:
-  servers: "tls://nats:4222"
+  # Required.
+  servers: "nats://nats:4222"
 
+  # Required if auth is enabled.
   credentials:
     secret:
       name: nats-sys-creds
