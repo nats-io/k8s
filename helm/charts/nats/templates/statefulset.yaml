@@ -55,7 +55,7 @@ spec:
       - name: pid
         emptyDir: {}
 
-      {{- if .Values.auth.enabled }}
+      {{- if and .Values.auth.enabled .Values.auth.resolver }}
       {{- if eq .Values.auth.resolver.type "memory" }}
       # Volume with the memory resolver configuration.
       - name: resolver-volume
@@ -217,7 +217,7 @@ spec:
             subPath: advertise
           {{- end }}
 
-          {{- if .Values.auth.enabled }}
+          {{- if and .Values.auth.enabled .Values.auth.resolver }}
           {{- if eq .Values.auth.resolver.type "memory" }}
           - name: resolver-volume
             mountPath: /etc/nats-config/accounts

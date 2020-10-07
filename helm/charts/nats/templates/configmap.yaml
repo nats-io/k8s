@@ -81,6 +81,10 @@ data:
     cluster {
       port: 6222
 
+      {{- with .Values.cluster.name }}
+      name: {{ . }}
+      {{- end }}
+
       {{- with .Values.cluster.tls }}
       {{ $secretName := .secret.name }}
       tls {
@@ -135,12 +139,12 @@ data:
     include "advertise/client_advertise.conf"
     {{- end }}
 
+    {{- if .Values.leafnodes }}
     ################# 
     #               #
     # NATS Leafnode #
     #               #
     #################
-    {{- if .Values.leafnodes }}
     leafnodes {
       {{- if .Values.leafnodes.enabled }}
       listen: "0.0.0.0:7422"
@@ -207,12 +211,12 @@ data:
     }
     {{ end }}
 
+    {{- if .Values.gateway.enabled }}
     ################# 
     #               #
     # NATS Gateways #
     #               #
     #################
-    {{- if .Values.gateway.enabled }}
     gateway {
       name: {{ .Values.gateway.name }}
       port: 7522
@@ -279,11 +283,6 @@ data:
     }
     {{ end }}
 
-    ####################
-    #                  #
-    # Logging Options  #
-    #                  #
-    ####################
     {{- with .Values.nats.logging.debug }}
     debug: {{ . }}
     {{- end }}
@@ -304,11 +303,6 @@ data:
     reconnect_error_reports: {{ . }}
     {{- end }}
 
-    ##################
-    #                #
-    # Server Limits  #
-    #                #
-    ##################
     {{- with .Values.nats.limits.maxConnections }}
     max_connections: {{ . }}
     {{- end }}
@@ -343,6 +337,7 @@ data:
     # Authorization  #
     #                #
     ##################
+    {{- if .Values.auth.resolver }}
     {{- if eq .Values.auth.resolver.type "memory" }}
     resolver: MEMORY
     include "accounts/{{ .Values.auth.resolver.configMap.key }}"
@@ -353,7 +348,33 @@ data:
     resolver: URL({{ . }})
     {{- end }}
     operator: /etc/nats-config/operator/{{ .Values.auth.operatorjwt.configMap.key }}
-    system_account: {{ .Values.auth.systemAccount }}
+    {{- end }}
+    {{- end }}
+
+    {{- with .Values.auth.systemAccount }}
+    system_account: {{ . }}
+    {{- end }}
+
+    {{- with .Values.auth.basic }}
+
+    {{- with .noAuthUser }}
+    no_auth_user: {{ . }}
+    {{- end }}
+
+    {{- with .users }}
+    authorization {
+      users: [
+      {{- range . }}
+      {{- toPrettyJson . | nindent 4 }},
+      {{- end }}
+      ]
+    }
+    {{- end }}
+
+    {{- with .accounts }}
+    accounts: {{- toJson . }}
+    {{- end }}
+
     {{- end }}
 
     {{- end }}
