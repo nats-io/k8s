@@ -16,8 +16,7 @@ stan:
     debug:
     trace:
 
-  # In case of NATS not being embedded then
-  # an URL for NATS is required.
+  # In case of NATS not being embedded then an URL for NATS is required.
   nats:
     url:
     serviceRoleAuth:
@@ -48,6 +47,8 @@ nameOverride: ""
 imagePullSecrets: []
 serviceAccountName: ""
 
+# Annotations to add to the NATS pods
+# ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
 
 # Toggle whether to use setup a Pod Security Context
@@ -212,10 +213,190 @@ exporter:
   image: synadia/prometheus-nats-exporter:0.6.2
   pullPolicy: IfNotPresent
 
-##################################
-#                                #
-#  Embedded NATS Configuration   #
-#                                #
-##################################
-# TODO: Support NATS embedded mode by including
-# nats chart values.
+#  
+#  Embedded NATS Configuration
+#  
+#  NOTE: Should be kept in sync with the NATS Helm Chart as well.
+# 
+#################################################################################
+#                                                                               #
+#  _   _    _  _____ ____    _____           _              _     _          _  #
+# | \ | |  / \|_   _/ ___|  | ____|_ __ ___ | |__   ___  __| | __| | ___  __| | #
+# |  \| | / _ \ | | \___ \  |  _| | '_ ` _ \| '_ \ / _ \/ _` |/ _` |/ _ \/ _` | #
+# | |\  |/ ___ \| |  ___) | | |___| | | | | | |_) |  __/ (_| | (_| |  __/ (_| | #
+# |_| \_/_/   \_\_| |____/  |_____|_| |_| |_|_.__/ \___|\__,_|\__,_|\___|\__,_| #
+#                                                                               #
+#################################################################################
+nats:
+  image: nats:2.1.7-alpine3.11
+  pullPolicy: IfNotPresent
+
+  # Toggle whether to enable external access.
+  # This binds a host port for clients, gateways and leafnodes.
+  externalAccess: false
+
+  # Toggle to disable client advertisements (connect_urls),
+  # in case of running behind a load balancer (which is not recommended)
+  # it might be required to disable advertisements.
+  advertise: true
+
+  # The number of connect attempts against discovered routes.
+  connectRetries: 30
+
+  # How many seconds should pass before sending a PING
+  # to a client that has no activity.
+  pingInterval: 
+
+  # Server settings.
+  limits:
+    maxConnections: 
+    maxSubscriptions: 
+    maxControlLine: 
+    maxPayload: 
+
+    writeDeadline: 
+    maxPending: 
+    maxPings: 
+    lameDuckDuration: 
+
+  logging:
+    debug: 
+    trace: 
+    logtime: 
+    connectErrorReports: 
+    reconnectErrorReports: 
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  # 
+
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+
+cluster:
+  enabled: true
+  # NOTE: Recommended to enable if running behind a load balancer.
+  noAdvertise: false
+
+# Leafnode connections to extend a cluster:
+#
+# https://docs.nats.io/nats-server/configuration/leafnodes
+#
+leafnodes:
+  enabled: false
+  noAdvertise: false
+  # remotes:
+  #   - url: "tls://connect.ngs.global:7422"
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  # 
+
+  #
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+
+# Gateway connections to create a super cluster
+#
+# https://docs.nats.io/nats-server/configuration/gateways
+#
+gateway:
+  enabled: false
+  name: 'default'
+
+  #############################
+  #                           #
+  #  List of remote gateways  #
+  #                           #
+  #############################
+  # gateways:
+  #   - name: other
+  #     url: nats://my-gateway-url:7522
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  #
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+  
+# In case of both external access and advertisements being
+# enabled, an initializer container will be used to gather
+# the public ips.
+bootconfig:
+  image: connecteverything/nats-boot-config:0.5.2
+  pullPolicy: IfNotPresent
+
+# The NATS config reloader image to use.
+reloader:
+  enabled: true
+  image: connecteverything/nats-server-config-reloader:0.6.0
+  pullPolicy: IfNotPresent
+
+# Authentication setup
+auth:
+  enabled: false
+
+  # Reference to the Operator JWT.
+  # operatorjwt:
+  #   configMap:
+  #     name: operator-jwt
+  #     key: KO.jwt
+
+  # Public key of the System Account
+  # systemAccount:
+
+  # resolver:
+  #   ############################
+  #   #                          #
+  #   # Memory resolver settings #
+  #   #                          #
+  #   ##############################
+  #   # type: memory
+  #   # 
+  #   # Use a configmap reference which will be mounted
+  #   # into the container.
+  #   # 
+  #   # configMap:
+  #   #   name: nats-accounts
+  #   #   key: resolver.conf
+  #  
+  #   ##########################
+  #   #                        #
+  #   #  URL resolver settings #
+  #   #                        #
+  #   ##########################
+  #   # type: URL
+  #   # url: "http://nats-account-server:9090/jwt/v1/accounts/"

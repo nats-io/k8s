@@ -7,14 +7,17 @@ metadata:
     app: {{ template "stan.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 data:
+  backup.sh: {{ toYaml .Values.store.backup.backupScript | indent 4 }}
   stan.conf: |-
-    http: 8222
-
+    #########################
+    # NATS Streaming Config #
+    #########################
     streaming {
       {{- if .Values.stan.nats.serviceRoleAuth.enabled }}
       ns: $NATS_URL
-      {{ else }}
+      {{- else if .Values.stan.nats.url }}
       ns: {{ .Values.stan.nats.url }}
+      {{ else }}
       {{- end }}
 
       {{- if .Values.stan.clusterID }}
@@ -42,6 +45,9 @@ data:
       ft_group_name: {{ . }}
       {{- end }}
 
+      ###############################
+      #  Store Config               #
+      ###############################
       {{- if eq .Values.store.type "sql" }}
       store: "sql"
       sql_options {
@@ -58,6 +64,9 @@ data:
       {{- end }}
       {{- end }}
 
+      ###############################
+      #  NATS Streaming Clustering  #
+      ###############################
       {{- if .Values.store.cluster.enabled }}
       cluster {
         node_id: $POD_NAME
@@ -76,4 +85,10 @@ data:
       store_limits: {{ toPrettyJson . | indent 6 }}
       {{- end }}
     }
-  backup.sh: {{ toYaml .Values.store.backup.backupScript | indent 4 }}
+
+    ###############################################
+    #                                             #
+    #            Embedded NATS Config             #
+    #                                             #
+    ###############################################
+    {{ include "nats-configmap" . | nindent 4 }}

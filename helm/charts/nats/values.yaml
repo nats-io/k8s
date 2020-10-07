@@ -48,7 +48,7 @@ nats:
     reconnectErrorReports: 
 
   jetstream:
-    enabled: true
+    enabled: false
 
   #######################
   #                     #
