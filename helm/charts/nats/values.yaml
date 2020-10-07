@@ -193,6 +193,16 @@ exporter:
 auth:
   enabled: false
 
+  # basic:
+  #   noAuthUser:
+  #   # List of users that can connect with basic auth,
+  #   # that belong to the global account.
+  #   users:
+
+  #   # List of accounts with users that can connect
+  #   # using basic auth.
+  #   accounts:
+
   # Reference to the Operator JWT.
   # operatorjwt:
   #   configMap:
