@@ -305,6 +305,54 @@ podAnnotations:
   iam.amazonaws.com/role: "stan-backups"
 ```
 
+##### Example of a STAN cluster with file storage with embedded NATS
+
+This will create a 3-node STAN cluster that is also a NATS cluster,
+so no extra NATS Server deployment is required:
+
+```yaml
+stan:
+  image: nats-streaming:alpine
+  replicas: 3
+
+store:
+  type: file
+
+  cluster:
+    enabled: true
+
+  #
+  # File storage settings.
+  #
+  file:
+    path: /data/stan/store
+
+  # Volume for each pod.
+  volume:
+    enabled: true
+
+    # Mount path for the volume.
+    mount: /data/stan
+```
+
+```sh
+$ kubectl get pods
+NAME             READY   STATUS    RESTARTS   AGE
+stan-cluster-0   3/3     Running   0          52m
+stan-cluster-1   3/3     Running   0          52m
+stan-cluster-2   3/3     Running   0          53m
+
+$ kubectl run -i --rm --tty nats-box --image=synadia/nats-box --restart=Never
+
+nats-box:~# stan-pub -c stan-cluster -s stan-cluster foo hello
+Published [foo] : 'hello'
+
+nats-box:~# stan-sub -c stan-cluster -s stan-cluster -all foo
+Connected to stan-cluster clusterID: [stan-cluster] clientID: [stan-sub]
+Listening on [foo], clientID=[stan-sub], qgroup=[] durable=[]
+[#1] Received: sequence:1 subject:"foo" data:"bar" timestamp:1602316504474885089 
+```
+
 #### Readiness Probe for clustering
 
 In case of using an nats-streaming alpine image, the `clusterReadinessProbe` can be enabled to try to ensure that during server upgrades the pods in the statefulsets in the pod are restarted one by one until there is consensus in the quorum.
