@@ -135,7 +135,7 @@ stan:
 
 For the alpine image:
 
-```
+```yaml
 stan:
   image: nats-streaming:alpine
 ```
