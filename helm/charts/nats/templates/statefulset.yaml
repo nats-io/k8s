@@ -229,12 +229,12 @@ spec:
           {{- end }}
           {{- end }}
 
+          {{- with .Values.nats.tls }}
           #######################
           #                     #
           #  TLS Volumes Mounts #
           #                     #
           #######################
-          {{- with .Values.nats.tls }}
           {{ $secretName := .secret.name }}
           - name: {{ $secretName }}-clients-volume
             mountPath: /etc/nats-certs/clients/{{ $secretName }}

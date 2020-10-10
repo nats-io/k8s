@@ -139,7 +139,7 @@ data:
     include "advertise/client_advertise.conf"
     {{- end }}
 
-    {{- if .Values.leafnodes }}
+    {{- if or .Values.leafnodes.enabled .Values.leafnodes.remotes }}
     ################# 
     #               #
     # NATS Leafnode #
