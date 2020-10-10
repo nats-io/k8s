@@ -57,6 +57,7 @@ tls {
 {{- if not .Values.stan.nats.url }}
 {{- if .Values.cluster.enabled }}
 {{- if or .Values.store.cluster.enabled .Values.store.ft.group }}
+
 ###################################
 #                                 #
 # NATS Full Mesh Clustering Setup #
@@ -125,7 +126,7 @@ cluster {
 include "advertise/client_advertise.conf"
 {{- end }}
 
-{{- if .Values.leafnodes }}
+{{- if or .Values.leafnodes.enabled .Values.leafnodes.remotes }}
 ################# 
 #               #
 # NATS Leafnode #

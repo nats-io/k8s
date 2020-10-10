@@ -53,12 +53,12 @@ spec:
     - name: nats-sys-creds
       mountPath: /etc/nats-config/creds
     {{- end }}
+    {{- with .Values.nats.tls }}
     #######################
     #                     #
     #  TLS Volumes Mounts #
     #                     #
     #######################
-    {{- with .Values.nats.tls }}
     {{ $secretName := .secret.name }}
     - name: {{ $secretName }}-clients-volume
       mountPath: /etc/nats-certs/clients/{{ $secretName }}

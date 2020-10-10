@@ -7,7 +7,9 @@ metadata:
     app: {{ template "stan.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 data:
+  {{- if .Values.store.backup.enabled }}
   backup.sh: {{ toYaml .Values.store.backup.backupScript | indent 4 }}
+  {{- end }}
   stan.conf: |-
     #########################
     # NATS Streaming Config #
