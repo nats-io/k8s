@@ -371,7 +371,7 @@ bootconfig:
 
 # The NATS config reloader image to use.
 reloader:
-  enabled: true
+  enabled: false
   image: connecteverything/nats-server-config-reloader:0.6.0
   pullPolicy: IfNotPresent
 
