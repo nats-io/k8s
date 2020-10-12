@@ -232,6 +232,85 @@ spec:
       storage: 100Mi
 ```
 
+#### Partitioning
+
+You can enable partitioning as follows:
+
+```
+store:
+  type: file
+
+  partitioning:
+    enabled: true
+```
+
+For example to have two partitions under the same NATS/NATS Streaming
+cluster named `stan` with two Fault Tolerant groups managing different
+channels under the same shared filesystem.
+
+```yaml
+# 
+stan:
+  image: nats-streaming:alpine
+  replicas: 2
+  clusterID: stan
+
+store:
+  type: file
+  ft:
+    group: A
+  file:
+    path: /data/stan/store/A
+
+  partitioning:
+    enabled: true
+
+  limits:
+    channels:
+      foo.>:
+
+  volume:
+    enabled: true
+
+    # Mount path for the volume.
+    mount: /data/stan
+
+    # FT mode requires a single shared ReadWriteMany PVC volume.
+    persistentVolumeClaim:
+      claimName: stan-efs
+```
+
+```yaml
+stan:
+  image: nats-streaming:alpine
+  replicas: 2
+  clusterID: stan
+
+store:
+  type: file
+  ft:
+    group: B
+  file:
+    path: /data/stan/store/B
+
+  partitioning:
+    enabled: true
+
+  limits:
+    channels:
+      bar.>:
+
+  volume:
+    enabled: true
+
+    # Mount path for the volume.
+    mount: /data/stan
+
+    # FT mode requires a single shared ReadWriteMany PVC volume.
+    persistentVolumeClaim:
+      claimName: stan-efs
+```
+
 #### Clustered File Storage
 
 In case of using file storage, this sets up a 3 node cluster,

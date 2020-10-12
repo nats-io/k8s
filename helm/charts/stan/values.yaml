@@ -102,7 +102,7 @@ store:
   ft:
     group:
 
-  # Configures streaming/store_limits as is.
+  # Configures streaming/store_limits.
   #
   # NOTE: Section in snake case since they will become
   # the same objects.
@@ -112,6 +112,13 @@ store:
   # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#store-limits-configuration
   #
   limits: {}
+
+  # Enables streaming/partitioning
+  # 
+  # https://docs.nats.io/nats-streaming-concepts/partitioning
+  # 
+  partitioning:
+    enabled: false
 
   #
   # Volume claim configuration. Required if the store type is `file` or if
@@ -285,10 +292,13 @@ nats:
   #   key: "tls.key"
 
 cluster:
+  # NOTE: NATS Server service is enabled by default, but will get disabled
+  # if a NATS url is defined.
   enabled: true
+
   # NOTE: Recommended to enable if running behind a load balancer.
   noAdvertise: false
-
+  
 # Leafnode connections to extend a cluster:
 #
 # https://docs.nats.io/nats-server/configuration/leafnodes
