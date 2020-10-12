@@ -1,6 +1,6 @@
 {{- define "nats-configmap" }}
 # PID file shared with configuration reloader.
-pid_file: "/var/run/nats/nats.pid"
+pid_file: "/var/run/stan/stan.pid"
 
 ###############
 #             #
@@ -354,14 +354,14 @@ no_auth_user: {{ . }}
 authorization {
   users: [
   {{- range . }}
-  {{- toPrettyJson . | nindent 4 }},
+  {{- toRawJson . | nindent 4 }},
   {{- end }}
   ]
 }
 {{- end }}
 
 {{- with .accounts }}
-accounts: {{- toJson . }}
+accounts: {{- toRawJson . }}
 {{- end }}
 {{- end }}
 

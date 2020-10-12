@@ -171,7 +171,7 @@ spec:
             mountPath: /etc/stan-creds
           {{- end }}
           - name: pid
-            mountPath: /var/run/nats
+            mountPath: /var/run/stan
 
         {{- if eq .Values.store.type "file" }}
         {{- if .Values.store.backup.enabled }}
@@ -225,7 +225,7 @@ spec:
         {{- end }}
         {{- end }}
 
-        {{ if .Values.exporter.enabled }}
+        {{- if .Values.exporter.enabled }}
         #################################
         #                               #
         #  NATS Prometheus Exporter     #
@@ -244,29 +244,31 @@ spec:
           ports:
           - containerPort: 7777
             name: metrics
-        {{ end }}
+        {{- end }}
 
+        {{- if not .Values.stan.nats.url }}
+        {{- if .Values.reloader.enabled }}
         #################################
         #                               #
         #  NATS Configuration Reloader  #
         #                               #
         #################################
-        {{ if .Values.reloader.enabled }}
         - name: reloader
           image: {{ .Values.reloader.image }}
           imagePullPolicy: {{ .Values.reloader.pullPolicy }}
           command:
            - "nats-server-config-reloader"
            - "-pid"
-           - "/var/run/nats/nats.pid"
+           - "/var/run/stan/stan.pid"
            - "-config"
            - "/etc/stan-config/stan.conf"
           volumeMounts:
             - name: config-volume
               mountPath: /etc/stan-config
             - name: pid
-              mountPath: /var/run/nats
-        {{ end }}
+              mountPath: /var/run/stan
+        {{- end }}
+        {{- end }}
 
   {{- if eq .Values.store.type "file" }}
   {{- if .Values.store.volume.enabled }}
