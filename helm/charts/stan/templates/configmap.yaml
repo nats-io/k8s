@@ -66,10 +66,10 @@ data:
       {{- end }}
       {{- end }}
 
+      {{- if .Values.store.cluster.enabled }}
       ###############################
       #  NATS Streaming Clustering  #
       ###############################
-      {{- if .Values.store.cluster.enabled }}
       cluster {
         node_id: $POD_NAME
         {{- with .Values.store.cluster.logPath }}
@@ -83,8 +83,67 @@ data:
       }
       {{- end }}
 
+      {{- with .Values.store.partitioning }}
+      partitioning: {{ .enabled }}
+      {{- end }}
+
       {{- with .Values.store.limits }}
-      store_limits: {{ toPrettyJson . | indent 6 }}
+      store_limits: {
+        {{- if .max_channels }}
+        max_channels: {{ .max_channels }}
+        {{- end }}
+
+        {{- if .max_msgs }}
+        max_msgs: {{ .max_msgs }}
+        {{- end }}
+
+        {{- if .max_bytes }}
+        max_bytes: {{ .max_bytes }}
+        {{- end }}
+
+        {{- if .max_age }}
+        max_age: {{ .max_age }}
+        {{- end }}
+
+        {{- if .max_subs }}
+        max_subs: {{ .max_subs }}
+        {{- end }}
+
+        {{- if .max_inactivity }}
+        max_inactivity: {{ .max_inactivity }}
+        {{- end }}
+
+        {{- if .channels }}
+
+        channels {
+        {{- range $channel, $limits := .channels }}
+          {{ $channel }}: {
+            {{- if $limits }}
+            {{- with $limits.max_subs }}
+            max_subs: {{ . }}
+            {{- end }}
+
+            {{- with $limits.max_msgs }}
+            max_msgs: {{ . }}
+            {{- end }}
+
+            {{- with $limits.max_bytes }}
+            max_bytes: {{ . }}
+            {{- end }}
+
+            {{- with $limits.max_age }}
+            max_age: {{ . }}
+            {{- end }}
+
+            {{- with $limits.max_inactivity }}
+            max_inactivity: {{ . }}
+            {{- end }}
+          {{- end }}
+          }
+        {{- end }}
+        }
+        {{- end }}
+      }
       {{- end }}
     }
 
