@@ -354,14 +354,14 @@ no_auth_user: {{ . }}
 authorization {
   users: [
   {{- range . }}
-  {{- toPrettyJson . | nindent 4 }},
+  {{- toRawJson . | nindent 4 }},
   {{- end }}
   ]
 }
 {{- end }}
 
 {{- with .accounts }}
-accounts: {{- toJson . }}
+accounts: {{- toRawJson . }}
 {{- end }}
 {{- end }}
 
