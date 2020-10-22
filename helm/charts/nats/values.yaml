@@ -234,3 +234,7 @@ auth:
   #   ##########################
   #   # type: URL
   #   # url: "http://nats-account-server:9090/jwt/v1/accounts/"
+
+websocket:
+  enabled: false
+  port: 443

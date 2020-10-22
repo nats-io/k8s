@@ -63,6 +63,12 @@ spec:
           name: {{ .Values.auth.resolver.configMap.name }}
       {{- end }}
 
+      {{- if eq .Values.auth.resolver.type "full" }}
+      - name: resolver-volume
+        configMap:
+          name: {{ .Values.auth.resolver.configMap.name }}
+      {{- end }}
+
       {{- if eq .Values.auth.resolver.type "URL" }}
       - name: operator-jwt-volume
         configMap:
@@ -105,7 +111,12 @@ spec:
         secret:
           secretName: {{ $secretName }}
       {{- end }}
-
+      {{- with .Values.websocket.tls }}
+      {{ $secretName := .secret.name }}
+      - name: {{ $secretName }}-ws-volume
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
       {{- if .Values.leafnodes.enabled }}
       # 
       # Leafnode credential volumes
@@ -187,6 +198,13 @@ spec:
           name: monitor
         - containerPort: 7777
           name: metrics
+        {{- if .Values.websocket.enabled }}
+        - containerPort: {{ .Values.websocket.port }}
+          name: websocket
+          {{- if .Values.nats.externalAccess }}
+          hostPort: {{ .Values.websocket.port }}
+          {{- end }}
+        {{- end }}
         command:
          - "nats-server"
          - "--config"
@@ -223,6 +241,11 @@ spec:
             mountPath: /etc/nats-config/accounts
           {{- end }}
 
+          {{- if eq .Values.auth.resolver.type "full" }}
+          - name: resolver-volume
+            mountPath: /etc/nats-config/accounts
+          {{- end }}
+
           {{- if eq .Values.auth.resolver.type "URL" }}
           - name: operator-jwt-volume
             mountPath: /etc/nats-config/operator
@@ -253,6 +276,12 @@ spec:
           {{ $secretName := .secret.name }}
           - name: {{ $secretName }}-gateways-volume
             mountPath: /etc/nats-certs/gateways/{{ $secretName }}
+          {{- end }}
+
+          {{- with .Values.websocket.tls }}
+          {{ $secretName := .secret.name }}
+          - name: {{ $secretName }}-ws-volume
+            mountPath: /etc/nats-certs/ws/{{ $secretName }}
           {{- end }}
 
           {{- if .Values.leafnodes.enabled }}
