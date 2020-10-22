@@ -507,6 +507,19 @@ exporter:
   pullPolicy: IfNotPresent
 ```
 
+### Prometheus operator ServiceMonitor support
+
+You can enable prometheus operator ServiceMonitor:
+
+```yaml
+exporter:
+  # You have to enable exporter first
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    # ...
+```
+
 ### Pod Customizations
 
 #### Security Context
