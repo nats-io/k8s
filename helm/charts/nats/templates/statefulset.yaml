@@ -76,11 +76,18 @@ spec:
       {{- end }}
       {{- end }}
 
-      {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
+      {{- if and .Values.nats.externalAccess .Values.nats.advertise }}
       # Local volume shared with the advertise config initializer.
       - name: advertiseconfig
         emptyDir: {}
-      {{ end }}
+      {{- end }}
+
+      {{- if and .Values.nats.jetstream.fileStorage.enabled .Values.nats.jetstream.fileStorage.existingClaim }}
+      # Persistent volume for jetstream running with file storage option
+      - name: jetstream-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.nats.jetstream.fileStorage.existingClaim | quote }}
+      {{- end }}
 
       #################
       #               #
@@ -252,6 +259,11 @@ spec:
           {{- end }}
           {{- end }}
 
+          {{- if .Values.nats.jetstream.fileStorage.enabled }}
+          - name: jetstream-volume
+            mountPath: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
+          {{- end }}
+
           {{- with .Values.nats.tls }}
           #######################
           #                     #
@@ -365,3 +377,29 @@ spec:
         - containerPort: 7777
           name: metrics
       {{ end }}
+  
+  {{- if and .Values.nats.jetstream.fileStorage.enabled (not .Values.nats.jetstream.fileStorage.existingClaim) }}
+  #####################################
+  #                                   #
+  #  Jetstream New Persistent Volume  #
+  #                                   #
+  #####################################
+  volumeClaimTemplates:
+    - metadata:
+        name: jetstream-volume
+        {{- if .Values.nats.jetstream.fileStorage.annotations }}
+        annotations:
+        {{- range $key, $value := .Values.nats.jetstream.fileStorage.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.nats.jetstream.fileStorage.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.nats.jetstream.fileStorage.size }}
+        storageClassName: {{ .Values.nats.jetstream.fileStorage.storageClassName | quote }}
+  {{- end }}
