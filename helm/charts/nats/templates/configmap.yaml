@@ -331,6 +331,33 @@ data:
     lame_duck_duration:  {{ . | quote }}
     {{- end }}
 
+    {{- if .Values.websocket.enabled }}
+    ##################
+    #                #
+    # Websocket      #
+    #                #
+    ##################
+    ws {
+      port: {{ .Values.websocket.port }}
+      {{- with .Values.websocket.tls }}
+        {{ $secretName := .secret.name }}
+        tls {
+        {{- with .cert }}
+        cert_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
+        {{- end }}
+
+        {{- with .key }}
+        key_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
+        {{- end }}
+
+        {{- with .ca }}
+        ca_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
+        {{- end }}
+        }
+      {{- end }}
+    }
+    {{- end }}
+
     {{- if .Values.auth.enabled }}
     ##################
     #                #
@@ -340,6 +367,10 @@ data:
     {{- if .Values.auth.resolver }}
     {{- if eq .Values.auth.resolver.type "memory" }}
     resolver: MEMORY
+    include "accounts/{{ .Values.auth.resolver.configMap.key }}"
+    {{- end }}
+
+    {{- if eq .Values.auth.resolver.type "full" }}
     include "accounts/{{ .Values.auth.resolver.configMap.key }}"
     {{- end }}
 
