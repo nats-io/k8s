@@ -370,7 +370,7 @@ reloader:
   pullPolicy: IfNotPresent
 ```
 
-### Prometheus Exporter sidecar 
+### Prometheus Exporter sidecar
 
 You can toggle whether to start the sidecar that can be used to feed metrics to Prometheus:
 
@@ -379,6 +379,19 @@ exporter:
   enabled: true
   image: synadia/prometheus-nats-exporter:0.5.0
   pullPolicy: IfNotPresent
+```
+
+### Prometheus operator ServiceMonitor support
+
+You can enable prometheus operator ServiceMonitor:
+
+```yaml
+exporter:
+  # You have to enable exporter first
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    # ...
 ```
 
 ### Pod Customizations
