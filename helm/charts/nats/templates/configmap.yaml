@@ -69,7 +69,19 @@ data:
     # NATS JetStream                  #
     #                                 #
     ###################################
-    jetstream: {{ .Values.nats.jetstream.enabled }}
+    jetstream {
+      {{- if .Values.nats.jetstream.fileStorage.enabled }}
+      store_dir: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
+      
+      max_file_store: 
+      {{- if .Values.nats.jetstream.fileStorage.existingClaim }}
+      {{- .Values.nats.jetstream.fileStorage.claimStorageSize | int }}
+      {{- else }}
+      {{- .Values.nats.jetstream.fileStorage.size | int }}
+      {{- end }}
+
+      {{- end }}
+    }
     {{- end }}
 
     {{ if .Values.cluster.enabled }}
