@@ -70,10 +70,14 @@ data:
     #                                 #
     ###################################
     jetstream {
+      {{- if .Values.nats.jetstream.memStorage.enabled }}
+      max_mem: {{- .Values.nats.jetstream.memStorage.size | int }}
+      {{- end }}
+
       {{- if .Values.nats.jetstream.fileStorage.enabled }}
       store_dir: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
-      
-      max_file_store: 
+     
+      max_file: 
       {{- if .Values.nats.jetstream.fileStorage.existingClaim }}
       {{- .Values.nats.jetstream.fileStorage.claimStorageSize | int }}
       {{- else }}

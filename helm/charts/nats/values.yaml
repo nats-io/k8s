@@ -49,6 +49,12 @@ nats:
 
   jetstream:
     enabled: false
+    memStorage:
+     enabled: true
+     # FIXME: Support values in units like:
+     # size: 1GiB 
+     size: 1073741824 # bytes (default: 1GiB)
+
     ############################
     #                          #
     #  Jetstream File Storage  #
@@ -58,13 +64,13 @@ nats:
       enabled: false
       storageDirectory: /data
 
-      # # set for use with existing PVC
+      # set for use with existing PVC
       # existingClaim: jetstream-pvc
-      # claimStorageSize: 1000000000 #bytes
+      # claimStorageSize: 1073741824 #bytes
       
-      # # use below block to create new persistent volume
-      # # only used if existingClaim is not specified
-      size: 1000000000 #bytes
+      # use below block to create new persistent volume
+      # only used if existingClaim is not specified
+      size: 1073741824 # bytes (default: 1GiB)
       storageClassName: default
       accessModes:
         - ReadWriteOnce
