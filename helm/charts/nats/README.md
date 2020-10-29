@@ -340,6 +340,64 @@ auth:
     url: "http://nats-account-server:9090/jwt/v1/accounts/"
 ```
 
+## JetStream
+
+### Setting up Memory and File Storage
+
+```yaml
+nats:
+  image: synadia/nats-server:nightly
+
+  jetstream:
+    enabled: true
+
+    memStorage:
+      enabled: true
+      size: 2Gi
+
+    fileStorage:
+      enabled: true
+      size: 1Gi
+      storageDirectory: /data/
+      storageClassName: default
+```
+
+### Using with an existing PersistentVolumeClaim
+
+For example, given the following `PersistentVolumeClaim`:
+
+```yaml
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nats-js-disk
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "default"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+```
+
+You can start JetStream so that one pod is bounded to it:
+
+```yaml
+nats:
+  image: synadia/nats-server:nightly
+
+  jetstream:
+    enabled: true
+
+    fileStorage:
+      enabled: true
+      storageDirectory: /data/
+      existingClaim: nats-js-disk
+      claimStorageSize: 3Gi
+```
+
 ## Misc
 
 ### NATS Box
@@ -467,3 +525,4 @@ spec:
   imagePullSecrets:
     - name: myRegistry
 ```
+

@@ -79,7 +79,7 @@ data:
      
       max_file: 
       {{- if .Values.nats.jetstream.fileStorage.existingClaim }}
-      {{- .Values.nats.jetstream.fileStorage.claimStorageSize | int }}
+      {{- .Values.nats.jetstream.fileStorage.claimStorageSize }}
       {{- else }}
       {{- .Values.nats.jetstream.fileStorage.size }}
       {{- end }}
