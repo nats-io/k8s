@@ -71,7 +71,7 @@ data:
     ###################################
     jetstream {
       {{- if .Values.nats.jetstream.memStorage.enabled }}
-      max_mem: {{- .Values.nats.jetstream.memStorage.size | int }}
+      max_mem: {{- .Values.nats.jetstream.memStorage.size }}
       {{- end }}
 
       {{- if .Values.nats.jetstream.fileStorage.enabled }}
@@ -81,7 +81,7 @@ data:
       {{- if .Values.nats.jetstream.fileStorage.existingClaim }}
       {{- .Values.nats.jetstream.fileStorage.claimStorageSize | int }}
       {{- else }}
-      {{- .Values.nats.jetstream.fileStorage.size | int }}
+      {{- .Values.nats.jetstream.fileStorage.size }}
       {{- end }}
 
       {{- end }}
