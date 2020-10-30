@@ -387,7 +387,32 @@ data:
     {{- end }}
 
     {{- if eq .Values.auth.resolver.type "full" }}
+
+    {{- if .Values.auth.resolver.configMap }}
     include "accounts/{{ .Values.auth.resolver.configMap.key }}"
+    {{- else }}
+
+    {{- with .Values.auth.resolver }}
+    operator: {{ .operator }}
+
+    system_account: {{ .systemAccount }}
+    {{- end }}
+
+    resolver: {
+      type: full
+      {{- with .Values.auth.resolver }}
+      dir: {{ .store.dir | quote }}
+
+      allow_delete: {{ .allowDelete }}
+
+      interval: {{ .interval | quote }}
+      {{- end }}
+    }
+    {{- end }}
+    {{- end }}
+
+    {{- if .Values.auth.resolver.resolverPreload }}
+    resolver_preload: {{ toRawJson .Values.auth.resolver.resolverPreload }}
     {{- end }}
 
     {{- if eq .Values.auth.resolver.type "URL" }}

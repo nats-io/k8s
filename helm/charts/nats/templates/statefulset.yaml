@@ -56,14 +56,7 @@ spec:
         emptyDir: {}
 
       {{- if and .Values.auth.enabled .Values.auth.resolver }}
-      {{- if eq .Values.auth.resolver.type "memory" }}
-      # Volume with the memory resolver configuration.
-      - name: resolver-volume
-        configMap:
-          name: {{ .Values.auth.resolver.configMap.name }}
-      {{- end }}
-
-      {{- if eq .Values.auth.resolver.type "full" }}
+      {{- if .Values.auth.resolver.configMap }}
       - name: resolver-volume
         configMap:
           name: {{ .Values.auth.resolver.configMap.name }}
@@ -84,7 +77,7 @@ spec:
 
       {{- if and .Values.nats.jetstream.fileStorage.enabled .Values.nats.jetstream.fileStorage.existingClaim }}
       # Persistent volume for jetstream running with file storage option
-      - name: jetstream-volume
+      - name: {{ template "nats.name" . }}-js-pvc
         persistentVolumeClaim:
           claimName: {{ .Values.nats.jetstream.fileStorage.existingClaim | quote }}
       {{- end }}
@@ -249,8 +242,14 @@ spec:
           {{- end }}
 
           {{- if eq .Values.auth.resolver.type "full" }}
+          {{- if .Values.auth.resolver.configMap }}
           - name: resolver-volume
             mountPath: /etc/nats-config/accounts
+          {{- end }}
+          {{- if and .Values.auth.resolver .Values.auth.resolver.store }}
+          - name: nats-jwt-pvc
+            mountPath: {{ .Values.auth.resolver.store.dir }}
+          {{- end }}
           {{- end }}
 
           {{- if eq .Values.auth.resolver.type "URL" }}
@@ -260,7 +259,7 @@ spec:
           {{- end }}
 
           {{- if .Values.nats.jetstream.fileStorage.enabled }}
-          - name: jetstream-volume
+          - name: {{ template "nats.name" . }}-js-pvc
             mountPath: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
           {{- end }}
 
@@ -377,16 +376,34 @@ spec:
         - containerPort: 7777
           name: metrics
       {{ end }}
-  
+
+  volumeClaimTemplates:
+  {{- if eq .Values.auth.resolver.type "full" }}
+  {{- if and .Values.auth.resolver .Values.auth.resolver.store }}
+  #####################################
+  #                                   #
+  #  Account Server Embedded JWT      #
+  #                                   #
+  #####################################
+    - metadata:
+        name: nats-jwt-pvc
+      spec:
+        accessModes: 
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.auth.resolver.store.size }}
+  {{- end }}
+  {{- end }}
+
   {{- if and .Values.nats.jetstream.fileStorage.enabled (not .Values.nats.jetstream.fileStorage.existingClaim) }}
   #####################################
   #                                   #
   #  Jetstream New Persistent Volume  #
   #                                   #
   #####################################
-  volumeClaimTemplates:
     - metadata:
-        name: jetstream-volume
+        name: {{ template "nats.name" . }}-js-pvc
         {{- if .Values.nats.jetstream.fileStorage.annotations }}
         annotations:
         {{- range $key, $value := .Values.nats.jetstream.fileStorage.annotations }}
