@@ -6,7 +6,7 @@ keywords:
   - nats
   - jetstream
   - cncf
-version: 0.6.0
+version: 0.7.0
 maintainers:
   - name: Waldemar Quevedo
     github: https://github.com/wallyqs
