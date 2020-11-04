@@ -8,8 +8,7 @@ helm install nats nats/nats
 helm install nack-jsc nats/nack --set jetstream.nats.url=nats://nats:4222
 ```
 
-The JetStream controllers allows you to manage
-[NATS JetStream](https://github.com/nats-io/jetstream)
+The JetStream controllers allows you to manage [NATS JetStream](https://github.com/nats-io/jetstream)
 [Streams](https://github.com/nats-io/jetstream#streams-1) and
 [Consumers](https://github.com/nats-io/jetstream#consumers-1) via K8S CRDs.
 
@@ -19,23 +18,47 @@ First, we'll need to NATS cluster that has enabled JetStream.  You can install
 one as follows:
 
 ```sh
-# Creates cluster of NATS Servers that are not JetStream enabled
-$ kubectl apply -f https://raw.githubusercontent.com/nats-io/k8s/master/nats-server/simple-nats.yml
+nats:
+  image: synadia/nats-server:nightly
 
-# Creates NATS Server with JetStream enabled as a leafnode connection
-$ kubectl apply -f https://raw.githubusercontent.com/nats-io/k8s/master/nats-server/nats-js-leaf.yml
+  jetstream:
+    enabled: true
+
+    memStorage:
+      enabled: true
+      size: 2Gi
+
+    fileStorage:
+      enabled: true
+      storageDirectory: /data/jetstream
+      size: 10Gi
+      storageClassName: default
+
+natsbox:
+  enabled: false
+```
+
+```sh
+helm install nack nats/nats -f deploy-nats.yaml
 ```
 
 Now install the JetStream CRDs and Controller:
 
-```sh
-$ kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/main/deploy/crds.yml
-customresourcedefinition.apiextensions.k8s.io/streams.jetstream.nats.io configured
-customresourcedefinition.apiextensions.k8s.io/consumers.jetstream.nats.io configured
-customresourcedefinition.apiextensions.k8s.io/streamtemplates.jetstream.nats.io configured
+```yaml
+jetstream:
+  enabled: true
+  
+  nats:
+   url: nats://nats:4222
 
-$ kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/main/deploy/rbac.yml
-$ kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/main/deploy/deployment.yml
+   credentials:
+     secret:
+       name: nats-sys-creds
+       key: "sys.creds"
+```
+
+```sh
+helm install nack nats/nack -f deploy-nack.yaml
 ```
 
 Now we can create some Streams and Consumers.
