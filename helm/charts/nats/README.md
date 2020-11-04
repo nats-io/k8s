@@ -449,6 +449,8 @@ exporter:
   enabled: true
   serviceMonitor:
     enabled: true
+    ## Specify the namespace where Prometheus Operator is running
+    # namespace: monitoring
     # ...
 ```
 

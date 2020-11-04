@@ -3,6 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "nats.name" . }}
+  {{- if .Values.exporter.serviceMonitor.namespace }}
+  namespace: {{ .Values.exporter.serviceMonitor.namespace }}
+  {{- else }}
   {{- if .Values.exporter.serviceMonitor.labels }}
   labels:
     {{ .Values.exporter.serviceMonitor.labels }}
