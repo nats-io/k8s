@@ -13,6 +13,15 @@ jetstream:
   nats:
     url:
 
+    #
+    # The credentials file to load in to connect to the NATS Server.
+    #
+    # credentials:
+    #   secret:
+    #     name: nats-sys-creds
+    #     key: sys.creds
+    #
+
   # TLS
   # Enabled must be true, and a secret name specified for this to work
   tls:
@@ -26,12 +35,6 @@ jetstream:
       client_key: "/etc/nats/certs/tls.key"
       client_ca: "/etc/nats/certs/ca.crt"
       timeout: 3
-
-  # The credentials file to load in to connect to the nats server.
-  #credentials:
-  #  secret:
-  #    name: nats-sys-creds
-  #    key: sys.creds
 
 nameOverride: ""
 imagePullSecrets: []

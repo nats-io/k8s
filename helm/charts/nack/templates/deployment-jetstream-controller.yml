@@ -43,10 +43,10 @@ spec:
           secretName: {{ .Values.jetstream.tls.secretName }}
       {{- end }}
 
-      {{- if .Values.jetstream.credentials }}
+      {{- if .Values.jetstream.nats.credentials }}
       - name: jsc-sys-creds
         secret:
-          secretName: {{ .Values.jetstream.credentials.secret.name }}
+          secretName: {{ .Values.jetstream.nats.credentials.secret.name }}
       {{- end }}
 
       affinity:
@@ -71,6 +71,9 @@ spec:
           command:
           - /jetstream-controller
           - -s={{ .Values.jetstream.nats.url }}
+          {{- if and .Values.jetstream.nats.credentials .Values.jetstream.nats.credentials.secret }}
+          - --creds=/etc/jsc-creds/{{ .Values.jetstream.nats.credentials.secret.key }}
+          {{- end }}
 
           env:
           - name: POD_NAME
@@ -91,7 +94,7 @@ spec:
           - name: jsc-client-tls-volume
             mountPath: /etc/nats/certs
           {{- end }}
-          {{- if .Values.jetstream.credentials }}
+          {{- if .Values.jetstream.nats.credentials }}
           - name: jsc-sys-creds
             mountPath: /etc/jsc-creds
           {{- end }}
