@@ -45,7 +45,7 @@ entries:
     created: "2020-11-04T11:39:46.104659-08:00"
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
-    digest: 64e1f8f48da8b6bb74bfcd539589adbcd968bbeb3fefd1e1cd79257895c4afd6
+    digest: 0ee861b8d59245fbf47ae1df3524b85eaf1e36c817ca583fd7fc1b846895acc1
     home: http://github.com/nats-io/k8s
     icon: https://nats.io/img/nats-icon-color.png
     keywords:
@@ -379,7 +379,7 @@ entries:
     appVersion: 0.19.0
     created: "2020-11-04T11:39:46.14427-08:00"
     description: A Helm chart for NATS Streaming
-    digest: 2999b6613f33e083698bdcd777f5f947c3809395163fa9f6ea9b0546844696a0
+    digest: 28529ccc74fd3d6210e438779d11d03a059c0f747f0a0398a6f712a69bc0c337e
     icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
