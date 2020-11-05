@@ -222,6 +222,9 @@ exporter:
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled
   serviceMonitor:
     enabled: false
+    ## Specify the namespace where Prometheus Operator is running
+    ##
+    # namespace: monitoring
     labels: {}
     annotations: {}
     path: /metrics
