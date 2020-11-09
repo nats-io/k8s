@@ -204,10 +204,12 @@ spec:
               extraRoutes:
                 type: array
                 items:
-                  cluster:
-                    type: string
-                  route:
-                    type: string
+                  type: object
+                  properties:
+                    cluster:
+                      type: string
+                    route:
+                      type: string
               gatewayConfig:
                 type: object
                 properties:
@@ -219,7 +221,7 @@ spec:
                     type: boolean
                   gateways:
                     type: array
-                    item:
+                    items:
                       type: object
                       properties:
                         name:
