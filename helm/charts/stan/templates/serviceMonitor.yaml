@@ -6,6 +6,8 @@ metadata:
   {{- if .Values.exporter.serviceMonitor.namespace }}
   namespace: {{ .Values.exporter.serviceMonitor.namespace }}
   {{- else }}
+  namespace: {{ .Release.Namespace | quote }}
+  {{- end }}
   {{- if .Values.exporter.serviceMonitor.labels }}
   labels:
     {{ .Values.exporter.serviceMonitor.labels }}
