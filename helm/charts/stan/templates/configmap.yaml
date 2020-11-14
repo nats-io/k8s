@@ -89,28 +89,28 @@ data:
 
       {{- with .Values.store.limits }}
       store_limits: {
-        {{- if .max_channels }}
-        max_channels: {{ .max_channels }}
+        {{- if kindIs "float64" .max_channels }}
+        max_channels: {{ .max_channels | int }}
         {{- end }}
 
-        {{- if .max_msgs }}
-        max_msgs: {{ .max_msgs }}
+        {{- if kindIs "float64" .max_msgs }}
+        max_msgs: {{ .max_msgs | int }}
         {{- end }}
 
-        {{- if .max_bytes }}
-        max_bytes: {{ .max_bytes }}
+        {{- if kindIs "float64" .max_bytes }}
+        max_bytes: {{ .max_bytes | int }}
         {{- end }}
 
         {{- if .max_age }}
-        max_age: {{ .max_age }}
+        max_age: {{ .max_age | quote }}
         {{- end }}
 
-        {{- if .max_subs }}
-        max_subs: {{ .max_subs }}
+        {{- if kindIs "float64" .max_subs }}
+        max_subs: {{ .max_subs | int }}
         {{- end }}
 
         {{- if .max_inactivity }}
-        max_inactivity: {{ .max_inactivity }}
+        max_inactivity: {{ .max_inactivity | quote }}
         {{- end }}
 
         {{- if .channels }}
@@ -119,24 +119,25 @@ data:
         {{- range $channel, $limits := .channels }}
           {{ $channel }}: {
             {{- if $limits }}
-            {{- with $limits.max_subs }}
-            max_subs: {{ . }}
+
+            {{- if kindIs "float64" .max_subs }}
+            max_subs: {{ $limits.max_subs | int }}
             {{- end }}
 
-            {{- with $limits.max_msgs }}
-            max_msgs: {{ . }}
+            {{- if kindIs "float64" .max_msgs }}
+            max_msgs: {{ $limits.max_msgs | int }}
             {{- end }}
 
-            {{- with $limits.max_bytes }}
-            max_bytes: {{ . }}
+            {{- if kindIs "float64" .max_bytes }}
+            max_bytes: {{ $limits.max_bytes | int }}
             {{- end }}
 
-            {{- with $limits.max_age }}
-            max_age: {{ . }}
+            {{- if $limits.max_age }}
+            max_age: {{ $limits.max_age | quote }}
             {{- end }}
 
-            {{- with $limits.max_inactivity }}
-            max_inactivity: {{ . }}
+            {{- if $limits.max_inactivity }}
+            max_inactivity: {{ $limits.max_inactivity | quote }}
             {{- end }}
           {{- end }}
           }
