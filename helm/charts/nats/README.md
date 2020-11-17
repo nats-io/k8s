@@ -41,6 +41,9 @@ nats:
     maxPending: 
     maxPings: 
     lameDuckDuration: 
+
+  # Number of seconds to wait for client connections to end after the pod termination is requested
+  terminationGracePeriodSeconds: 60
 ```
 
 ### Logging
