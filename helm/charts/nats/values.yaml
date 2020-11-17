@@ -40,6 +40,8 @@ nats:
     maxPings: 
     lameDuckDuration: 
 
+  terminationGracePeriodSeconds: 60
+
   logging:
     debug: 
     trace: 
