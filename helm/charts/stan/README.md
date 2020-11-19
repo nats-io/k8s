@@ -474,19 +474,20 @@ store:
   sql:
     driver: postgres
 
-    # For example:
+    # "source" is used at runtime by NATS Streaming. For example:
     #
     # source: "dbname=postgres user=postgres password=stan host=stan-db sslmode=disable"
     #
     source: ""
 
-    # Initialize the database
+    # Initialize the database. Only Postgres is supported.
     initdb:
       enabled: true
 
       # Client to use to init the db.
       image: postgres:11
 
+    # SQL connection parameters used to run the initdb script:
     dbName: postgres
     dbUser: postgres
     dbPassword: stan
