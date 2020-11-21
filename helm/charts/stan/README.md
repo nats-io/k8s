@@ -117,9 +117,11 @@ stan:
   replicas: 2
 ```
 
-Note: in case of using clustering you will always get exactly 3 replicas.
+Note: in case of using clustering, you must set the number of replicas to 3 or more.
 
 ```yaml
+stan:
+  replicas: 3
 store:
   cluster:
     enabled: true
