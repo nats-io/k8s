@@ -507,7 +507,7 @@ nats:
     requests:
       cpu: 2
       memory: 4Gi
-    limits
+    limits:
       cpu: 4
       memory: 6Gi
 ```
@@ -544,4 +544,3 @@ spec:
   imagePullSecrets:
     - name: myRegistry
 ```
-
