@@ -498,6 +498,20 @@ affinity:
         topologyKey: "kubernetes.io/hostname"
 ```
 
+#### CPU/Memory Resource Requests/Limits
+Sets the pods cpu/memory requests/limits
+
+```yaml
+nats:
+  resources:
+    requests:
+      cpu: 2
+      memory: 4Gi
+    limits:
+      cpu: 4
+      memory: 6Gi
+```
+
 #### Annotations
 
 <https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations>
@@ -530,4 +544,3 @@ spec:
   imagePullSecrets:
     - name: myRegistry
 ```
-
