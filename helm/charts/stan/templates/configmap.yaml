@@ -97,8 +97,8 @@ data:
         max_msgs: {{ .max_msgs | int }}
         {{- end }}
 
-        {{- if kindIs "float64" .max_bytes }}
-        max_bytes: {{ .max_bytes | int }}
+        {{- if .max_bytes }}
+        max_bytes: {{ .max_bytes | quote }}
         {{- end }}
 
         {{- if .max_age }}
