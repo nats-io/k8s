@@ -98,7 +98,7 @@ data:
         {{- end }}
 
         {{- if .max_bytes }}
-        max_bytes: {{ .max_bytes | quote }}
+        max_bytes: {{ .max_bytes }}
         {{- end }}
 
         {{- if .max_age }}
