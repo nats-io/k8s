@@ -176,19 +176,8 @@ spec:
       - name: nats
         image: {{ .Values.nats.image }}
         imagePullPolicy: {{ .Values.nats.pullPolicy }}
-        {{- if .Values.nats.resources  }}
         resources:
-          {{- if .Values.nats.requests }}
-          requests:
-            cpu: {{ .Values.nats.resources.requests.cpu }}
-            memory: {{ .Values.nats.resources.requests.memory }}
-          {{- end }}
-          {{- if .Values.nats.limits }}
-          limits:
-            cpu: {{ .Values.nats.resources.limits.cpu }}
-            memory: {{ .Values.nats.resources.limits.memory }}
-          {{- end }}
-        {{- end }}
+          {{- toYaml .Values.nats.resources | nindent 10 }}
         ports:
         - containerPort: 4222
           name: client

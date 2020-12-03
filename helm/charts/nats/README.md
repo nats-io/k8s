@@ -512,6 +512,8 @@ nats:
       memory: 6Gi
 ```
 
+No resources are set by default.
+
 #### Annotations
 
 <https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations>
