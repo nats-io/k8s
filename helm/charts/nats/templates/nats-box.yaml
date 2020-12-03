@@ -3,9 +3,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "nats.name" . }}-box
+  name: {{ template "nats.fullname" . }}-box
   labels:
-    app: {{ template "nats.name" . }}-box
+    app: {{ template "nats.fullname" . }}-box
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
   volumes:
@@ -29,7 +29,7 @@ spec:
     metadata:
       labels:
         app: {{ template "nats.name" . }}-box
-    spec:        
+    spec:
       containers:
       - name: nats-box
         image: {{ .Values.natsbox.image }}

@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "nats.name" . }}
+  name: {{ template "nats.fullname" . }}
   {{- if .Values.exporter.serviceMonitor.namespace }}
   namespace: {{ .Values.exporter.serviceMonitor.namespace }}
   {{- else }}
@@ -36,6 +36,6 @@ spec:
     any: true
   selector:
     matchLabels:
-      app: {{ template "nats.name" . }}
+      app: {{ template "nats.fullname" . }}
       chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 {{- end }}
