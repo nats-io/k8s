@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "nats.name" . }}
+  name: {{ include "nats.fullname" . }}
   labels:
-    app: {{ template "nats.name" . }}
+    app: {{ include "nats.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
   selector:
-    app: {{ template "nats.name" . }}
+    app: {{ include "nats.fullname" . }}
   clusterIP: None
   {{- if .Values.topologyKeys }}
   topologyKeys:

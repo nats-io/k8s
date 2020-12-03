@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "nats.name" . }}-config
+  name: {{ include "nats.fullname" . }}-config
   labels:
-    app: {{ template "nats.name" . }}
+    app: {{ include "nats.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 data:
   nats.conf: |
@@ -26,40 +26,9 @@ data:
     #                   #
     #####################
     {{- with .Values.nats.tls }}
-    {{ $secretName := .secret.name }}
-    tls {
-       {{- with .cert }}
-       cert_file: /etc/nats-certs/clients/{{ $secretName }}/{{ . }}
-       {{- end }}
-
-       {{- with .key }}
-       key_file: /etc/nats-certs/clients/{{ $secretName }}/{{ . }}
-       {{- end }}
-
-       {{- with .ca }}
-       ca_file: /etc/nats-certs/clients/{{ $secretName }}/{{ . }}
-       {{- end }}
-
-       {{- with .insecure }}
-       insecure: {{ . }}
-       {{- end }}
-
-       {{- with .verify }}
-       verify: {{ . }}
-       {{- end }}
-
-       {{- with .verifyAndMap }}
-       verify_and_map: {{ . }}
-       {{- end }}
-
-       {{- with .curvePreferences }}
-       curve_preferences: {{ . }}
-       {{- end }}
-
-       {{- with .timeout }}
-       timeout: {{ . }}
-       {{- end }}
-    }
+    {{- $nats_tls := merge (dict) . }}
+    {{- $_ := set $nats_tls "secretPath" "/etc/nats-certs/clients" }}
+{{ include "nats.tlsConfig" $nats_tls | indent 4}}
     {{- end }}
     {{- end }}
 
@@ -71,7 +40,7 @@ data:
     ###################################
     jetstream {
       {{- if .Values.nats.jetstream.memStorage.enabled }}
-      max_mem: {{- .Values.nats.jetstream.memStorage.size }}
+      max_mem: {{ .Values.nats.jetstream.memStorage.size }}
       {{- end }}
 
       {{- if .Values.nats.jetstream.fileStorage.enabled }}
@@ -79,7 +48,7 @@ data:
      
       max_file: 
       {{- if .Values.nats.jetstream.fileStorage.existingClaim }}
-      {{- .Values.nats.jetstream.fileStorage.claimStorageSize }}
+      {{- .Values.nats.jetstream.fileStorage.claimStorageSize  }}
       {{- else }}
       {{- .Values.nats.jetstream.fileStorage.size }}
       {{- end }}
@@ -88,7 +57,7 @@ data:
     }
     {{- end }}
 
-    {{ if .Values.cluster.enabled }}
+    {{- if .Values.cluster.enabled }}
     ###################################
     #                                 #
     # NATS Full Mesh Clustering Setup #
@@ -102,44 +71,13 @@ data:
       {{- end }}
 
       {{- with .Values.cluster.tls }}
-      {{ $secretName := .secret.name }}
-      tls {
-         {{- with .cert }}
-         cert_file: /etc/nats-certs/cluster/{{ $secretName }}/{{ . }}
-         {{- end }}
-
-         {{- with .key }}
-         key_file: /etc/nats-certs/cluster/{{ $secretName }}/{{ . }}
-         {{- end }}
-
-         {{- with .ca }}
-         ca_file: /etc/nats-certs/cluster/{{ $secretName }}/{{ . }}
-         {{- end }}
-
-         {{- with .insecure }}
-         insecure: {{ . }}
-         {{- end }}
-
-         {{- with .verify }}
-         verify: {{ . }}
-         {{- end }}
-
-         {{- with .verifyAndMap }}
-         verify_and_map: {{ . }}
-         {{- end }}
-
-         {{- with .curvePreferences }}
-         curve_preferences: {{ . }}
-         {{- end }}
-
-         {{- with .timeout }}
-         timeout: {{ . }}
-         {{- end }}
-      }
+      {{-  $cluster_tls := merge (dict) . }}
+      {{- $_ := set $cluster_tls "secretPath" "/etc/nats-certs/cluster" }}
+{{ include "nats.tlsConfig" $cluster_tls | indent 6}}
       {{- end }}
 
       routes = [
-        {{ template "nats.clusterRoutes" . }}
+        {{ include "nats.clusterRoutes" . }}
       ]
       cluster_advertise: $CLUSTER_ADVERTISE
 
@@ -175,40 +113,9 @@ data:
       {{- end }}
 
       {{- with .Values.leafnodes.tls }}
-      {{ $secretName := .secret.name }}
-      tls {
-         {{- with .cert }}
-         cert_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
-         {{- end }}
-
-         {{- with .key }}
-         key_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
-         {{- end }}
-
-         {{- with .ca }}
-         ca_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
-         {{- end }}
-
-         {{- with .insecure }}
-         insecure: {{ . }}
-         {{- end }}
-
-         {{- with .verify }}
-         verify: {{ . }}
-         {{- end }}
-
-         {{- with .verifyAndMap }}
-         verify_and_map: {{ . }}
-         {{- end }}
-
-         {{- with .curvePreferences }}
-         curve_preferences: {{ . }}
-         {{- end }}
-
-         {{- with .timeout }}
-         timeout: {{ . }}
-         {{- end }}
-      }
+      {{-  $leafnode_tls := merge (dict) . }}
+      {{- $_ := set $leafnode_tls "secretPath" "/etc/nats-certs/leafnodes" }}
+{{- include "nats.tlsConfig" $leafnode_tls | indent 6}}
       {{- end }}
 
       remotes: [
@@ -242,40 +149,9 @@ data:
       {{ end }}
 
       {{- with .Values.gateway.tls }}
-      {{ $secretName := .secret.name }}
-      tls {
-         {{- with .cert }}
-         cert_file: /etc/nats-certs/gateways/{{ $secretName }}/{{ . }}
-         {{- end }}
-
-         {{- with .key }}
-         key_file: /etc/nats-certs/gateways/{{ $secretName }}/{{ . }}
-         {{- end }}
-
-         {{- with .ca }}
-         ca_file: /etc/nats-certs/gateways/{{ $secretName }}/{{ . }}
-         {{- end }}
-
-         {{- with .insecure }}
-         insecure: {{ . }}
-         {{- end }}
-
-         {{- with .verify }}
-         verify: {{ . }}
-         {{- end }}
-
-         {{- with .verifyAndMap }}
-         verify_and_map: {{ . }}
-         {{- end }}
-
-         {{- with .curvePreferences }}
-         curve_preferences: {{ . }}
-         {{- end }}
-
-         {{- with .timeout }}
-         timeout: {{ . }}
-         {{- end }}
-      }
+      {{-  $gateway_tls := merge (dict) . }}
+      {{- $_ := set $gateway_tls "secretPath" "/etc/nats-certs/gateway" }}
+{{- include "nats.tlsConfig" $gateway_tls | indent 6}}
       {{- end }}
 
       # Gateways array here
@@ -345,7 +221,7 @@ data:
     {{- end }}
     {{- with .Values.nats.writeDeadline }}
     lame_duck_duration:  {{ . | quote }}
-    {{- end }}
+        {{- end }}
 
     {{- if .Values.websocket.enabled }}
     ##################
