@@ -6,7 +6,7 @@ keywords:
   - nats
   - messaging
   - cncf
-version: 0.7.4
+version: 0.7.5
 home: http://github.com/nats-io/k8s
 maintainers:
   - name: Waldemar Quevedo
