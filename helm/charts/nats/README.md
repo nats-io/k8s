@@ -498,6 +498,17 @@ affinity:
         topologyKey: "kubernetes.io/hostname"
 ```
 
+#### Service topology
+
+[Service topology](https://kubernetes.io/docs/concepts/services-networking/service-topology/) is disabled by default, but can be enabled by setting `topologyKeys`. For example:
+
+```yaml
+topologyKeys:
+  - "kubernetes.io/hostname"
+  - "topology.kubernetes.io/zone"
+  - "topology.kubernetes.io/region"
+```
+
 #### CPU/Memory Resource Requests/Limits
 Sets the pods cpu/memory requests/limits
 
