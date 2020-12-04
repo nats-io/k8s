@@ -118,6 +118,10 @@ securityContext: null
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+# Service topology
+# ref: https://kubernetes.io/docs/concepts/services-networking/service-topology/
+topologyKeys: []
+
 # Annotations to add to the NATS pods
 # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
