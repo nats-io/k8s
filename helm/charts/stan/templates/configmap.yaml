@@ -120,16 +120,16 @@ data:
           {{ $channel }}: {
             {{- if $limits }}
 
-            {{- if kindIs "float64" .max_subs }}
+            {{- if kindIs "float64" $limits.max_subs }}
             max_subs: {{ $limits.max_subs | int }}
             {{- end }}
 
-            {{- if kindIs "float64" .max_msgs }}
+            {{- if kindIs "float64" $limits.max_msgs }}
             max_msgs: {{ $limits.max_msgs | int }}
             {{- end }}
 
-            {{- if kindIs "float64" .max_bytes }}
-            max_bytes: {{ $limits.max_bytes | int }}
+            {{- if $limits.max_bytes }}
+            max_bytes: {{ $limits.max_bytes }}
             {{- end }}
 
             {{- if $limits.max_age }}
