@@ -114,9 +114,9 @@ store:
   limits: {}
 
   # Enables streaming/partitioning
-  #
+  # 
   # https://docs.nats.io/nats-streaming-concepts/partitioning
-  #
+  # 
   partitioning:
     enabled: false
 
@@ -231,11 +231,11 @@ exporter:
     # interval:
     # scrapeTimeout:
 
-#
+#  
 #  Embedded NATS Configuration
-#
+#  
 #  NOTE: Should be kept in sync with the NATS Helm Chart as well.
-#
+# 
 #################################################################################
 #                                                                               #
 #  _   _    _  _____ ____    _____           _              _     _          _  #
@@ -263,37 +263,37 @@ nats:
 
   # How many seconds should pass before sending a PING
   # to a client that has no activity.
-  pingInterval:
+  pingInterval: 
 
   # Server settings.
   limits:
-    maxConnections:
-    maxSubscriptions:
-    maxControlLine:
-    maxPayload:
+    maxConnections: 
+    maxSubscriptions: 
+    maxControlLine: 
+    maxPayload: 
 
-    writeDeadline:
-    maxPending:
-    maxPings:
-    lameDuckDuration:
+    writeDeadline: 
+    maxPending: 
+    maxPings: 
+    lameDuckDuration: 
 
   logging:
-    debug:
-    trace:
-    logtime:
-    connectErrorReports:
-    reconnectErrorReports:
+    debug: 
+    trace: 
+    logtime: 
+    connectErrorReports: 
+    reconnectErrorReports: 
 
   #######################
   #                     #
   #  TLS Configuration  #
   #                     #
   #######################
-  #
+  # 
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  #
+  # 
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
-  #
+  # 
 
   # tls:
   #   secret:
@@ -309,7 +309,7 @@ cluster:
 
   # NOTE: Recommended to enable if running behind a load balancer.
   noAdvertise: false
-
+  
 # Leafnode connections to extend a cluster:
 #
 # https://docs.nats.io/nats-server/configuration/leafnodes
@@ -325,11 +325,11 @@ leafnodes:
   #  TLS Configuration  #
   #                     #
   #######################
-  #
+  # 
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  #
+  # 
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
-  #
+  # 
 
   #
   # tls:
@@ -361,9 +361,9 @@ gateway:
   #  TLS Configuration  #
   #                     #
   #######################
-  #
+  # 
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  #
+  # 
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
   #
   # tls:
@@ -372,7 +372,7 @@ gateway:
   #   ca: "ca.crt"
   #   cert: "tls.crt"
   #   key: "tls.key"
-
+  
 # In case of both external access and advertisements being
 # enabled, an initializer container will be used to gather
 # the public ips.
@@ -406,14 +406,14 @@ auth:
   #   #                          #
   #   ##############################
   #   # type: memory
-  #   #
+  #   # 
   #   # Use a configmap reference which will be mounted
   #   # into the container.
-  #   #
+  #   # 
   #   # configMap:
   #   #   name: nats-accounts
   #   #   key: resolver.conf
-  #
+  #  
   #   ##########################
   #   #                        #
   #   #  URL resolver settings #
