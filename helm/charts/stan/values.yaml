@@ -61,16 +61,7 @@ securityContext: null
 
 # Affinity for pod assignment
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-affinity:
-  podAntiAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-            - key: app
-              operator: In
-              values:
-                - baz
-        topologyKey: kubernetes.io/hostname
+affinity: {}
 
 # Resource requests and limits for primary stan container
 # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
