@@ -74,6 +74,9 @@ spec:
         emptyDir: {}
 
       affinity:
+        {{- if .Values.affinity }}
+          {{- toYaml .Values.affinity | nindent 8 }}
+        {{- else }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -83,9 +86,7 @@ spec:
                 values:
                 - {{ template "stan.name" . }}
             topologyKey: kubernetes.io/hostname
-{{- with .Values.affinity }}
-{{ toYaml . | indent 8 }}
-{{- end }}
+        {{- end }}
       containers:
         ####################
         #  NATS Streaming  #
