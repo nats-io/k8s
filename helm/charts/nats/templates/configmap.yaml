@@ -221,7 +221,7 @@ data:
     {{- end }}
     {{- with .Values.nats.writeDeadline }}
     lame_duck_duration:  {{ . | quote }}
-        {{- end }}
+    {{- end }}
 
     {{- if .Values.websocket.enabled }}
     ##################
