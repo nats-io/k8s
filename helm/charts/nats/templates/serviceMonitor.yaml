@@ -36,6 +36,5 @@ spec:
     any: true
   selector:
     matchLabels:
-      app: {{ template "nats.fullname" . }}
-      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+      {{- include "nats.selectorLabels" . | nindent 6 }}
 {{- end }}

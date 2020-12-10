@@ -4,11 +4,10 @@ kind: Service
 metadata:
   name: {{ include "nats.fullname" . }}
   labels:
-    app: {{ include "nats.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "nats.labels" . | nindent 4 }}
 spec:
   selector:
-    app: {{ include "nats.fullname" . }}
+    {{- include "nats.selectorLabels" . | nindent 4 }}
   clusterIP: None
   {{- if .Values.topologyKeys }}
   topologyKeys:

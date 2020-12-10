@@ -4,8 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "nats.fullname" . }}-config
   labels:
-    app: {{ include "nats.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "nats.labels" . | nindent 4 }}
 data:
   nats.conf: |
     # PID file shared with configuration reloader.
@@ -28,7 +27,7 @@ data:
     {{- with .Values.nats.tls }}
     {{- $nats_tls := merge (dict) . }}
     {{- $_ := set $nats_tls "secretPath" "/etc/nats-certs/clients" }}
-{{ include "nats.tlsConfig" $nats_tls | indent 4}}
+    {{- include "nats.tlsConfig" $nats_tls | nindent 4}}
     {{- end }}
     {{- end }}
 
@@ -73,7 +72,7 @@ data:
       {{- with .Values.cluster.tls }}
       {{-  $cluster_tls := merge (dict) . }}
       {{- $_ := set $cluster_tls "secretPath" "/etc/nats-certs/cluster" }}
-{{ include "nats.tlsConfig" $cluster_tls | indent 6}}
+      {{- include "nats.tlsConfig" $cluster_tls | nindent 6}}
       {{- end }}
 
       routes = [
@@ -115,7 +114,7 @@ data:
       {{- with .Values.leafnodes.tls }}
       {{-  $leafnode_tls := merge (dict) . }}
       {{- $_ := set $leafnode_tls "secretPath" "/etc/nats-certs/leafnodes" }}
-{{- include "nats.tlsConfig" $leafnode_tls | indent 6}}
+      {{- include "nats.tlsConfig" $leafnode_tls | nindent 6}}
       {{- end }}
 
       remotes: [
@@ -151,7 +150,7 @@ data:
       {{- with .Values.gateway.tls }}
       {{-  $gateway_tls := merge (dict) . }}
       {{- $_ := set $gateway_tls "secretPath" "/etc/nats-certs/gateway" }}
-{{- include "nats.tlsConfig" $gateway_tls | indent 6}}
+      {{- include "nats.tlsConfig" $gateway_tls | nindent 6}}
       {{- end }}
 
       # Gateways array here

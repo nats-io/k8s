@@ -4,12 +4,11 @@ kind: StatefulSet
 metadata:
   name: {{ include "nats.fullname" . }}
   labels:
-    app: {{ include "nats.fullname" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "nats.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "nats.fullname" . }}
+      {{- include "nats.selectorLabels" . | nindent 6 }}
   {{- if .Values.cluster.enabled }}
   replicas: {{ .Values.cluster.replicas }}
   {{- else }}
@@ -30,8 +29,7 @@ spec:
       {{- end }}
       {{- end }}
       labels:
-        app: {{ include "nats.fullname" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        {{- include "nats.selectorLabels" . | nindent 8 }}
     spec:
 {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
