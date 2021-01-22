@@ -97,8 +97,16 @@ data:
     cluster {
       port: 6222
 
+      {{- if .Values.nats.jetstream.enabled }}
+      {{- if .Values.cluster.name }}
+      name: {{ .Values.cluster.name }}
+      {{- else }}
+      name: {{ template "nats.name" . }}
+      {{- end }}
+      {{- else }}
       {{- with .Values.cluster.name }}
       name: {{ . }}
+      {{- end }}
       {{- end }}
 
       {{- with .Values.cluster.tls }}

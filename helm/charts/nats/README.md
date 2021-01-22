@@ -401,6 +401,33 @@ nats:
       claimStorageSize: 3Gi
 ```
 
+### Clustering example
+
+```yaml
+
+nats:
+  image: synadia/nats-server:nightly
+
+  jetstream:
+    enabled: true
+
+    memStorage:
+      enabled: true
+      size: "2Gi"
+
+    fileStorage:
+      enabled: true
+      size: "1Gi"
+      storageDirectory: /data/
+      storageClassName: default
+
+cluster:
+  enabled: true
+  # Cluster name is required, by default will be release name.
+  # name: "nats"
+  replicas: 3
+```
+
 ## Misc
 
 ### NATS Box
