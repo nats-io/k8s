@@ -1,7 +1,7 @@
 {{- if .Values.natsbox.enabled }}
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: {{ template "nats.name" . }}-box
   labels:
@@ -21,46 +21,55 @@ spec:
       secretName: {{ $secretName }}
   {{- end }}
 
-  containers:
-  - name: nats-box
-    image: {{ .Values.natsbox.image }}
-    imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
-    env:
-    - name: NATS_URL
-      value: {{ template "nats.name" . }}
-    {{- if .Values.natsbox.credentials }}
-    - name: USER_CREDS
-      value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
-    - name: USER2_CREDS
-      value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
-    {{- end }}
-    {{- with .Values.nats.tls }}
-    {{ $secretName := .secret.name }}
-    lifecycle:
-      postStart:
-        exec:
-          command:
-          - /bin/sh
-          - -c
-          - cp /etc/nats-certs/clients/{{ $secretName }}/* /usr/local/share/ca-certificates && update-ca-certificates
-    {{- end }}
-    command:
-     - "tail"
-     - "-f"
-     - "/dev/null"
-    volumeMounts:
-    {{- if .Values.natsbox.credentials }}
-    - name: nats-sys-creds
-      mountPath: /etc/nats-config/creds
-    {{- end }}
-    {{- with .Values.nats.tls }}
-    #######################
-    #                     #
-    #  TLS Volumes Mounts #
-    #                     #
-    #######################
-    {{ $secretName := .secret.name }}
-    - name: {{ $secretName }}-clients-volume
-      mountPath: /etc/nats-certs/clients/{{ $secretName }}
-    {{- end }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "nats.name" . }}-box
+  template:
+    metadata:
+      labels:
+        app: {{ template "nats.name" . }}-box
+    spec:        
+      containers:
+      - name: nats-box
+        image: {{ .Values.natsbox.image }}
+        imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
+        env:
+        - name: NATS_URL
+          value: {{ template "nats.name" . }}
+        {{- if .Values.natsbox.credentials }}
+        - name: USER_CREDS
+          value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
+        - name: USER2_CREDS
+          value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
+        {{- end }}
+        {{- with .Values.nats.tls }}
+        {{ $secretName := .secret.name }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - cp /etc/nats-certs/clients/{{ $secretName }}/* /usr/local/share/ca-certificates && update-ca-certificates
+        {{- end }}
+        command:
+         - "tail"
+         - "-f"
+         - "/dev/null"
+        volumeMounts:
+        {{- if .Values.natsbox.credentials }}
+        - name: nats-sys-creds
+          mountPath: /etc/nats-config/creds
+        {{- end }}
+        {{- with .Values.nats.tls }}
+        #######################
+        #                     #
+        #  TLS Volumes Mounts #
+        #                     #
+        #######################
+        {{ $secretName := .secret.name }}
+        - name: {{ $secretName }}-clients-volume
+          mountPath: /etc/nats-certs/clients/{{ $secretName }}
+        {{- end }}
 {{- end }}
