@@ -575,3 +575,54 @@ Can change the name of the resources as needed with:
 ```yaml
 nameOverride: "my-stan"
 ```
+
+### Authorization example
+
+```yaml
+cluster:
+  enabled: false
+
+store:
+  cluster:
+    enabled: false
+  file:
+    options:
+      sync: true
+
+stan:
+  logging:
+   debug: true
+   trace: true
+
+nats:
+  logging:
+    debug: true
+    trace: true
+
+auth:
+  enabled: true
+  systemAccount: SYS
+
+  basic:
+    noAuthUser: stan
+
+    accounts: 
+      STAN:
+        imports: []
+        exports: []
+        users:
+        - user: stan
+          pass: stan
+      ACME:
+        imports: []
+        exports: []
+        users:
+        - user: acme
+          pass: acme
+      SYS:
+        imports: []
+        exports: []
+        users:
+        - user: sys
+          pass: sys
+```
