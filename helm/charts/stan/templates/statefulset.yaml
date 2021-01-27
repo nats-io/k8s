@@ -68,10 +68,10 @@ spec:
         secret:
           secretName: {{ .Values.stan.credentials.secret.name }}
       {{- end }}
-      {{- if .Values.stan.auth.nkey_seed_file }}
+      {{- if .Values.stan.auth.nkeySeedFile }}
       - name: stan-sys-nkey-seed-file
         secret:
-          secretName: {{ .Values.stan.auth.nkey_seed_file.secret.name }}
+          secretName: {{ .Values.stan.auth.nkeySeedFile.secret.name }}
       {{- end }}
 
       # Local volume shared with the reloader.
@@ -176,9 +176,10 @@ spec:
           - name: stan-sys-creds
             mountPath: /etc/stan-creds
           {{- end }}
-          {{- if .Values.stan.auth.nkey_seed_file }}
+          {{- if .Values.stan.auth.nkeySeedFile }}
           - name: stan-sys-nkey-seed-file
-            mountPath: /etc/nkey_seed_file
+            mountPath: /etc/nkey-seed-file
+            subPath: {{ .Values.stan.auth.nkeySeedFile.secret.key }}
           {{- end }}
           - name: pid
             mountPath: /var/run/stan

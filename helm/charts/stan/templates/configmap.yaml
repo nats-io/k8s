@@ -49,8 +49,8 @@ data:
       token: {{ .Values.stan.auth.token }}
       {{- end }}
 
-      {{- if .Values.stan.auth.nkey_seed_file }}
-      nkey_seed_file: "/etc/nkey_seed_file/{{ .Values.stan.auth.nkey_seed_file.secret.key }}"
+      {{- if .Values.stan.auth.nkeySeedFile }}
+      nkey_seed_file: "/etc/nkey-seed-file"
       {{- end }}
       {{- end }}
 

@@ -54,7 +54,13 @@ stan:
     # token:
 
     # Secret to an NKey seed file if NKey authentication is used
-    # nkey_seed_file:
+
+    # Format:
+    # -----BEGIN USER NKEY SEED-----
+    # SU<rest of the seed>
+    # ------END USER NKEY SEED------
+
+    # nkeySeedFile:
     #   secret:
     #     name:
     #     key:
