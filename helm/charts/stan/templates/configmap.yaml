@@ -36,7 +36,22 @@ data:
       {{- end }}
 
       {{- if .Values.stan.credentials }}
-        credentials: "/etc/stan-creds/{{ .Values.stan.credentials.secret.key }}"
+      credentials: "/etc/stan-creds/{{ .Values.stan.credentials.secret.key }}"
+      {{- end }}
+
+      {{- if .Values.stan.auth.enabled }}
+      {{- if (and .Values.stan.auth.username .Values.stan.auth.password) }}
+      username: {{ .Values.stan.auth.username }}
+      password: {{ .Values.stan.auth.password }}
+      {{- end }}
+
+      {{- if .Values.stan.auth.token }}
+      token: {{ .Values.stan.auth.token }}
+      {{- end }}
+
+      {{- if .Values.stan.auth.nkeySeedFile }}
+      nkey_seed_file: "/etc/nkey-seed-file"
+      {{- end }}
       {{- end }}
 
       {{- if and .Values.stan.tls.enabled .Values.stan.tls.secretName }}

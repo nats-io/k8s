@@ -591,8 +591,13 @@ store:
 
 stan:
   logging:
-   debug: true
-   trace: true
+    debug: true
+    trace: true
+   
+  auth:
+    enabled: true
+    username: stan
+    password: stan
 
 nats:
   logging:
@@ -604,8 +609,6 @@ auth:
   systemAccount: SYS
 
   basic:
-    noAuthUser: stan
-
     accounts: 
       STAN:
         imports: []
