@@ -40,7 +40,7 @@ data:
       {{- end }}
 
       {{- if .Values.stan.auth.enabled }}
-      {{- if and (.Values.stan.auth.username .Values.stan.auth.password) }}
+      {{- if (and .Values.stan.auth.username .Values.stan.auth.password) }}
         username: {{ .Values.stan.auth.username }}
         password: {{ .Values.stan.auth.password }}
       {{- end }}
