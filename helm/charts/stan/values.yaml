@@ -44,7 +44,7 @@ stan:
   #    key: sys.creds
 
   auth:
-    enabled: true
+    enabled: false
 
     # Username/password is used to connect to a NATS Server when authentication with multiple users is enabled
     # username:
