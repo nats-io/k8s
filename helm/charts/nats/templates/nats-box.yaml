@@ -3,9 +3,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "nats.name" . }}-box
+  name: {{ include "nats.fullname" . }}-box
   labels:
-    app: {{ template "nats.name" . }}-box
+    app: {{ include "nats.fullname" . }}-box
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
   volumes:
@@ -24,19 +24,19 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "nats.name" . }}-box
+      app: {{ include "nats.fullname" . }}-box
   template:
     metadata:
       labels:
-        app: {{ template "nats.name" . }}-box
-    spec:        
+        app: {{ include "nats.fullname" . }}-box
+    spec:
       containers:
       - name: nats-box
         image: {{ .Values.natsbox.image }}
         imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
         env:
         - name: NATS_URL
-          value: {{ template "nats.name" . }}
+          value: {{ template "nats.fullname" . }}
         {{- if .Values.natsbox.credentials }}
         - name: USER_CREDS
           value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}

@@ -2,20 +2,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "nats.name" . }}
+  name: {{ include "nats.fullname" . }}
   labels:
-    app: {{ template "nats.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "nats.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "nats.name" . }}
+      {{- include "nats.selectorLabels" . | nindent 6 }}
   {{- if .Values.cluster.enabled }}
   replicas: {{ .Values.cluster.replicas }}
   {{- else }}
   replicas: 1
   {{- end }}
-  serviceName: {{ template "nats.name" . }}
+  serviceName: {{ include "nats.fullname" . }}
   template:
     metadata:
       {{- if or .Values.podAnnotations .Values.exporter.enabled }}
@@ -30,8 +29,7 @@ spec:
       {{- end }}
       {{- end }}
       labels:
-        app: {{ template "nats.name" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        {{- include "nats.selectorLabels" . | nindent 8 }}
     spec:
 {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -49,7 +47,7 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: {{ template "nats.name" . }}-config
+          name: {{ include "nats.fullname" . }}-config
 
       # Local volume shared with the reloader.
       - name: pid
@@ -77,7 +75,7 @@ spec:
 
       {{- if and .Values.nats.jetstream.fileStorage.enabled .Values.nats.jetstream.fileStorage.existingClaim }}
       # Persistent volume for jetstream running with file storage option
-      - name: {{ template "nats.name" . }}-js-pvc
+      - name: {{ include "nats.fullname" . }}-js-pvc
         persistentVolumeClaim:
           claimName: {{ .Values.nats.jetstream.fileStorage.existingClaim | quote }}
       {{- end }}
@@ -225,7 +223,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: CLUSTER_ADVERTISE
-          value: {{ template "nats.clusterAdvertise" . }}
+          value: {{ include "nats.clusterAdvertise" . }}
         volumeMounts:
           - name: config-volume
             mountPath: /etc/nats-config
@@ -261,7 +259,7 @@ spec:
           {{- end }}
 
           {{- if .Values.nats.jetstream.fileStorage.enabled }}
-          - name: {{ template "nats.name" . }}-js-pvc
+          - name: {{ include "nats.fullname" . }}-js-pvc
             mountPath: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
           {{- end }}
 
@@ -408,7 +406,7 @@ spec:
   #                                   #
   #####################################
     - metadata:
-        name: {{ template "nats.name" . }}-js-pvc
+        name: {{ include "nats.fullname" . }}-js-pvc
         {{- if .Values.nats.jetstream.fileStorage.annotations }}
         annotations:
         {{- range $key, $value := .Values.nats.jetstream.fileStorage.annotations }}
