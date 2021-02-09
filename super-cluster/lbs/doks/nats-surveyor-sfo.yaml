@@ -1,0 +1,82 @@
+---
+# Service used by Grafana as a datasource
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-surveyor-prometheus
+  labels:
+    app: nats-surveyor-prometheus
+spec:
+  selector:
+    prometheus: nats-prometheus
+  clusterIP: None
+  ports:
+  - name: web
+    port: 9090
+    protocol: TCP
+    targetPort: web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-surveyor
+  labels:
+    app: nats-surveyor
+spec:
+  selector:
+    matchLabels:
+      app: nats-surveyor
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nats-surveyor
+    spec:
+      containers:
+      - name: nats-surveyor
+        image: natsio/nats-surveyor:0.2.0
+        ports:
+        - containerPort: 7777
+          name: metrics
+        command:
+         - "/nats-surveyor"
+         - "-s=nats://sys:sys@nats.nats-io.svc:4222"
+         - "-c=6"
+
+        # Disable all cpu limits for the server.
+        #
+        resources:
+          requests:
+            cpu: 0
+---
+# Service used by Prometheus Operator to find the metrics endpoint.
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-surveyor
+  labels:
+    app: nats-surveyor
+spec:
+  clusterIP: None
+  ports:
+  - name: metrics
+    port: 7777
+    protocol: TCP
+    targetPort: 7777
+  selector:
+    app: nats-surveyor
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nats-surveyor
+  labels:
+    app: nats
+spec:
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app: nats-surveyor
+  endpoints:
+  - port: metrics

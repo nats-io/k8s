@@ -1,0 +1,974 @@
+#+TITLE: Creating a Super Cluster in Digital Ocean with Load Balancers
+
+*** Create the clusters
+
+#+begin_src
+doctl kubernetes cluster create nats-k8s-sfo2 --count 3 --region sfo2
+doctl kubernetes cluster create nats-k8s-nyc1 --count 3 --region nyc1
+#+end_src
+
+*** Open the firewalls if required
+
+#+begin_src sh
+for firewall in `doctl compute firewall list | awk '{print $1}'`; do
+  doctl compute firewall add-rules $firewall --inbound-rules protocol:tcp,ports:4222,address:0.0.0.0/0
+  doctl compute firewall add-rules $firewall --inbound-rules protocol:tcp,ports:7422,address:0.0.0.0/0
+  doctl compute firewall add-rules $firewall --inbound-rules protocol:tcp,ports:7522,address:0.0.0.0/0
+done
+#+end_src
+
+*** Create NATS clusters
+
+**** SFO Cluster
+
+***** Create namespaces
+
+#+begin_src 
+kubectl create ns nats-io
+kubectl create ns monitoring
+#+end_src
+
+***** Create the LB
+
+#+begin_src yaml :tangle nats-lb-sfo.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: nats
+  ports:
+    - protocol: TCP
+      port: 4222
+      targetPort: 4222
+      name: client
+    - protocol: TCP
+      port: 7522
+      targetPort: 7522
+      name: gateways
+#+end_src
+
+#+begin_src 
+kubectl apply -n nats-io -f nats-lb-sfo.yaml
+#+end_src
+
+Confirm the public IP of the load balancer:
+
+#+begin_src 
+kubectl get svc -o wide -n nats-io
+NAME      TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)                                                 AGE   SELECTOR
+nats      ClusterIP      None          <none>        4222/TCP,6222/TCP,8222/TCP,7777/TCP,7422/TCP,7522/TCP   22m   app=nats
+nats-lb   LoadBalancer   10.245.1.19   <pending>     4222:32616/TCP,7522:30702/TCP                           24s   app=nats-lb
+#+end_src
+
+***** Create NATS Cluster
+
+Use the load balancer IP as the advertise address from the gateway:
+
+#+begin_src yaml :tangle nats-cluster-sfo.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nats-config
+data:
+  nats.conf: |
+    pid_file: "/var/run/nats/nats.pid"
+
+    http: 8222
+
+    cluster {
+      port: 6222
+
+      routes [
+        nats://nats-0.nats.nats-io.svc:6222
+        nats://nats-1.nats.nats-io.svc:6222
+        nats://nats-2.nats.nats-io.svc:6222
+      ]
+
+      cluster_advertise: $CLUSTER_ADVERTISE
+      connect_retries: 30
+
+      # Disable advertisements to avoid leaking
+      # internal IPs to clients.
+      no_advertise: true
+    }
+
+    leafnodes {
+      port: 7422
+    }
+
+    gateway {
+      name: SFO
+      port: 7522
+      advertise: "159.89.223.233:7522"
+
+      authorization {
+        user: gwu
+        password: gwp
+      }
+
+      gateways: [
+        { name: "SFO", url: "nats://gwu:gwp@159.89.223.233:7522" },
+        { name: "NYC", url: "nats://gwu:gwp@45.55.107.39:7522" },
+      ]
+    }
+
+    authorization {
+      timeout: 3s
+    }
+
+    system_account: sys
+
+    accounts { 
+      sys { users = [{ user: "sys", pass: "sys" }] }
+    }
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats
+  labels:
+    app: nats
+spec:
+  selector:
+    app: nats
+  clusterIP: None
+  ports:
+  - name: client
+    port: 4222
+  - name: cluster
+    port: 6222
+  - name: monitor
+    port: 8222
+  - name: metrics
+    port: 7777
+  - name: leafnodes
+    port: 7422
+  - name: gateways
+    port: 7522
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nats
+  labels:
+    app: nats
+spec:
+  selector:
+    matchLabels:
+      app: nats
+  replicas: 3
+  serviceName: "nats"
+  template:
+    metadata:
+      labels:
+        app: nats
+    spec:
+      # Common volumes for the containers
+      volumes:
+      - name: config-volume
+        configMap:
+          name: nats-config
+      - name: pid
+        emptyDir: {}
+
+      # Required to be able to HUP signal and apply config reload
+      # to the server without restarting the pod.
+      shareProcessNamespace: true
+
+      #################
+      #               #
+      #  NATS Server  #
+      #               #
+      #################
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: nats
+        image: synadia/nats-server:nightly
+        ports:
+        - containerPort: 4222
+          name: client
+          hostPort: 4222
+        - containerPort: 7422
+          name: leafnodes
+          hostPort: 7422
+        - containerPort: 7522
+          name: gateways
+          hostPort: 7522
+        - containerPort: 6222
+          name: cluster
+        - containerPort: 8222
+          name: monitor
+        command:
+         - "nats-server"
+         - "--config"
+         - "/etc/nats-config/nats.conf"
+
+        # Required to be able to define an environment variable
+        # that refers to other environment variables.  This env var
+        # is later used as part of the configuration file.
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CLUSTER_ADVERTISE
+          value: $(POD_NAME).nats.$(POD_NAMESPACE).svc
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/nats-config
+          - name: pid
+            mountPath: /var/run/nats
+
+        # Liveness/Readiness probes against the monitoring
+        #
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+
+        # Gracefully stop NATS Server on pod deletion or image upgrade.
+        #
+        lifecycle:
+          preStop:
+            exec:
+              # Using the alpine based NATS image, we add an extra sleep that is
+              # the same amount as the terminationGracePeriodSeconds to allow
+              # the NATS Server to gracefully terminate the client connections.
+              #
+              command: ["/bin/sh", "-c", "/nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 60"]
+
+      ##############################
+      #                            #
+      #  NATS Prometheus Exporter  #
+      #                            #
+      ##############################
+      - name: metrics
+        image: synadia/prometheus-nats-exporter:0.5.0
+        args:
+        - -connz
+        - -routez
+        - -subz
+        - -varz
+        - -prefix=nats
+        - -use_internal_server_id
+        - -DV
+        - http://localhost:8222/
+        ports:
+        - containerPort: 7777
+          name: metrics
+#+end_src
+
+#+begin_src 
+kubectl apply -n nats-io -f nats-cluster-sfo.yaml     
+#+end_src
+
+**** NYC Cluster
+
+***** Create namespaces
+
+#+begin_src 
+kubectl create ns nats-io
+kubectl create ns monitoring
+#+end_src
+
+***** Create the LB
+
+#+begin_src yaml :tangle nats-lb-nyc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: nats
+  ports:
+    - protocol: TCP
+      port: 4222
+      targetPort: 4222
+      name: client
+    - protocol: TCP
+      port: 7522
+      targetPort: 7522
+      name: gateways
+#+end_src
+
+#+begin_src 
+kubectl apply -n nats-io -f nats-lb-nyc.yaml
+#+end_src
+
+Confirm the public IP of the load balancer:
+
+#+begin_src 
+kubectl get svc -o wide -n nats-io
+NAME      TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)                                                 AGE   SELECTOR
+nats      ClusterIP      None          <none>        4222/TCP,6222/TCP,8222/TCP,7777/TCP,7422/TCP,7522/TCP   22m   app=nats
+nats-lb   LoadBalancer   10.245.1.19   <pending>     4222:32616/TCP,7522:30702/TCP                           24s   app=nats-lb
+#+end_src
+
+***** Create NATS Cluster
+
+Use the load balancer IP as the advertise address from the gateway:
+
+#+begin_src yaml :tangle nats-cluster-nyc.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nats-config
+data:
+  nats.conf: |
+    pid_file: "/var/run/nats/nats.pid"
+
+    http: 8222
+
+    cluster {
+      port: 6222
+
+      routes [
+        nats://nats-0.nats.nats-io.svc:6222
+        nats://nats-1.nats.nats-io.svc:6222
+        nats://nats-2.nats.nats-io.svc:6222
+      ]
+
+      cluster_advertise: $CLUSTER_ADVERTISE
+      connect_retries: 30
+
+      # Disable advertisements to avoid leaking
+      # internal IPs to clients.
+      no_advertise: true
+    }
+
+    leafnodes {
+      port: 7422
+    }
+
+    gateway {
+      name: NYC
+      port: 7522
+      advertise: "45.55.107.39:7522"
+
+      authorization {
+        user: gwu
+        password: gwp
+      }
+
+      gateways: [
+        { name: "SFO", url: "nats://gwu:gwp@159.89.223.233:7522" },
+        { name: "NYC", url: "nats://gwu:gwp@45.55.107.39:7522" },
+      ]
+    }
+
+    authorization {
+      timeout: 3s
+    }
+
+    system_account: sys
+
+    accounts { 
+      sys { users = [{ user: "sys", pass: "sys" }] }
+    }
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats
+  labels:
+    app: nats
+spec:
+  selector:
+    app: nats
+  clusterIP: None
+  ports:
+  - name: client
+    port: 4222
+  - name: cluster
+    port: 6222
+  - name: monitor
+    port: 8222
+  - name: metrics
+    port: 7777
+  - name: leafnodes
+    port: 7422
+  - name: gateways
+    port: 7522
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nats
+  labels:
+    app: nats
+spec:
+  selector:
+    matchLabels:
+      app: nats
+  replicas: 3
+  serviceName: "nats"
+  template:
+    metadata:
+      labels:
+        app: nats
+    spec:
+      # Common volumes for the containers
+      volumes:
+      - name: config-volume
+        configMap:
+          name: nats-config
+      - name: pid
+        emptyDir: {}
+
+      # Required to be able to HUP signal and apply config reload
+      # to the server without restarting the pod.
+      shareProcessNamespace: true
+
+      #################
+      #               #
+      #  NATS Server  #
+      #               #
+      #################
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: nats
+        image: synadia/nats-server:nightly
+        ports:
+        - containerPort: 4222
+          name: client
+          hostPort: 4222
+        - containerPort: 7422
+          name: leafnodes
+          hostPort: 7422
+        - containerPort: 7522
+          name: gateways
+          hostPort: 7522
+        - containerPort: 6222
+          name: cluster
+        - containerPort: 8222
+          name: monitor
+        command:
+         - "nats-server"
+         - "--config"
+         - "/etc/nats-config/nats.conf"
+
+        # Required to be able to define an environment variable
+        # that refers to other environment variables.  This env var
+        # is later used as part of the configuration file.
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CLUSTER_ADVERTISE
+          value: $(POD_NAME).nats.$(POD_NAMESPACE).svc
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/nats-config
+          - name: pid
+            mountPath: /var/run/nats
+
+        # Liveness/Readiness probes against the monitoring
+        #
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+
+        # Gracefully stop NATS Server on pod deletion or image upgrade.
+        #
+        lifecycle:
+          preStop:
+            exec:
+              # Using the alpine based NATS image, we add an extra sleep that is
+              # the same amount as the terminationGracePeriodSeconds to allow
+              # the NATS Server to gracefully terminate the client connections.
+              #
+              command: ["/bin/sh", "-c", "/nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 60"]
+
+      ##############################
+      #                            #
+      #  NATS Prometheus Exporter  #
+      #                            #
+      ##############################
+      - name: metrics
+        image: synadia/prometheus-nats-exporter:0.5.0
+        args:
+        - -connz
+        - -routez
+        - -subz
+        - -varz
+        - -prefix=nats
+        - -use_internal_server_id
+        - -DV
+        - http://localhost:8222/
+        ports:
+        - containerPort: 7777
+          name: metrics
+#+end_src
+
+#+begin_src 
+kubectl apply -n nats-io -f nats-cluster-nyc.yaml
+#+end_src
+
+*** Setup Prometheus Operator
+
+**** Setup
+
+#+begin_src yaml :tangle prometheus-sfo.yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: prometheus-operator
+    app.kubernetes.io/version: v0.30.0
+  name: prometheus-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus-operator
+subjects:
+- kind: ServiceAccount
+  name: prometheus-operator
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: prometheus-operator
+    app.kubernetes.io/version: v0.30.0
+  name: prometheus-operator
+rules:
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - '*'
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - alertmanagers
+  - prometheuses
+  - prometheuses/finalizers
+  - alertmanagers/finalizers
+  - servicemonitors
+  - podmonitors
+  - prometheusrules
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - list
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - services/finalizers
+  - endpoints
+  verbs:
+  - get
+  - create
+  - update
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: prometheus-operator
+    app.kubernetes.io/version: v0.30.0
+  name: prometheus-operator
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/name: prometheus-operator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: controller
+        app.kubernetes.io/name: prometheus-operator
+        app.kubernetes.io/version: v0.30.0
+    spec:
+      containers:
+      - args:
+        - --kubelet-service=kube-system/kubelet
+        - --logtostderr=true
+        - --config-reloader-image=quay.io/coreos/configmap-reload:v0.0.1
+        - --prometheus-config-reloader=quay.io/coreos/prometheus-config-reloader:v0.30.0
+        image: quay.io/coreos/prometheus-operator:v0.30.0
+        name: prometheus-operator
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+      serviceAccountName: prometheus-operator
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: prometheus-operator
+    app.kubernetes.io/version: v0.30.0
+  name: prometheus-operator
+  namespace: monitoring
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: prometheus-operator
+    app.kubernetes.io/version: v0.30.0
+  name: prometheus-operator
+  namespace: monitoring
+spec:
+  clusterIP: None
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+  selector:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: prometheus-operator
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["get"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus
+  namespace: monitoring
+#+end_src
+
+**** Deploy
+
+#+begin_src 
+kubectl apply -n monitoring -f prometheus-sfo.yaml
+#+end_src
+
+*** Setup Prometheus Instance
+
+#+begin_src yaml :tangle nats-prometheus-sfo.yaml
+---
+# Service for data from prometheus exporters per NATS Server
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-prometheus
+spec:
+  selector:
+    prometheus: nats-prometheus
+  clusterIP: None
+  ports:
+  - name: web
+    port: 9090
+    protocol: TCP
+    targetPort: web
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: nats-prometheus
+spec:
+  scrapeInterval: "5s"
+  serviceAccountName: prometheus
+  serviceMonitorSelector:
+    matchLabels:
+      app: nats
+  resources:
+    requests:
+      memory: 400Mi
+  enableAdminAPI: true
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nats
+  labels:
+    app: nats
+spec:
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app: nats
+  endpoints:
+  - port: metrics
+#+end_src
+
+#+begin_src sh
+kubectl apply -n monitoring -f nats-prometheus-sfo.yaml
+#+end_src
+
+*** NATS Surveyor
+
+#+begin_src yaml :tangle nats-surveyor-sfo.yaml
+---
+# Service used by Grafana as a datasource
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-surveyor-prometheus
+  labels:
+    app: nats-surveyor-prometheus
+spec:
+  selector:
+    prometheus: nats-prometheus
+  clusterIP: None
+  ports:
+  - name: web
+    port: 9090
+    protocol: TCP
+    targetPort: web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-surveyor
+  labels:
+    app: nats-surveyor
+spec:
+  selector:
+    matchLabels:
+      app: nats-surveyor
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nats-surveyor
+    spec:
+      containers:
+      - name: nats-surveyor
+        image: natsio/nats-surveyor:0.2.0
+        ports:
+        - containerPort: 7777
+          name: metrics
+        command:
+         - "/nats-surveyor"
+         - "-s=nats://sys:sys@nats.nats-io.svc:4222"
+         - "-c=6"
+
+        # Disable all cpu limits for the server.
+        #
+        resources:
+          requests:
+            cpu: 0
+---
+# Service used by Prometheus Operator to find the metrics endpoint.
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-surveyor
+  labels:
+    app: nats-surveyor
+spec:
+  clusterIP: None
+  ports:
+  - name: metrics
+    port: 7777
+    protocol: TCP
+    targetPort: 7777
+  selector:
+    app: nats-surveyor
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nats-surveyor
+  labels:
+    app: nats
+spec:
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app: nats-surveyor
+  endpoints:
+  - port: metrics
+#+end_src
+
+#+begin_src sh
+kubectl apply -n monitoring -f nats-surveyor-sfo.yaml
+#+end_src
+
+*** NATS Grafana Deploy
+
+#+begin_src yaml :tangle nats-grafana-sfo.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  type: NodePort
+  selector:
+    app: nats-surveyor-grafana
+  ports:
+  - name: web
+    # nodePort: 30300
+    port: 3000
+    protocol: TCP
+    targetPort: web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-surveyor-grafana
+  labels:
+    app: nats-surveyor-grafana
+spec:
+  selector:
+    matchLabels:
+      app: nats-surveyor-grafana
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nats-surveyor-grafana
+    spec:
+      containers:
+      - name: nats-surveyor-grafana
+        image: connecteverything/nats-surveyor-grafana:0.1.1
+        imagePullPolicy: Always
+        env:
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "true"
+        - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+          value: "Admin"
+        - name: GF_AUTH_DISABLE_LOGIN_FORM
+          value: "true"
+
+        ports:
+        - containerPort: 3000
+          name: web
+
+        # Disable all cpu limits for the server.
+        #
+        resources:
+          requests:
+            cpu: 0
+#+end_src
+
+#+begin_src sh
+kubectl -n monitoring apply -f nats-grafana-sfo.yaml
+#+end_src
+
+*** Open the Dashboard
+
+#+begin_src sh
+kubectl -n monitoring port-forward deployment/nats-surveyor-grafana  3000:3000 
+#+end_src
+
