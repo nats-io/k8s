@@ -127,6 +127,9 @@ topologyKeys: []
 podAnnotations: {}
 # key: "value"
 
+# Annotations to add to the NATS StatefulSet
+statefulSetAnnotations: {}
+
 cluster:
   enabled: false
   replicas: 3

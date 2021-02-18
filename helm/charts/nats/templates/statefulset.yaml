@@ -5,6 +5,12 @@ metadata:
   name: {{ include "nats.fullname" . }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
+    {{- if .Values.statefulSetAnnotations}}
+    annotations:
+    {{- range $key, $value := .Values.statefulSetAnnotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
