@@ -8,19 +8,6 @@ metadata:
     app: {{ include "nats.fullname" . }}-box
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
-  volumes:
-  {{- if .Values.natsbox.credentials }}
-  - name: nats-sys-creds
-    secret:
-      secretName: {{ .Values.natsbox.credentials.secret.name }}
-  {{- end }}
-  {{- with .Values.nats.tls }}
-  {{ $secretName := .secret.name }}
-  - name: {{ $secretName }}-clients-volume
-    secret:
-      secretName: {{ $secretName }}
-  {{- end }}
-
   replicas: 1
   selector:
     matchLabels:
@@ -30,6 +17,19 @@ spec:
       labels:
         app: {{ include "nats.fullname" . }}-box
     spec:
+      volumes:
+      {{- if .Values.natsbox.credentials }}
+      - name: nats-sys-creds
+        secret:
+          secretName: {{ .Values.natsbox.credentials.secret.name }}
+      {{- end }}
+      {{- with .Values.nats.tls }}
+      {{ $secretName := .secret.name }}
+      - name: {{ $secretName }}-clients-volume
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
+
       containers:
       - name: nats-box
         image: {{ .Values.natsbox.image }}
