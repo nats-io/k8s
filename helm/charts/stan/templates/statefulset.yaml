@@ -50,6 +50,12 @@ spec:
           name: {{ template "stan.name".  }}-config
           defaultMode: 0755
         name: config-volume
+      {{- with .Values.nats.tls }}
+      {{ $secretName := .secret.name }}
+      - name: {{ $secretName }}-clients-volume
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
       {{- if and .Values.stan.tls.enabled .Values.stan.tls.secretName }}
       - name: stan-client-tls-volume
         secret:
@@ -160,6 +166,16 @@ spec:
           {{- end }}
 
           volumeMounts:
+          {{- with .Values.nats.tls }}
+          #######################
+          #                     #
+          #  TLS Volumes Mounts #
+          #                     #
+          #######################
+          {{ $secretName := .secret.name }}
+          - name: {{ $secretName }}-clients-volume
+            mountPath: /etc/nats-certs/clients/{{ $secretName }}
+          {{- end }}
           - name: config-volume
             mountPath: /etc/stan-config
           {{- if eq .Values.store.type "file" }}
