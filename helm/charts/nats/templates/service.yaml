@@ -5,6 +5,12 @@ metadata:
   name: {{ include "nats.fullname" . }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
+  {{- if .Values.serviceAnnotations}}
+  annotations:
+  {{- range $key, $value := .Values.serviceAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   selector:
     {{- include "nats.selectorLabels" . | nindent 4 }}
