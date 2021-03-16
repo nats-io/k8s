@@ -29,11 +29,18 @@ spec:
         secret:
           secretName: {{ $secretName }}
       {{- end }}
-
+{{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+{{- end }}
       containers:
       - name: nats-box
         image: {{ .Values.natsbox.image }}
         imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
+        {{- if .Values.natsbox.securityContext }}
+        securityContext:
+        {{- .Values.natsbox.securityContext | toYaml | nindent 10 }}
+        {{- end }}
         env:
         - name: NATS_URL
           value: {{ template "nats.fullname" . }}

@@ -7,6 +7,9 @@ nats:
   image: nats:2.1.9-alpine3.12
   pullPolicy: IfNotPresent
 
+  # securityContext for the nats container
+  securityContext: {}
+
   # Toggle whether to enable external access.
   # This binds a host port for clients, gateways and leafnodes.
   externalAccess: false
@@ -207,6 +210,7 @@ gateway:
 bootconfig:
   image: connecteverything/nats-boot-config:0.5.2
   pullPolicy: IfNotPresent
+  securityContext: {}
 
 # NATS Box
 #
@@ -216,6 +220,7 @@ natsbox:
   enabled: true
   image: synadia/nats-box:0.4.0
   pullPolicy: IfNotPresent
+  securityContext: {}
 
   # credentials:
   #   secret:
@@ -227,12 +232,14 @@ reloader:
   enabled: true
   image: connecteverything/nats-server-config-reloader:0.6.0
   pullPolicy: IfNotPresent
+  securityContext: {}
 
 # Prometheus NATS Exporter configuration.
 exporter:
   enabled: true
   image: synadia/prometheus-nats-exporter:0.5.0
   pullPolicy: IfNotPresent
+  securityContext: {}
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled
   serviceMonitor:
     enabled: false
