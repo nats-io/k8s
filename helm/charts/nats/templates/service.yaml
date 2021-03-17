@@ -20,6 +20,10 @@ spec:
      {{- .Values.topologyKeys | toYaml | nindent 4 }}
   {{- end }}
   ports:
+  {{- if .Values.websocket.enabled }}
+  - name: websocket
+    port: {{ .Values.websocket.port }}
+  {{- end }}
   - name: client
     port: 4222
   - name: cluster
