@@ -253,9 +253,9 @@ data:
         ca_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
         {{- end }}
         }
-      {{- end }}
       {{- else }}
-      no_tls: {{ .Values.websocket.no_tls }}
+      no_tls: {{ .Values.websocket.noTLS }}
+      {{- end }}
     }
     {{- end }}
 
