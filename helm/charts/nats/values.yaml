@@ -130,6 +130,9 @@ podAnnotations: {}
 # Annotations to add to the NATS StatefulSet
 statefulSetAnnotations: {}
 
+# Annotations to add to the NATS Service
+serviceAnnotations: {}
+
 cluster:
   enabled: false
   replicas: 3

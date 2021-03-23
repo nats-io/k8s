@@ -238,7 +238,7 @@ data:
     ##################
     ws {
       port: {{ .Values.websocket.port }}
-      {{- with .Values.websocket.tls }}
+      {{- if .Values.websocket.tls }}
         {{ $secretName := .secret.name }}
         tls {
         {{- with .cert }}
@@ -254,6 +254,8 @@ data:
         {{- end }}
         }
       {{- end }}
+      {{- else }}
+      no_tls: {{ .Values.websocket.no_tls }}
     }
     {{- end }}
 
