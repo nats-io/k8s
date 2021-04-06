@@ -49,6 +49,9 @@ spec:
       affinity:
 {{- toYaml  . | nindent 8 }}
 {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+{{- end }}
       # Common volumes for the containers.
       volumes:
       - name: config-volume
