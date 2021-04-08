@@ -47,7 +47,22 @@ spec:
 {{- end }}
 {{- with .Values.affinity }}
       affinity:
-{{- toYaml  . | nindent 8 }}
+{{- tpl (toYaml .) $ | nindent 8 }}
+{{- end }}
+{{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- range .Values.topologySpreadConstraints }}
+      {{- if and .maxSkew .topologyKey }}
+      - maxSkew: {{ .maxSkew }}
+        topologyKey: {{ .topologyKey }}
+        {{- if .whenUnsatisfiable }}
+        whenUnsatisfiable: {{ .whenUnsatisfiable }}
+        {{- end }}
+        labelSelector:
+          matchLabels:
+            {{- include "nats.selectorLabels" $ | nindent 12 }}
+      {{- end}}
+      {{- end }}
 {{- end }}
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}

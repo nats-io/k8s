@@ -126,10 +126,23 @@ priorityClassName: null
 # ref: https://kubernetes.io/docs/concepts/services-networking/service-topology/
 topologyKeys: []
 
+# Pod Topology Spread Constraints
+# ref https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+topologySpreadConstraints: []
+# - maxSkew: 1
+#   topologyKey: zone
+#   whenUnsatisfiable: DoNotSchedule
+
 # Annotations to add to the NATS pods
 # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
 # key: "value"
+
+## Define a Pod Disruption Budget for the stateful set
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+podDisruptionBudget: null
+  # minAvailable: 1
+  # maxUnavailable: 1
 
 # Annotations to add to the NATS StatefulSet
 statefulSetAnnotations: {}
