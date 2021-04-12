@@ -11,5 +11,6 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+      appProtocol: tcp
   selector:
     {{- include "surveyor.selectorLabels" . | nindent 4 }}

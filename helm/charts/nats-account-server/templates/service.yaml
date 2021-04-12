@@ -13,3 +13,4 @@ spec:
   ports:
   - name: server
     port: 9090
+    appProtocol: tcp
