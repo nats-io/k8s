@@ -13,9 +13,12 @@ spec:
   ports:
   - name: metrics
     port: 7777
+    appProtocol: tcp
   - name: monitor
     port: 8222
+    appProtocol: http2
   {{- if not .Values.stan.nats.url }}
   - name: client
     port: 4222
+    appProtocol: tcp
   {{- end }}
