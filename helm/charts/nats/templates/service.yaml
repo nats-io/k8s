@@ -32,7 +32,7 @@ spec:
     appProtocol: tcp
   - name: monitor
     port: 8222
-    appProtocol: http2
+    appProtocol: http
   - name: metrics
     port: 7777
     appProtocol: tcp
