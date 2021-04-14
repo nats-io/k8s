@@ -97,16 +97,6 @@ readinessProbe:
     port: monitor
   timeoutSeconds: 2
 
-# Liveness probe to determine when nats-streaming is ready
-# ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-livenessProbe:
-  enabled: false
-  probe:
-    httpGet:
-      path: /
-      port: monitor
-    timeoutSeconds: 2
-
 # Readiness probe to determine when nats-streaming cluster is ready.
 # Overrides the readinessProbe in case present.
 # NOTE: Only works with the nats-streaming alpine image.
@@ -118,6 +108,16 @@ clusterReadinessProbe:
       command: ["/bin/sh", "-c", "n=$(($STAN_REPLICAS-1)); for i in `seq 0 $n`; do wget -qO- $STAN_SERVICE_NAME-$i.$STAN_SERVICE_NAME:8222/streaming/serverz 2> /dev/null > /dev/null; done; if [[ $? -ne 0 ]]; then wget -qO- 127.0.0.1:8222/streaming/serverz | grep role | awk '{print $2}' | grep '\\(Candidate\\|Follower\\|Leader\\)'; else wget -qO- 127.0.0.1:8222/streaming/serverz | grep role | awk '{print $2}' | grep '\\(Follower\\|Leader\\)'; fi;"]
     initialDelaySeconds:
     periodSeconds: 10
+
+# Liveness probe to determine when nats-streaming is alive
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  enabled: false
+  probe:
+    httpGet:
+      path: /
+      port: monitor
+    timeoutSeconds: 2
 
 ###########################
 #                         #
