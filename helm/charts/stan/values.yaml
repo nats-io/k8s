@@ -97,6 +97,16 @@ readinessProbe:
     port: monitor
   timeoutSeconds: 2
 
+# Liveness probe to determine when nats-streaming is ready
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  enabled: false
+  probe:
+    httpGet:
+      path: /
+      port: monitor
+    timeoutSeconds: 2
+
 # Readiness probe to determine when nats-streaming cluster is ready.
 # Overrides the readinessProbe in case present.
 # NOTE: Only works with the nats-streaming alpine image.
