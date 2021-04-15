@@ -256,8 +256,6 @@ data:
       {{- else }}
       no_tls: {{ .Values.websocket.noTLS }}
       {{- end }}
-      {{- else }}
-      no_tls: {{ .Values.websocket.noTLS }}
     }
     {{- end }}
 
