@@ -109,6 +109,16 @@ clusterReadinessProbe:
     initialDelaySeconds:
     periodSeconds: 10
 
+# Liveness probe to determine when nats-streaming is alive
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  enabled: false
+  probe:
+    httpGet:
+      path: /
+      port: monitor
+    timeoutSeconds: 2
+
 ###########################
 #                         #
 #  Storage configuration  #
