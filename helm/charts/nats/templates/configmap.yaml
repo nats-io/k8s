@@ -236,7 +236,7 @@ data:
     # Websocket      #
     #                #
     ##################
-    ws {
+    websocket {
       port: {{ .Values.websocket.port }}
       {{- if .Values.websocket.tls }}
         {{ $secretName := .secret.name }}
