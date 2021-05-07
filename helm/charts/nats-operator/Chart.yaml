@@ -1,0 +1,25 @@
+apiVersion: v2
+name: nats-operator
+version: 0.7.4
+appVersion: 0.7.4
+description: NATS operator creates/configures/manages nats clusters atop Kubernetes
+keywords:
+- addressing
+- discovery
+- messaging
+- nats
+- operator
+- pubsub
+home: https://github.com/nats-io/nats-operator
+sources:
+- https://github.com/nats-io/nats-operator
+maintainers:
+- name: richerlariviere
+  email: richerlariviere@gmail.com
+- name: Waldemar Quevedo
+  github: https://github.com/wallyqs
+  email: wally@nats.io
+- name: Jaime Piña
+  github: https://github.com/variadico
+  email: jaime@nats.io
+icon: https://nats.io/img/nats-icon-color.png

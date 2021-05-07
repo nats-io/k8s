@@ -1,0 +1,18 @@
+---
+{{- if .Values.stan.nats.serviceRoleAuth.enabled }}
+apiVersion: nats.io/v1alpha2
+kind: NatsServiceRole
+metadata:
+  name: {{ template "stan.serviceAccountName" . }}
+  labels:
+    nats_cluster: {{ .Values.stan.nats.serviceRoleAuth.natsClusterName }}
+spec:
+  permissions:
+    publish: [">"]
+    subscribe: [">"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "stan.serviceAccountName" . }}
+{{- end }}

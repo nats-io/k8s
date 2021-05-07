@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "stan.name" . }}
+  labels:
+    app: {{ template "stan.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  selector:
+    app: {{ template "stan.name" . }}
+  clusterIP: None
+  ports:
+  - name: metrics
+    port: 7777
+  - name: monitor
+    port: 8222
+  {{- if not .Values.stan.nats.url }}
+  - name: client
+    port: 4222
+  {{- end }}

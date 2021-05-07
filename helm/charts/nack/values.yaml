@@ -1,0 +1,59 @@
+###############################
+#                             #
+#  NACK JetStream Controller  #
+#                             #
+###############################
+jetstream:
+  enabled: true
+  image: connecteverything/jetstream-controller:0.1.0
+  pullPolicy: IfNotPresent
+  replicas: 1
+
+  # NATS URL
+  nats:
+    url:
+
+    #
+    # The credentials file to load in to connect to the NATS Server.
+    #
+    # credentials:
+    #   secret:
+    #     name: nats-sys-creds
+    #     key: sys.creds
+    #
+
+  # TLS
+  # Enabled must be true, and a secret name specified for this to work
+  tls:
+    enabled: false
+    # the secret containing the client ca.crt, tls.crt, and tls.key for NATS
+    secretName:
+    # Reference
+    # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#tls-configuration
+    settings:
+      client_cert: "/etc/nats/certs/tls.crt"
+      client_key: "/etc/nats/certs/tls.key"
+      client_ca: "/etc/nats/certs/ca.crt"
+      timeout: 3
+
+nameOverride: ""
+imagePullSecrets: []
+serviceAccountName: ""
+
+podAnnotations: {}
+
+# Toggle whether to use setup a Pod Security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext: null
+# securityContext:
+#   fsGroup: 1000
+#   runAsUser: 1000
+#   runAsNonRoot: true
+
+# Affinity for pod assignment
+# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+# Resource requests and limits for primary stan container
+# ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+resources: {}

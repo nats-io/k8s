@@ -2,11 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  metadata:
-  name: {{ template "nats.name" . }}-config
+  name: {{ include "nats.fullname" . }}-config
   labels:
-    app: {{ template "nats.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "nats.labels" . | nindent 4 }}
 data:
   nats.conf: |
     # PID file shared with configuration reloader.
@@ -20,7 +18,45 @@ data:
     http: 8222
     server_name: $POD_NAME
 
-    {{ if .Values.cluster.enabled }}
+    {{- if .Values.nats.tls }}
+    #####################
+    #                   #
+    # TLS Configuration #
+    #                   #
+    #####################
+    {{- with .Values.nats.tls }}
+    {{- $nats_tls := merge (dict) . }}
+    {{- $_ := set $nats_tls "secretPath" "/etc/nats-certs/clients" }}
+    {{- include "nats.tlsConfig" $nats_tls | nindent 4}}
+    {{- end }}
+    {{- end }}
+
+    {{- if .Values.nats.jetstream.enabled }}
+    ###################################
+    #                                 #
+    # NATS JetStream                  #
+    #                                 #
+    ###################################
+    jetstream {
+      {{- if .Values.nats.jetstream.memStorage.enabled }}
+      max_mem: {{ .Values.nats.jetstream.memStorage.size }}
+      {{- end }}
+
+      {{- if .Values.nats.jetstream.fileStorage.enabled }}
+      store_dir: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
+     
+      max_file: 
+      {{- if .Values.nats.jetstream.fileStorage.existingClaim }}
+      {{- .Values.nats.jetstream.fileStorage.claimStorageSize  }}
+      {{- else }}
+      {{- .Values.nats.jetstream.fileStorage.size }}
+      {{- end }}
+
+      {{- end }}
+    }
+    {{- end }}
+
+    {{- if .Values.cluster.enabled }}
     ###################################
     #                                 #
     # NATS Full Mesh Clustering Setup #
@@ -29,10 +65,32 @@ data:
     cluster {
       port: 6222
 
+      {{- if .Values.nats.jetstream.enabled }}
+      {{- if .Values.cluster.name }}
+      name: {{ .Values.cluster.name }}
+      {{- else }}
+      name: {{ template "nats.name" . }}
+      {{- end }}
+      {{- else }}
+      {{- with .Values.cluster.name }}
+      name: {{ . }}
+      {{- end }}
+      {{- end }}
+
+      {{- with .Values.cluster.tls }}
+      {{-  $cluster_tls := merge (dict) . }}
+      {{- $_ := set $cluster_tls "secretPath" "/etc/nats-certs/cluster" }}
+      {{- include "nats.tlsConfig" $cluster_tls | nindent 6}}
+      {{- end }}
+
       routes = [
-        {{ template "nats.clusterRoutes" . }}
+        {{ include "nats.clusterRoutes" . }}
       ]
       cluster_advertise: $CLUSTER_ADVERTISE
+
+      {{- with .Values.cluster.noAdvertise }}      
+      no_advertise: {{ . }}
+      {{- end }}
 
       connect_retries: {{ .Values.nats.connectRetries }}
     }
@@ -42,20 +100,88 @@ data:
     include "advertise/client_advertise.conf"
     {{- end }}
 
-    {{- if .Values.leafnodes.enabled }}
+    {{- if or .Values.leafnodes.enabled .Values.leafnodes.remotes }}
+    ################# 
+    #               #
+    # NATS Leafnode #
+    #               #
+    #################
     leafnodes {
+      {{- if .Values.leafnodes.enabled }}
       listen: "0.0.0.0:7422"
+      {{- end }}
+
       {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
       include "advertise/gateway_advertise.conf"
       {{ end }}
+
+      {{- with .Values.leafnodes.noAdvertise }}      
+      no_advertise: {{ . }}
+      {{- end }}
+
+      {{- with .Values.leafnodes.tls }}
+      {{-  $leafnode_tls := merge (dict) . }}
+      {{- $_ := set $leafnode_tls "secretPath" "/etc/nats-certs/leafnodes" }}
+      {{- include "nats.tlsConfig" $leafnode_tls | nindent 6}}
+      {{- end }}
+
+      remotes: [
+      {{- range .Values.leafnodes.remotes }}
+      {
+        {{- with .url }}
+        url: {{ . }}
+        {{- end }}
+
+        {{- with .credentials }}
+        credentials: "/etc/nats-creds/{{ .secret.name }}/{{ .secret.key }}"
+        {{- end }}
+      }
+      {{- end }}
+      ]
     }
     {{ end }}
 
-    ####################
-    #                  #
-    # Logging Options  #
-    #                  #
-    ####################
+    {{- if .Values.gateway.enabled }}
+    ################# 
+    #               #
+    # NATS Gateways #
+    #               #
+    #################
+    gateway {
+      name: {{ .Values.gateway.name }}
+      port: 7522
+
+      {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
+      include "advertise/gateway_advertise.conf"
+      {{ end }}
+
+      {{- with .Values.gateway.tls }}
+      {{-  $gateway_tls := merge (dict) . }}
+      {{- $_ := set $gateway_tls "secretPath" "/etc/nats-certs/gateway" }}
+      {{- include "nats.tlsConfig" $gateway_tls | nindent 6}}
+      {{- end }}
+
+      # Gateways array here
+      gateways: [
+        {{- range .Values.gateway.gateways }}
+        {
+          {{- with .name }}
+          name: {{ . }}
+          {{- end }}
+
+          {{- with .url }}
+          url: {{ . | quote }}
+          {{- end }}
+
+          {{- with .urls }}
+          urls: [{{ join "," . }}]
+          {{- end }}
+        },
+        {{- end }}
+      ]
+    }
+    {{ end }}
+
     {{- with .Values.nats.logging.debug }}
     debug: {{ . }}
     {{- end }}
@@ -76,11 +202,6 @@ data:
     reconnect_error_reports: {{ . }}
     {{- end }}
 
-    ##################
-    #                #
-    # Server Limits  #
-    #                #
-    ##################
     {{- with .Values.nats.limits.maxConnections }}
     max_connections: {{ . }}
     {{- end }}
@@ -107,4 +228,110 @@ data:
     {{- end }}
     {{- with .Values.nats.writeDeadline }}
     lame_duck_duration:  {{ . | quote }}
+    {{- end }}
+
+    {{- if .Values.websocket.enabled }}
+    ##################
+    #                #
+    # Websocket      #
+    #                #
+    ##################
+    websocket {
+      port: {{ .Values.websocket.port }}
+      {{- if .Values.websocket.tls }}
+        {{ $secretName := .secret.name }}
+        tls {
+        {{- with .cert }}
+        cert_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
+        {{- end }}
+
+        {{- with .key }}
+        key_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
+        {{- end }}
+
+        {{- with .ca }}
+        ca_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
+        {{- end }}
+        }
+      {{- else }}
+      no_tls: {{ .Values.websocket.noTLS }}
+      {{- end }}
+    }
+    {{- end }}
+
+    {{- if .Values.auth.enabled }}
+    ##################
+    #                #
+    # Authorization  #
+    #                #
+    ##################
+    {{- if .Values.auth.resolver }}
+    {{- if eq .Values.auth.resolver.type "memory" }}
+    resolver: MEMORY
+    include "accounts/{{ .Values.auth.resolver.configMap.key }}"
+    {{- end }}
+
+    {{- if eq .Values.auth.resolver.type "full" }}
+
+    {{- if .Values.auth.resolver.configMap }}
+    include "accounts/{{ .Values.auth.resolver.configMap.key }}"
+    {{- else }}
+
+    {{- with .Values.auth.resolver }}
+    operator: {{ .operator }}
+
+    system_account: {{ .systemAccount }}
+    {{- end }}
+
+    resolver: {
+      type: full
+      {{- with .Values.auth.resolver }}
+      dir: {{ .store.dir | quote }}
+
+      allow_delete: {{ .allowDelete }}
+
+      interval: {{ .interval | quote }}
+      {{- end }}
+    }
+    {{- end }}
+    {{- end }}
+
+    {{- if .Values.auth.resolver.resolverPreload }}
+    resolver_preload: {{ toRawJson .Values.auth.resolver.resolverPreload }}
+    {{- end }}
+
+    {{- if eq .Values.auth.resolver.type "URL" }}
+    {{- with .Values.auth.resolver.url }}
+    resolver: URL({{ . }})
+    {{- end }}
+    operator: /etc/nats-config/operator/{{ .Values.auth.operatorjwt.configMap.key }}
+    {{- end }}
+    {{- end }}
+
+    {{- with .Values.auth.systemAccount }}
+    system_account: {{ . }}
+    {{- end }}
+
+    {{- with .Values.auth.basic }}
+
+    {{- with .noAuthUser }}
+    no_auth_user: {{ . }}
+    {{- end }}
+
+    {{- with .users }}
+    authorization {
+      users: [
+      {{- range . }}
+      {{- toRawJson . | nindent 4 }},
+      {{- end }}
+      ]
+    }
+    {{- end }}
+
+    {{- with .accounts }}
+    accounts: {{- toRawJson . }}
+    {{- end }}
+
+    {{- end }}
+
     {{- end }}

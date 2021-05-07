@@ -1,0 +1,171 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "stan.name" . }}-config
+  labels:
+    app: {{ template "stan.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+data:
+  {{- if .Values.store.backup.enabled }}
+  backup.sh: {{ toYaml .Values.store.backup.backupScript | indent 4 }}
+  {{- end }}
+  stan.conf: |-
+    #########################
+    # NATS Streaming Config #
+    #########################
+    streaming {
+      {{- if .Values.stan.nats.serviceRoleAuth.enabled }}
+      ns: $NATS_URL
+      {{- else if .Values.stan.nats.url }}
+      ns: {{ .Values.stan.nats.url }}
+      {{ else }}
+      {{- end }}
+
+      {{- if .Values.stan.clusterID }}
+      id: {{ .Values.stan.clusterID }}
+      {{- else }}
+      id: {{ template "stan.name" . }}
+      {{- end }}
+
+      {{- if .Values.stan.logging.debug }}
+      sd: true
+      {{- end }}
+      {{- if .Values.stan.logging.trace }}
+      sv: true
+      {{- end }}
+
+      {{- if .Values.stan.credentials }}
+      credentials: "/etc/stan-creds/{{ .Values.stan.credentials.secret.key }}"
+      {{- end }}
+
+      {{- if .Values.stan.auth.enabled }}
+      {{- if (and .Values.stan.auth.username .Values.stan.auth.password) }}
+      username: {{ .Values.stan.auth.username }}
+      password: {{ .Values.stan.auth.password }}
+      {{- end }}
+
+      {{- if .Values.stan.auth.token }}
+      token: {{ .Values.stan.auth.token }}
+      {{- end }}
+
+      {{- if .Values.stan.auth.nkeySeedFile }}
+      nkey_seed_file: "/etc/nkey-seed-file"
+      {{- end }}
+      {{- end }}
+
+      {{- if and .Values.stan.tls.enabled .Values.stan.tls.secretName }}
+      tls: {{ mustToJson .Values.stan.tls.settings }}
+      {{- end }}
+
+      {{- with .Values.store.ft.group }}
+      ft_group_name: {{ . }}
+      {{- end }}
+
+      ###############################
+      #  Store Config               #
+      ###############################
+      {{- if eq .Values.store.type "sql" }}
+      store: "sql"
+      sql_options {
+        driver: {{ .Values.store.sql.driver }}
+        source: '{{.Values.store.sql.source}}'
+      }
+      {{- else if eq .Values.store.type "memory" }}
+      store: "memory"
+      {{- else }}
+      store: "file"
+      dir: {{ .Values.store.file.path }}
+      {{- with .Values.store.file.options }}
+      file_options: {{ toPrettyJson . | indent 6 }}
+      {{- end }}
+      {{- end }}
+
+      {{- if .Values.store.cluster.enabled }}
+      ###############################
+      #  NATS Streaming Clustering  #
+      ###############################
+      cluster {
+        node_id: $POD_NAME
+        {{- with .Values.store.cluster.logPath }}
+        log_path: {{ . }}
+        {{- end }}
+
+        # Explicit names of resulting peers
+        peers: [
+          {{ template "stan.clusterPeers" . }}
+        ]
+      }
+      {{- end }}
+
+      {{- with .Values.store.partitioning }}
+      partitioning: {{ .enabled }}
+      {{- end }}
+
+      {{- with .Values.store.limits }}
+      store_limits: {
+        {{- if kindIs "float64" .max_channels }}
+        max_channels: {{ .max_channels | int }}
+        {{- end }}
+
+        {{- if kindIs "float64" .max_msgs }}
+        max_msgs: {{ .max_msgs | int }}
+        {{- end }}
+
+        {{- if .max_bytes }}
+        max_bytes: {{ .max_bytes }}
+        {{- end }}
+
+        {{- if .max_age }}
+        max_age: {{ .max_age | quote }}
+        {{- end }}
+
+        {{- if kindIs "float64" .max_subs }}
+        max_subs: {{ .max_subs | int }}
+        {{- end }}
+
+        {{- if .max_inactivity }}
+        max_inactivity: {{ .max_inactivity | quote }}
+        {{- end }}
+
+        {{- if .channels }}
+
+        channels {
+        {{- range $channel, $limits := .channels }}
+          {{ $channel }}: {
+            {{- if $limits }}
+
+            {{- if kindIs "float64" $limits.max_subs }}
+            max_subs: {{ $limits.max_subs | int }}
+            {{- end }}
+
+            {{- if kindIs "float64" $limits.max_msgs }}
+            max_msgs: {{ $limits.max_msgs | int }}
+            {{- end }}
+
+            {{- if $limits.max_bytes }}
+            max_bytes: {{ $limits.max_bytes }}
+            {{- end }}
+
+            {{- if $limits.max_age }}
+            max_age: {{ $limits.max_age | quote }}
+            {{- end }}
+
+            {{- if $limits.max_inactivity }}
+            max_inactivity: {{ $limits.max_inactivity | quote }}
+            {{- end }}
+          {{- end }}
+          }
+        {{- end }}
+        }
+        {{- end }}
+      }
+      {{- end }}
+    }
+
+    ###############################################
+    #                                             #
+    #            Embedded NATS Config             #
+    #                                             #
+    ###############################################
+    {{ include "nats-configmap" . | nindent 4 }}

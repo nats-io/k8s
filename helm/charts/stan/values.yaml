@@ -1,0 +1,455 @@
+##################################
+#                                #
+#  NATS Streaming Configuration  #
+#                                #
+##################################
+stan:
+  image: nats-streaming:0.20.0
+  pullPolicy: IfNotPresent
+  replicas: 1
+
+  # Cluster name, generated into a name from the
+  # release name by default.
+  clusterID:
+
+  logging:
+    debug:
+    trace:
+
+  # In case of NATS not being embedded then an URL for NATS is required.
+  nats:
+    url:
+    serviceRoleAuth:
+      enabled: false
+      natsClusterName:
+
+  # TLS
+  # Enabled must be true, and a secret name specified for this to work
+  tls:
+    enabled: false
+    # the secret containing the client ca.crt, tls.crt, and tls.key for STAN
+    secretName:
+    # Reference
+    # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#tls-configuration
+    settings:
+      client_cert: "/etc/nats/certs/tls.crt"
+      client_key: "/etc/nats/certs/tls.key"
+      client_ca: "/etc/nats/certs/ca.crt"
+      timeout: 3
+
+  # The credentials file to load in to connect to the nats server.
+  #credentials:
+  #  secret:
+  #    name: nats-sys-creds
+  #    key: sys.creds
+
+  auth:
+    enabled: false
+
+    # Username/password is used to connect to a NATS Server when authentication with multiple users is enabled
+    # username:
+    # password:
+
+    # Authentication token if the NATS Server requires a token
+    # token:
+
+    # Secret to an NKey seed file if NKey authentication is used
+
+    # Format:
+    # -----BEGIN USER NKEY SEED-----
+    # SU<rest of the seed>
+    # ------END USER NKEY SEED------
+
+    # nkeySeedFile:
+    #   secret:
+    #     name:
+    #     key:
+
+nameOverride: ""
+imagePullSecrets: []
+serviceAccountName: ""
+
+# Annotations to add to the NATS pods
+# ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+
+# Toggle whether to use setup a Pod Security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext: null
+# securityContext:
+#   fsGroup: 1000
+#   runAsUser: 1000
+#   runAsNonRoot: true
+
+# Affinity for pod assignment
+# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+# Resource requests and limits for primary stan container
+# ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+resources: {}
+
+# Readiness probe to determine when nats-streaming is ready
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+readinessProbe:
+  httpGet:
+    path: /streaming/serverz
+    port: monitor
+  timeoutSeconds: 2
+
+# Readiness probe to determine when nats-streaming cluster is ready.
+# Overrides the readinessProbe in case present.
+# NOTE: Only works with the nats-streaming alpine image.
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+clusterReadinessProbe:
+  enabled: false
+  probe:
+    exec:
+      command: ["/bin/sh", "-c", "n=$(($STAN_REPLICAS-1)); for i in `seq 0 $n`; do wget -qO- $STAN_SERVICE_NAME-$i.$STAN_SERVICE_NAME:8222/streaming/serverz 2> /dev/null > /dev/null; done; if [[ $? -ne 0 ]]; then wget -qO- 127.0.0.1:8222/streaming/serverz | grep role | awk '{print $2}' | grep '\\(Candidate\\|Follower\\|Leader\\)'; else wget -qO- 127.0.0.1:8222/streaming/serverz | grep role | awk '{print $2}' | grep '\\(Follower\\|Leader\\)'; fi;"]
+    initialDelaySeconds:
+    periodSeconds: 10
+
+# Liveness probe to determine when nats-streaming is alive
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  enabled: false
+  probe:
+    httpGet:
+      path: /
+      port: monitor
+    timeoutSeconds: 2
+
+###########################
+#                         #
+#  Storage configuration  #
+#                         #
+###########################
+store:
+  # One value possible out of: "file" | "sql" | "memory"
+  type: file
+
+  #
+  # Fault tolerance group
+  #
+  ft:
+    group:
+
+  # Configures streaming/store_limits.
+  #
+  # NOTE: Section in snake case since they will become
+  # the same objects.
+  #
+  # Look at the NATS Streaming configuration for this:
+  #
+  # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#store-limits-configuration
+  #
+  limits: {}
+
+  # Enables streaming/partitioning
+  # 
+  # https://docs.nats.io/nats-streaming-concepts/partitioning
+  # 
+  partitioning:
+    enabled: false
+
+  #
+  # Volume claim configuration. Required if the store type is `file` or if
+  # cluster is enabled.
+  #
+  volume:
+    enabled: true
+    mount: /data/stan
+    storageSize: 1Gi
+    accessModes: ReadWriteOnce
+    storageClass:
+
+  #
+  # File storage settings.
+  #
+  file:
+    path: /data/stan/store
+    # Configures streaming/file_options as is.
+    #
+    # NOTE: Section in snake case since they will become
+    # the same objects.
+    #
+    # Look at the NATS Streaming configuration for this:
+    #
+    # https://docs.nats.io/nats-streaming-server/configuring/cfgfile#file-options-configuration
+    #
+    options: {}
+
+  # In case of using file or sql storage, sets up a 3 node cluster.
+  cluster:
+    enabled: false
+    logPath: /data/stan/log
+
+  #
+  # SQL storage settings
+  #
+  sql:
+    driver: postgres
+
+    # TODO: Use secret reference and include instead for the password.
+    #
+    # e.g.
+    # source: "dbname=postgres user=postgres password=stan host=stan-db sslmode=disable"
+    #
+    source: ""
+
+    # Initialize the database.
+    initdb:
+      enabled: false
+
+      # Client to use to init the db.
+      image: postgres:11
+
+    dbName: postgres
+    dbUser: postgres
+    dbPassword: stan
+    dbHost: ""
+    dbPort: 5432
+
+  backup:
+    enabled: false
+    sleepTime: 3600
+    s3Path: ""
+    # To use backup functionality, you are required to either create a secret with the name you define here, or provide an instance profile.
+    credentialsSecretName:
+    backupScript: |-
+      #!/bin/sh
+      echo backup
+    backupContainerScript: |-
+      #!/bin/sh
+      while true; do
+        for i in $(find ${STORE_FILE_PATH} -name '*.bak'); do
+          aws s3 cp \
+            ${i} \
+            ${STORE_BACKUP_S3PATH}/${STAN_NAME}/${POD_NAME}${i}
+
+          RESULT=$?
+          if [ $RESULT -eq 0 ]; then
+              rm -f ${i}
+          else
+            echo "Error backing up! Do not remove $i files."
+          fi
+        done
+
+        sleep "${SLEEP_TIME}"
+      done
+    # Resource requests and limits for backup container
+    # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    resources: {}
+
+
+#######################################
+#                                     #
+# Prometheus Exporter configuration   #
+#                                     #
+#######################################
+exporter:
+  enabled: true
+  image: synadia/prometheus-nats-exporter:0.6.2
+  pullPolicy: IfNotPresent
+  # Prometheus operator ServiceMonitor support. Exporter has to be enabled
+  serviceMonitor:
+    enabled: false
+    ## Specify the namespace where Prometheus Operator is running
+    ##
+    # namespace: monitoring
+    labels: {}
+    annotations: {}
+    path: /metrics
+    # interval:
+    # scrapeTimeout:
+
+#  
+#  Embedded NATS Configuration
+#  
+#  NOTE: Should be kept in sync with the NATS Helm Chart as well.
+# 
+#################################################################################
+#                                                                               #
+#  _   _    _  _____ ____    _____           _              _     _          _  #
+# | \ | |  / \|_   _/ ___|  | ____|_ __ ___ | |__   ___  __| | __| | ___  __| | #
+# |  \| | / _ \ | | \___ \  |  _| | '_ ` _ \| '_ \ / _ \/ _` |/ _` |/ _ \/ _` | #
+# | |\  |/ ___ \| |  ___) | | |___| | | | | | |_) |  __/ (_| | (_| |  __/ (_| | #
+# |_| \_/_/   \_\_| |____/  |_____|_| |_| |_|_.__/ \___|\__,_|\__,_|\___|\__,_| #
+#                                                                               #
+#################################################################################
+nats:
+  image: nats:2.1.9-alpine3.12
+  pullPolicy: IfNotPresent
+
+  # Toggle whether to enable external access.
+  # This binds a host port for clients, gateways and leafnodes.
+  externalAccess: false
+
+  # Toggle to disable client advertisements (connect_urls),
+  # in case of running behind a load balancer (which is not recommended)
+  # it might be required to disable advertisements.
+  advertise: true
+
+  # The number of connect attempts against discovered routes.
+  connectRetries: 30
+
+  # How many seconds should pass before sending a PING
+  # to a client that has no activity.
+  pingInterval: 
+
+  # Server settings.
+  limits:
+    maxConnections: 
+    maxSubscriptions: 
+    maxControlLine: 
+    maxPayload: 
+
+    writeDeadline: 
+    maxPending: 
+    maxPings: 
+    lameDuckDuration: 
+
+  logging:
+    debug: 
+    trace: 
+    logtime: 
+    connectErrorReports: 
+    reconnectErrorReports: 
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  # 
+
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+
+cluster:
+  # NOTE: NATS Server service is enabled by default, but will get disabled
+  # if a NATS url is defined.
+  enabled: true
+
+  # NOTE: Recommended to enable if running behind a load balancer.
+  noAdvertise: false
+  
+# Leafnode connections to extend a cluster:
+#
+# https://docs.nats.io/nats-server/configuration/leafnodes
+#
+leafnodes:
+  enabled: false
+  noAdvertise: false
+  # remotes:
+  #   - url: "tls://connect.ngs.global:7422"
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  # 
+
+  #
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+
+# Gateway connections to create a super cluster
+#
+# https://docs.nats.io/nats-server/configuration/gateways
+#
+gateway:
+  enabled: false
+  name: 'default'
+
+  #############################
+  #                           #
+  #  List of remote gateways  #
+  #                           #
+  #############################
+  # gateways:
+  #   - name: other
+  #     url: nats://my-gateway-url:7522
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  #
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+  
+# In case of both external access and advertisements being
+# enabled, an initializer container will be used to gather
+# the public ips.
+bootconfig:
+  image: connecteverything/nats-boot-config:0.5.2
+  pullPolicy: IfNotPresent
+
+# The NATS config reloader image to use.
+reloader:
+  enabled: false
+  image: connecteverything/nats-server-config-reloader:0.6.0
+  pullPolicy: IfNotPresent
+
+# Authentication setup
+auth:
+  enabled: false
+
+  # Reference to the Operator JWT.
+  # operatorjwt:
+  #   configMap:
+  #     name: operator-jwt
+  #     key: KO.jwt
+
+  # Public key of the System Account
+  # systemAccount:
+
+  # resolver:
+  #   ############################
+  #   #                          #
+  #   # Memory resolver settings #
+  #   #                          #
+  #   ##############################
+  #   # type: memory
+  #   # 
+  #   # Use a configmap reference which will be mounted
+  #   # into the container.
+  #   # 
+  #   # configMap:
+  #   #   name: nats-accounts
+  #   #   key: resolver.conf
+  #  
+  #   ##########################
+  #   #                        #
+  #   #  URL resolver settings #
+  #   #                        #
+  #   ##########################
+  #   # type: URL
+  #   # url: "http://nats-account-server:9090/jwt/v1/accounts/"

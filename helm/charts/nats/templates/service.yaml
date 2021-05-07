@@ -2,15 +2,28 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "nats.name" . }}
+  name: {{ include "nats.fullname" . }}
   labels:
-    app: {{ template "nats.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "nats.labels" . | nindent 4 }}
+  {{- if .Values.serviceAnnotations}}
+  annotations:
+  {{- range $key, $value := .Values.serviceAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
 spec:
   selector:
-    app: {{ template "nats.name" . }}
+    {{- include "nats.selectorLabels" . | nindent 4 }}
   clusterIP: None
+  {{- if .Values.topologyKeys }}
+  topologyKeys:
+     {{- .Values.topologyKeys | toYaml | nindent 4 }}
+  {{- end }}
   ports:
+  {{- if .Values.websocket.enabled }}
+  - name: websocket
+    port: {{ .Values.websocket.port }}
+  {{- end }}
   - name: client
     port: 4222
   - name: cluster

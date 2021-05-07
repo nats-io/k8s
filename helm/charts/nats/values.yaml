@@ -1,6 +1,10 @@
-# NATS Server Configuration
+###############################
+#                             #
+#  NATS Server Configuration  #
+#                             #
+###############################
 nats:
-  image: nats:2.1.4-alpine3.11
+  image: nats:2.1.9-alpine3.12
   pullPolicy: IfNotPresent
 
   # Toggle whether to enable external access.
@@ -22,9 +26,11 @@ nats:
 
   # How many seconds should pass before sending a PING
   # to a client that has no activity.
-  pingInterval: 
+  pingInterval:
 
-  # Server settings
+  resources: {}
+
+  # Server settings.
   limits:
     maxConnections: 
     maxSubscriptions: 
@@ -36,6 +42,8 @@ nats:
     maxPings: 
     lameDuckDuration: 
 
+  terminationGracePeriodSeconds: 60
+
   logging:
     debug: 
     trace: 
@@ -43,9 +51,109 @@ nats:
     connectErrorReports: 
     reconnectErrorReports: 
 
-# Toggle whether to use setup a NATS Cluster.
+  jetstream:
+    enabled: false
+
+    #############################
+    #                           #
+    #  Jetstream Memory Storage #
+    #                           #
+    #############################
+    memStorage:
+     enabled: true
+     size: 1Gi
+
+    ############################
+    #                          #
+    #  Jetstream File Storage  #
+    #                          #
+    ############################
+    fileStorage:
+      enabled: false
+      storageDirectory: /data
+
+      # Set for use with existing PVC
+      # existingClaim: jetstream-pvc
+      # claimStorageSize: 1Gi
+      
+      # Use below block to create new persistent volume
+      # only used if existingClaim is not specified
+      size: 1Gi
+      storageClassName: default
+      accessModes:
+        - ReadWriteOnce
+      annotations:
+        # key: "value"
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  # 
+
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+
+nameOverride: ""
+imagePullSecrets: []
+
+# Toggle whether to use setup a Pod Security Context
+# ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext: {}
+# securityContext: 
+#   fsGroup: 1000
+#   runAsUser: 1000
+#   runAsNonRoot: true
+
+# Affinity for pod assignment
+# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+
+## Pod priority class name
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+priorityClassName: null
+
+# Service topology
+# ref: https://kubernetes.io/docs/concepts/services-networking/service-topology/
+topologyKeys: []
+
+# Pod Topology Spread Constraints
+# ref https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+topologySpreadConstraints: []
+# - maxSkew: 1
+#   topologyKey: zone
+#   whenUnsatisfiable: DoNotSchedule
+
+# Annotations to add to the NATS pods
+# ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+# key: "value"
+
+## Define a Pod Disruption Budget for the stateful set
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+podDisruptionBudget: null
+  # minAvailable: 1
+  # maxUnavailable: 1
+
+# Annotations to add to the NATS StatefulSet
+statefulSetAnnotations: {}
+
+# Annotations to add to the NATS Service
+serviceAnnotations: {}
+
 cluster:
   enabled: false
+  replicas: 3
+  noAdvertise: false
 
 # Leafnode connections to extend a cluster:
 #
@@ -53,7 +161,63 @@ cluster:
 #
 leafnodes:
   enabled: false
+  noAdvertise: false
+  # remotes:
+  #   - url: "tls://connect.ngs.global:7422"
 
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  # 
+
+  #
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+
+# Gateway connections to create a super cluster
+#
+# https://docs.nats.io/nats-server/configuration/gateways
+#
+gateway:
+  enabled: false
+  name: 'default'
+
+  #############################
+  #                           #
+  #  List of remote gateways  #
+  #                           #
+  #############################
+  # gateways:
+  #   - name: other
+  #     url: nats://my-gateway-url:7522
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  # 
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  # 
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  #
+  # tls:
+  #   secret:
+  #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+  
 # In case of both external access and advertisements being
 # enabled, an initializer container will be used to gather
 # the public ips.
@@ -67,8 +231,13 @@ bootconfig:
 # 
 natsbox:
   enabled: true
-  image: synadia/nats-box:0.3.0
+  image: synadia/nats-box:0.4.0
   pullPolicy: IfNotPresent
+
+  # credentials:
+  #   secret:
+  #     name: nats-sys-creds
+  #     key: sys.creds
 
 # The NATS config reloader image to use.
 reloader:
@@ -81,3 +250,98 @@ exporter:
   enabled: true
   image: synadia/prometheus-nats-exporter:0.5.0
   pullPolicy: IfNotPresent
+  # Prometheus operator ServiceMonitor support. Exporter has to be enabled
+  serviceMonitor:
+    enabled: false
+    ## Specify the namespace where Prometheus Operator is running
+    ##
+    # namespace: monitoring
+    labels: {}
+    annotations: {}
+    path: /metrics
+    # interval:
+    # scrapeTimeout:
+
+# Authentication setup
+auth:
+  enabled: false
+
+  # basic:
+  #   noAuthUser:
+  #   # List of users that can connect with basic auth,
+  #   # that belong to the global account.
+  #   users:
+
+  #   # List of accounts with users that can connect
+  #   # using basic auth.
+  #   accounts:
+
+  # Reference to the Operator JWT.
+  # operatorjwt:
+  #   configMap:
+  #     name: operator-jwt
+  #     key: KO.jwt
+
+  # Public key of the System Account
+  # systemAccount:
+
+  resolver:
+    # Disables the resolver by default
+    type: none
+
+    ##########################################
+    #                                        #
+    # Embedded NATS Account Server Resolver  #
+    #                                        #
+    ##########################################
+    # type: full
+
+    # If the resolver type is 'full', delete when enabled will rename the jwt.
+    allowDelete: false
+
+    # Interval at which a nats-server with a nats based account resolver will compare
+    # it's state with one random nats based account resolver in the cluster and if needed, 
+    # exchange jwt and converge on the same set of jwt.
+    interval: 2m
+
+    # Operator JWT
+    operator: 
+
+    # System Account Public NKEY
+    systemAccount: 
+
+    # resolverPreload:
+    #   <ACCOUNT>: <JWT>
+
+    # Directory in which the account JWTs will be stored.
+    store:
+      dir: "/accounts/jwt"
+
+      # Size of the account JWT storage.
+      size: 1Gi
+
+    ##############################
+    #                            #
+    # Memory resolver settings   #
+    #                            #
+    ##############################
+    # type: memory
+    # 
+    # Use a configmap reference which will be mounted
+    # into the container.
+    # 
+    # configMap:
+    #   name: nats-accounts
+    #   key: resolver.conf
+   
+    ##########################
+    #                        #
+    #  URL resolver settings #
+    #                        #
+    ##########################
+    # type: URL
+    # url: "http://nats-account-server:9090/jwt/v1/accounts/"
+
+websocket:
+  enabled: false
+  port: 443

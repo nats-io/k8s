@@ -1,22 +1,75 @@
 {{- if .Values.natsbox.enabled }}
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-box
+  name: {{ include "nats.fullname" . }}-box
   labels:
-    app: {{ .Release.Name }}-box
+    app: {{ include "nats.fullname" . }}-box
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 spec:
-  containers:
-  - name: nats-box
-    image: {{ .Values.natsbox.image }}
-    imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
-    env:
-    - name: NATS_URL
-      value: {{ .Release.Name }}
-    command:
-     - "tail"
-     - "-f"
-     - "/dev/null"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "nats.fullname" . }}-box
+  template:
+    metadata:
+      labels:
+        app: {{ include "nats.fullname" . }}-box
+    spec:
+      volumes:
+      {{- if .Values.natsbox.credentials }}
+      - name: nats-sys-creds
+        secret:
+          secretName: {{ .Values.natsbox.credentials.secret.name }}
+      {{- end }}
+      {{- with .Values.nats.tls }}
+      {{ $secretName := .secret.name }}
+      - name: {{ $secretName }}-clients-volume
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
+
+      containers:
+      - name: nats-box
+        image: {{ .Values.natsbox.image }}
+        imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
+        env:
+        - name: NATS_URL
+          value: {{ template "nats.fullname" . }}
+        {{- if .Values.natsbox.credentials }}
+        - name: USER_CREDS
+          value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
+        - name: USER2_CREDS
+          value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
+        {{- end }}
+        {{- with .Values.nats.tls }}
+        {{ $secretName := .secret.name }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - cp /etc/nats-certs/clients/{{ $secretName }}/* /usr/local/share/ca-certificates && update-ca-certificates
+        {{- end }}
+        command:
+         - "tail"
+         - "-f"
+         - "/dev/null"
+        volumeMounts:
+        {{- if .Values.natsbox.credentials }}
+        - name: nats-sys-creds
+          mountPath: /etc/nats-config/creds
+        {{- end }}
+        {{- with .Values.nats.tls }}
+        #######################
+        #                     #
+        #  TLS Volumes Mounts #
+        #                     #
+        #######################
+        {{ $secretName := .secret.name }}
+        - name: {{ $secretName }}-clients-volume
+          mountPath: /etc/nats-certs/clients/{{ $secretName }}
+        {{- end }}
 {{- end }}

@@ -1,0 +1,382 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: streams.jetstream.nats.io
+spec:
+  group: jetstream.nats.io
+  scope: Namespaced
+  names:
+    kind: Stream
+    singular: stream
+    plural: streams
+  versions:
+  - name: v1beta1
+    served: true
+    storage: true
+    subresources:
+      status: {}
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              name:
+                description: A unique name for the Stream.
+                type: string
+                pattern: '^[^.*>]*$'
+                minLength: 1
+              subjects:
+                description: A list of subjects to consume, supports wildcards.
+                type: array
+                minLength: 1
+                items:
+                  type: string
+                  minLength: 1
+              retention:
+                description: How messages are retained in the Stream, once this is exceeded old messages are removed.
+                type: string
+                enum:
+                - limits
+                - interest
+                - workqueue
+                default: limits
+              maxConsumers:
+                description: How many Consumers can be defined for a given Stream. -1 for unlimited.
+                type: integer
+                minimum: -1
+                default: -1
+              maxMsgs:
+                description: How many messages may be in a Stream, oldest messages will be removed if the Stream exceeds this size. -1 for unlimited.
+                type: integer
+                minimum: -1
+                default: -1
+              maxBytes:
+                description: How big the Stream may be, when the combined stream size exceeds this old messages are removed. -1 for unlimited.
+                type: integer
+                minimum: -1
+                default: -1
+              maxAge:
+                description: Maximum age of any message in the stream, expressed in Go's time.Duration format. Empty for unlimited.
+                type: string
+                default: ''
+              maxMsgSize:
+                description: The largest message that will be accepted by the Stream. -1 for unlimited.
+                type: integer
+                minimum: -1
+                default: -1
+              storage:
+                description: The storage backend to use for the Stream.
+                type: string
+                enum:
+                - file
+                - memory
+                default: memory
+              replicas:
+                description: How many replicas to keep for each message.
+                type: integer
+                minimum: 1
+                default: 1
+              noAck:
+                description: Disables acknowledging messages that are received by the Stream.
+                type: boolean
+                default: false
+              discard:
+                description: When a Stream reach it's limits either old messages are deleted or new ones are denied.
+                type: string
+                enum:
+                - old
+                - new
+                default: old
+              duplicateWindow:
+                description: The duration window to track duplicate messages for.
+                type: string
+          status:
+            type: object
+            properties:
+              observedGeneration:
+                type: integer
+              conditions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    status:
+                      type: string
+                    lastTransitionTime:
+                      type: string
+                    reason:
+                      type: string
+                    message:
+                      type: string
+    additionalPrinterColumns:
+    - name: State
+      type: string
+      description: The current state of the stream.
+      jsonPath: .status.conditions[?(@.type == 'Ready')].reason
+    - name: Stream Name
+      type: string
+      description: The name of the Jetstream Stream.
+      jsonPath: .spec.name
+    - name: Subjects
+      type: string
+      description: The subjects this Stream produces.
+      jsonPath: .spec.subjects
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: consumers.jetstream.nats.io
+spec:
+  group: jetstream.nats.io
+  scope: Namespaced
+  names:
+    kind: Consumer
+    singular: consumer
+    plural: consumers
+  versions:
+  - name: v1beta1
+    served: true
+    storage: true
+    subresources:
+      status: {}
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              streamName:
+                description: The name of the Stream to create the Consumer in.
+                type: string
+              deliverPolicy:
+                type: string
+                enum:
+                - all
+                - last
+                - new
+                # Requires optStartSeq
+                - byStartSequence
+                # Requires optStartTime
+                - byStartTime
+                default: all
+              optStartSeq:
+                type: integer
+                minimum: 0
+              optStartTime:
+                description: Time format must be RFC3339.
+                type: string
+              durableName:
+                description: The name of the Consumer.
+                type: string
+                pattern: '^[^.*>]+$'
+                minLength: 1
+              deliverSubject:
+                description: The subject to deliver observed messages, when not set, a pull-based Consumer is created.
+                type: string
+              ackPolicy:
+                description: How messages should be acknowledged.
+                type: string
+                enum:
+                - none
+                - all
+                - explicit
+                default: none
+              ackWait:
+                description: How long to allow messages to remain un-acknowledged before attempting redelivery.
+                type: string
+                default: 1ns
+              maxDeliver:
+                type: integer
+                minimum: -1
+              filterSubject:
+                description: Select only a specific incoming subjects, supports wildcards.
+                type: string
+              replayPolicy:
+                description: How messages are sent.
+                type: string
+                enum:
+                - instant
+                - original
+                default: instant
+              sampleFreq:
+                description: What percentage of acknowledgements should be samples for observability.
+                type: string
+              rateLimitBps:
+                description: rate at which messages will be delivered to clients, expressed in bit per second.
+                type: integer
+          status:
+            type: object
+            properties:
+              observedGeneration:
+                type: integer
+              conditions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    status:
+                      type: string
+                    lastTransitionTime:
+                      type: string
+                    reason:
+                      type: string
+                    message:
+                      type: string
+    additionalPrinterColumns:
+    - name: State
+      type: string
+      description: The current state of the consumer.
+      jsonPath: .status.conditions[?(@.type == 'Ready')].reason
+    - name: Stream
+      type: string
+      description: The name of the Jetstream Stream.
+      jsonPath: .spec.streamName
+    - name: Consumer
+      type: string
+      description: The name of the Jetstream Consumer.
+      jsonPath: .spec.durableName
+    - name: Ack Policy
+      type: string
+      description: The ack policy.
+      jsonPath: .spec.ackPolicy
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: streamtemplates.jetstream.nats.io
+spec:
+  group: jetstream.nats.io
+  scope: Namespaced
+  names:
+    kind: StreamTemplate
+    singular: streamtemplate
+    plural: streamtemplates
+  versions:
+  - name: v1beta1
+    served: true
+    storage: true
+    subresources:
+      status: {}
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              name:
+                description: A unique name for the Stream Template.
+                type: string
+                pattern: '^[^.*>]*$'
+                minLength: 1
+              maxStreams:
+                description: The maximum number of Streams this Template can create, -1 for unlimited.
+                type: integer
+                minimum: -1
+                default: -1
+              subjects:
+                description: A list of subjects to consume, supports wildcards.
+                type: array
+                minLength: 1
+                items:
+                  type: string
+                  minLength: 1
+              retention:
+                description: How messages are retained in the Stream, once this is exceeded old messages are removed.
+                type: string
+                enum:
+                - limits
+                - interest
+                - workqueue
+                default: limits
+              maxConsumers:
+                description: How many Consumers can be defined for a given Stream. -1 for unlimited.
+                type: integer
+                minimum: -1
+                default: -1
+              maxMsgs:
+                description: How many messages may be in a Stream, oldest messages will be removed if the Stream exceeds this size. -1 for unlimited.
+                type: integer
+                minimum: -1
+                default: -1
+              maxBytes:
+                description: How big the Stream may be, when the combined stream size exceeds this old messages are removed. -1 for unlimited.
+                type: integer
+                minimum: -1
+                default: -1
+              maxAge:
+                description: Maximum age of any message in the stream, expressed in Go's time.Duration format. Empty for unlimited.
+                type: string
+                default: ''
+              maxMsgSize:
+                description: The largest message that will be accepted by the Stream. -1 for unlimited.
+                type: integer
+                minimum: -1
+                default: -1
+              storage:
+                description: The storage backend to use for the Stream.
+                type: string
+                enum:
+                - file
+                - memory
+                default: memory
+              replicas:
+                description: How many replicas to keep for each message.
+                type: integer
+                minimum: 1
+                default: 1
+              noAck:
+                description: Disables acknowledging messages that are received by the Stream.
+                type: boolean
+                default: false
+              discard:
+                description: When a Stream reach it's limits either old messages are deleted or new ones are denied.
+                type: string
+                enum:
+                - old
+                - new
+                default: old
+              duplicateWindow:
+                description: The duration window to track duplicate messages for.
+                type: string
+          status:
+            type: object
+            properties:
+              observedGeneration:
+                type: integer
+              conditions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    status:
+                      type: string
+                    lastTransitionTime:
+                      type: string
+                    reason:
+                      type: string
+                    message:
+                      type: string
+    additionalPrinterColumns:
+    - name: State
+      type: string
+      description: The current state of the stream.
+      jsonPath: .status.conditions[?(@.type == 'Ready')].reason
+    - name: Stream Template Name
+      type: string
+      description: The name of the Jetstream Stream Template.
+      jsonPath: .spec.name
+    - name: Subjects
+      type: string
+      description: The subjects this Stream produces.
+      jsonPath: .spec.subjects
