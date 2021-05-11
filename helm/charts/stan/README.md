@@ -423,7 +423,7 @@ stan-cluster-0   3/3     Running   0          52m
 stan-cluster-1   3/3     Running   0          52m
 stan-cluster-2   3/3     Running   0          53m
 
-$ kubectl run -i --rm --tty nats-box --image=synadia/nats-box --restart=Never
+$ kubectl run -i --rm --tty nats-box --image=natsio/nats-box --restart=Never
 
 nats-box:~# stan-pub -c stan-cluster -s stan-cluster foo hello
 Published [foo] : 'hello'
@@ -506,7 +506,7 @@ You can toggle whether to start the sidecar that can be used to feed metrics to 
 ```yaml
 exporter:
   enabled: true
-  image: synadia/prometheus-nats-exporter:0.5.0
+  image: natsio/prometheus-nats-exporter:latest
   pullPolicy: IfNotPresent
 ```
 

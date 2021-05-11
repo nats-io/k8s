@@ -4,7 +4,7 @@
 #                             #
 ###############################
 nats:
-  image: nats:2.1.9-alpine3.12
+  image: nats:alpine
   pullPolicy: IfNotPresent
 
   # Toggle whether to enable external access.
@@ -222,7 +222,7 @@ gateway:
 # enabled, an initializer container will be used to gather
 # the public ips.
 bootconfig:
-  image: connecteverything/nats-boot-config:0.5.2
+  image: natsio/nats-boot-config:0.5.3
   pullPolicy: IfNotPresent
 
 # NATS Box
@@ -231,7 +231,7 @@ bootconfig:
 # 
 natsbox:
   enabled: true
-  image: synadia/nats-box:0.4.0
+  image: natsio/nats-box:0.6.0
   pullPolicy: IfNotPresent
 
   # credentials:
@@ -242,13 +242,13 @@ natsbox:
 # The NATS config reloader image to use.
 reloader:
   enabled: true
-  image: connecteverything/nats-server-config-reloader:0.6.0
+  image: natsio/nats-server-config-reloader:0.6.1
   pullPolicy: IfNotPresent
 
 # Prometheus NATS Exporter configuration.
 exporter:
   enabled: true
-  image: synadia/prometheus-nats-exporter:0.5.0
+  image: natsio/prometheus-nats-exporter:0.7.0
   pullPolicy: IfNotPresent
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled
   serviceMonitor:

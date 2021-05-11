@@ -194,7 +194,7 @@ The container image of the initializer can be customized via:
 
 ```yaml  
 bootconfig:
-  image: connecteverything/nats-boot-config:0.5.2
+  image: natsio/nats-boot-config:latest
   pullPolicy: IfNotPresent
 ```
 
@@ -349,7 +349,7 @@ auth:
 
 ```yaml
 nats:
-  image: synadia/nats-server:nightly
+  image: nats:alpine
 
   jetstream:
     enabled: true
@@ -389,7 +389,7 @@ You can start JetStream so that one pod is bounded to it:
 
 ```yaml
 nats:
-  image: synadia/nats-server:nightly
+  image: nats:alpine
 
   jetstream:
     enabled: true
@@ -406,7 +406,7 @@ nats:
 ```yaml
 
 nats:
-  image: synadia/nats-server:nightly
+  image: nats:alpine
 
   jetstream:
     enabled: true
@@ -438,7 +438,7 @@ You can find the image at: https://github.com/nats-io/nats-box
 ```yaml
 natsbox:
   enabled: true
-  image: synadia/nats-box:latest
+  image: nats:alpine
   pullPolicy: IfNotPresent
 
   # credentials:
@@ -454,7 +454,7 @@ The NATS config reloader image to use:
 ```yaml
 reloader:
   enabled: true
-  image: connecteverything/nats-server-config-reloader:0.6.0
+  image: natsio/nats-server-config-reloader:latest
   pullPolicy: IfNotPresent
 ```
 
@@ -465,7 +465,7 @@ You can toggle whether to start the sidecar that can be used to feed metrics to 
 ```yaml
 exporter:
   enabled: true
-  image: synadia/prometheus-nats-exporter:0.5.0
+  image: natsio/prometheus-nats-exporter:latest
   pullPolicy: IfNotPresent
 ```
 

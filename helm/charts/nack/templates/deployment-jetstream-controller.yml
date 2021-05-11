@@ -71,8 +71,8 @@ spec:
           command:
           - /jetstream-controller
           - -s={{ .Values.jetstream.nats.url }}
-          {{- if and .Values.jetstream.nats.credentials .Values.jetstream.nats.credentials.secret }}
-          - --creds=/etc/jsc-creds/{{ .Values.jetstream.nats.credentials.secret.key }}
+          {{- with .Values.jetstream.nats.credentials }}
+          - --creds=/etc/jsc-creds/{{ .secret.key }}
           {{- end }}
 
           env:
