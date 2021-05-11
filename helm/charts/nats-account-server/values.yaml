@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 accountserver:
-  image: "synadia/nats-account-server:0.8.4"
+  image: "natsio/nats-account-server:1.0.0"
   pullPolicy: IfNotPresent
 
 store:
