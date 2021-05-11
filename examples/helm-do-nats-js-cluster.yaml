@@ -1,0 +1,21 @@
+nats:
+  image: nats:alpine
+
+  jetstream:
+    enabled: true
+
+    memStorage:
+      enabled: true
+      size: "3Gi"
+
+    fileStorage:
+      enabled: true
+      size: "1Gi"
+      storageDirectory: /data/
+      storageClassName: do-block-storage
+
+cluster:
+  enabled: true
+  # Cluster name is required, by default will be release name.
+  # name: "nats"
+  replicas: 3
