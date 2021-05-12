@@ -391,6 +391,8 @@ spec:
       - name: metrics
         image: {{ .Values.exporter.image }}
         imagePullPolicy: {{ .Values.exporter.pullPolicy }}
+        resources:
+          {{- toYaml .Values.exporter.resources | nindent 10 }}
         args:
         - -connz
         - -routez
