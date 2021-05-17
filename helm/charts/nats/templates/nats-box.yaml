@@ -34,6 +34,8 @@ spec:
       - name: nats-box
         image: {{ .Values.natsbox.image }}
         imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
+        resources:
+          {{- toYaml .Values.natsbox.resources | nindent 10 }}
         env:
         - name: NATS_URL
           value: {{ template "nats.fullname" . }}
