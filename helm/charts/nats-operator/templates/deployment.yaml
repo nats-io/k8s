@@ -30,11 +30,11 @@ spec:
         app: {{ template "nats.name" . }}
         release: {{ .Release.Name }}
       {{- if .Values.podLabels }}
-        {{ .Values.podLabels}}
+{{ toYaml .Values.podLabels | indent 8 }}
       {{- end }}
       {{- if .Values.podAnnotations }}
       annotations:
-        {{ .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
       {{- if .Values.rbacEnabled }}
