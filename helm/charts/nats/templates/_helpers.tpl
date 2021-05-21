@@ -58,7 +58,7 @@ Return the proper NATS image name
 Return the NATS cluster routes.
 */}}
 {{- define "nats.clusterRoutes" -}}
-{{- $name := default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- $name := = (include "nats.fullname" . ) -}}
 {{- range $i, $e := until (.Values.cluster.replicas | int) -}}
 {{- printf "nats://%s-%d.%s.%s.svc:6222," $name $i $name $.Release.Namespace -}}
 {{- end -}}
