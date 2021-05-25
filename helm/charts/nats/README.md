@@ -109,6 +109,16 @@ leafnodes:
   enabled: true
   remotes:
     - url: "tls://connect.ngs.global:7422"
+      # credentials:
+      #   secret:
+      #     name: leafnode-creds
+      #     key: TA.creds
+      # tls:
+      #   secret:
+      #     name: nats-leafnode-tls
+      #   ca: "ca.crt"
+      #   cert: "tls.crt"
+      #   key: "tls.key"
 
   #######################
   #                     #

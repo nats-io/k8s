@@ -135,6 +135,23 @@ data:
         {{- with .credentials }}
         credentials: "/etc/nats-creds/{{ .secret.name }}/{{ .secret.key }}"
         {{- end }}
+
+        {{- with .tls }}
+        {{ $secretName := .secret.name }}
+        tls: {
+          {{- with .cert }}
+          cert_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
+          {{- end }}
+
+          {{- with .key }}
+          key_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
+          {{- end }}
+
+          {{- with .ca }}
+          ca_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
+          {{- end }}
+        }
+        {{- end }}
       }
       {{- end }}
       ]
