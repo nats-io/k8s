@@ -23,16 +23,37 @@ spec:
   {{- if .Values.websocket.enabled }}
   - name: websocket
     port: {{ .Values.websocket.port }}
+    {{- if .Values.appProtocol.enabled }}
+    appProtocol: tcp
+    {{- end }}
   {{- end }}
   - name: client
     port: 4222
+    {{- if .Values.appProtocol.enabled }}
+    appProtocol: tcp
+    {{- end }}
   - name: cluster
     port: 6222
+    {{- if .Values.appProtocol.enabled }}
+    appProtocol: tcp
+    {{- end }}
   - name: monitor
     port: 8222
+    {{- if .Values.appProtocol.enabled }}
+    appProtocol: http
+    {{- end }}
   - name: metrics
     port: 7777
+    {{- if .Values.appProtocol.enabled }}
+    appProtocol: http
+    {{- end }}
   - name: leafnodes
     port: 7422
+    {{- if .Values.appProtocol.enabled }}
+    appProtocol: tcp
+    {{- end }}
   - name: gateways
     port: 7522
+    {{- if .Values.appProtocol.enabled }}
+    appProtocol: tcp
+    {{- end }}

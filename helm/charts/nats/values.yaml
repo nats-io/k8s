@@ -346,3 +346,6 @@ auth:
 websocket:
   enabled: false
   port: 443
+
+appProtocol: 
+  enabled: false
