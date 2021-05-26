@@ -17,6 +17,10 @@ spec:
       labels:
         app: {{ include "nats.fullname" . }}-box
     spec:
+      {{- with .Values.affinity }}
+      affinity:
+      {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
       volumes:
       {{- if .Values.natsbox.credentials }}
       - name: nats-sys-creds
