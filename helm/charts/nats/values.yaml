@@ -154,6 +154,10 @@ cluster:
   enabled: false
   replicas: 3
   noAdvertise: false
+  # authorization:
+  #   user: foo
+  #   password: pwd
+  #   timeout: 0.5
 
 # Leafnode connections to extend a cluster:
 #

@@ -83,6 +83,20 @@ data:
       {{- include "nats.tlsConfig" $cluster_tls | nindent 6}}
       {{- end }}
 
+      {{- if .Values.cluster.authorization }}
+      authorization {
+        {{- with .Values.cluster.authorization.user }}
+        user: {{ . }}
+        {{- end }}
+        {{- with .Values.cluster.authorization.password }}
+        password: {{ . }}
+        {{- end }}
+        {{- with .Values.cluster.authorization.timeout }}
+        timeout: {{ . }}
+        {{- end }}
+      }
+      {{- end }}
+
       routes = [
         {{ include "nats.clusterRoutes" . }}
       ]
