@@ -32,24 +32,24 @@ nats:
 
   # Server settings.
   limits:
-    maxConnections: 
-    maxSubscriptions: 
-    maxControlLine: 
-    maxPayload: 
+    maxConnections:
+    maxSubscriptions:
+    maxControlLine:
+    maxPayload:
 
-    writeDeadline: 
-    maxPending: 
-    maxPings: 
-    lameDuckDuration: 
+    writeDeadline:
+    maxPending:
+    maxPings:
+    lameDuckDuration:
 
   terminationGracePeriodSeconds: 60
 
   logging:
-    debug: 
-    trace: 
-    logtime: 
-    connectErrorReports: 
-    reconnectErrorReports: 
+    debug:
+    trace:
+    logtime:
+    connectErrorReports:
+    reconnectErrorReports:
 
   jetstream:
     enabled: false
@@ -75,7 +75,7 @@ nats:
       # Set for use with existing PVC
       # existingClaim: jetstream-pvc
       # claimStorageSize: 1Gi
-      
+
       # Use below block to create new persistent volume
       # only used if existingClaim is not specified
       size: 1Gi
@@ -90,15 +90,39 @@ nats:
   #  TLS Configuration  #
   #                     #
   #######################
-  # 
+  #
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  # 
+  #
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
-  # 
+  #
 
   # tls:
   #   secret:
   #     name: nats-client-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+
+mqtt:
+  enabled: false
+  ackWait: 1m
+  maxAckPending: 100
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  #
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  #
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  #
+
+  #
+  # tls:
+  #   secret:
+  #     name: nats-mqtt-tls
   #   ca: "ca.crt"
   #   cert: "tls.crt"
   #   key: "tls.key"
@@ -109,7 +133,7 @@ imagePullSecrets: []
 # Toggle whether to use setup a Pod Security Context
 # ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 securityContext: {}
-# securityContext: 
+# securityContext:
 #   fsGroup: 1000
 #   runAsUser: 1000
 #   runAsNonRoot: true
@@ -174,11 +198,11 @@ leafnodes:
   #  TLS Configuration  #
   #                     #
   #######################
-  # 
+  #
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  # 
+  #
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
-  # 
+  #
 
   #
   # tls:
@@ -210,9 +234,9 @@ gateway:
   #  TLS Configuration  #
   #                     #
   #######################
-  # 
+  #
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  # 
+  #
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
   #
   # tls:
@@ -221,7 +245,7 @@ gateway:
   #   ca: "ca.crt"
   #   cert: "tls.crt"
   #   key: "tls.key"
-  
+
 # In case of both external access and advertisements being
 # enabled, an initializer container will be used to gather
 # the public ips.
@@ -232,7 +256,7 @@ bootconfig:
 # NATS Box
 #
 # https://github.com/nats-io/nats-box
-# 
+#
 natsbox:
   enabled: true
   image: natsio/nats-box:0.6.0
@@ -305,15 +329,15 @@ auth:
     allowDelete: false
 
     # Interval at which a nats-server with a nats based account resolver will compare
-    # it's state with one random nats based account resolver in the cluster and if needed, 
+    # it's state with one random nats based account resolver in the cluster and if needed,
     # exchange jwt and converge on the same set of jwt.
     interval: 2m
 
     # Operator JWT
-    operator: 
+    operator:
 
     # System Account Public NKEY
-    systemAccount: 
+    systemAccount:
 
     # resolverPreload:
     #   <ACCOUNT>: <JWT>
@@ -331,14 +355,14 @@ auth:
     #                            #
     ##############################
     # type: memory
-    # 
+    #
     # Use a configmap reference which will be mounted
     # into the container.
-    # 
+    #
     # configMap:
     #   name: nats-accounts
     #   key: resolver.conf
-   
+
     ##########################
     #                        #
     #  URL resolver settings #
@@ -351,5 +375,5 @@ websocket:
   enabled: false
   port: 443
 
-appProtocol: 
+appProtocol:
   enabled: false

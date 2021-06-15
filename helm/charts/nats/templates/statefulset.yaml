@@ -115,6 +115,12 @@ spec:
         secret:
           secretName: {{ $secretName }}
       {{- end }}
+      {{- with .Values.mqtt.tls }}
+      {{ $secretName := .secret.name }}
+      - name: {{ $secretName }}-mqtt-volume
+        secret:
+          secretName: {{ $secretName }}
+      {{- end }}
       {{- with .Values.cluster.tls }}
       {{ $secretName := .secret.name }}
       - name: {{ $secretName }}-cluster-volume
@@ -140,9 +146,9 @@ spec:
           secretName: {{ $secretName }}
       {{- end }}
       {{- if .Values.leafnodes.enabled }}
-      # 
+      #
       # Leafnode credential volumes
-      # 
+      #
       {{- range .Values.leafnodes.remotes }}
       {{- with .credentials }}
       - name: {{ .secret.name }}-volume
@@ -299,6 +305,11 @@ spec:
           - name: {{ $secretName }}-clients-volume
             mountPath: /etc/nats-certs/clients/{{ $secretName }}
           {{- end }}
+          {{- with .Values.mqtt.tls }}
+          {{ $secretName := .secret.name }}
+          - name: {{ $secretName }}-mqtt-volume
+            mountPath: /etc/nats-certs/mqtt/{{ $secretName }}
+          {{- end }}
           {{- with .Values.cluster.tls }}
           {{ $secretName := .secret.name }}
           - name: {{ $secretName }}-cluster-volume
@@ -322,9 +333,9 @@ spec:
           {{- end }}
 
           {{- if .Values.leafnodes.enabled }}
-          # 
+          #
           # Leafnode credential volumes
-          # 
+          #
           {{- range .Values.leafnodes.remotes }}
           {{- with .credentials }}
           - name: {{ .secret.name }}-volume
@@ -421,7 +432,7 @@ spec:
     - metadata:
         name: nats-jwt-pvc
       spec:
-        accessModes: 
+        accessModes:
         - ReadWriteOnce
         resources:
           requests:
