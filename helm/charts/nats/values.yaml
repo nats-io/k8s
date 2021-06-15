@@ -4,7 +4,7 @@
 #                             #
 ###############################
 nats:
-  image: nats:alpine
+  image: nats:2.2.6-alpine3.13
   pullPolicy: IfNotPresent
 
   # Toggle whether to enable external access.
