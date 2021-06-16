@@ -16,6 +16,12 @@ spec:
     metadata:
       labels:
         app: {{ include "nats.fullname" . }}-box
+      {{- if .Values.natsbox.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       {{- with .Values.affinity }}
       affinity:
