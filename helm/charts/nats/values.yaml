@@ -267,6 +267,11 @@ natsbox:
   #     name: nats-sys-creds
   #     key: sys.creds
 
+  # Annotations to add to the box pods
+  # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  podAnnotations: {}
+  #  key: "value"
+
 # The NATS config reloader image to use.
 reloader:
   enabled: true
