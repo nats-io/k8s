@@ -18,7 +18,7 @@ spec:
         app: {{ include "nats.fullname" . }}-box
       {{- if .Values.natsbox.podAnnotations }}
       annotations:
-        {{- range $key, $value := .Values.podAnnotations }}
+        {{- range $key, $value := .Values.natsbox.podAnnotations }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
       {{- end }}
