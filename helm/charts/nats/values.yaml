@@ -128,6 +128,8 @@ mqtt:
   #   key: "tls.key"
 
 nameOverride: ""
+# An array of imagePullSecrets, and they have to be created manually in the same namespace
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
 
 # Toggle whether to use setup a Pod Security Context
@@ -261,6 +263,11 @@ natsbox:
   enabled: true
   image: natsio/nats-box:0.6.0
   pullPolicy: IfNotPresent
+
+  # An array of imagePullSecrets, and they have to be created manually in the same namespace
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  imagePullSecrets: []
+  #  - name: dockerhub
 
   # credentials:
   #   secret:
