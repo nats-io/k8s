@@ -230,6 +230,13 @@ spec:
           name: monitor
         - containerPort: 7777
           name: metrics
+        {{- if .Values.mqtt.enabled }}
+        - containerPort: 1883
+          name: mqtt
+          {{- if .Values.nats.externalAccess }}
+          hostPort: 1883
+          {{- end }}
+        {{- end }}
         {{- if .Values.websocket.enabled }}
         - containerPort: {{ .Values.websocket.port }}
           name: websocket

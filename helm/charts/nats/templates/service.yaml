@@ -57,8 +57,10 @@ spec:
     {{- if .Values.appProtocol.enabled }}
     appProtocol: tcp
     {{- end }}
+  {{- if .Values.mqtt.enabled }}
   - name: mqtt
     port: 1883
     {{- if .Values.appProtocol.enabled }}
     appProtocol: tcp
     {{- end }}
+  {{- end }}

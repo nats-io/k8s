@@ -55,12 +55,12 @@ data:
       {{- end }}
     }
     {{- end }}
+    {{- if .Values.mqtt.enabled }}
     ###################################
     #                                 #
     # NATS MQTT                       #
     #                                 #
     ###################################
-    {{- if .Values.mqtt.enabled }}
     mqtt {
       port: 1883
 
