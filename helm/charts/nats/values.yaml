@@ -1,3 +1,6 @@
+# Add labels to all the deployed resources
+commonLabels: {}
+
 ###############################
 #                             #
 #  NATS Server Configuration  #
