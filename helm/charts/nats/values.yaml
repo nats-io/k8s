@@ -291,7 +291,7 @@ reloader:
 # Prometheus NATS Exporter configuration.
 exporter:
   enabled: true
-  image: natsio/prometheus-nats-exporter:0.7.0
+  image: natsio/prometheus-nats-exporter:0.8.0
   pullPolicy: IfNotPresent
   resources: {}
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled

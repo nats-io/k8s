@@ -422,6 +422,9 @@ spec:
         - -varz
         - -prefix=nats
         - -use_internal_server_id
+        {{- if .Values.nats.jetstream.enabled }}
+        - -jsz=all
+        {{- end }}
         - http://localhost:8222/
         ports:
         - containerPort: 7777
