@@ -1,13 +1,10 @@
-# Add labels to all the deployed resources
-commonLabels: {}
-
 ###############################
 #                             #
 #  NATS Server Configuration  #
 #                             #
 ###############################
 nats:
-  image: nats:2.2.6-alpine3.13
+  image: nats:2.3.1-alpine
   pullPolicy: IfNotPresent
 
   # Toggle whether to enable external access.
@@ -396,3 +393,6 @@ appProtocol:
 # Cluster Domain configured on the kubelets
 # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 k8sClusterDomain: cluster.local
+
+# Add labels to all the deployed resources
+commonLabels: {}
