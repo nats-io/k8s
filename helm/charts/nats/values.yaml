@@ -392,3 +392,7 @@ websocket:
 
 appProtocol:
   enabled: false
+
+# Cluster Domain configured on the kubelets
+# https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+k8sClusterDomain: cluster.local
