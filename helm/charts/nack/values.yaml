@@ -36,6 +36,9 @@ jetstream:
       client_ca: "/etc/nats/certs/ca.crt"
       timeout: 3
 
+# restrict the controller to only watch resources in it's current namespace
+namespaced: false
+
 nameOverride: ""
 imagePullSecrets: []
 serviceAccountName: ""
