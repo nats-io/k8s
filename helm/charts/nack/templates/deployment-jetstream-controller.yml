@@ -74,6 +74,9 @@ spec:
           {{- with .Values.jetstream.nats.credentials }}
           - --creds=/etc/jsc-creds/{{ .secret.key }}
           {{- end }}
+          {{- if .Values.namespaced }}
+          - --namespace={{ .Release.Namespace }}
+          {{- end }}
 
           env:
           - name: POD_NAME
