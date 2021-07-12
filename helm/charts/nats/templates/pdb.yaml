@@ -5,6 +5,7 @@ kind: PodDisruptionBudget
 metadata:
   labels:
   name: {{ include "nats.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
 spec:
