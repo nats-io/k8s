@@ -23,7 +23,7 @@ spec:
         {{- end }}
       {{- end }}
     spec:
-      {{- with .Values.affinity }}
+      {{- with .Values.natsbox.affinity }}
       affinity:
       {{- tpl (toYaml .) $ | nindent 8 }}
       {{- end }}
