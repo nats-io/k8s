@@ -240,7 +240,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: nats
+    app.kubernetes.io/name: nats
   ports:
     - protocol: TCP
       port: 4222
