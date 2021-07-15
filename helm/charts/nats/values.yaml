@@ -327,6 +327,9 @@ auth:
   #     name: operator-jwt
   #     key: KO.jwt
 
+  # Token authentication
+  # token:
+
   # Public key of the System Account
   # systemAccount:
 

@@ -383,6 +383,12 @@ data:
     }
     {{- end }}
 
+    {{- if .token }}
+    authorization {
+      token: "{{ .token }}"
+    }
+    {{- end }}
+
     {{- with .accounts }}
     accounts: {{- toRawJson . }}
     {{- end }}
