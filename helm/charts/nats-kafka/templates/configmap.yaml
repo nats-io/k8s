@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "nats-kafka.fullname" . }}-config
+  labels:
+    {{- include "nats-kafka.labels" . | nindent 4 }}
+data:
+  nats-kafka.conf: |
+    reconnectinterval: {{ .Values.natskafka.reconnectInterval }}
+    connecttimeout: {{ .Values.natskafka.connectTimeout }}
+
+    logging: {
+      time: {{ .Values.natskafka.logging.time }},
+      debug: {{ .Values.natskafka.logging.debug }},
+      trace: {{ .Values.natskafka.logging.trace }},
+      colors: {{ .Values.natskafka.logging.colors }},
+      pid: {{ .Values.natskafka.logging.pid }},
+    }
+
+    nats: {
+      Servers: [
+        {{- range .Values.natskafka.nats.servers }}
+        "{{ . }}",
+        {{- end }}
+      ],
+      ConnectTimeout: {{ .Values.natskafka.nats.connectTimeout }},
+      MaxReconnects: {{ .Values.natskafka.nats.maxReconnects }},
+      ReconnectWait: {{ .Values.natskafka.nats.reconnectWait }},
+    }
+
+    connect: {{ toPrettyJson .Values.natskafka.connect | indent 4 }}
