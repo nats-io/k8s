@@ -87,7 +87,6 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.7.2/nats-operator-0.7.4.tgz
     version: 0.7.4
   nats:
-  nats:
   - apiVersion: v2
     appVersion: 2.3.2
     created: "2021-07-19T08:05:38.037499-07:00"
