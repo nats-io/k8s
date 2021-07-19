@@ -87,6 +87,30 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.7.2/nats-operator-0.7.4.tgz
     version: 0.7.4
   nats:
+  nats:
+  - apiVersion: v2
+    appVersion: 2.3.2
+    created: "2021-07-19T08:05:38.037499-07:00"
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
+      Communications Technology.
+    digest: 2a77afd55fd4d8ff9da89a72b11ec9a60fcf44add02a4daf04472717e55cfb25
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+    - email: colin@nats.io
+      name: Colin Sullivan
+    - email: jaime@nats.io
+      name: Jaime Piña
+    name: nats
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.8.4/nats-0.8.4.tgz
+    version: 0.8.4
   - apiVersion: v2
     appVersion: 2.3.1
     created: "2021-07-01T12:38:06.324485-07:00"
