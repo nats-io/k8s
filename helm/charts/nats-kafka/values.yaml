@@ -19,6 +19,16 @@ natskafka:
     trace: false
     colors: true
     pid: true
+  monitoring:
+    httpHost: ""
+    # 0 means no monitoring, -1 means some available port
+    httpPort: 0
+    httpsPort: 0
+    tls:
+      secret: ""
+      root: ""
+      cert: ""
+      key: ""
   nats:
     servers: []
     connectTimeout: 5000

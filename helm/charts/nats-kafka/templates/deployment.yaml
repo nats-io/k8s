@@ -21,11 +21,35 @@ spec:
           volumeMounts:
             - name: config-volume
               mountPath: /etc/nats-kafka
+            {{ if .Values.natskafka.monitoring.tls.secret }}
+            - name: tls-volume
+              mountPath: /etc/nats-kafka/tls
+              readOnly: true
+            {{ end }}
           command:
             - "nats-kafka"
             - "-c"
             - "/etc/nats-kafka/nats-kafka.conf"
+          {{ if .Values.natskafka.monitoring.httpPort }}
+          livenessProbe:
+            httpGet:
+              path: "/healthz"
+              port: {{ .Values.natskafka.monitoring.httpPort }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: "/healthz"
+              port: {{ .Values.natskafka.monitoring.httpPort }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          {{ end }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ include "nats-kafka.fullname" . }}-config
+        {{ if .Values.natskafka.monitoring.tls.secret }}
+        - name: tls-volume
+          secret:
+            secretName: {{ .Values.natskafka.monitoring.tls.secret }}
+        {{ end }}
