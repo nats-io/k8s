@@ -28,6 +28,12 @@ spec:
       affinity:
       {{- tpl (toYaml .) $ | nindent 8 }}
       {{- end }}
+      {{- with .Values.natsbox.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.natsbox.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
       {{- if .Values.natsbox.credentials }}
       - name: nats-sys-creds
