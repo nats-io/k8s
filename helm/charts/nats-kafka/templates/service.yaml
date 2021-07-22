@@ -1,0 +1,16 @@
+{{ if or .Values.natskafka.monitoring.httpPort .Values.natskafka.monitoring.httpsPort }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nats-kafka.fullname" . }}
+  labels:
+    {{- include "nats-kafka.labels" . | nindent 4 }}
+spec:
+  selector:
+    {{- include "nats-kafka.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: http-monitoring
+      protocol: TCP
+      {{ with .Values.natskafka.monitoring.httpPort }}port: {{ . }}{{end}}
+      {{ with .Values.natskafka.monitoring.httpsPort }}port: {{ . }}{{end}}
+{{ end }}
