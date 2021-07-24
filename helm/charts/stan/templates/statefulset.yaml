@@ -66,7 +66,11 @@ spec:
       {{- if .Values.store.volume.persistentVolumeClaim }}
       - name: {{ template "stan.name" . }}-pvc
         persistentVolumeClaim:
+          {{- if not .Values.store.volume.persistentVolumeClaim.existingClaim }}
+          claimName: {{ template "stan.name" . }}-pvc
+          {{ else }}
           claimName: {{ .Values.store.volume.persistentVolumeClaim.claimName }}
+          {{ end }}
       {{- end }}
       {{- end }}
       {{- if .Values.stan.credentials }}
