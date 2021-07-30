@@ -166,7 +166,7 @@ data:
         password: {{ . }}
         {{- end }}
         {{- with .account }}
-        account: {{ . }}
+        account: {{ . | quote }}
         {{- end }}
         {{- with .timeout }}
         timeout: {{ . }}
@@ -191,7 +191,7 @@ data:
       {{- range .Values.leafnodes.remotes }}
       {
         {{- with .url }}
-        url: {{ . }}
+        url: {{ . | quote }}
         {{- end }}
 
         {{- with .urls }}
@@ -199,7 +199,7 @@ data:
         {{- end }}
 
         {{- with .account }}
-        account: {{ . }}
+        account: {{ . | quote }}
         {{- end }}
 
         {{- with .credentials }}
