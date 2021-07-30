@@ -194,6 +194,14 @@ data:
         url: {{ . }}
         {{- end }}
 
+        {{- with .urls }}
+        urls: {{ toRawJson . }}
+        {{- end }}
+
+        {{- with .account }}
+        account: {{ . }}
+        {{- end }}
+
         {{- with .credentials }}
         credentials: "/etc/nats-creds/{{ .secret.name }}/{{ .secret.key }}"
         {{- end }}
