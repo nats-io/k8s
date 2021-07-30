@@ -157,6 +157,30 @@ data:
       no_advertise: {{ . }}
       {{- end }}
 
+      {{- with .Values.leafnodes.authorization }}
+      authorization: {
+        {{- with .user }}
+        user: {{ . }}
+        {{- end }}
+        {{- with .password }}
+        password: {{ . }}
+        {{- end }}
+        {{- with .account }}
+        account: {{ . }}
+        {{- end }}
+        {{- with .timeout }}
+        timeout: {{ . }}
+        {{- end }}
+        {{- with .users }}
+        users: [
+        {{- range . }}
+        {{- toRawJson . | nindent 10 }},
+        {{- end }}
+        ]
+        {{- end }}
+      }
+      {{- end }}
+
       {{- with .Values.leafnodes.tls }}
       {{-  $leafnode_tls := merge (dict) . }}
       {{- $_ := set $leafnode_tls "secretPath" "/etc/nats-certs/leafnodes" }}
