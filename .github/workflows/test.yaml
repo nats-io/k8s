@@ -1,0 +1,36 @@
+---
+name: test
+
+on:
+  push:
+    paths:
+      - 'helm/charts/**'
+      - '.github/workflows/test.yaml'
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: set up helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.4.0
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: set up chart-testing
+        uses: helm/chart-testing-action@v2.1.0
+
+      - name: run chart-testing (lint)
+        run: ct lint --all --chart-dirs helm/charts
+
+      - name: create kind cluster
+        uses: helm/kind-action@v1.2.0
+
+      - name: run chart-testing (install)
+        run: ct install --all --chart-dirs helm/charts
