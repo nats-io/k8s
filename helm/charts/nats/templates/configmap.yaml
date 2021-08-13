@@ -244,7 +244,7 @@ data:
 
       {{- with .Values.gateway.tls }}
       {{-  $gateway_tls := merge (dict) . }}
-      {{- $_ := set $gateway_tls "secretPath" "/etc/nats-certs/gateway" }}
+      {{- $_ := set $gateway_tls "secretPath" "/etc/nats-certs/gateways" }}
       {{- include "nats.tlsConfig" $gateway_tls | nindent 6}}
       {{- end }}
 
