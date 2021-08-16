@@ -245,10 +245,18 @@ spec:
           hostPort: {{ .Values.websocket.port }}
           {{- end }}
         {{- end }}
+        {{- if .Values.nats.profiling.enabled }}
+        - containerPort: {{ .Values.nats.profiling.port }}
+          name: profiling
+        {{- end }}
+
         command:
          - "nats-server"
          - "--config"
          - "/etc/nats-config/nats.conf"
+        {{- if .Values.nats.profiling.enabled }}
+         - "--profile={{ .Values.nats.profiling.port }}"
+        {{- end }}
 
         # Required to be able to define an environment variable
         # that refers to other environment variables.  This env var

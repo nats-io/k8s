@@ -28,6 +28,13 @@ spec:
     appProtocol: tcp
     {{- end }}
   {{- end }}
+  {{- if .Values.nats.profiling.enabled }}
+  - name: profiling
+    port: {{ .Values.nats.profiling.port }}
+    {{- if .Values.appProtocol.enabled }}
+    appProtocol: http
+    {{- end }}
+  {{- end }}
   - name: client
     port: 4222
     {{- if .Values.appProtocol.enabled }}
