@@ -7,6 +7,12 @@ nats:
   image: nats:2.3.1-alpine
   pullPolicy: IfNotPresent
 
+  # Toggle profiling.
+  # This enables nats-server pprof (profiling) port, so you can see goroutines stacks, memory heap sizes, etc.
+  profiling:
+    enabled: false
+    port: 6000
+
   # Toggle whether to enable external access.
   # This binds a host port for clients, gateways and leafnodes.
   externalAccess: false
