@@ -89,7 +89,7 @@ nats:
       accessModes:
         - ReadWriteOnce
       annotations:
-        # key: "value"
+      # key: "value"
 
   #######################
   #                     #
