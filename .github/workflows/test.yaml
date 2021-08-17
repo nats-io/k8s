@@ -28,9 +28,10 @@ jobs:
 
       - name: run chart-testing (lint)
         run: ct lint --all --chart-dirs helm/charts
+        continue-on-error: true
 
       - name: create kind cluster
         uses: helm/kind-action@v1.2.0
 
       - name: run chart-testing (install)
-        run: ct install --all --chart-dirs helm/charts
+        run: ct install --all --chart-dirs helm/charts --excluded-charts nats-account-server,nats-kafka,surveyor
