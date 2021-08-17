@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: "0.19.0"
+appVersion: "0.22.0"
 description: A Helm chart for NATS Streaming
 name: stan
 keywords:
@@ -11,7 +11,7 @@ keywords:
   - replay
   - statefulset
   - cncf
-version: 0.7.5
+version: 0.8.0
 maintainers:
   - name: Waldemar Quevedo
     github: https://github.com/wallyqs

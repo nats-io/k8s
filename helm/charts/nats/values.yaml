@@ -4,7 +4,7 @@
 #                             #
 ###############################
 nats:
-  image: nats:2.1.9-alpine3.12
+  image: nats:2.3.1-alpine
   pullPolicy: IfNotPresent
 
   # securityContext for the nats container
@@ -35,24 +35,24 @@ nats:
 
   # Server settings.
   limits:
-    maxConnections: 
-    maxSubscriptions: 
-    maxControlLine: 
-    maxPayload: 
+    maxConnections:
+    maxSubscriptions:
+    maxControlLine:
+    maxPayload:
 
-    writeDeadline: 
-    maxPending: 
-    maxPings: 
-    lameDuckDuration: 
+    writeDeadline:
+    maxPending:
+    maxPings:
+    lameDuckDuration:
 
   terminationGracePeriodSeconds: 60
 
   logging:
-    debug: 
-    trace: 
-    logtime: 
-    connectErrorReports: 
-    reconnectErrorReports: 
+    debug:
+    trace:
+    logtime:
+    connectErrorReports:
+    reconnectErrorReports:
 
   jetstream:
     enabled: false
@@ -78,7 +78,7 @@ nats:
       # Set for use with existing PVC
       # existingClaim: jetstream-pvc
       # claimStorageSize: 1Gi
-      
+
       # Use below block to create new persistent volume
       # only used if existingClaim is not specified
       size: 1Gi
@@ -93,11 +93,11 @@ nats:
   #  TLS Configuration  #
   #                     #
   #######################
-  # 
+  #
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  # 
+  #
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
-  # 
+  #
 
   # tls:
   #   secret:
@@ -106,13 +106,39 @@ nats:
   #   cert: "tls.crt"
   #   key: "tls.key"
 
+mqtt:
+  enabled: false
+  ackWait: 1m
+  maxAckPending: 100
+
+  #######################
+  #                     #
+  #  TLS Configuration  #
+  #                     #
+  #######################
+  #
+  #  # You can find more on how to setup and trouble shoot TLS connnections at:
+  #
+  #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
+  #
+
+  #
+  # tls:
+  #   secret:
+  #     name: nats-mqtt-tls
+  #   ca: "ca.crt"
+  #   cert: "tls.crt"
+  #   key: "tls.key"
+
 nameOverride: ""
+# An array of imagePullSecrets, and they have to be created manually in the same namespace
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
 
 # Toggle whether to use setup a Pod Security Context
 # ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-securityContext: null
-# securityContext: null
+securityContext: {}
+# securityContext:
 #   fsGroup: 1000
 #   runAsUser: 1000
 #   runAsNonRoot: true
@@ -121,14 +147,31 @@ securityContext: null
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+## Pod priority class name
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+priorityClassName: null
+
 # Service topology
 # ref: https://kubernetes.io/docs/concepts/services-networking/service-topology/
 topologyKeys: []
+
+# Pod Topology Spread Constraints
+# ref https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+topologySpreadConstraints: []
+# - maxSkew: 1
+#   topologyKey: zone
+#   whenUnsatisfiable: DoNotSchedule
 
 # Annotations to add to the NATS pods
 # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
 # key: "value"
+
+## Define a Pod Disruption Budget for the stateful set
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+podDisruptionBudget: null
+  # minAvailable: 1
+  # maxUnavailable: 1
 
 # Annotations to add to the NATS StatefulSet
 statefulSetAnnotations: {}
@@ -140,6 +183,10 @@ cluster:
   enabled: false
   replicas: 3
   noAdvertise: false
+  # authorization:
+  #   user: foo
+  #   password: pwd
+  #   timeout: 0.5
 
 # Leafnode connections to extend a cluster:
 #
@@ -156,11 +203,11 @@ leafnodes:
   #  TLS Configuration  #
   #                     #
   #######################
-  # 
+  #
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  # 
+  #
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
-  # 
+  #
 
   #
   # tls:
@@ -192,9 +239,9 @@ gateway:
   #  TLS Configuration  #
   #                     #
   #######################
-  # 
+  #
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  # 
+  #
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
   #
   # tls:
@@ -203,43 +250,58 @@ gateway:
   #   ca: "ca.crt"
   #   cert: "tls.crt"
   #   key: "tls.key"
-  
+
 # In case of both external access and advertisements being
 # enabled, an initializer container will be used to gather
 # the public ips.
 bootconfig:
-  image: connecteverything/nats-boot-config:0.5.2
+  image: natsio/nats-boot-config:0.5.3
   pullPolicy: IfNotPresent
   securityContext: {}
 
 # NATS Box
 #
 # https://github.com/nats-io/nats-box
-# 
+#
 natsbox:
   enabled: true
-  image: synadia/nats-box:0.4.0
+  image: natsio/nats-box:0.6.0
   pullPolicy: IfNotPresent
   securityContext: {}
+
+  # An array of imagePullSecrets, and they have to be created manually in the same namespace
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  imagePullSecrets: []
+  #  - name: dockerhub
 
   # credentials:
   #   secret:
   #     name: nats-sys-creds
   #     key: sys.creds
 
+  # Annotations to add to the box pods
+  # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  podAnnotations: {}
+  #  key: "value"
+
+  # Affinity for nats box pod assignment
+  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  affinity: {}
+
 # The NATS config reloader image to use.
 reloader:
   enabled: true
-  image: connecteverything/nats-server-config-reloader:0.6.0
+  image: natsio/nats-server-config-reloader:0.6.1
   pullPolicy: IfNotPresent
   securityContext: {}
 
 # Prometheus NATS Exporter configuration.
 exporter:
   enabled: true
-  image: synadia/prometheus-nats-exporter:0.5.0
+  image: natsio/prometheus-nats-exporter:0.8.0
   pullPolicy: IfNotPresent
   securityContext: {}
+  resources: {}
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled
   serviceMonitor:
     enabled: false
@@ -290,15 +352,15 @@ auth:
     allowDelete: false
 
     # Interval at which a nats-server with a nats based account resolver will compare
-    # it's state with one random nats based account resolver in the cluster and if needed, 
+    # it's state with one random nats based account resolver in the cluster and if needed,
     # exchange jwt and converge on the same set of jwt.
     interval: 2m
 
     # Operator JWT
-    operator: 
+    operator:
 
     # System Account Public NKEY
-    systemAccount: 
+    systemAccount:
 
     # resolverPreload:
     #   <ACCOUNT>: <JWT>
@@ -316,14 +378,14 @@ auth:
     #                            #
     ##############################
     # type: memory
-    # 
+    #
     # Use a configmap reference which will be mounted
     # into the container.
-    # 
+    #
     # configMap:
     #   name: nats-accounts
     #   key: resolver.conf
-   
+
     ##########################
     #                        #
     #  URL resolver settings #
@@ -335,3 +397,13 @@ auth:
 websocket:
   enabled: false
   port: 443
+
+appProtocol:
+  enabled: false
+
+# Cluster Domain configured on the kubelets
+# https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+k8sClusterDomain: cluster.local
+
+# Add labels to all the deployed resources
+commonLabels: {}

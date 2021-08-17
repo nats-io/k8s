@@ -10,10 +10,22 @@ NATS_SETUP_IMAGE=${DEFAULT_NATS_SETUP_IMAGE:=synadia/nats-setup:0.1.6}
 kubectl apply -f "$NATS_BOOTSTRAP_YML"
 
 # Run nats-setup container containing the latest set of manifests.
-kubectl run nats-setup --generator=run-pod/v1 --image-pull-policy=Always --serviceaccount=nats-setup --image=$NATS_SETUP_IMAGE --restart=Never
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nats-setup
+spec:
+  restartPolicy: Never
+  serviceAccountName: nats-setup
+  containers:
+    - name: nats-setup
+      image: $NATS_SETUP_IMAGE
+      imagePullPolicy: Always
+EOF
 
 # Wait for the setup container to start or bail.
-kubectl wait --for=condition=Ready pod/nats-setup --timeout=30s
+kubectl wait --for=condition=Ready pod/nats-setup --timeout=50s
 
 # Pass the custom parameters to the nats-setup container image.
 kubectl exec nats-setup -- nats-setup.sh "$@"

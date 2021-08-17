@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "nats.fullname" . }}-config
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
 data:
@@ -44,8 +45,8 @@ data:
 
       {{- if .Values.nats.jetstream.fileStorage.enabled }}
       store_dir: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
-     
-      max_file: 
+
+      max_file:
       {{- if .Values.nats.jetstream.fileStorage.existingClaim }}
       {{- .Values.nats.jetstream.fileStorage.claimStorageSize  }}
       {{- else }}
@@ -53,6 +54,29 @@ data:
       {{- end }}
 
       {{- end }}
+    }
+    {{- end }}
+    {{- if .Values.mqtt.enabled }}
+    ###################################
+    #                                 #
+    # NATS MQTT                       #
+    #                                 #
+    ###################################
+    mqtt {
+      port: 1883
+
+      {{- with .Values.mqtt.tls }}
+      {{-  $mqtt_tls := merge (dict) . }}
+      {{- $_ := set $mqtt_tls "secretPath" "/etc/nats-certs/mqtt" }}
+      {{- include "nats.tlsConfig" $mqtt_tls | nindent 6}}
+      {{- end }}
+
+      {{- if .Values.mqtt.noAuthUser }}
+      no_auth_user: {{ .Values.mqtt.noAuthUser | quote }}
+      {{- end }}
+
+      ack_wait: {{ .Values.mqtt.ackWait | quote }}
+      max_ack_pending: {{ .Values.mqtt.maxAckPending }}
     }
     {{- end }}
 
@@ -83,12 +107,26 @@ data:
       {{- include "nats.tlsConfig" $cluster_tls | nindent 6}}
       {{- end }}
 
+      {{- if .Values.cluster.authorization }}
+      authorization {
+        {{- with .Values.cluster.authorization.user }}
+        user: {{ . }}
+        {{- end }}
+        {{- with .Values.cluster.authorization.password }}
+        password: {{ . }}
+        {{- end }}
+        {{- with .Values.cluster.authorization.timeout }}
+        timeout: {{ . }}
+        {{- end }}
+      }
+      {{- end }}
+
       routes = [
         {{ include "nats.clusterRoutes" . }}
       ]
       cluster_advertise: $CLUSTER_ADVERTISE
 
-      {{- with .Values.cluster.noAdvertise }}      
+      {{- with .Values.cluster.noAdvertise }}
       no_advertise: {{ . }}
       {{- end }}
 
@@ -101,7 +139,7 @@ data:
     {{- end }}
 
     {{- if or .Values.leafnodes.enabled .Values.leafnodes.remotes }}
-    ################# 
+    #################
     #               #
     # NATS Leafnode #
     #               #
@@ -115,7 +153,7 @@ data:
       include "advertise/gateway_advertise.conf"
       {{ end }}
 
-      {{- with .Values.leafnodes.noAdvertise }}      
+      {{- with .Values.leafnodes.noAdvertise }}
       no_advertise: {{ . }}
       {{- end }}
 
@@ -135,6 +173,23 @@ data:
         {{- with .credentials }}
         credentials: "/etc/nats-creds/{{ .secret.name }}/{{ .secret.key }}"
         {{- end }}
+
+        {{- with .tls }}
+        {{ $secretName := .secret.name }}
+        tls: {
+          {{- with .cert }}
+          cert_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
+          {{- end }}
+
+          {{- with .key }}
+          key_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
+          {{- end }}
+
+          {{- with .ca }}
+          ca_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
+          {{- end }}
+        }
+        {{- end }}
       }
       {{- end }}
       ]
@@ -142,7 +197,7 @@ data:
     {{ end }}
 
     {{- if .Values.gateway.enabled }}
-    ################# 
+    #################
     #               #
     # NATS Gateways #
     #               #
@@ -236,9 +291,9 @@ data:
     # Websocket      #
     #                #
     ##################
-    ws {
+    websocket {
       port: {{ .Values.websocket.port }}
-      {{- with .Values.websocket.tls }}
+      {{- if .Values.websocket.tls }}
         {{ $secretName := .secret.name }}
         tls {
         {{- with .cert }}
@@ -253,6 +308,8 @@ data:
         ca_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
         {{- end }}
         }
+      {{- else }}
+      no_tls: {{ .Values.websocket.noTLS }}
       {{- end }}
     }
     {{- end }}

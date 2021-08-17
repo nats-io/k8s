@@ -31,6 +31,9 @@ Common labels
 */}}
 {{- define "nats.labels" -}}
 helm.sh/chart: {{ include "nats.chart" . }}
+{{- range $name, $value := .Values.commonLabels }}
+{{ $name }}: {{ $value }}
+{{- end }}
 {{ include "nats.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -51,16 +54,16 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Return the proper NATS image name
 */}}
 {{- define "nats.clusterAdvertise" -}}
-{{- printf "$(POD_NAME).%s.$(POD_NAMESPACE).svc" (include "nats.fullname" . ) }}
+{{- printf "$(POD_NAME).%s.$(POD_NAMESPACE).svc.%s." (include "nats.fullname" . ) $.Values.k8sClusterDomain }}
 {{- end }}
 
 {{/*
 Return the NATS cluster routes.
 */}}
 {{- define "nats.clusterRoutes" -}}
-{{- $name := default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- $name := (include "nats.fullname" . ) -}}
 {{- range $i, $e := until (.Values.cluster.replicas | int) -}}
-{{- printf "nats://%s-%d.%s.%s.svc:6222," $name $i $name $.Release.Namespace -}}
+{{- printf "nats://%s-%d.%s.%s.svc.%s.:6222," $name $i $name $.Release.Namespace $.Values.k8sClusterDomain -}}
 {{- end -}}
 {{- end }}
 

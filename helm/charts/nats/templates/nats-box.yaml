@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "nats.fullname" . }}-box
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     app: {{ include "nats.fullname" . }}-box
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -16,7 +17,17 @@ spec:
     metadata:
       labels:
         app: {{ include "nats.fullname" . }}-box
+      {{- if .Values.natsbox.podAnnotations }}
+      annotations:
+        {{- range $key, $value := .Values.natsbox.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
     spec:
+      {{- with .Values.natsbox.affinity }}
+      affinity:
+      {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
       volumes:
       {{- if .Values.natsbox.credentials }}
       - name: nats-sys-creds
@@ -33,6 +44,10 @@ spec:
       securityContext:
 {{ toYaml . | indent 8 }}
 {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: nats-box
         image: {{ .Values.natsbox.image }}
@@ -41,6 +56,8 @@ spec:
         securityContext:
         {{- .Values.natsbox.securityContext | toYaml | nindent 10 }}
         {{- end }}
+        resources:
+          {{- toYaml .Values.natsbox.resources | nindent 10 }}
         env:
         - name: NATS_URL
           value: {{ template "nats.fullname" . }}
@@ -79,4 +96,8 @@ spec:
         - name: {{ $secretName }}-clients-volume
           mountPath: /etc/nats-certs/clients/{{ $secretName }}
         {{- end }}
+{{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{- end }}

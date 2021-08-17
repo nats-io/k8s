@@ -19,7 +19,7 @@ one as follows:
 
 ```sh
 nats:
-  image: synadia/nats-server:nightly
+  image: nats:alpine
 
   jetstream:
     enabled: true
@@ -53,8 +53,8 @@ jetstream:
 
    credentials:
      secret:
-       name: nats-sys-creds
-       key: "sys.creds"
+       name: nats-user-creds
+       key: "js.creds"
 ```
 
 ```sh

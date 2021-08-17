@@ -7,6 +7,7 @@ metadata:
 {{- end }}
 
   labels:
+    {{- include "nats.labels" . | nindent 4 }}
     app: {{ template "nats.name" . }}
     chart: {{ template "nats.chart" . }}
     release: {{ .Release.Name }}
@@ -27,14 +28,15 @@ spec:
   template:
     metadata:
       labels:
+        {{- include "nats.selectorLabels" . | nindent 8 }}
         app: {{ template "nats.name" . }}
         release: {{ .Release.Name }}
       {{- if .Values.podLabels }}
-        {{ .Values.podLabels}}
+        {{- toYaml .Values.podLabels | nindent 8 }}
       {{- end }}
       {{- if .Values.podAnnotations }}
       annotations:
-        {{ .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
       {{- if .Values.rbacEnabled }}
