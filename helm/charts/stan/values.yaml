@@ -4,7 +4,7 @@
 #                                #
 ##################################
 stan:
-  image: nats-streaming:0.22.0
+  image: nats-streaming:0.22.1
   pullPolicy: IfNotPresent
   replicas: 1
 
