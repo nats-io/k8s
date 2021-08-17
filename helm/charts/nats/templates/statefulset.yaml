@@ -272,6 +272,18 @@ spec:
               fieldPath: metadata.namespace
         - name: CLUSTER_ADVERTISE
           value: {{ include "nats.clusterAdvertise" . }}
+
+        {{- if .Values.nats.jetstream.enabled }}
+        {{- with .Values.nats.jetstream.encryption }}
+        {{- with .secret }}
+        - name: JS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .name }}
+              key: {{ .key }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
         volumeMounts:
           - name: config-volume
             mountPath: /etc/nats-config
