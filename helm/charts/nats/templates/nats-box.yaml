@@ -40,6 +40,10 @@ spec:
         secret:
           secretName: {{ $secretName }}
       {{- end }}
+{{- with .Values.securityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+{{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- toYaml . | nindent 8 }}
@@ -48,6 +52,10 @@ spec:
       - name: nats-box
         image: {{ .Values.natsbox.image }}
         imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
+        {{- if .Values.natsbox.securityContext }}
+        securityContext:
+        {{- .Values.natsbox.securityContext | toYaml | nindent 10 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.natsbox.resources | nindent 10 }}
         env:

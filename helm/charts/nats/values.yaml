@@ -8,10 +8,14 @@ nats:
   pullPolicy: IfNotPresent
 
   # Toggle profiling.
-  # This enables nats-server pprof (profiling) port, so you can see goroutines stacks, memory heap sizes, etc.
+  # This enables nats-server pprof (profiling) port, so you can see goroutines
+  # stacks, memory heap sizes, etc.
   profiling:
     enabled: false
     port: 6000
+
+  # securityContext for the nats container
+  securityContext: {}
 
   # Toggle whether to enable external access.
   # This binds a host port for clients, gateways and leafnodes.
@@ -274,6 +278,7 @@ gateway:
 bootconfig:
   image: natsio/nats-boot-config:0.5.3
   pullPolicy: IfNotPresent
+  securityContext: {}
 
 # NATS Box
 #
@@ -283,6 +288,7 @@ natsbox:
   enabled: true
   image: natsio/nats-box:0.6.0
   pullPolicy: IfNotPresent
+  securityContext: {}
 
   # An array of imagePullSecrets, and they have to be created manually in the same namespace
   # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -308,12 +314,14 @@ reloader:
   enabled: true
   image: natsio/nats-server-config-reloader:0.6.1
   pullPolicy: IfNotPresent
+  securityContext: {}
 
 # Prometheus NATS Exporter configuration.
 exporter:
   enabled: true
   image: natsio/prometheus-nats-exporter:0.8.0
   pullPolicy: IfNotPresent
+  securityContext: {}
   resources: {}
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled
   serviceMonitor:

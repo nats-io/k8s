@@ -189,6 +189,10 @@ spec:
               fieldPath: spec.nodeName
         image: {{ .Values.bootconfig.image }}
         imagePullPolicy: {{ .Values.bootconfig.pullPolicy }}
+        {{- if .Values.bootconfig.securityContext }}
+        securityContext:
+        {{- .Values.bootconfig.securityContext | toYaml | nindent 8 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.bootconfig.resources | nindent 10 }}
         volumeMounts:
@@ -207,6 +211,10 @@ spec:
       - name: nats
         image: {{ .Values.nats.image }}
         imagePullPolicy: {{ .Values.nats.pullPolicy }}
+        {{- if .Values.nats.securityContext }}
+        securityContext:
+        {{- .Values.nats.securityContext | toYaml | nindent 10 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.nats.resources | nindent 10 }}
         ports:
@@ -410,6 +418,10 @@ spec:
       - name: reloader
         image: {{ .Values.reloader.image }}
         imagePullPolicy: {{ .Values.reloader.pullPolicy }}
+        {{- if .Values.reloader.securityContext }}
+        securityContext:
+        {{- .Values.reloader.securityContext | toYaml | nindent 10 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.reloader.resources | nindent 10 }}
         command:
@@ -434,6 +446,10 @@ spec:
       - name: metrics
         image: {{ .Values.exporter.image }}
         imagePullPolicy: {{ .Values.exporter.pullPolicy }}
+        {{- if .Values.exporter.securityContext }}
+        securityContext:
+        {{- .Values.exporter.securityContext | toYaml | nindent 10 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.exporter.resources | nindent 10 }}
         args:

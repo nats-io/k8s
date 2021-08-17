@@ -8,6 +8,10 @@ stan:
   pullPolicy: IfNotPresent
   replicas: 1
 
+  # securityContext for the stan container
+  securityContext: {}
+
+
   # Cluster name, generated into a name from the
   # release name by default.
   clusterID:
@@ -212,6 +216,7 @@ store:
 
   backup:
     enabled: false
+    securityContext: {}
     sleepTime: 3600
     s3Path: ""
     # To use backup functionality, you are required to either create a secret with the name you define here, or provide an instance profile.
@@ -251,6 +256,7 @@ exporter:
   enabled: true
   image: natsio/prometheus-nats-exporter:latest
   pullPolicy: IfNotPresent
+  securityContext: {}
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled
   serviceMonitor:
     enabled: false
@@ -416,6 +422,7 @@ reloader:
   enabled: false
   image: natsio/nats-server-config-reloader:latest
   pullPolicy: IfNotPresent
+  securityContext: {}
 
 # Authentication setup
 auth:
