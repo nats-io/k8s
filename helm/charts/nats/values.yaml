@@ -60,6 +60,20 @@ nats:
   jetstream:
     enabled: false
 
+    ##########################
+    #                        #
+    #  Jetstream Encryption  #
+    #                        #
+    ##########################
+    encryption:
+      # Use key if you want to provide the key via Helm Values
+      # key: random_key
+
+      # Use a secret reference if you want to get a key from a secret
+      # secret:
+      #   name: "nats-jetstream-encryption"
+      #   key: "key"
+
     #############################
     #                           #
     #  Jetstream Memory Storage #
