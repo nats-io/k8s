@@ -4,7 +4,7 @@
 #                                #
 ##################################
 stan:
-  image: nats-streaming:0.22.0
+  image: nats-streaming:0.22.1
   pullPolicy: IfNotPresent
   replicas: 1
 
@@ -414,13 +414,13 @@ gateway:
 # enabled, an initializer container will be used to gather
 # the public ips.
 bootconfig:
-  image: natsio/nats-boot-config:latest
+  image: natsio/nats-boot-config:0.5.4
   pullPolicy: IfNotPresent
 
 # The NATS config reloader image to use.
 reloader:
   enabled: false
-  image: natsio/nats-server-config-reloader:latest
+  image: natsio/nats-server-config-reloader:0.6.2
   pullPolicy: IfNotPresent
   securityContext: {}
 

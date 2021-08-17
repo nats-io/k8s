@@ -39,6 +39,7 @@ data:
     #                                 #
     ###################################
     jetstream {
+      {{- if .Values.nats.jetstream.encryption }}
       {{- if .Values.nats.jetstream.encryption.key }}
       key: {{ .Values.nats.jetstream.encryption.key | quote }}
       {{- else if .Values.nats.jetstream.encryption.secret }}
@@ -59,6 +60,7 @@ data:
       {{- .Values.nats.jetstream.fileStorage.size }}
       {{- end }}
 
+      {{- end }}
       {{- end }}
     }
     {{- end }}
