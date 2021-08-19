@@ -405,7 +405,13 @@ data:
     {{- with .Values.auth.systemAccount }}
     system_account: {{ . }}
     {{- end }}
-
+    
+    {{- with .Values.auth.token }}
+    authorization {
+      token: "{{ . }}"
+    }
+    {{- end }}
+    
     {{- with .Values.auth.basic }}
 
     {{- with .noAuthUser }}
@@ -419,12 +425,6 @@ data:
       {{- toRawJson . | nindent 4 }},
       {{- end }}
       ]
-    }
-    {{- end }}
-
-    {{- if .token }}
-    authorization {
-      token: "{{ .token }}"
     }
     {{- end }}
 
