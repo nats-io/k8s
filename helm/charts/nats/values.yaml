@@ -358,6 +358,10 @@ auth:
   # Token authentication
   # token:
 
+  # NKey authentication
+  # nkeys:
+  #   users:
+    
   # Public key of the System Account
   # systemAccount:
 
