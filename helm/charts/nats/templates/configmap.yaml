@@ -45,6 +45,7 @@ data:
       {{- else if .Values.nats.jetstream.encryption.secret }}
       key: $JS_KEY
       {{- end}}
+      {{- end}}
 
       {{- if .Values.nats.jetstream.memStorage.enabled }}
       max_mem: {{ .Values.nats.jetstream.memStorage.size }}
@@ -58,8 +59,6 @@ data:
       {{- .Values.nats.jetstream.fileStorage.claimStorageSize  }}
       {{- else }}
       {{- .Values.nats.jetstream.fileStorage.size }}
-      {{- end }}
-
       {{- end }}
       {{- end }}
     }
