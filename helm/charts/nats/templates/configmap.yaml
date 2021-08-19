@@ -411,6 +411,18 @@ data:
       token: "{{ . }}"
     }
     {{- end }}
+
+    {{- with .Values.auth.nkeys }}
+    {{- with .users }}
+    authorization {
+      users: [
+      {{- range . }}
+      {{- toRawJson . | nindent 4 }},
+      {{- end }}
+      ]
+    }
+    {{- end }}
+    {{- end }}
     
     {{- with .Values.auth.basic }}
 
