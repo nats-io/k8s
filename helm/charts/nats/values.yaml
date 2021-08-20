@@ -64,6 +64,9 @@ nats:
   jetstream:
     enabled: false
 
+    # Jetstream Domain
+    domain:
+
     ##########################
     #                        #
     #  Jetstream Encryption  #
@@ -361,7 +364,7 @@ auth:
   # NKey authentication
   # nkeys:
   #   users:
-    
+
   # Public key of the System Account
   # systemAccount:
 
