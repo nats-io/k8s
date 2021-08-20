@@ -51,6 +51,10 @@ data:
       max_mem: {{ .Values.nats.jetstream.memStorage.size }}
       {{- end }}
 
+      {{- if .Values.nats.jetstream.domain }}
+      domain: {{ .Values.nats.jetstream.domain }}
+      {{- end }}
+
       {{- if .Values.nats.jetstream.fileStorage.enabled }}
       store_dir: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
 
@@ -405,7 +409,7 @@ data:
     {{- with .Values.auth.systemAccount }}
     system_account: {{ . }}
     {{- end }}
-    
+
     {{- with .Values.auth.token }}
     authorization {
       token: "{{ . }}"
@@ -423,7 +427,7 @@ data:
     }
     {{- end }}
     {{- end }}
-    
+
     {{- with .Values.auth.basic }}
 
     {{- with .noAuthUser }}
