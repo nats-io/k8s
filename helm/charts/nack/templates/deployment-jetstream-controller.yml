@@ -77,6 +77,15 @@ spec:
           {{- if .Values.namespaced }}
           - --namespace={{ .Release.Namespace }}
           {{- end }}
+          {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.settings.client_cert }}
+          - --tlscert={{ .Values.jetstream.tls.settings.client_cert }}
+          {{- end }}
+          {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.settings.client_key }}
+          - --tlskey={{ .Values.jetstream.tls.settings.client_key }}
+          {{- end }}
+          {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.settings.client_ca }}
+          - --tlsca={{ .Values.jetstream.tls.settings.client_ca }}
+          {{- end }}
 
           env:
           - name: POD_NAME
