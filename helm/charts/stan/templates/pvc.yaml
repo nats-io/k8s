@@ -1,0 +1,20 @@
+{{- if .Values.store.volume.persistentVolumeClaim -}}{{- if not .Values.store.volume.persistentVolumeClaim.existingClaim -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "stan.name" . }}-pvc
+  labels:
+    app: {{ template "stan.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  {{- with .Values.store.volume.storageClass }}
+  storageClassName: {{ . }}
+  {{- end }}
+  accessModes:
+  {{- with .Values.store.volume.accessModes }}
+  - {{ . }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.store.volume.storageSize }}
+{{- end -}}{{- end -}}

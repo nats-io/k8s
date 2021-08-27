@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nats-kafka.fullname" . }}
+  labels:
+    {{- include "nats-kafka.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "nats-kafka.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "nats-kafka.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tagOverride | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nats-kafka
+            {{ if .Values.natskafka.monitoring.tls.secret }}
+            - name: tls-volume
+              mountPath: /etc/nats-kafka/tls
+              readOnly: true
+            {{ end }}
+          command:
+            - "nats-kafka"
+            - "-c"
+            - "/etc/nats-kafka/nats-kafka.conf"
+          {{ if .Values.natskafka.monitoring.httpPort }}
+          livenessProbe:
+            httpGet:
+              path: "/healthz"
+              port: {{ .Values.natskafka.monitoring.httpPort }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: "/healthz"
+              port: {{ .Values.natskafka.monitoring.httpPort }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          {{ end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "nats-kafka.fullname" . }}-config
+        {{ if .Values.natskafka.monitoring.tls.secret }}
+        - name: tls-volume
+          secret:
+            secretName: {{ .Values.natskafka.monitoring.tls.secret }}
+        {{ end }}

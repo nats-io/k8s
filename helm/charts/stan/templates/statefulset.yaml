@@ -66,7 +66,11 @@ spec:
       {{- if .Values.store.volume.persistentVolumeClaim }}
       - name: {{ template "stan.name" . }}-pvc
         persistentVolumeClaim:
+          {{- if not .Values.store.volume.persistentVolumeClaim.existingClaim }}
+          claimName: {{ template "stan.name" . }}-pvc
+          {{ else }}
           claimName: {{ .Values.store.volume.persistentVolumeClaim.claimName }}
+          {{ end }}
       {{- end }}
       {{- end }}
       {{- if .Values.stan.credentials }}
@@ -104,6 +108,10 @@ spec:
         ####################
         - name: stan
           image: {{ .Values.stan.image }}
+          {{- if .Values.stan.securityContext }}
+          securityContext:
+          {{- .Values.stan.securityContext | toYaml | nindent 12 }}
+          {{- end }}
           args:
           - -sc
           - /etc/stan-config/stan.conf
@@ -213,6 +221,10 @@ spec:
         ######################
         - name: backup
           image: amazon/aws-cli
+          {{- if .Values.store.backup.securityContext }}
+          securityContext:
+          {{- .Values.store.backup.securityContext | toYaml | nindent 12 }}
+          {{- end }}
           command: ["/bin/sh", "-c"]
           args:
           - {{ toYaml .Values.store.backup.backupContainerScript | indent 12 }}
@@ -266,6 +278,10 @@ spec:
         #################################
         - name: metrics
           image: {{ .Values.exporter.image }}
+          {{- if .Values.exporter.securityContext }}
+          securityContext:
+          {{- .Values.exporter.securityContext | toYaml | nindent 12 }}
+          {{- end }}
           args:
           - -connz
           - -routez

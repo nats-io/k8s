@@ -1,0 +1,37 @@
+# nameOverride overrides nats-kafka.name
+nameOverride: ""
+# fullnameOverride overrides nats-kafka.fullname
+fullnameOverride: ""
+replicaCount: 1
+
+image:
+  repository: natsio/nats-kafka
+  pullPolicy: IfNotPresent
+  # tagOverride overrides .Chart.AppVersion
+  tagOverride: ""
+
+natskafka:
+  reconnectInterval: 5000
+  connectTimeout: 5000
+  logging:
+    time: true
+    debug: false
+    trace: false
+    colors: true
+    pid: true
+  monitoring:
+    httpHost: ""
+    # 0 means no monitoring, -1 means some available port
+    httpPort: 0
+    httpsPort: 0
+    tls:
+      secret: ""
+      root: ""
+      cert: ""
+      key: ""
+  nats:
+    servers: []
+    connectTimeout: 5000
+    maxReconnects: 120
+    reconnectWait: 5000
+  connect: []

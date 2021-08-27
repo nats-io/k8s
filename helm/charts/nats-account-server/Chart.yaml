@@ -12,9 +12,9 @@ version: 0.8.0
 home: http://github.com/nats-io/k8s
 maintainers:
   - name: Waldemar Quevedo
-    github: https://github.com/wallyqs
+    url: https://github.com/wallyqs
     email: wally@nats.io
   - name: Colin Sullivan
-    github: https://github.com/ColinSullivan1
+    url: https://github.com/ColinSullivan1
     email: colin@nats.io
 icon: https://nats.io/img/nats-icon-color.png

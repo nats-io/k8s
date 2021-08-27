@@ -195,6 +195,10 @@ spec:
               fieldPath: spec.nodeName
         image: {{ .Values.bootconfig.image }}
         imagePullPolicy: {{ .Values.bootconfig.pullPolicy }}
+        {{- if .Values.bootconfig.securityContext }}
+        securityContext:
+        {{- .Values.bootconfig.securityContext | toYaml | nindent 8 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.bootconfig.resources | nindent 10 }}
         volumeMounts:
@@ -213,6 +217,10 @@ spec:
       - name: nats
         image: {{ .Values.nats.image }}
         imagePullPolicy: {{ .Values.nats.pullPolicy }}
+        {{- if .Values.nats.securityContext }}
+        securityContext:
+        {{- .Values.nats.securityContext | toYaml | nindent 10 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.nats.resources | nindent 10 }}
         ports:
@@ -251,10 +259,18 @@ spec:
           hostPort: {{ .Values.websocket.port }}
           {{- end }}
         {{- end }}
+        {{- if .Values.nats.profiling.enabled }}
+        - containerPort: {{ .Values.nats.profiling.port }}
+          name: profiling
+        {{- end }}
+
         command:
          - "nats-server"
          - "--config"
          - "/etc/nats-config/nats.conf"
+        {{- if .Values.nats.profiling.enabled }}
+         - "--profile={{ .Values.nats.profiling.port }}"
+        {{- end }}
 
         # Required to be able to define an environment variable
         # that refers to other environment variables.  This env var
@@ -270,6 +286,18 @@ spec:
               fieldPath: metadata.namespace
         - name: CLUSTER_ADVERTISE
           value: {{ include "nats.clusterAdvertise" . }}
+
+        {{- if .Values.nats.jetstream.enabled }}
+        {{- with .Values.nats.jetstream.encryption }}
+        {{- with .secret }}
+        - name: JS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .name }}
+              key: {{ .key }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
         volumeMounts:
           - name: config-volume
             mountPath: /etc/nats-config
@@ -396,6 +424,10 @@ spec:
       - name: reloader
         image: {{ .Values.reloader.image }}
         imagePullPolicy: {{ .Values.reloader.pullPolicy }}
+        {{- if .Values.reloader.securityContext }}
+        securityContext:
+        {{- .Values.reloader.securityContext | toYaml | nindent 10 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.reloader.resources | nindent 10 }}
         command:
@@ -420,6 +452,10 @@ spec:
       - name: metrics
         image: {{ .Values.exporter.image }}
         imagePullPolicy: {{ .Values.exporter.pullPolicy }}
+        {{- if .Values.exporter.securityContext }}
+        securityContext:
+        {{- .Values.exporter.securityContext | toYaml | nindent 10 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.exporter.resources | nindent 10 }}
         args:
@@ -479,5 +515,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.nats.jetstream.fileStorage.size }}
+        {{- if .Values.nats.jetstream.fileStorage.storageClassName }}
         storageClassName: {{ .Values.nats.jetstream.fileStorage.storageClassName | quote }}
+        {{- end }}
   {{- end }}

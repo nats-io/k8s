@@ -4,8 +4,18 @@
 #                             #
 ###############################
 nats:
-  image: nats:2.3.1-alpine
+  image: nats:2.3.4-alpine
   pullPolicy: IfNotPresent
+
+  # Toggle profiling.
+  # This enables nats-server pprof (profiling) port, so you can see goroutines
+  # stacks, memory heap sizes, etc.
+  profiling:
+    enabled: false
+    port: 6000
+
+  # securityContext for the nats container
+  securityContext: {}
 
   # Toggle whether to enable external access.
   # This binds a host port for clients, gateways and leafnodes.
@@ -54,14 +64,31 @@ nats:
   jetstream:
     enabled: false
 
+    # Jetstream Domain
+    domain:
+
+    ##########################
+    #                        #
+    #  Jetstream Encryption  #
+    #                        #
+    ##########################
+    encryption:
+      # Use key if you want to provide the key via Helm Values
+      # key: random_key
+
+      # Use a secret reference if you want to get a key from a secret
+      # secret:
+      #   name: "nats-jetstream-encryption"
+      #   key: "key"
+
     #############################
     #                           #
     #  Jetstream Memory Storage #
     #                           #
     #############################
     memStorage:
-     enabled: true
-     size: 1Gi
+      enabled: true
+      size: 1Gi
 
     ############################
     #                          #
@@ -79,11 +106,11 @@ nats:
       # Use below block to create new persistent volume
       # only used if existingClaim is not specified
       size: 1Gi
-      storageClassName: default
+      # storageClassName: ""
       accessModes:
         - ReadWriteOnce
       annotations:
-        # key: "value"
+      # key: "value"
 
   #######################
   #                     #
@@ -266,8 +293,9 @@ gateway:
 # enabled, an initializer container will be used to gather
 # the public ips.
 bootconfig:
-  image: natsio/nats-boot-config:0.5.3
+  image: natsio/nats-boot-config:0.5.4
   pullPolicy: IfNotPresent
+  securityContext: {}
 
 # NATS Box
 #
@@ -277,6 +305,7 @@ natsbox:
   enabled: true
   image: natsio/nats-box:0.6.0
   pullPolicy: IfNotPresent
+  securityContext: {}
 
   # An array of imagePullSecrets, and they have to be created manually in the same namespace
   # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -313,14 +342,16 @@ natsbox:
 # The NATS config reloader image to use.
 reloader:
   enabled: true
-  image: natsio/nats-server-config-reloader:0.6.1
+  image: natsio/nats-server-config-reloader:0.6.2
   pullPolicy: IfNotPresent
+  securityContext: {}
 
 # Prometheus NATS Exporter configuration.
 exporter:
   enabled: true
   image: natsio/prometheus-nats-exporter:0.8.0
   pullPolicy: IfNotPresent
+  securityContext: {}
   resources: {}
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled
   serviceMonitor:
@@ -353,6 +384,13 @@ auth:
   #   configMap:
   #     name: operator-jwt
   #     key: KO.jwt
+
+  # Token authentication
+  # token:
+
+  # NKey authentication
+  # nkeys:
+  #   users:
 
   # Public key of the System Account
   # systemAccount:

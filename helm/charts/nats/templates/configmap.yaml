@@ -39,8 +39,20 @@ data:
     #                                 #
     ###################################
     jetstream {
+      {{- if .Values.nats.jetstream.encryption }}
+      {{- if .Values.nats.jetstream.encryption.key }}
+      key: {{ .Values.nats.jetstream.encryption.key | quote }}
+      {{- else if .Values.nats.jetstream.encryption.secret }}
+      key: $JS_KEY
+      {{- end}}
+      {{- end}}
+
       {{- if .Values.nats.jetstream.memStorage.enabled }}
       max_mem: {{ .Values.nats.jetstream.memStorage.size }}
+      {{- end }}
+
+      {{- if .Values.nats.jetstream.domain }}
+      domain: {{ .Values.nats.jetstream.domain }}
       {{- end }}
 
       {{- if .Values.nats.jetstream.fileStorage.enabled }}
@@ -52,7 +64,6 @@ data:
       {{- else }}
       {{- .Values.nats.jetstream.fileStorage.size }}
       {{- end }}
-
       {{- end }}
     }
     {{- end }}
@@ -132,7 +143,7 @@ data:
 
       connect_retries: {{ .Values.nats.connectRetries }}
     }
-    {{ end }}
+    {{- end }}
 
     {{- if and .Values.nats.advertise .Values.nats.externalAccess }}
     include "advertise/client_advertise.conf"
@@ -149,12 +160,36 @@ data:
       listen: "0.0.0.0:7422"
       {{- end }}
 
-      {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
+      {{- if and .Values.nats.advertise .Values.nats.externalAccess }}
       include "advertise/gateway_advertise.conf"
-      {{ end }}
+      {{- end }}
 
       {{- with .Values.leafnodes.noAdvertise }}
       no_advertise: {{ . }}
+      {{- end }}
+
+      {{- with .Values.leafnodes.authorization }}
+      authorization: {
+        {{- with .user }}
+        user: {{ . }}
+        {{- end }}
+        {{- with .password }}
+        password: {{ . }}
+        {{- end }}
+        {{- with .account }}
+        account: {{ . | quote }}
+        {{- end }}
+        {{- with .timeout }}
+        timeout: {{ . }}
+        {{- end }}
+        {{- with .users }}
+        users: [
+        {{- range . }}
+        {{- toRawJson . | nindent 10 }},
+        {{- end }}
+        ]
+        {{- end }}
+      }
       {{- end }}
 
       {{- with .Values.leafnodes.tls }}
@@ -167,7 +202,15 @@ data:
       {{- range .Values.leafnodes.remotes }}
       {
         {{- with .url }}
-        url: {{ . }}
+        url: {{ . | quote }}
+        {{- end }}
+
+        {{- with .urls }}
+        urls: {{ toRawJson . }}
+        {{- end }}
+
+        {{- with .account }}
+        account: {{ . | quote }}
         {{- end }}
 
         {{- with .credentials }}
@@ -194,7 +237,7 @@ data:
       {{- end }}
       ]
     }
-    {{ end }}
+    {{- end }}
 
     {{- if .Values.gateway.enabled }}
     #################
@@ -206,13 +249,13 @@ data:
       name: {{ .Values.gateway.name }}
       port: 7522
 
-      {{ if and .Values.nats.advertise .Values.nats.externalAccess }}
+      {{- if and .Values.nats.advertise .Values.nats.externalAccess }}
       include "advertise/gateway_advertise.conf"
-      {{ end }}
+      {{- end }}
 
       {{- with .Values.gateway.tls }}
       {{-  $gateway_tls := merge (dict) . }}
-      {{- $_ := set $gateway_tls "secretPath" "/etc/nats-certs/gateway" }}
+      {{- $_ := set $gateway_tls "secretPath" "/etc/nats-certs/gateways" }}
       {{- include "nats.tlsConfig" $gateway_tls | nindent 6}}
       {{- end }}
 
@@ -235,7 +278,7 @@ data:
         {{- end }}
       ]
     }
-    {{ end }}
+    {{- end }}
 
     {{- with .Values.nats.logging.debug }}
     debug: {{ . }}
@@ -293,7 +336,7 @@ data:
     ##################
     websocket {
       port: {{ .Values.websocket.port }}
-      {{- if .Values.websocket.tls }}
+      {{- with .Values.websocket.tls }}
         {{ $secretName := .secret.name }}
         tls {
         {{- with .cert }}
@@ -365,6 +408,24 @@ data:
 
     {{- with .Values.auth.systemAccount }}
     system_account: {{ . }}
+    {{- end }}
+
+    {{- with .Values.auth.token }}
+    authorization {
+      token: "{{ . }}"
+    }
+    {{- end }}
+
+    {{- with .Values.auth.nkeys }}
+    {{- with .users }}
+    authorization {
+      users: [
+      {{- range . }}
+      {{- toRawJson . | nindent 4 }},
+      {{- end }}
+      ]
+    }
+    {{- end }}
     {{- end }}
 
     {{- with .Values.auth.basic }}

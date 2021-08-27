@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: "0.22.0"
+appVersion: "0.22.1"
 description: A Helm chart for NATS Streaming
 name: stan
 keywords:
@@ -11,17 +11,17 @@ keywords:
   - replay
   - statefulset
   - cncf
-version: 0.8.0
+version: 0.8.7
 maintainers:
   - name: Waldemar Quevedo
-    github: https://github.com/wallyqs
+    url: https://github.com/wallyqs
     email: wally@nats.io
   - name: Colin Sullivan
-    github: https://github.com/ColinSullivan1
+    url: https://github.com/ColinSullivan1
     email: colin@nats.io
   - name: Jaime Piña
-    github: https://github.com/variadico
+    url: https://github.com/variadico
     email: jaime@nats.io
   - name: rchenzheng
-    github: https://github.com/rchenzheng
+    url: https://github.com/rchenzheng
 icon: https://nats.io/img/nats-icon-color.png
