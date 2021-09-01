@@ -10,7 +10,8 @@ helm install nack-jsc nats/nack --set jetstream.nats.url=nats://nats:4222
 
 The JetStream controllers allows you to manage [NATS JetStream](https://github.com/nats-io/jetstream)
 [Streams](https://github.com/nats-io/jetstream#streams-1) and
-[Consumers](https://github.com/nats-io/jetstream#consumers-1) via K8S CRDs.
+[Consumers](https://github.com/nats-io/jetstream#consumers-1) via K8S CRDs as an alternative to
+using a NATS client with JetStream support for management or the `nats` utility.
 
 ### Getting started
 
