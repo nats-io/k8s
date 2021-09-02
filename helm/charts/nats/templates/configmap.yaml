@@ -354,6 +354,10 @@ data:
       {{- else }}
       no_tls: {{ .Values.websocket.noTLS }}
       {{- end }}
+      same_origin: {{ .Values.websocket.sameOrigin }}
+      {{- with .Values.websocket.allowedOrigins }}
+      allowed_origins: ["{{ first . }}" {{- range (rest .) }}, "{{ . }}" {{- end }}]
+      {{- end }}
     }
     {{- end }}
 
