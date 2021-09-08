@@ -38,6 +38,11 @@ nats:
   # to a client that has no activity.
   pingInterval:
 
+  # selector matchLabels for the server and service.
+  # If left empty defaults are used.
+  # This is helpful if you are updating from Chart version <=7.4
+  selectorLabels: {}
+
   resources: {}
 
   # Server settings.
