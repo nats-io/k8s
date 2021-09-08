@@ -45,8 +45,12 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "nats.selectorLabels" -}}
+{{- if .Values.nats.selectorLabels }}
+{{ .Values.nats.selectorLabels | toYaml }}
+{{- else }}
 app.kubernetes.io/name: {{ include "nats.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
 {{- end }}
 
 
