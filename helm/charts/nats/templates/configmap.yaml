@@ -356,7 +356,7 @@ data:
       {{- end }}
       same_origin: {{ .Values.websocket.sameOrigin }}
       {{- with .Values.websocket.allowedOrigins }}
-      allowed_origins: ["{{ first . }}" {{- range (rest .) }}, "{{ . }}" {{- end }}]
+      allowed_origins: {{ toRawJson . }}
       {{- end }}
     }
     {{- end }}
