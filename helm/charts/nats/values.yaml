@@ -433,6 +433,10 @@ auth:
 websocket:
   enabled: false
   port: 443
+  noTLS: true
+
+  sameOrigin: false
+  allowedOrigins: []
 
 appProtocol:
   enabled: false
