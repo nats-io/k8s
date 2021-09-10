@@ -287,6 +287,18 @@ bootconfig:
   image: natsio/nats-boot-config:0.5.4
   pullPolicy: IfNotPresent
   securityContext: {}
+  commands: []
+  #- command1
+  #- command2 
+  extraEnv: []
+  #- name: FOO
+  #  value: "bar" 
+  #- name: FOO
+  #  valueFrom: 
+  #    fieldRef:
+  #       apiVersion: v1
+  #       fieldPath: spec.IP
+
 
 # NATS Box
 #

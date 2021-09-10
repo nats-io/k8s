@@ -176,17 +176,26 @@ spec:
       initContainers:
       - name: bootconfig
         command:
+        {{- if and .Values.bootconfig.commands }}
+        {{- range .Values.bootconfig.commands }}
+        - {{ . }}
+        {{- end }}
+        {{- else }}
         - nats-pod-bootconfig
         - -f
         - /etc/nats-config/advertise/client_advertise.conf
         - -gf
         - /etc/nats-config/advertise/gateway_advertise.conf
+        {{- end }}
         env:
         - name: KUBERNETES_NODE_NAME
           valueFrom:
             fieldRef:
               apiVersion: v1
               fieldPath: spec.nodeName
+        {{- if .Values.bootconfig.extraEnv -}}
+        {{ include "nats.tplValue" ( dict "value" .Values.bootconfig.extraEnv "context" $) | nindent 8 }}
+        {{- end }}
         image: {{ .Values.bootconfig.image }}
         imagePullPolicy: {{ .Values.bootconfig.pullPolicy }}
         {{- if .Values.bootconfig.securityContext }}
