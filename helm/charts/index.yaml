@@ -132,7 +132,7 @@ entries:
         url: https://github.com/variadico
     name: nats
     urls:
-      - https://nats-io.github.io/k8s/helm/charts/nats-0.8.9.tgz
+    - https://github.com/nats-io/k8s/releases/download/v0.8.9/nats-0.8.9.tgz
     version: 0.8.9
   - apiVersion: v2
     appVersion: 2.3.4
