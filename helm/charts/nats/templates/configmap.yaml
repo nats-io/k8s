@@ -249,6 +249,10 @@ data:
       name: {{ .Values.gateway.name }}
       port: 7522
 
+      {{- if .Values.gateway.advertise }}
+      advertise: {{ .Values.gateway.advertise }} 
+      {{- end }}
+
       {{- if and .Values.nats.advertise .Values.nats.externalAccess }}
       include "advertise/gateway_advertise.conf"
       {{- end }}
