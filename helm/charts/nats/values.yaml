@@ -254,6 +254,10 @@ gateway:
   enabled: false
   name: 'default'
 
+  # You can add an implicit advertise address instead of using from Node's IP
+  # could also be a fqdn address
+  #advertise: "nats.example.com"
+
   #############################
   #                           #
   #  List of remote gateways  #
@@ -287,7 +291,7 @@ bootconfig:
   image: natsio/nats-boot-config:0.5.4
   pullPolicy: IfNotPresent
   securityContext: {}
-
+  
 # NATS Box
 #
 # https://github.com/nats-io/nats-box
