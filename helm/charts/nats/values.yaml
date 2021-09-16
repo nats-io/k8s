@@ -168,6 +168,7 @@ mqtt:
   #   key: "tls.key"
 
 nameOverride: ""
+
 # An array of imagePullSecrets, and they have to be created manually in the same namespace
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
@@ -204,11 +205,24 @@ topologySpreadConstraints: []
 podAnnotations: {}
 # key: "value"
 
-## Define a Pod Disruption Budget for the stateful set
-## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
-podDisruptionBudget: null
+# Define a Pod Disruption Budget for the stateful set
+# ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+podDisruptionBudget:
   # minAvailable: 1
   # maxUnavailable: 1
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+# Node tolerations for server scheduling to nodes with taints
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+#
+tolerations: []
+#  - key: "key"
+#    operator: "Equal|Exists"
+#    value: "value"
+#    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
 # Annotations to add to the NATS StatefulSet
 statefulSetAnnotations: {}
@@ -328,6 +342,19 @@ natsbox:
   # Affinity for nats box pod assignment
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   affinity: {}
+
+  # Node labels for pod assignment
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  nodeSelector: {}
+
+  # Node tolerations for server scheduling to nodes with taints
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  #
+  tolerations: []
+  #  - key: "key"
+  #    operator: "Equal|Exists"
+  #    value: "value"
+  #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
 # The NATS config reloader image to use.
 reloader:
