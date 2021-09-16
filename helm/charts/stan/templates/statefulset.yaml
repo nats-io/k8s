@@ -293,6 +293,10 @@ spec:
           ports:
           - containerPort: 7777
             name: metrics
+          {{- with .Values.exporter.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         {{- end }}
 
         {{- if not .Values.stan.nats.url }}
