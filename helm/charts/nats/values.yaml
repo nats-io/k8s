@@ -277,6 +277,10 @@ leafnodes:
 gateway:
   enabled: false
   name: 'default'
+  # authorization:
+  #   user: foo
+  #   password: pwd
+  #   timeout: 0.5
 
   # You can add an implicit advertise address instead of using from Node's IP
   # could also be a fqdn address
