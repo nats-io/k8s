@@ -4,7 +4,7 @@
 #                             #
 ###############################
 nats:
-  image: nats:2.3.4-alpine
+  image: nats:2.5.0-alpine
   pullPolicy: IfNotPresent
 
   # Toggle profiling.
@@ -45,14 +45,6 @@ nats:
 
   resources: {}
 
-  # This flag can be use to either use the ConfigMap the helm chart generates or pass a secret with the custom config you desire
-  # E.g use case - You want to define users with password and have ExternalSecrets(https://github.com/external-secrets/external-secrets) creating a secret containing the config 
-  configMap:
-    enabled: true
-
-  secret:
-    name:
-
   # Server settings.
   limits:
     maxConnections:
@@ -73,6 +65,16 @@ nats:
     logtime:
     connectErrorReports:
     reconnectErrorReports:
+
+  # customConfigSecret can be used to use an custom secret for the config
+  # of the NATS Server.
+  # NOTE: For this to work the name of the configuration has to be
+  # called `nats.conf`.
+  # 
+  # e.g. kubectl create secret generic custom-nats-conf --from-file nats.conf
+  # 
+  # customConfigSecret:
+  #  name:
 
   jetstream:
     enabled: false
