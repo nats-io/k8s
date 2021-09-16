@@ -253,6 +253,20 @@ data:
       advertise: {{ .Values.gateway.advertise }} 
       {{- end }}
 
+      {{- if .Values.gateway.authorization }}
+      authorization {
+        {{- with .Values.gateway.authorization.user }}
+        user: {{ . }}
+        {{- end }}
+        {{- with .Values.gateway.authorization.password }}
+        password: {{ . }}
+        {{- end }}
+        {{- with .Values.gateway.authorization.timeout }}
+        timeout: {{ . }}
+        {{- end }}
+      }
+      {{- end }}
+
       {{- if and .Values.nats.advertise .Values.nats.externalAccess }}
       include "advertise/gateway_advertise.conf"
       {{- end }}
