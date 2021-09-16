@@ -79,7 +79,7 @@ spec:
       - name: config-volume
         {{ if .Values.nats.customConfigSecret }}
         secret:
-          secretName: {{ .Values.nats.customConfigSecret.name }} 
+          secretName: {{ .Values.nats.customConfigSecret.name }}
         {{ else }}
         configMap:
           name: {{ include "nats.fullname" . }}-config
