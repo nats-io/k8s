@@ -77,12 +77,12 @@ spec:
       # Common volumes for the containers.
       volumes:
       - name: config-volume
-        {{ if .Values.nats.configMap.enabled }}
+        {{ if .Values.nats.customConfigSecret }}
+        secret:
+          secretName: {{ .Values.nats.customConfigSecret.name }} 
+        {{ else }}
         configMap:
           name: {{ include "nats.fullname" . }}-config
-        {{ else }}
-        secret:
-          secretName: {{ .Values.nats.secret.name }} 
         {{ end }}
 
       # Local volume shared with the reloader.
