@@ -71,8 +71,13 @@ spec:
       # Common volumes for the containers.
       volumes:
       - name: config-volume
+        {{ if .Values.nats.configMap.enabled }}
         configMap:
           name: {{ include "nats.fullname" . }}-config
+        {{ else }}
+        secret:
+          secretName: {{ .Values.nats.secret.name }} 
+        {{ end }}
 
       # Local volume shared with the reloader.
       - name: pid

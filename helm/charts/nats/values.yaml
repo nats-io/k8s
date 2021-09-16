@@ -45,6 +45,14 @@ nats:
 
   resources: {}
 
+  # This flag can be use to either use the ConfigMap the helm chart generates or pass a secret with the custom config you desire
+  # E.g use case - You want to define users with password and have ExternalSecrets(https://github.com/external-secrets/external-secrets) creating a secret containing the config 
+  configMap:
+    enabled: true
+
+  secret:
+    name:
+
   # Server settings.
   limits:
     maxConnections:
