@@ -32,7 +32,7 @@ nats:
   serviceAccount: "nats-server"
 
   # The number of connect attempts against discovered routes.
-  connectRetries: 30
+  connectRetries: 120
 
   # How many seconds should pass before sending a PING
   # to a client that has no activity.
