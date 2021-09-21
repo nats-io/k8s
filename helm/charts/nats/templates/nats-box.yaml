@@ -17,6 +17,9 @@ spec:
     metadata:
       labels:
         app: {{ include "nats.fullname" . }}-box
+        {{- if .Values.natsbox.podLabels }}
+        {{ toYaml .Values.natsbox.podLabels | indent 8 }}
+        {{- end }}
       {{- if .Values.natsbox.podAnnotations }}
       annotations:
         {{- range $key, $value := .Values.natsbox.podAnnotations }}
