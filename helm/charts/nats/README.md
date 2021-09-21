@@ -441,8 +441,9 @@ cluster:
 ### Basic Authentication and JetStream
 
 ```yaml
-
 nats:
+  image: nats:alpine
+
   jetstream:
     enabled: true
 
@@ -454,10 +455,12 @@ nats:
       enabled: true
       size: "8Gi"
       storageDirectory: /data/
-      storageClassName: gp2 # note: default from EKS
+      storageClassName: gp2
 
 cluster:
   enabled: true
+  # Can set a custom cluster name
+  # name: "nats"
   replicas: 3
 
 auth:
@@ -466,10 +469,15 @@ auth:
   systemAccount: sys
 
   basic:
-    users:
-    - user: sys
-      pass: sys
-    - user: foo
+    accounts:
+      sys:
+        users:
+        - user: sys
+          pass: sys
+      js:
+        jetstream: true
+        users:
+        - user: foo
 ```
 
 ## Misc
