@@ -438,6 +438,40 @@ cluster:
   replicas: 3
 ```
 
+### Basic Authentication and JetStream
+
+```yaml
+
+nats:
+  jetstream:
+    enabled: true
+
+    memStorage:
+      enabled: true
+      size: "2Gi"
+
+    fileStorage:
+      enabled: true
+      size: "8Gi"
+      storageDirectory: /data/
+      storageClassName: gp2 # note: default from EKS
+
+cluster:
+  enabled: true
+  replicas: 3
+
+auth:
+  enabled: true
+
+  systemAccount: sys
+
+  basic:
+    users:
+    - user: sys
+      pass: sys
+    - user: foo
+```
+
 ## Misc
 
 ### NATS Box
