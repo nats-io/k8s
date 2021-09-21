@@ -486,6 +486,51 @@ websocket:
 appProtocol:
   enabled: false
 
+# Network Policy configuration
+networkPolicy:
+  enabled: false
+  # Don't require client label for connections
+  # When set to false, only pods with the correct client label will have network access to the ports
+  # NATS is listening on. When true, NATS will accept connections from any source
+  # (with the correct destination port).
+  allowExternal: true
+  # Add extra ingress rules to the NetworkPolicy
+  # e.g:
+  # extraIngress:
+  #   - ports:
+  #       - port: 1234
+  #     from:
+  #       - podSelector:
+  #           - matchLabels:
+  #               - role: frontend
+  #       - podSelector:
+  #           - matchExpressions:
+  #               - key: role
+  #                 operator: In
+  #                 values:
+  #                   - frontend
+  extraIngress: []
+  # Add extra ingress rules to the NetworkPolicy
+  # e.g:
+  # extraEgress:
+  #   - ports:
+  #       - port: 1234
+  #     to:
+  #       - podSelector:
+  #           - matchLabels:
+  #               - role: frontend
+  #       - podSelector:
+  #           - matchExpressions:
+  #               - key: role
+  #                 operator: In
+  #                 values:
+  #                   - frontend
+  extraEgress: []
+  # Labels to match to allow traffic from other namespaces
+  ingressNSMatchLabels: {}
+  # Pod labels to match to allow traffic from other namespaces
+  ingressNSPodMatchLabels: {}
+
 # Cluster Domain configured on the kubelets
 # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 k8sClusterDomain: cluster.local
