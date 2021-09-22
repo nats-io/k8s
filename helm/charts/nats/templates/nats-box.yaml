@@ -8,6 +8,9 @@ metadata:
   labels:
     app: {{ include "nats.fullname" . }}-box
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- if .Values.natsbox.additionalLabels }}
+    {{ toYaml .Values.additionalLabels | indent 4 }}
+    {{- end }}
 spec:
   replicas: 1
   selector:
@@ -18,7 +21,7 @@ spec:
       labels:
         app: {{ include "nats.fullname" . }}-box
         {{- if .Values.natsbox.podLabels }}
-        {{ toYaml .Values.natsbox.podLabels | indent 8 }}
+        {{ toYaml .Values.natsbox.podLabels | nindent 8 }}
         {{- end }}
       {{- if .Values.natsbox.podAnnotations }}
       annotations:

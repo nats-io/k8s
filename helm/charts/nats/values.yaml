@@ -333,6 +333,10 @@ natsbox:
   pullPolicy: IfNotPresent
   securityContext: {}
 
+  # Labels to add to the natsbox deployment
+  # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  additionalLabels: {}
+
   # An array of imagePullSecrets, and they have to be created manually in the same namespace
   # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
