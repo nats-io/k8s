@@ -41,7 +41,7 @@ spec:
           secretName: {{ .Values.natsbox.credentials.secret.name }}
       {{- end }}
       {{- with .Values.nats.tls }}
-      {{ $secretName := .secret.name }}
+      {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-clients-volume
         secret:
           secretName: {{ $secretName }}
@@ -74,7 +74,7 @@ spec:
           value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
         {{- end }}
         {{- with .Values.nats.tls }}
-        {{ $secretName := .secret.name }}
+        {{ $secretName := tpl .secret.name $ }}
         lifecycle:
           postStart:
             exec:
@@ -98,7 +98,7 @@ spec:
         #  TLS Volumes Mounts #
         #                     #
         #######################
-        {{ $secretName := .secret.name }}
+        {{ $secretName := tpl .secret.name $ }}
         - name: {{ $secretName }}-clients-volume
           mountPath: /etc/nats-certs/clients/{{ $secretName }}
         {{- end }}
