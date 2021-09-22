@@ -6,6 +6,9 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
+    {{- if .Values.statefulSetLabels }}
+    {{ toYaml .Values.statefulSetLabels | indent 4 }}
+    {{- end }}
     {{- if .Values.statefulSetAnnotations}}
   annotations:
   {{- range $key, $value := .Values.statefulSetAnnotations }}
