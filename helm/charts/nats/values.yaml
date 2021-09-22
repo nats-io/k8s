@@ -229,9 +229,6 @@ tolerations: []
 # Annotations to add to the NATS StatefulSet
 statefulSetAnnotations: {}
 
-# Labels to add to the NATS StatefulSet
-statefulSetLabels: {}
-
 # Labels to add to the pods of the NATS StatefulSet
 statefulSetPodLabels: {}
 
