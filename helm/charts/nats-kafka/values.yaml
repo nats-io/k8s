@@ -30,6 +30,8 @@ natskafka:
       cert: ""
       key: ""
   additionalArguments: []
+  additionalVolumes: {}
+  additionalVolumeMounts: {}
   nats:
     servers: []
     connectTimeout: 5000

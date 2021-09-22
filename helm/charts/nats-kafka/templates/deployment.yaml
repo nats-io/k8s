@@ -26,6 +26,9 @@ spec:
               mountPath: /etc/nats-kafka/tls
               readOnly: true
             {{ end }}
+            {{- if .Values.natskafka.additionalVolumeMounts }}
+              {{- toYaml .Values.deployment.additionalVolumeMounts | nindent 12 }}
+            {{- end }}
           command:
             - "nats-kafka"
             - "-c"
@@ -61,3 +64,6 @@ spec:
           secret:
             secretName: {{ .Values.natskafka.monitoring.tls.secret }}
         {{ end }}
+        {{- if .Values.natskafka.additionalVolumes }}
+          {{- toYaml .Values.deployment.additionalVolumes | nindent 8 }}
+        {{- end }}

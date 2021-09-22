@@ -112,7 +112,7 @@ cluster {
   ]
   cluster_advertise: $CLUSTER_ADVERTISE
 
-  {{- with .Values.cluster.noAdvertise }}      
+  {{- with .Values.cluster.noAdvertise }}
   no_advertise: {{ . }}
   {{- end }}
 
@@ -127,7 +127,7 @@ include "advertise/client_advertise.conf"
 {{- end }}
 
 {{- if or .Values.leafnodes.enabled .Values.leafnodes.remotes }}
-################# 
+#################
 #               #
 # NATS Leafnode #
 #               #
@@ -141,7 +141,7 @@ leafnodes {
   include "advertise/gateway_advertise.conf"
   {{ end }}
 
-  {{- with .Values.leafnodes.noAdvertise }}      
+  {{- with .Values.leafnodes.noAdvertise }}
   no_advertise: {{ . }}
   {{- end }}
 
@@ -199,7 +199,7 @@ leafnodes {
 {{ end }}
 
 {{- if .Values.gateway.enabled }}
-################# 
+#################
 #               #
 # NATS Gateways #
 #               #
