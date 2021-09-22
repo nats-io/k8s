@@ -29,6 +29,7 @@ natskafka:
       root: ""
       cert: ""
       key: ""
+  configPath: # default: "/etc/nats-kafka/nats-kafka.conf"
   nats:
     servers: []
     connectTimeout: 5000

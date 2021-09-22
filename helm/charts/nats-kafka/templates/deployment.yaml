@@ -29,7 +29,7 @@ spec:
           command:
             - "nats-kafka"
             - "-c"
-            - "/etc/nats-kafka/nats-kafka.conf"
+            - {{ default "/etc/nats-kafka/nats-kafka.conf" .Values.natskafka.configPath }}
           {{ if .Values.natskafka.monitoring.httpPort }}
           livenessProbe:
             httpGet:
