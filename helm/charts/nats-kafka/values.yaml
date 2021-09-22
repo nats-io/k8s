@@ -29,6 +29,8 @@ natskafka:
       root: ""
       cert: ""
       key: ""
+  deploymentLabels: {}
+  podLabels: {}
   configPath: # default: "/etc/nats-kafka/nats-kafka.conf"
   additionalArguments: []
   additionalVolumes: {}

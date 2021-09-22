@@ -4,6 +4,9 @@ metadata:
   name: {{ include "nats-kafka.fullname" . }}
   labels:
     {{- include "nats-kafka.labels" . | nindent 4 }}
+    {{- if .Values.natskafka.deploymentLabels }}
+    {{ toYaml .Values.natskafka.deploymentLabels | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -13,6 +16,9 @@ spec:
     metadata:
       labels:
         {{- include "nats-kafka.selectorLabels" . | nindent 8 }}
+        {{- if .Values.natskafka.podLabels }}
+        {{ toYaml .Values.natskafka.podLabels | nindent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
