@@ -29,6 +29,7 @@ natskafka:
       root: ""
       cert: ""
       key: ""
+  additionalArguments: []
   nats:
     servers: []
     connectTimeout: 5000
