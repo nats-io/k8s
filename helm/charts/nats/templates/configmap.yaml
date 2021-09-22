@@ -250,7 +250,7 @@ data:
       port: 7522
 
       {{- if .Values.gateway.advertise }}
-      advertise: {{ .Values.gateway.advertise }} 
+      advertise: {{ .Values.gateway.advertise }}
       {{- end }}
 
       {{- if .Values.gateway.authorization }}
