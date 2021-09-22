@@ -33,6 +33,14 @@ spec:
             - "nats-kafka"
             - "-c"
             - "/etc/nats-kafka/nats-kafka.conf"
+          {{- if .Values.additionalArguments }}
+          args:
+            {{- with .Values.additionalArguments }}
+            {{- range . }}
+            - {{ . | quote }}
+            {{- end }}
+            {{- end }}
+          {{- end}}
           {{ if .Values.natskafka.monitoring.httpPort }}
           livenessProbe:
             httpGet:
