@@ -31,6 +31,10 @@ natskafka:
       key: ""
   deploymentLabels: {}
   podLabels: {}
+  configPath: # default: "/etc/nats-kafka/nats-kafka.conf"
+  additionalArguments: []
+  additionalVolumes: {}
+  additionalVolumeMounts: {}
   nats:
     servers: []
     connectTimeout: 5000

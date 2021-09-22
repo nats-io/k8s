@@ -37,6 +37,9 @@ spec:
       {{- end }}
       labels:
         {{- include "nats.selectorLabels" . | nindent 8 }}
+        {{- if .Values.statefulSetPodLabels }}
+        {{ toYaml .Values.statefulSetPodLabels | indent 8 }}
+        {{- end }}
     spec:
 {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -122,37 +125,37 @@ spec:
       #               #
       #################
       {{- with .Values.nats.tls }}
-      {{ $secretName := .secret.name }}
+      {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-clients-volume
         secret:
           secretName: {{ $secretName }}
       {{- end }}
       {{- with .Values.mqtt.tls }}
-      {{ $secretName := .secret.name }}
+      {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-mqtt-volume
         secret:
           secretName: {{ $secretName }}
       {{- end }}
       {{- with .Values.cluster.tls }}
-      {{ $secretName := .secret.name }}
+      {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-cluster-volume
         secret:
           secretName: {{ $secretName }}
       {{- end }}
       {{- with .Values.leafnodes.tls }}
-      {{ $secretName := .secret.name }}
+      {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-leafnodes-volume
         secret:
           secretName: {{ $secretName }}
       {{- end }}
       {{- with .Values.gateway.tls }}
-      {{ $secretName := .secret.name }}
+      {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-gateways-volume
         secret:
           secretName: {{ $secretName }}
       {{- end }}
       {{- with .Values.websocket.tls }}
-      {{ $secretName := .secret.name }}
+      {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-ws-volume
         secret:
           secretName: {{ $secretName }}
@@ -348,33 +351,33 @@ spec:
           #  TLS Volumes Mounts #
           #                     #
           #######################
-          {{ $secretName := .secret.name }}
+          {{ $secretName := tpl .secret.name $ }}
           - name: {{ $secretName }}-clients-volume
             mountPath: /etc/nats-certs/clients/{{ $secretName }}
           {{- end }}
           {{- with .Values.mqtt.tls }}
-          {{ $secretName := .secret.name }}
+          {{ $secretName := tpl .secret.name $ }}
           - name: {{ $secretName }}-mqtt-volume
             mountPath: /etc/nats-certs/mqtt/{{ $secretName }}
           {{- end }}
           {{- with .Values.cluster.tls }}
-          {{ $secretName := .secret.name }}
+          {{ $secretName := tpl .secret.name $ }}
           - name: {{ $secretName }}-cluster-volume
             mountPath: /etc/nats-certs/cluster/{{ $secretName }}
           {{- end }}
           {{- with .Values.leafnodes.tls }}
-          {{ $secretName := .secret.name }}
+          {{ $secretName := tpl .secret.name $ }}
           - name: {{ $secretName }}-leafnodes-volume
             mountPath: /etc/nats-certs/leafnodes/{{ $secretName }}
           {{- end }}
           {{- with .Values.gateway.tls }}
-          {{ $secretName := .secret.name }}
+          {{ $secretName := tpl .secret.name $ }}
           - name: {{ $secretName }}-gateways-volume
             mountPath: /etc/nats-certs/gateways/{{ $secretName }}
           {{- end }}
 
           {{- with .Values.websocket.tls }}
-          {{ $secretName := .secret.name }}
+          {{ $secretName := tpl .secret.name $ }}
           - name: {{ $secretName }}-ws-volume
             mountPath: /etc/nats-certs/ws/{{ $secretName }}
           {{- end }}
