@@ -229,6 +229,9 @@ tolerations: []
 # Annotations to add to the NATS StatefulSet
 statefulSetAnnotations: {}
 
+# Labels to add to the pods of the NATS StatefulSet
+statefulSetPodLabels: {}
+
 # Annotations to add to the NATS Service
 serviceAnnotations: {}
 
@@ -330,6 +333,10 @@ natsbox:
   pullPolicy: IfNotPresent
   securityContext: {}
 
+  # Labels to add to the natsbox deployment
+  # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  additionalLabels: {}
+
   # An array of imagePullSecrets, and they have to be created manually in the same namespace
   # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   imagePullSecrets: []
@@ -344,6 +351,11 @@ natsbox:
   # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   podAnnotations: {}
   #  key: "value"
+
+  # Labels to add to the box pods
+  # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  # key: "value"
 
   # Affinity for nats box pod assignment
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
