@@ -28,7 +28,7 @@ data:
     {{- with .Values.nats.tls }}
     {{- $nats_tls := merge (dict) . }}
     {{- $_ := set $nats_tls "secretPath" "/etc/nats-certs/clients" }}
-    {{- include "nats.tlsConfig" $nats_tls | nindent 4}}
+    {{- tpl (include "nats.tlsConfig" $nats_tls) $ | nindent 4}}
     {{- end }}
     {{- end }}
 
@@ -79,7 +79,7 @@ data:
       {{- with .Values.mqtt.tls }}
       {{-  $mqtt_tls := merge (dict) . }}
       {{- $_ := set $mqtt_tls "secretPath" "/etc/nats-certs/mqtt" }}
-      {{- include "nats.tlsConfig" $mqtt_tls | nindent 6}}
+      {{- tpl (include "nats.tlsConfig" $mqtt_tls) $ | nindent 6}}
       {{- end }}
 
       {{- if .Values.mqtt.noAuthUser }}
@@ -115,7 +115,7 @@ data:
       {{- with .Values.cluster.tls }}
       {{-  $cluster_tls := merge (dict) . }}
       {{- $_ := set $cluster_tls "secretPath" "/etc/nats-certs/cluster" }}
-      {{- include "nats.tlsConfig" $cluster_tls | nindent 6}}
+      {{- tpl (include "nats.tlsConfig" $cluster_tls) $ | nindent 6}}
       {{- end }}
 
       {{- if .Values.cluster.authorization }}
@@ -195,7 +195,7 @@ data:
       {{- with .Values.leafnodes.tls }}
       {{-  $leafnode_tls := merge (dict) . }}
       {{- $_ := set $leafnode_tls "secretPath" "/etc/nats-certs/leafnodes" }}
-      {{- include "nats.tlsConfig" $leafnode_tls | nindent 6}}
+      {{- tpl (include "nats.tlsConfig" $leafnode_tls) $ | nindent 6}}
       {{- end }}
 
       remotes: [
@@ -218,7 +218,7 @@ data:
         {{- end }}
 
         {{- with .tls }}
-        {{ $secretName := .secret.name }}
+        {{ $secretName := tpl .secret.name $ }}
         tls: {
           {{- with .cert }}
           cert_file: /etc/nats-certs/leafnodes/{{ $secretName }}/{{ . }}
@@ -250,7 +250,7 @@ data:
       port: 7522
 
       {{- if .Values.gateway.advertise }}
-      advertise: {{ .Values.gateway.advertise }} 
+      advertise: {{ .Values.gateway.advertise }}
       {{- end }}
 
       {{- if .Values.gateway.authorization }}
@@ -274,7 +274,7 @@ data:
       {{- with .Values.gateway.tls }}
       {{-  $gateway_tls := merge (dict) . }}
       {{- $_ := set $gateway_tls "secretPath" "/etc/nats-certs/gateways" }}
-      {{- include "nats.tlsConfig" $gateway_tls | nindent 6}}
+      {{- tpl (include "nats.tlsConfig" $gateway_tls) $ | nindent 6}}
       {{- end }}
 
       # Gateways array here
@@ -355,7 +355,7 @@ data:
     websocket {
       port: {{ .Values.websocket.port }}
       {{- with .Values.websocket.tls }}
-        {{ $secretName := .secret.name }}
+        {{ $secretName := tpl .secret.name $ }}
         tls {
         {{- with .cert }}
         cert_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}

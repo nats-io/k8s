@@ -93,6 +93,59 @@ spec:
               duplicateWindow:
                 description: The duration window to track duplicate messages for.
                 type: string
+              description:
+                description: The description of the stream.
+                type: string
+              maxMsgsPerSubject:
+                description: The maximum of messages per subject.
+                type: integer
+                default: 0
+              mirror:
+                description: A stream mirror.
+                type: object
+                properties:
+                  name:
+                    type: string
+                  optStartSeq:
+                    type: integer
+                  optStartTime:
+                    description: Time format must be RFC3339.
+                    type: string
+                  filterSubject:
+                    type: string
+                  externalApiPrefix:
+                    type: string
+                  externalDeliverPrefix:
+                    type: string
+              placement:
+                description: A stream's placement.
+                type: object
+                properties:
+                  cluster:
+                    type: string
+                  tags:
+                    type: array
+                    items:
+                      type: string
+              sources:
+                description: A stream's sources.
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    optStartSeq:
+                      type: integer
+                    optStartTime:
+                      description: Time format must be RFC3339.
+                      type: string
+                    filterSubject:
+                      type: string
+                    externalApiPrefix:
+                      type: string
+                    externalDeliverPrefix:
+                      type: string
           status:
             type: object
             properties:
@@ -210,6 +263,22 @@ spec:
               rateLimitBps:
                 description: rate at which messages will be delivered to clients, expressed in bit per second.
                 type: integer
+              maxAckPending:
+                description: Maximum pending Acks before consumers are paused
+                type: integer
+              deliverGroup:
+                description: The name of a queue group.
+                type: string
+              description:
+                description: The description of the consumer.
+                type: string
+              flowControl:
+                description: Enables flow control.
+                type: boolean
+                default: false
+              heartbeatInterval:
+                description: The interval used to deliver idle heartbeats for push-based consumers, in Go's time.Duration format.
+                type: string
           status:
             type: object
             properties:
