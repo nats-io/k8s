@@ -29,6 +29,8 @@ natskafka:
       root: ""
       cert: ""
       key: ""
+  additionalVolumes: {}
+  additionalVolumeMounts: {}
   nats:
     servers: []
     connectTimeout: 5000
