@@ -386,21 +386,31 @@ data:
     #                #
     ##################
     {{- if .Values.auth.resolver }}
+
     {{- if eq .Values.auth.resolver.type "memory" }}
     resolver: MEMORY
     include "accounts/{{ .Values.auth.resolver.configMap.key }}"
     {{- end }}
 
     {{- if eq .Values.auth.resolver.type "full" }}
-
     {{- if .Values.auth.resolver.configMap }}
     include "accounts/{{ .Values.auth.resolver.configMap.key }}"
     {{- else }}
 
     {{- with .Values.auth.resolver }}
-    operator: {{ .operator }}
+    {{- if $.Values.auth.timeout }}
+    authorization {
+      timeout: {{ $.Values.auth.timeout }}
+    }
+    {{- end }}
 
+    {{- if .operator }}
+    operator: {{ .operator }}
+    {{- end }}
+
+    {{- if .systemAccount }}
     system_account: {{ .systemAccount }}
+    {{- end }}
     {{- end }}
 
     resolver: {
@@ -435,12 +445,20 @@ data:
     {{- with .Values.auth.token }}
     authorization {
       token: "{{ . }}"
+
+      {{- if $.Values.auth.timeout }}
+      timeout: {{ $.Values.auth.timeout }}
+      {{- end }}
     }
     {{- end }}
 
     {{- with .Values.auth.nkeys }}
     {{- with .users }}
     authorization {
+      {{- if $.Values.auth.timeout }}
+      timeout: {{ $.Values.auth.timeout }}
+      {{- end }}
+
       users: [
       {{- range . }}
       {{- toRawJson . | nindent 4 }},
@@ -458,6 +476,10 @@ data:
 
     {{- with .users }}
     authorization {
+      {{- if $.Values.auth.timeout }}
+      timeout: {{ $.Values.auth.timeout }}
+      {{- end }}
+
       users: [
       {{- range . }}
       {{- toRawJson . | nindent 4 }},
@@ -467,6 +489,12 @@ data:
     {{- end }}
 
     {{- with .accounts }}
+    authorization {
+      {{- if $.Values.auth.timeout }}
+      timeout: {{ $.Values.auth.timeout }}
+      {{- end }}
+    }
+
     accounts: {{- toRawJson . }}
     {{- end }}
 
