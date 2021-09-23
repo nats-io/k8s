@@ -55,9 +55,12 @@ nats:
     writeDeadline:
     maxPending:
     maxPings:
-    lameDuckDuration:
 
-  terminationGracePeriodSeconds: 60
+    # NOTE: this should be at least the same as 'terminationGracePeriodSeconds'
+    lameDuckDuration: "120s"
+
+  # Default lame duck duration in the server is 2 minutes.
+  terminationGracePeriodSeconds: 120
 
   logging:
     debug:

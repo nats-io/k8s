@@ -321,29 +321,37 @@ data:
     {{- with .Values.nats.limits.maxConnections }}
     max_connections: {{ . }}
     {{- end }}
+
     {{- with .Values.nats.limits.maxSubscriptions }}
     max_subscriptions: {{ . }}
     {{- end }}
+
     {{- with .Values.nats.limits.maxPending }}
     max_pending: {{ . }}
     {{- end }}
+
     {{- with .Values.nats.limits.maxControlLine }}
     max_control_line: {{ . }}
     {{- end }}
+
     {{- with .Values.nats.limits.maxPayload }}
     max_payload: {{ . }}
     {{- end }}
-    {{- with .Values.nats.pingInterval }}
+
+    {{- with .Values.nats.limits.pingInterval }}
     ping_interval: {{ . }}
     {{- end }}
-    {{- with .Values.nats.maxPings }}
+
+    {{- with .Values.nats.limits.maxPings }}
     ping_max: {{ . }}
     {{- end }}
-    {{- with .Values.nats.writeDeadline }}
-    write_deadline: {{ . | quote }}
+
+    {{- with .Values.nats.limits.writeDeadline }}
+    write_deadline: {{ . }}
     {{- end }}
-    {{- with .Values.nats.writeDeadline }}
-    lame_duck_duration:  {{ . | quote }}
+
+    {{- with .Values.nats.limits.lameDuckDuration }}
+    lame_duck_duration: {{ . }}
     {{- end }}
 
     {{- if .Values.websocket.enabled }}
