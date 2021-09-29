@@ -480,6 +480,147 @@ auth:
         - user: foo
 ```
 
+### NATS Resolver setup example
+
+As of NATS v2.2, the server now has a built-in NATS resolver of accounts.
+The following is an example guide of how to get it configured.
+
+```sh
+# Create a working directory to keep the creds.
+mkdir nats-creds
+cd nats-creds
+
+# This just creates some accounts for you to get started.
+curl -fSl https://nats-io.github.io/k8s/setup/nsc-setup.sh | sh
+source .nsc.env
+
+# You should have some accounts now, at least the following.
+nsc list accounts
++-------------------------------------------------------------------+
+|                             Accounts                              |
++--------+----------------------------------------------------------+
+| Name   | Public Key                                               |
++--------+----------------------------------------------------------+
+| A      | ABJ4OIKBBFCNXZDP25C7EWXCXOVCYYAGBEHFAG7F5XYCOYPHZLNSJYDF |
+| B      | ACVRK7GFBRQUCB3NEABGQ7XPNED2BSPT27GOX5QBDYW2NOFMQKK755DJ |
+| SYS    | ADGFH4NYV5V75SVM5DYSW5AWOD7H2NRUWAMO6XLZKIDGUWYEXCZG5D6N |
++--------+----------------------------------------------------------+
+
+# Now create an account with JetStream support
+export account=JS1
+nsc add account  --name $account
+nsc edit account --name $account --js-disk-storage -1 --js-consumer -1 --js-streams -1
+nsc add user -a $account js-user
+```
+
+Next, generate the NATS resolver config. This will be used to fill in the values of the YAML in the Helm template.
+For example the result of generating this:
+
+```sh
+nsc generate config --sys-account SYS --nats-resolver 
+
+# Operator named KO
+operator: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJDRlozRlE0WURNTUc1Q1UzU0FUWVlHWUdQUDJaQU1QUzVNRUdNWFdWTUJFWUdIVzc2WEdBIiwiaWF0IjoxNjMyNzgzMDk2LCJpc3MiOiJPQ0lWMlFGSldJTlpVQVQ1VDJZSkJJUkMzQjZKS01TWktRTkY1S0dQNE4zS1o0RkZEVkFXWVhDTCIsIm5hbWUiOiJLTyIsInN1YiI6Ik9DSVYyUUZKV0lOWlVBVDVUMllKQklSQzNCNkpLTVNaS1FORjVLR1A0TjNLWjRGRkRWQVdZWENMIiwibmF0cyI6eyJ0eXBlIjoib3BlcmF0b3IiLCJ2ZXJzaW9uIjoyfX0.e3gvJ-C1IBznmbUljeT_wbLRl1akv5IGBS3rbxs6mzzTvf3zlqQI4wDKVE8Gvb8qfTX6TIwocClfOqNaN3k3CQ
+
+# System Account named SYS
+system_account: ADGFH4NYV5V75SVM5DYSW5AWOD7H2NRUWAMO6XLZKIDGUWYEXCZG5D6N
+
+resolver_preload: {
+	ADGFH4NYV5V75SVM5DYSW5AWOD7H2NRUWAMO6XLZKIDGUWYEXCZG5D6N: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJDR0tWVzJGQUszUE5XQTRBWkhHT083UTdZWUVPQkJYNDZaTU1VSFc1TU5QSUFVSFE0RVRRIiwiaWF0IjoxNjMyNzgzMDk2LCJpc3MiOiJPQ0lWMlFGSldJTlpVQVQ1VDJZSkJJUkMzQjZKS01TWktRTkY1S0dQNE4zS1o0RkZEVkFXWVhDTCIsIm5hbWUiOiJTWVMiLCJzdWIiOiJBREdGSDROWVY1Vjc1U1ZNNURZU1c1QVdPRDdIMk5SVVdBTU82WExaS0lER1VXWUVYQ1pHNUQ2TiIsIm5hdHMiOnsibGltaXRzIjp7InN1YnMiOi0xLCJkYXRhIjotMSwicGF5bG9hZCI6LTEsImltcG9ydHMiOi0xLCJleHBvcnRzIjotMSwid2lsZGNhcmRzIjp0cnVlLCJjb25uIjotMSwibGVhZiI6LTF9LCJkZWZhdWx0X3Blcm1pc3Npb25zIjp7InB1YiI6e30sInN1YiI6e319LCJ0eXBlIjoiYWNjb3VudCIsInZlcnNpb24iOjJ9fQ.J7g73TEn-ZT13owq4cVWl4l0hZnGK4DJtH2WWOZmGbefcCQ1xsx4cIagKc1cZTCwUpELVAYnSkmPp4LsQOspBg,
+}
+```
+
+In the YAML would be configured as follows:
+
+```
+auth:
+  enabled: true
+
+  timeout: "5s"
+
+  resolver:
+    type: full
+
+    operator: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJDRlozRlE0WURNTUc1Q1UzU0FUWVlHWUdQUDJaQU1QUzVNRUdNWFdWTUJFWUdIVzc2WEdBIiwiaWF0IjoxNjMyNzgzMDk2LCJpc3MiOiJPQ0lWMlFGSldJTlpVQVQ1VDJZSkJJUkMzQjZKS01TWktRTkY1S0dQNE4zS1o0RkZEVkFXWVhDTCIsIm5hbWUiOiJLTyIsInN1YiI6Ik9DSVYyUUZKV0lOWlVBVDVUMllKQklSQzNCNkpLTVNaS1FORjVLR1A0TjNLWjRGRkRWQVdZWENMIiwibmF0cyI6eyJ0eXBlIjoib3BlcmF0b3IiLCJ2ZXJzaW9uIjoyfX0.e3gvJ-C1IBznmbUljeT_wbLRl1akv5IGBS3rbxs6mzzTvf3zlqQI4wDKVE8Gvb8qfTX6TIwocClfOqNaN3k3CQ
+
+    systemAccount: ADGFH4NYV5V75SVM5DYSW5AWOD7H2NRUWAMO6XLZKIDGUWYEXCZG5D6N
+
+    store:
+      dir: "/etc/nats-config/accounts/jwt"
+      size: "1Gi"
+
+    resolverPreload:
+      ADGFH4NYV5V75SVM5DYSW5AWOD7H2NRUWAMO6XLZKIDGUWYEXCZG5D6N: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJDR0tWVzJGQUszUE5XQTRBWkhHT083UTdZWUVPQkJYNDZaTU1VSFc1TU5QSUFVSFE0RVRRIiwiaWF0IjoxNjMyNzgzMDk2LCJpc3MiOiJPQ0lWMlFGSldJTlpVQVQ1VDJZSkJJUkMzQjZKS01TWktRTkY1S0dQNE4zS1o0RkZEVkFXWVhDTCIsIm5hbWUiOiJTWVMiLCJzdWIiOiJBREdGSDROWVY1Vjc1U1ZNNURZU1c1QVdPRDdIMk5SVVdBTU82WExaS0lER1VXWUVYQ1pHNUQ2TiIsIm5hdHMiOnsibGltaXRzIjp7InN1YnMiOi0xLCJkYXRhIjotMSwicGF5bG9hZCI6LTEsImltcG9ydHMiOi0xLCJleHBvcnRzIjotMSwid2lsZGNhcmRzIjp0cnVlLCJjb25uIjotMSwibGVhZiI6LTF9LCJkZWZhdWx0X3Blcm1pc3Npb25zIjp7InB1YiI6e30sInN1YiI6e319LCJ0eXBlIjoiYWNjb3VudCIsInZlcnNpb24iOjJ9fQ.J7g73TEn-ZT13owq4cVWl4l0hZnGK4DJtH2WWOZmGbefcCQ1xsx4cIagKc1cZTCwUpELVAYnSkmPp4LsQOspBg
+```
+
+Now we start the server with the NATS Account Resolver (`auth.resolver.type=full`):
+
+```yaml
+nats:
+  image: nats:2.6.1-alpine
+
+  logging:
+    debug: false
+    trace: false
+
+  jetstream:
+    enabled: true
+
+    memStorage:
+      enabled: true
+      size: "2Gi"
+
+    fileStorage:
+      enabled: true
+      size: "4Gi"
+      storageDirectory: /data/
+      storageClassName: gp2 # NOTE: AWS setup but customize as needed for your infra.
+
+cluster:
+  enabled: true
+  # Can set a custom cluster name
+  name: "nats"
+  replicas: 3
+
+auth:
+  enabled: true
+
+  timeout: "5s"
+
+  resolver:
+    type: full
+
+    operator: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJDRlozRlE0WURNTUc1Q1UzU0FUWVlHWUdQUDJaQU1QUzVNRUdNWFdWTUJFWUdIVzc2WEdBIiwiaWF0IjoxNjMyNzgzMDk2LCJpc3MiOiJPQ0lWMlFGSldJTlpVQVQ1VDJZSkJJUkMzQjZKS01TWktRTkY1S0dQNE4zS1o0RkZEVkFXWVhDTCIsIm5hbWUiOiJLTyIsInN1YiI6Ik9DSVYyUUZKV0lOWlVBVDVUMllKQklSQzNCNkpLTVNaS1FORjVLR1A0TjNLWjRGRkRWQVdZWENMIiwibmF0cyI6eyJ0eXBlIjoib3BlcmF0b3IiLCJ2ZXJzaW9uIjoyfX0.e3gvJ-C1IBznmbUljeT_wbLRl1akv5IGBS3rbxs6mzzTvf3zlqQI4wDKVE8Gvb8qfTX6TIwocClfOqNaN3k3CQ
+
+    systemAccount: ADGFH4NYV5V75SVM5DYSW5AWOD7H2NRUWAMO6XLZKIDGUWYEXCZG5D6N
+
+    store:
+      dir: "/etc/nats-config/accounts/jwt"
+      size: "1Gi"
+
+    resolverPreload:
+      ADGFH4NYV5V75SVM5DYSW5AWOD7H2NRUWAMO6XLZKIDGUWYEXCZG5D6N: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJDR0tWVzJGQUszUE5XQTRBWkhHT083UTdZWUVPQkJYNDZaTU1VSFc1TU5QSUFVSFE0RVRRIiwiaWF0IjoxNjMyNzgzMDk2LCJpc3MiOiJPQ0lWMlFGSldJTlpVQVQ1VDJZSkJJUkMzQjZKS01TWktRTkY1S0dQNE4zS1o0RkZEVkFXWVhDTCIsIm5hbWUiOiJTWVMiLCJzdWIiOiJBREdGSDROWVY1Vjc1U1ZNNURZU1c1QVdPRDdIMk5SVVdBTU82WExaS0lER1VXWUVYQ1pHNUQ2TiIsIm5hdHMiOnsibGltaXRzIjp7InN1YnMiOi0xLCJkYXRhIjotMSwicGF5bG9hZCI6LTEsImltcG9ydHMiOi0xLCJleHBvcnRzIjotMSwid2lsZGNhcmRzIjp0cnVlLCJjb25uIjotMSwibGVhZiI6LTF9LCJkZWZhdWx0X3Blcm1pc3Npb25zIjp7InB1YiI6e30sInN1YiI6e319LCJ0eXBlIjoiYWNjb3VudCIsInZlcnNpb24iOjJ9fQ.J7g73TEn-ZT13owq4cVWl4l0hZnGK4DJtH2WWOZmGbefcCQ1xsx4cIagKc1cZTCwUpELVAYnSkmPp4LsQOspBg
+```
+
+Finally, using a local port-forward make it possible to establish a connection to one of the servers and upload the accounts.
+
+```sh
+nsc push --system-account SYS -u nats://localhost:4222 -A 
+[ OK ] push to nats-server "nats://localhost:4222" using system account "SYS":
+       [ OK ] push JS1 to nats-server with nats account resolver:
+              [ OK ] pushed "JS1" to nats-server nats-0: jwt updated
+              [ OK ] pushed "JS1" to nats-server nats-1: jwt updated
+              [ OK ] pushed "JS1" to nats-server nats-2: jwt updated
+              [ OK ] pushed to a total of 3 nats-server
+```
+
+Now you should be able to use JetStream and the NATS based account resolver:
+
+```sh
+nats stream ls -s localhost --creds ./nsc/nkeys/creds/KO/JS1/js-user.creds
+No Streams defined
+```
+
 ## Misc
 
 ### NATS Box

@@ -394,56 +394,54 @@ data:
     #                #
     ##################
     {{- if .Values.auth.resolver }}
-
-    {{- if eq .Values.auth.resolver.type "memory" }}
-    resolver: MEMORY
-    include "accounts/{{ .Values.auth.resolver.configMap.key }}"
-    {{- end }}
-
-    {{- if eq .Values.auth.resolver.type "full" }}
-    {{- if .Values.auth.resolver.configMap }}
-    include "accounts/{{ .Values.auth.resolver.configMap.key }}"
-    {{- else }}
-
-    {{- with .Values.auth.resolver }}
-    {{- if $.Values.auth.timeout }}
-    authorization {
-      timeout: {{ $.Values.auth.timeout }}
-    }
-    {{- end }}
-
-    {{- if .operator }}
-    operator: {{ .operator }}
-    {{- end }}
-
-    {{- if .systemAccount }}
-    system_account: {{ .systemAccount }}
-    {{- end }}
-    {{- end }}
-
-    resolver: {
-      type: full
-      {{- with .Values.auth.resolver }}
-      dir: {{ .store.dir | quote }}
-
-      allow_delete: {{ .allowDelete }}
-
-      interval: {{ .interval | quote }}
+      {{- if eq .Values.auth.resolver.type "memory" }}
+        resolver: MEMORY
+        include "accounts/{{ .Values.auth.resolver.configMap.key }}"
       {{- end }}
-    }
-    {{- end }}
-    {{- end }}
 
-    {{- if .Values.auth.resolver.resolverPreload }}
-    resolver_preload: {{ toRawJson .Values.auth.resolver.resolverPreload }}
-    {{- end }}
+      {{- if eq .Values.auth.resolver.type "full" }}
+        {{- if .Values.auth.resolver.configMap }}
+        include "accounts/{{ .Values.auth.resolver.configMap.key }}"
+        {{- else }}
+          {{- with .Values.auth.resolver }}
+            {{- if $.Values.auth.timeout }}
+            authorization {
+              timeout: {{ $.Values.auth.timeout }}
+             }
+            {{- end }}
 
-    {{- if eq .Values.auth.resolver.type "URL" }}
-    {{- with .Values.auth.resolver.url }}
-    resolver: URL({{ . }})
-    {{- end }}
-    operator: /etc/nats-config/operator/{{ .Values.auth.operatorjwt.configMap.key }}
-    {{- end }}
+            {{- if .operator }}
+            operator: {{ .operator }}
+            {{- end }}
+
+            {{- if .systemAccount }}
+            system_account: {{ .systemAccount }}
+            {{- end }}
+          {{- end }}
+
+          resolver: {
+            type: full
+            {{- with .Values.auth.resolver }}
+            dir: {{ .store.dir | quote }}
+
+            allow_delete: {{ .allowDelete }}
+
+            interval: {{ .interval | quote }}
+            {{- end }}
+          }
+        {{- end }}
+      {{- end }}
+
+      {{- if .Values.auth.resolver.resolverPreload }}
+      resolver_preload: {{ toRawJson .Values.auth.resolver.resolverPreload }}
+      {{- end }}
+
+      {{- if eq .Values.auth.resolver.type "URL" }}
+        {{- with .Values.auth.resolver.url }}
+        resolver: URL({{ . }})
+        {{- end }}
+        operator: /etc/nats-config/operator/{{ .Values.auth.operatorjwt.configMap.key }}
+      {{- end }}
     {{- end }}
 
     {{- with .Values.auth.systemAccount }}
@@ -453,6 +451,7 @@ data:
     {{- with .Values.auth.token }}
     authorization {
       token: "{{ . }}"
+
 
       {{- if $.Values.auth.timeout }}
       timeout: {{ $.Values.auth.timeout }}
