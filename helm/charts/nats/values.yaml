@@ -4,7 +4,7 @@
 #                             #
 ###############################
 nats:
-  image: nats:2.5.0-alpine
+  image: nats:2.6.1-alpine
   pullPolicy: IfNotPresent
 
   # Toggle profiling.

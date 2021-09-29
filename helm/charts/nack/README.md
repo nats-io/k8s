@@ -40,10 +40,16 @@ natsbox:
 ```
 
 ```sh
-helm install nack nats/nats -f deploy-nats.yaml
+helm install nats nats/nats -f deploy-nats.yaml
 ```
 
-Now install the JetStream CRDs and Controller:
+Now install the JetStream CRDs and Controller.  In case of using credentials, you need to make them available as a secret:
+
+```sh
+kubectl create secret generic nats-user-creds --from-file ./nsc/nkeys/creds/KO/JS1/js.creds
+```
+
+Then deploy:
 
 ```yaml
 jetstream:
