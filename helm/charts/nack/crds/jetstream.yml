@@ -23,6 +23,20 @@ spec:
           spec:
             type: object
             properties:
+              servers:
+                description: A list of servers for creating stream
+                type: array
+                items:
+                  type: string
+                default: []
+              creds:
+                description: NATS user credentials for connecting to servers. Please make sure your controller has mounted the cerds on its path.
+                type: string
+                default: ''
+              nkey:
+                description: NATS user NKey for connecting to servers.
+                type: string
+                default: ''
               name:
                 description: A unique name for the Stream.
                 type: string
@@ -146,6 +160,21 @@ spec:
                       type: string
                     externalDeliverPrefix:
                       type: string
+              tls:
+                description: A client's TLS certs and keys.
+                type: object
+                properties:
+                  clientCert:
+                    description: A client's cert filepath. Should be mounted.
+                    type: string
+                  clientKey:
+                    description: A client's key filepath. Should be mounted.
+                    type: string
+                  rootCas:
+                    description: A list of filepaths to CAs. Should be mounted.
+                    type: array
+                    items:
+                      type: string
           status:
             type: object
             properties:
@@ -204,6 +233,20 @@ spec:
           spec:
             type: object
             properties:
+              servers:
+                description: A list of servers for creating consumer
+                type: array
+                items:
+                  type: string
+                default: []
+              creds:
+                description: NATS user credentials for connecting to servers. Please make sure your controller has mounted the cerds on its path.
+                type: string
+                default: ''
+              nkey:
+                description: NATS user NKey for connecting to servers.
+                type: string
+                default: ''
               streamName:
                 description: The name of the Stream to create the Consumer in.
                 type: string
@@ -279,6 +322,21 @@ spec:
               heartbeatInterval:
                 description: The interval used to deliver idle heartbeats for push-based consumers, in Go's time.Duration format.
                 type: string
+              tls:
+                description: A client's TLS certs and keys.
+                type: object
+                properties:
+                  clientCert:
+                    description: A client's cert filepath. Should be mounted.
+                    type: string
+                  clientKey:
+                    description: A client's key filepath. Should be mounted.
+                    type: string
+                  rootCas:
+                    description: A list of filepaths to CAs. Should be mounted.
+                    type: array
+                    items:
+                      type: string
           status:
             type: object
             properties:
@@ -341,6 +399,20 @@ spec:
           spec:
             type: object
             properties:
+              servers:
+                description: A list of servers for creating stream
+                type: array
+                items:
+                  type: string
+                default: []
+              creds:
+                description: NATS user credentials for connecting to servers. Please make sure your controller has mounted the cerds on its path.
+                type: string
+                default: ''
+              nkey:
+                description: NATS user NKey for connecting to servers.
+                type: string
+                default: ''
               name:
                 description: A unique name for the Stream Template.
                 type: string
