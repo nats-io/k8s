@@ -49,6 +49,35 @@ spec:
           secretName: {{ .Values.jetstream.nats.credentials.secret.name }}
       {{- end }}
 
+      {{- if .Values.jetstream.accounts }}
+      {{- range $key, $value := .Values.jetstream.accounts }}
+        {{- with $value.creds }}
+      - name: {{ $key }}-creds-volume
+        secret:
+          secretName: {{ .secret.name }}
+        {{- end }}
+
+        {{- with $value.nkey }}
+      - name: {{ $key }}-nkey-volume
+        secret:
+          secretName: {{ .secret.name }}
+        {{- end }}
+
+        {{- if $value.certs }}
+        {{- with $value.certs.ca }}
+      - name: {{ $key }}-ca-volume
+        secret:
+          secretName: {{ .secret.name }}
+        {{- end }}
+        {{- with $value.certs.client }}
+      - name: {{ $key }}-client-tls-volume
+        secret:
+          secretName: {{ .secret.name }}
+        {{- end }}
+        {{- end}}
+      {{- end }}
+      {{- end }}
+
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -110,4 +139,26 @@ spec:
           - name: jsc-sys-creds
             mountPath: /etc/jsc-creds
           {{- end }}
+
+          {{- if .Values.jetstream.accounts }}
+          {{- range $key, $value := .Values.jetstream.accounts }}
+            {{- with $value.creds }}
+          - name: {{ $key }}-creds-volume
+            mountPath: /etc/creds/{{ $key }}
+            {{- end}}
+
+            {{- if $value.certs }}
+            {{- with $value.certs.ca }}
+          - name: {{ $key }}-ca-volume
+            mountPath: /etc/certs/ca/{{ $key }}
+            {{- end }}
+            {{- with $value.certs.client }}
+          - name: {{ $key }}-client-tls-volume
+            mountPath: /etc/certs/client/{{ $key }}
+            {{- end }}
+            {{- end}}
+
+          {{- end }}
+          {{- end }}
+
 {{- end }}
