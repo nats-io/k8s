@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "nats-kafka.labels" . | nindent 4 }}
     {{- if .Values.natskafka.deploymentLabels }}
-    {{ toYaml .Values.natskafka.deploymentLabels | nindent 4 }}
+    {{- toYaml .Values.natskafka.deploymentLabels | nindent 4 }}
     {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -17,7 +17,7 @@ spec:
       labels:
         {{- include "nats-kafka.selectorLabels" . | nindent 8 }}
         {{- if .Values.natskafka.podLabels }}
-        {{ toYaml .Values.natskafka.podLabels | nindent 8 }}
+        {{- toYaml .Values.natskafka.podLabels | nindent 8 }}
         {{- end }}
     spec:
       containers:
@@ -33,15 +33,15 @@ spec:
               readOnly: true
             {{ end }}
             {{- if .Values.natskafka.additionalVolumeMounts }}
-              {{- toYaml .Values.deployment.additionalVolumeMounts | nindent 12 }}
+              {{- toYaml .Values.natskafka.additionalVolumeMounts | nindent 12 }}
             {{- end }}
           command:
             - "nats-kafka"
             - "-c"
             - {{ default "/etc/nats-kafka/nats-kafka.conf" .Values.natskafka.configPath }}
-          {{- if .Values.additionalArguments }}
+          {{- if .Values.natskafka.additionalArguments }}
           args:
-            {{- with .Values.additionalArguments }}
+            {{- with .Values.natskafka.additionalArguments }}
             {{- range . }}
             - {{ . | quote }}
             {{- end }}
@@ -71,5 +71,5 @@ spec:
             secretName: {{ .Values.natskafka.monitoring.tls.secret }}
         {{ end }}
         {{- if .Values.natskafka.additionalVolumes }}
-          {{- toYaml .Values.deployment.additionalVolumes | nindent 8 }}
+          {{- toYaml .Values.natskafka.additionalVolumes | nindent 8 }}
         {{- end }}
