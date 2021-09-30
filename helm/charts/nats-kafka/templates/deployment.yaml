@@ -33,7 +33,7 @@ spec:
               readOnly: true
             {{ end }}
             {{- if .Values.natskafka.additionalVolumeMounts }}
-              {{- toYaml .Values.deployment.additionalVolumeMounts | nindent 12 }}
+              {{- toYaml .Values.natskafka.additionalVolumeMounts | nindent 12 }}
             {{- end }}
           command:
             - "nats-kafka"
@@ -71,5 +71,5 @@ spec:
             secretName: {{ .Values.natskafka.monitoring.tls.secret }}
         {{ end }}
         {{- if .Values.natskafka.additionalVolumes }}
-          {{- toYaml .Values.deployment.additionalVolumes | nindent 8 }}
+          {{- toYaml .Values.natskafka.additionalVolumes | nindent 8 }}
         {{- end }}
