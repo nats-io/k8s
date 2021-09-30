@@ -100,6 +100,7 @@ spec:
           command:
           - /jetstream-controller
           - -s={{ .Values.jetstream.nats.url }}
+          - -crd-connect={{ .Values.jetstream.crdConnect }}
           {{- with .Values.jetstream.nats.credentials }}
           - --creds=/etc/jsc-creds/{{ .secret.key }}
           {{- end }}
