@@ -39,9 +39,9 @@ spec:
             - "nats-kafka"
             - "-c"
             - {{ default "/etc/nats-kafka/nats-kafka.conf" .Values.natskafka.configPath }}
-          {{- if .Values.additionalArguments }}
+          {{- if .Values.natskafka.additionalArguments }}
           args:
-            {{- with .Values.additionalArguments }}
+            {{- with .Values.natskafka.additionalArguments }}
             {{- range . }}
             - {{ . | quote }}
             {{- end }}
