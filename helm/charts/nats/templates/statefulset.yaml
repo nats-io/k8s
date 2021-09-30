@@ -38,7 +38,7 @@ spec:
       labels:
         {{- include "nats.selectorLabels" . | nindent 8 }}
         {{- if .Values.statefulSetPodLabels }}
-        {{ toYaml .Values.statefulSetPodLabels | indent 8 }}
+        {{ toYaml .Values.statefulSetPodLabels | nindent 8 }}
         {{- end }}
     spec:
 {{- with .Values.imagePullSecrets }}
