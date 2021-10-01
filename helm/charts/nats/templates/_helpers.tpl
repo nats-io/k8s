@@ -46,7 +46,7 @@ Selector labels
 */}}
 {{- define "nats.selectorLabels" -}}
 {{- if .Values.nats.selectorLabels }}
-{{ .Values.nats.selectorLabels | toYaml }}
+{{ tpl (toYaml .Values.nats.selectorLabels) . }}
 {{- else }}
 app.kubernetes.io/name: {{ include "nats.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
