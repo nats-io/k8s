@@ -32,7 +32,7 @@ Common labels
 {{- define "nats.labels" -}}
 helm.sh/chart: {{ include "nats.chart" . }}
 {{- range $name, $value := .Values.commonLabels }}
-{{ $name }}: {{ $value }}
+{{ $name }}: {{ tpl $value $ }}
 {{- end }}
 {{ include "nats.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
