@@ -48,10 +48,6 @@ nats:
 
   resources: {}
 
-  # Explicitly set routes for clustering.
-  # When JetStream is enabled, the serverName must be unique in the cluster.
-  extraRoutes: []
-
   # Server settings.
   limits:
     maxConnections:
@@ -249,6 +245,11 @@ cluster:
   enabled: false
   replicas: 3
   noAdvertise: false
+
+  # Explicitly set routes for clustering.
+  # When JetStream is enabled, the serverName must be unique in the cluster.
+  extraRoutes: []
+
   # authorization:
   #   user: foo
   #   password: pwd
