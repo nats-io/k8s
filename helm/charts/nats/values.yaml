@@ -7,6 +7,9 @@ nats:
   image: nats:2.6.1-alpine
   pullPolicy: IfNotPresent
 
+  # The servers name, shows up in logging.
+  serverName: ""
+
   # Toggle profiling.
   # This enables nats-server pprof (profiling) port, so you can see goroutines
   # stacks, memory heap sizes, etc.
@@ -242,6 +245,11 @@ cluster:
   enabled: false
   replicas: 3
   noAdvertise: false
+
+  # Explicitly set routes for clustering.
+  # When JetStream is enabled, the serverName must be unique in the cluster.
+  extraRoutes: []
+
   # authorization:
   #   user: foo
   #   password: pwd
