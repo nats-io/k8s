@@ -288,6 +288,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: SERVER_NAME
+          value: {{ .Values.nats.serverNamePrefix }}$(POD_NAME)
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:

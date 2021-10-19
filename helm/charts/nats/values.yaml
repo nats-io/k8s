@@ -7,8 +7,8 @@ nats:
   image: nats:2.6.1-alpine
   pullPolicy: IfNotPresent
 
-  # The servers name, shows up in logging.
-  serverName: ""
+  # The servers name prefix, shows up in logging.
+  serverNamePrefix: ""
 
   # Toggle profiling.
   # This enables nats-server pprof (profiling) port, so you can see goroutines
