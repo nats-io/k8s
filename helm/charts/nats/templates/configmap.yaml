@@ -17,7 +17,7 @@ data:
     #             #
     ###############
     http: 8222
-    server_name:  {{- if .Values.nats.serverNamePrefix  }}$SERVER_NAME{{- else }}$POD_NAME{{- end }}
+    server_name: {{- if .Values.nats.serverNamePrefix  }}$SERVER_NAME{{- else }}$POD_NAME{{- end }}
 
     {{- if .Values.nats.tls }}
     #####################
