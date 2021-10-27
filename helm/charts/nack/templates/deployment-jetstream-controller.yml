@@ -1,4 +1,3 @@
-{{- if .Values.jetstream.nats.url }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -70,7 +69,11 @@ spec:
           image: {{ .Values.jetstream.image }}
           command:
           - /jetstream-controller
+          {{- if .Values.jetstream.nats.url }}
           - -s={{ .Values.jetstream.nats.url }}
+          {{- else }}
+          - -crd-connect
+          {{- end }}
           {{- with .Values.jetstream.nats.credentials }}
           - --creds=/etc/jsc-creds/{{ .secret.key }}
           {{- end }}
@@ -110,4 +113,3 @@ spec:
           - name: jsc-sys-creds
             mountPath: /etc/jsc-creds
           {{- end }}
-{{- end }}

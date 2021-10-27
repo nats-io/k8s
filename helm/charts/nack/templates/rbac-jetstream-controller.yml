@@ -1,4 +1,3 @@
-{{- if .Values.jetstream.nats.url }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -22,6 +21,14 @@ rules:
   - update
   - patch
 - apiGroups:
+  - ''
+  resources:
+  - secrets
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
   - jetstream.nats.io
   resources:
   - streams
@@ -30,6 +37,7 @@ rules:
   - consumers/status
   - streamtemplates
   - streamtemplates/status
+  - accounts
   verbs:
   - create
   - get
@@ -69,6 +77,14 @@ rules:
   - update
   - patch
 - apiGroups:
+  - ''
+  resources:
+  - secrets
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
   - jetstream.nats.io
   resources:
   - streams
@@ -77,6 +93,7 @@ rules:
   - consumers/status
   - streamtemplates
   - streamtemplates/status
+  - accounts
   verbs:
   - create
   - get
@@ -99,5 +116,4 @@ roleRef:
   kind: ClusterRole
   name: {{ template "jsc.serviceAccountName" . }}-cluster-role
   apiGroup: rbac.authorization.k8s.io
-{{- end }}
 {{- end }}
