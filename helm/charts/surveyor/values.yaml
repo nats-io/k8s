@@ -72,6 +72,12 @@ config:
   # Required.
   servers: "nats://nats:4222"
 
+  # Polling timeout
+  timeout: 3s
+
+  # Expected number of servers
+  expectedServers: 1
+
   # Required if auth is enabled.
   credentials:
     secret:
