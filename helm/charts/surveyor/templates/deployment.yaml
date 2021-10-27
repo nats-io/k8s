@@ -43,6 +43,14 @@ spec:
            {{- with .servers }}
             - -s={{ . }}
            {{- end }}
+
+           {{- with .timeout }}
+            - -timeout={{ . }}
+           {{- end}}
+
+           {{- with .expectedServers }}
+            - -c={{ . }}
+           {{- end}}
            {{- end }}
           ports:
             - name: http
