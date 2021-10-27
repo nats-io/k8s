@@ -46,11 +46,17 @@ spec:
 
            {{- with .timeout }}
             - -timeout={{ . }}
-           {{- end}}
+           {{- end }}
 
            {{- with .expectedServers }}
             - -c={{ . }}
-           {{- end}}
+           {{- end }}
+           
+           {{- with .tls }}
+            - -tlscacert=/etc/nats-certs/clients/{{ .ca }}
+            - -tlskey=/etc/nats-certs/clients/{{ .key }}
+            - -tlscert=/etc/nats-certs/clients/{{ .cert }}
+           {{- end }}
            {{- end }}
           ports:
             - name: http
@@ -65,14 +71,26 @@ spec:
               path: /metrics
               port: http
           volumeMounts:
+            {{- with .Values.config.credentials }}
             - name: creds
-              mountPath: "/creds/"
+              mountPath: /creds/
               readOnly: true
+            {{- end }}
+            {{- with .Values.config.tls }}
+            - name: {{ .secret.name }}-volume
+              mountPath: /etc/nats-certs/clients/
+              readOnly: true
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         {{- with .Values.config.credentials }}
         - name: creds
+          secret:
+            secretName: {{ .secret.name }}
+        {{- end }}
+        {{- with .Values.config.tls }}
+        - name: {{ .secret.name }}-volume
           secret:
             secretName: {{ .secret.name }}
         {{- end }}

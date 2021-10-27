@@ -79,7 +79,15 @@ config:
   expectedServers: 1
 
   # Required if auth is enabled.
-  credentials:
-    secret:
-      name: nats-sys-creds
-      key: sys.creds
+  # credentials:
+  #   secret:
+  #     name: nats-sys-creds
+  #     key: sys.creds
+
+  # Required if tls is enabled.
+  # tls:
+  #    secret:
+  #      name: nats-client-tls
+  #    ca: "ca.crt"
+  #    cert: "tls.crt"
+  #    key: "tls.key"
