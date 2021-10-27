@@ -38,7 +38,7 @@ spec:
       labels:
         {{- include "nats.selectorLabels" . | nindent 8 }}
         {{- if .Values.statefulSetPodLabels }}
-        {{- toYaml .Values.statefulSetPodLabels | nindent 8 }}
+        {{- tpl (toYaml .Values.statefulSetPodLabels) . | nindent 8 }}
         {{- end }}
     spec:
 {{- with .Values.imagePullSecrets }}
@@ -170,6 +170,11 @@ spec:
         secret:
           secretName: {{ .secret.name }}
       {{- end }}
+      {{- with .tls }}
+      - name: {{ .secret.name }}-volume
+        secret:
+          secretName: {{ .secret.name }}
+      {{- end }}
       {{- end }}
       {{- end }}
 
@@ -288,6 +293,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: SERVER_NAME
+          value: {{ .Values.nats.serverNamePrefix }}$(POD_NAME)
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -390,6 +397,10 @@ spec:
           {{- with .credentials }}
           - name: {{ .secret.name }}-volume
             mountPath: /etc/nats-creds/{{ .secret.name }}
+          {{- end }}
+          {{- with .tls }}
+          - name: {{ .secret.name }}-volume
+            mountPath: /etc/nats-certs/leafnodes/{{ .secret.name }}
           {{- end }}
           {{- end }}
           {{- end }}

@@ -17,7 +17,7 @@ data:
     #             #
     ###############
     http: 8222
-    server_name: $POD_NAME
+    server_name: {{- if .Values.nats.serverNamePrefix  }}$SERVER_NAME{{- else }}$POD_NAME{{- end }}
 
     {{- if .Values.nats.tls }}
     #####################
@@ -134,6 +134,7 @@ data:
 
       routes = [
         {{ include "nats.clusterRoutes" . }}
+        {{ include "nats.extraRoutes" . }}
       ]
       cluster_advertise: $CLUSTER_ADVERTISE
 

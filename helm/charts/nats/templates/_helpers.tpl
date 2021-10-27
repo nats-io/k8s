@@ -32,7 +32,7 @@ Common labels
 {{- define "nats.labels" -}}
 helm.sh/chart: {{ include "nats.chart" . }}
 {{- range $name, $value := .Values.commonLabels }}
-{{ $name }}: {{ $value }}
+{{ $name }}: {{ tpl $value $ }}
 {{- end }}
 {{ include "nats.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
@@ -46,7 +46,7 @@ Selector labels
 */}}
 {{- define "nats.selectorLabels" -}}
 {{- if .Values.nats.selectorLabels }}
-{{ .Values.nats.selectorLabels | toYaml }}
+{{ tpl (toYaml .Values.nats.selectorLabels) . }}
 {{- else }}
 app.kubernetes.io/name: {{ include "nats.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
@@ -71,6 +71,11 @@ Return the NATS cluster routes.
 {{- end -}}
 {{- end }}
 
+{{- define "nats.extraRoutes" -}}
+{{- range $i, $url := .Values.cluster.extraRoutes -}}
+{{- printf "%s," $url -}}
+{{- end -}}
+{{- end }}
 
 {{- define "nats.tlsConfig" -}}
 tls {
