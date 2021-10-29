@@ -67,6 +67,7 @@ spec:
       containers:
         - name: jsc
           image: {{ .Values.jetstream.image }}
+          imagePullPolicy: {{ .Values.jetstream.pullPolicy }}
           command:
           - /jetstream-controller
           {{- if .Values.jetstream.nats.url }}
