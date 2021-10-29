@@ -2,6 +2,27 @@ apiVersion: v1
 entries:
   nack:
   - apiVersion: v2
+    appVersion: 0.6.0
+    created: "2021-10-29T15:56:04.678388-07:00"
+    description: A Helm chart for NACK
+    digest: a39db19f4c389096fbf300b1c7ec9d5f6e7d6225778e684fdbab6b2c4871d28c
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - jetstream
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+    - email: jaime@nats.io
+      name: Jaime Piña
+      url: https://github.com/variadico
+    name: nack
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.9.2/nack-0.9.2.tgz
+    version: 0.9.2
+  - apiVersion: v2
     appVersion: 0.5.0
     created: "2021-09-29T10:54:50.146099-07:00"
     description: A Helm chart for NACK
@@ -121,6 +142,17 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.6.0/nack-0.6.0.tgz
     version: 0.6.0
+  nats-kafka:
+  - apiVersion: v2
+    appVersion: 0.2.1
+    created: "2021-10-29T16:02:54.023266-07:00"
+    description: A multi-connector bridge between NATS and Kafka.
+    digest: ebc92f4e3d7c4b651268ee0f573a6ab9e5e999bada94e7cf525a9a12c607a4bb
+    name: nats-kafka
+    type: application
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.9.2/nats-kafka-0.9.2.tgz
+    version: 0.9.2
   nats-operator:
   - apiVersion: v2
     appVersion: 0.7.4
@@ -150,6 +182,32 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.7.2/nats-operator-0.7.4.tgz
     version: 0.7.4
   nats:
+  - apiVersion: v2
+    appVersion: 2.6.3
+    created: "2021-10-29T15:56:04.752928-07:00"
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
+      Communications Technology.
+    digest: d8a05b909ff718a4a8f7149fa728cf670d40dde290e9076e51f1b98099043475
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+    - email: colin@nats.io
+      name: Colin Sullivan
+      url: https://github.com/ColinSullivan1
+    - email: jaime@nats.io
+      name: Jaime Piña
+      url: https://github.com/variadico
+    name: nats
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.9.2/nats-0.9.2.tgz
+    version: 0.9.2
   - apiVersion: v2
     appVersion: 2.6.1
     created: "2021-09-29T10:54:50.225792-07:00"
@@ -747,6 +805,37 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/nats-0.2.0.tgz
     version: 0.2.0
   stan:
+  - apiVersion: v2
+    appVersion: 0.23.0
+    created: "2021-10-29T16:02:54.08127-07:00"
+    description: A Helm chart for NATS Streaming
+    digest: b01ee74036863967410139c6453f5800d92bdb8848ef8da6cf2be43cbed2bbc1
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - streaming
+    - stan
+    - delivery
+    - ratelimit
+    - replay
+    - statefulset
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+    - email: colin@nats.io
+      name: Colin Sullivan
+      url: https://github.com/ColinSullivan1
+    - email: jaime@nats.io
+      name: Jaime Piña
+      url: https://github.com/variadico
+    - name: rchenzheng
+      url: https://github.com/rchenzheng
+    name: stan
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.9.2/stan-0.9.2.tgz
+    version: 0.9.2
   - apiVersion: v2
     appVersion: 0.22.1
     created: "2021-09-29T10:54:50.280137-07:00"
@@ -1409,4 +1498,15 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.0/nats-account-server-0.3.0.tgz
     version: 0.3.0
+  surveyor:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2021-10-29T16:02:54.081757-07:00"
+    description: NATS Monitoring, Simplified.
+    digest: 71e4d183831140cb3ce010d8329b3bc0c16f9e116d2b04fbd31fcbac9d7f4ddd
+    name: surveyor
+    type: application
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.9.2/surveyor-0.9.2.tgz
+    version: 0.9.2
 generated: "2020-10-05T12:58:26.609239-08:00"
