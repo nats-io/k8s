@@ -91,3 +91,14 @@ config:
   #    ca: "ca.crt"
   #    cert: "tls.crt"
   #    key: "tls.key"
+
+  jetstream:
+    enabled: false
+    # accounts:
+    # - name: test
+    #   tls:
+    #     secret:
+    #       name: test-user-tls
+    #     ca: "ca.crt"
+    #     cert: "tls.crt"
+    #     key: "tls.key"

@@ -1,0 +1,20 @@
+{{- if .Values.config.jetstream.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nats-surveyor-accounts
+  labels:
+    {{- include "surveyor.labels" . | nindent 4 }}
+data:
+  {{- range .Values.config.jetstream.accounts }}
+  {{ .name }}.json: |
+    {
+      "name": "{{ .name }}",
+      {{- if .tls }}
+      "tls_ca": "/etc/nats-certs/accounts/{{ .name }}/{{ .tls.ca }}",
+      "tls_cert": "/etc/nats-certs/accounts/{{ .name }}/{{ .tls.cert }}",
+      "tls_key": "/etc/nats-certs/accounts/{{ .name }}/{{ .tls.key }}"
+      {{- end }}
+    }
+  {{- end }}
+{{- end }}
