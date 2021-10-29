@@ -51,12 +51,16 @@ spec:
            {{- with .expectedServers }}
             - -c={{ . }}
            {{- end }}
-           
+
            {{- with .tls }}
             - -tlscacert=/etc/nats-certs/clients/{{ .ca }}
             - -tlskey=/etc/nats-certs/clients/{{ .key }}
             - -tlscert=/etc/nats-certs/clients/{{ .cert }}
            {{- end }}
+           {{- end }}
+
+           {{- if .Values.config.jetstream.enabled }}
+            - -jetstream=/jetstream
            {{- end }}
           ports:
             - name: http
@@ -64,11 +68,7 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /metrics
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /metrics
+              path: /healthz
               port: http
           volumeMounts:
             {{- with .Values.config.credentials }}
@@ -80,6 +80,23 @@ spec:
             - name: {{ .secret.name }}-volume
               mountPath: /etc/nats-certs/clients/
               readOnly: true
+            {{- end }}
+
+            {{- if .Values.config.jetstream.enabled }}
+            {{- with .Values.config.jetstream.accounts }}
+
+            {{- range . }}
+            # Mount every account tls certificate
+            {{- if .tls }}
+            - name: {{ .tls.secret.name }}-volume
+              mountPath: /etc/nats-certs/accounts/{{ .name }}
+            {{- end }}
+            {{- end }}
+
+            # Mount accounts configmap
+            - name: accounts-config-map
+              mountPath: /jetstream
+            {{- end }}
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -94,6 +111,26 @@ spec:
           secret:
             secretName: {{ .secret.name }}
         {{- end }}
+
+        {{- if .Values.config.jetstream.enabled }}
+        {{- with .Values.config.jetstream.accounts }}
+
+        {{- range . }}
+        # Mount every account tls certificate
+        {{- with .tls }}
+        - name: {{ .secret.name }}-volume
+          secret:
+            secretName: {{ .secret.name }}
+        {{- end }}
+        {{- end }}
+
+        # Mount accounts configmap
+        - name: accounts-config-map
+          configMap:
+            name: nats-surveyor-accounts
+        {{- end }}
+        {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
