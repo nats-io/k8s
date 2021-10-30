@@ -5,7 +5,7 @@
 ###############################
 jetstream:
   enabled: true
-  image: natsio/jetstream-controller:0.5.0
+  image: natsio/jetstream-controller:0.6.0
   pullPolicy: IfNotPresent
   replicas: 1
 

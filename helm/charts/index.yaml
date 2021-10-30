@@ -5,7 +5,7 @@ entries:
     appVersion: 0.6.0
     created: "2021-10-29T15:56:04.678388-07:00"
     description: A Helm chart for NACK
-    digest: a39db19f4c389096fbf300b1c7ec9d5f6e7d6225778e684fdbab6b2c4871d28c
+    digest: b90b4f3a0451babd5d6feeb11d23c07fc5cc5cfed8da0e09a633c7c8f7dafeac
     icon: https://nats.io/img/nats-icon-color.png
     keywords:
     - nats
