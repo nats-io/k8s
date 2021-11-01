@@ -487,6 +487,9 @@ spec:
         {{- if .Values.nats.jetstream.enabled }}
         - -jsz=all
         {{- end }}
+        {{- if .Values.leafnodes.enabled }}
+        - -leafz
+        {{- end }}
         - http://localhost:8222/
         ports:
         - containerPort: 7777
