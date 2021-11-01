@@ -102,6 +102,10 @@ spec:
                 - {{ template "stan.name" . }}
             topologyKey: kubernetes.io/hostname
         {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      {{- end }}
       containers:
         ####################
         #  NATS Streaming  #
