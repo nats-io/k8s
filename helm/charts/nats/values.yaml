@@ -396,7 +396,7 @@ reloader:
 # Prometheus NATS Exporter configuration.
 exporter:
   enabled: true
-  image: natsio/prometheus-nats-exporter:0.8.0
+  image: natsio/prometheus-nats-exporter:0.9.0
   pullPolicy: IfNotPresent
   securityContext: {}
   resources: {}
