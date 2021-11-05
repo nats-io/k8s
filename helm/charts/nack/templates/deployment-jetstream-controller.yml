@@ -104,7 +104,10 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
           {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.secretName }}
           - name: jsc-client-tls-volume
