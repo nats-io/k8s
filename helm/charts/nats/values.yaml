@@ -38,10 +38,6 @@ nats:
   # The number of connect attempts against discovered routes.
   connectRetries: 120
 
-  # How many seconds should pass before sending a PING
-  # to a client that has no activity.
-  pingInterval:
-
   # selector matchLabels for the server and service.
   # If left empty defaults are used.
   # This is helpful if you are updating from Chart version <=7.4
@@ -59,6 +55,10 @@ nats:
     writeDeadline:
     maxPending:
     maxPings:
+    
+    # How many seconds should pass before sending a PING
+    # to a client that has no activity.
+    pingInterval:
 
     # NOTE: this should be at least the same as 'terminationGracePeriodSeconds'
     lameDuckDuration: "120s"
