@@ -23,7 +23,8 @@ In this repo you can find the Helm 3 based [charts](https://github.com/nats-io/k
 NAME          	URL 
 nats          	https://nats-io.github.io/k8s/helm/charts/
 
-> helm install my-nats nats/nats helm install my-stan nats/stan --set stan.nats.url=nats://my-nats:4222
+> helm install my-nats nats/nats
+> helm install my-stan nats/stan --set stan.nats.url=nats://my-nats:4222
 ```
 
 ## License
