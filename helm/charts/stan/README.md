@@ -539,7 +539,22 @@ securityContext:
   runAsUser: 1000
   runAsNonRoot: true
 ```
+#### Tolerations
 
+<https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/>
+
+
+```yaml
+tolerations:
+- key: "key1"
+  operator: "Equal"
+  value: "value1"
+  effect: "NoSchedule"
+- key: "key1"
+  operator: "Equal"
+  value: "value1"
+  effect: "NoExecute"
+```
 #### Affinity
 
 <https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity>
