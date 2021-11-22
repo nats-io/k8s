@@ -245,6 +245,12 @@ serviceAnnotations: {}
 # additionalContainers are the sidecar containers to add to the NATS StatefulSet
 additionalContainers: []
 
+# additionalVolumes are the additional volumes to add to the NATS StatefulSet
+additionalVolumes: []
+
+# additionalVolumeMounts are the additional volume mounts to add to the nats-server and nats-server-config-reloader containers
+additionalVolumeMounts: []
+
 cluster:
   enabled: false
   replicas: 3
