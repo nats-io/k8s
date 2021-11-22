@@ -395,6 +395,7 @@ reloader:
   image: natsio/nats-server-config-reloader:0.6.2
   pullPolicy: IfNotPresent
   securityContext: {}
+  extraConfigs: []
 
 # Prometheus NATS Exporter configuration.
 exporter:

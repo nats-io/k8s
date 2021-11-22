@@ -455,6 +455,10 @@ spec:
          - "/var/run/nats/nats.pid"
          - "-config"
          - "/etc/nats-config/nats.conf"
+        {{- range .Values.reloader.extraConfigs }}
+         - "-config"
+         - {{ . | quote }}
+        {{- end }}
         volumeMounts:
           - name: config-volume
             mountPath: /etc/nats-config
