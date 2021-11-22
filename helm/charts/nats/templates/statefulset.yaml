@@ -496,6 +496,10 @@ spec:
           name: metrics
       {{ end }}
 
+      {{- if .Values.additionalContainers }}
+        {{- toYaml .Values.additionalContainers | nindent 6 }}
+      {{- end }}
+
   volumeClaimTemplates:
   {{- if eq .Values.auth.resolver.type "full" }}
   {{- if and .Values.auth.resolver .Values.auth.resolver.store }}
