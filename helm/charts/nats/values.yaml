@@ -4,7 +4,7 @@
 #                             #
 ###############################
 nats:
-  image: nats:2.6.3-alpine
+  image: nats:2.6.5-alpine
   pullPolicy: IfNotPresent
 
   # The servers name prefix, must be used for example when we want a NATS cluster
