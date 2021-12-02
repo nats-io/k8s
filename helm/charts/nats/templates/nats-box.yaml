@@ -108,8 +108,4 @@ spec:
         - name: {{ $secretName }}-clients-volume
           mountPath: /etc/nats-certs/clients/{{ $secretName }}
         {{- end }}
-{{- with .Values.securityContext }}
-      securityContext:
-{{ toYaml . | indent 8 }}
-{{- end }}
 {{- end }}
