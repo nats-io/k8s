@@ -183,6 +183,32 @@ entries:
     version: 0.7.4
   nats:
   - apiVersion: v2
+    appVersion: 2.6.5
+    created: "2021-12-02T13:33:09.844776-08:00"
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
+      Communications Technology.
+    digest: 31b72c74bdef3b806a64b36be9a5baa241fd7ba8a141958ea80879635698376d
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+    - email: colin@nats.io
+      name: Colin Sullivan
+      url: https://github.com/ColinSullivan1
+    - email: jaime@nats.io
+      name: Jaime Piña
+      url: https://github.com/variadico
+    name: nats
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.10.0/nats-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v2
     appVersion: 2.6.3
     created: "2021-10-29T15:56:04.752928-07:00"
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
@@ -805,6 +831,37 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/nats-0.2.0.tgz
     version: 0.2.0
   stan:
+  - apiVersion: v2
+    appVersion: 0.23.0
+    created: "2021-12-02T13:33:09.939381-08:00"
+    description: A Helm chart for NATS Streaming
+    digest: 5f6ead54230275e7bbe58f354bd1f13b3a03b1e6f3b56b75c306f8eae4478a4c
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - streaming
+    - stan
+    - delivery
+    - ratelimit
+    - replay
+    - statefulset
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+    - email: colin@nats.io
+      name: Colin Sullivan
+      url: https://github.com/ColinSullivan1
+    - email: jaime@nats.io
+      name: Jaime Piña
+      url: https://github.com/variadico
+    - name: rchenzheng
+      url: https://github.com/rchenzheng
+    name: stan
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.10.0/stan-0.10.0.tgz
+    version: 0.10.0
   - apiVersion: v2
     appVersion: 0.23.0
     created: "2021-10-29T16:02:54.08127-07:00"
