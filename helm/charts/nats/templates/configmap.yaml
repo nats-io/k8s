@@ -11,6 +11,22 @@ data:
     # PID file shared with configuration reloader.
     pid_file: "/var/run/nats/nats.pid"
 
+
+    {{- if .Values.nats.conf }}
+    ###########
+    #         #
+    # Imports #
+    #         #
+    ###########
+    {{- with .Values.nats.conf }}
+    {{- range . }}
+    import ./{{ . }}.conf
+    {{- end}}
+    {{- end }}
+
+
+    {{- end }}
+
     ###############
     #             #
     # Monitoring  #

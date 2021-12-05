@@ -82,6 +82,27 @@ nats:
   # 
   # customConfigSecret:
   #  name:
+  #
+  # Alternately, the generated config can be extended with extra imports using the below syntax.
+  # The benefit of this is that cluster settings can be built up via helm values, but external
+  # secrets can be referenced and imported alongside it.
+  #
+  # config:
+  #   <name-of-config-item>:
+  #     <configMap|secret>
+  #       name: "<configMap|secret name>"
+  #
+  # e.g:
+  #
+  # config:
+  #   auth:
+  #     configMap:
+  #       name: "nats-auth-configmap"
+  config:
+   - auth:
+     configMap:
+       mountPath: /p
+
 
   jetstream:
     enabled: false
