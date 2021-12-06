@@ -94,14 +94,13 @@ nats:
   #
   # e.g:
   #
-  # config:
-  #   auth:
-  #     configMap:
-  #       name: "nats-auth-configmap"
-  config:
-   - auth:
-     configMap:
-       mountPath: /p
+  #  config:
+  #    - name: ssh-key
+  #      secret:
+  #        secretName: ssh-key
+  #    - name: config-vol
+  #      configMap:
+  #        name: log-config
 
 
   jetstream:
