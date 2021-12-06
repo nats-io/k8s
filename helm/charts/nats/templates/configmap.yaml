@@ -10,21 +10,16 @@ data:
   nats.conf: |
     # PID file shared with configuration reloader.
     pid_file: "/var/run/nats/nats.pid"
-
-
-    {{- if .Values.nats.conf }}
+    
+    {{- if .Values.nats.config }}
     ###########
     #         #
     # Imports #
     #         #
     ###########
-    {{- with .Values.nats.conf }}
-    {{- range . }}
-    import ./{{ . }}.conf
+    {{- range .Values.nats.config }}
+    include ./{{ .name }}/{{ .name }}.conf
     {{- end}}
-    {{- end }}
-
-
     {{- end }}
 
     ###############

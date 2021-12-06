@@ -88,6 +88,14 @@ spec:
           name: {{ include "nats.fullname" . }}-config
         {{ end }}
 
+      {{/* User extended config volumes*/}}
+      {{- if .Values.nats.config }}
+      # User extended config volumes
+      {{- with .Values.nats.config }}
+        {{- . | toYaml | nindent 6 }}
+      {{- end }}
+      {{- end }}
+  
       # Local volume shared with the reloader.
       - name: pid
         emptyDir: {}
@@ -323,6 +331,14 @@ spec:
             name: advertiseconfig
             subPath: advertise
           {{- end }}
+
+          {{/* User extended config volumes*/}}
+          {{- range .Values.nats.config }}
+          # User extended config volumes
+          - name: {{ .name }}
+            mountPath: /etc/nats-config/{{ .name }}
+          {{- end }}
+
 
           {{- if and .Values.auth.enabled .Values.auth.resolver }}
           {{- if eq .Values.auth.resolver.type "memory" }}
