@@ -242,6 +242,15 @@ statefulSetPodLabels: {}
 # Annotations to add to the NATS Service
 serviceAnnotations: {}
 
+# additionalContainers are the sidecar containers to add to the NATS StatefulSet
+additionalContainers: []
+
+# additionalVolumes are the additional volumes to add to the NATS StatefulSet
+additionalVolumes: []
+
+# additionalVolumeMounts are the additional volume mounts to add to the nats-server and nats-server-config-reloader containers
+additionalVolumeMounts: []
+
 cluster:
   enabled: false
   replicas: 3
@@ -392,6 +401,7 @@ reloader:
   image: natsio/nats-server-config-reloader:0.6.2
   pullPolicy: IfNotPresent
   securityContext: {}
+  extraConfigs: []
 
 # Prometheus NATS Exporter configuration.
 exporter:
