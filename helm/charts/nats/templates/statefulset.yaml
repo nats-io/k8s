@@ -188,7 +188,9 @@ spec:
       {{- end }}
       {{- end }}
 
+      {{- if .Values.additionalVolumes }}
       {{- toYaml .Values.additionalVolumes | nindent 6 }}
+      {{- end }}
 
       {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
       # Assume that we only use the service account in case we want to
@@ -429,7 +431,9 @@ spec:
           {{- end }}
           {{- end }}
 
+          {{- if .Values.additionalVolumeMounts }}
           {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
+          {{- end }}
 
         # Liveness/Readiness probes against the monitoring.
         #
@@ -490,7 +494,9 @@ spec:
             mountPath: /etc/nats-config
           - name: pid
             mountPath: /var/run/nats
+          {{- if .Values.additionalVolumeMounts }}
           {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
+          {{- end }}
       {{ end }}
 
       ##############################
