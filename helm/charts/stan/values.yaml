@@ -97,6 +97,13 @@ securityContext: null
 # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+# Pod Topology Spread Constraints
+# ref https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+topologySpreadConstraints: []
+# - maxSkew: 1
+#   topologyKey: zone
+#   whenUnsatisfiable: DoNotSchedule
+
 # Resource requests and limits for primary stan container
 # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 resources: {}
