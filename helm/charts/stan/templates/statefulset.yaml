@@ -110,6 +110,22 @@ spec:
       tolerations:
         {{- toYaml .Values.tolerations | nindent 8 }}
       {{- end }}
+      {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- range .Values.topologySpreadConstraints }}
+      {{- if and .maxSkew .topologyKey }}
+      - maxSkew: {{ .maxSkew }}
+        topologyKey: {{ .topologyKey }}
+        {{- if .whenUnsatisfiable }}
+        whenUnsatisfiable: {{ .whenUnsatisfiable }}
+        {{- end }}
+        labelSelector:
+          matchLabels:
+            app: {{ template "stan.name" $ }}
+            chart: {{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
       containers:
         ####################
         #  NATS Streaming  #

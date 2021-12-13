@@ -71,7 +71,7 @@ spec:
         labelSelector:
           matchLabels:
             {{- include "nats.selectorLabels" $ | nindent 12 }}
-      {{- end}}
+      {{- end }}
       {{- end }}
 {{- end }}
 {{- if .Values.priorityClassName }}
