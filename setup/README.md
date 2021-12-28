@@ -1,7 +1,7 @@
 # NATS Setup
 
 The `setup.sh` script found at the root of the repository will run a
-`nats-setup` container image which will deploy a secure NATS cluster 
+`nats-setup` container image which will deploy a secure NATS cluster
 of three with allowed external access.
 
 ### Running the script locally
@@ -18,11 +18,12 @@ source .env
 
 Usage: ./setup/nats-setup.sh [options]
 
-    --without-tls             Setup the cluster without TLS enabled
-    --without-auth            Setup the cluster without Auth enabled
-    --without-surveyor        Skips installing NATS surveyor
-    --without-cert-manager    Skips installing the cert manager component
-    --without-nats-streaming  Setup the cluster without NATS Streaming
+    -n, --namespace <namespace>  Setup the cluster in the specified namespace
+    --without-tls                Setup the cluster without TLS enabled
+    --without-auth               Setup the cluster without Auth enabled
+    --without-surveyor           Skips installing NATS surveyor
+    --without-cert-manager       Skips installing the cert manager component
+    --without-nats-streaming     Setup the cluster without NATS Streaming
 ```
 
 ### Building nats-setup container image

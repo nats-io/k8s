@@ -38,6 +38,8 @@ NSC_DIR=${DEFAULT_NSC_DIR:=$(pwd)/nsc}
 
 SKIP_NSC_DIR_CHOWN=${DEFAULT_SKIP_NSC_DIR_CHOWN:=false}
 
+NATS_NAMESPACE=""
+
 export NATS_CONFIG_HOME=$NSC_DIR/config
 
 export NKEYS_PATH=$NSC_DIR/nkeys
@@ -48,7 +50,7 @@ kctl() {
         i=0
         until [ $i -ge 10 ]
         do
-                kubectl "$@" && break
+                kubectl "${NATS_NAMESPACE} $@" && break
                 i=$((i+1))
 
                 if [ "$i" -ge 2 ]; then
@@ -166,11 +168,12 @@ install_nats_streaming_with_auth() {
 show_usage() {
     echo "Usage: $0 [options]
 
-    --without-tls             Setup the cluster without TLS enabled
-    --without-auth            Setup the cluster in insecure mode (also disables TLS)
-    --without-surveyor        Skips installing NATS surveyor
-    --without-cert-manager    Skips installing the cert manager component
-    --without-nats-streaming  Setup the cluster without NATS Streaming
+    -n, --namespace <namespace>  Setup the cluster in the specified namespace
+    --without-tls                Setup the cluster without TLS enabled
+    --without-auth               Setup the cluster in insecure mode (also disables TLS)
+    --without-surveyor           Skips installing NATS surveyor
+    --without-cert-manager       Skips installing the cert manager component
+    --without-nats-streaming     Setup the cluster without NATS Streaming
 "
 }
 
@@ -194,6 +197,10 @@ main() {
                         -h)
                                 show_usage
                                 exit 0
+                                ;;
+                        -n|--namespace)
+                                NATS_NAMESPACE=" -n $2"
+                                shift
                                 ;;
                         --without-surveyor)
                                 # In case of deploying multiple clusters, only need a single instance.
@@ -314,7 +321,7 @@ main() {
         echo "You can now start receiving and sending messages using "
         echo "the nats-box instance deployed into your namespace:"
         echo
-        echo -e "  ${CYAN}kubectl exec -it nats-box -- /bin/sh -l ${NC}"
+        echo -e "  ${CYAN}kubectl${NATS_NAMESPACE} exec -it nats-box -- /bin/sh -l ${NC}"
         echo
         if [ $with_auth = true ]; then
                 echo "Using the test account user:"
@@ -359,7 +366,7 @@ main() {
         if [ $with_surveyor = true ]; then
                 echo "You can also connect to your monitoring dashboard:"
                 echo -e " ${CYAN}"
-                echo "  kubectl port-forward deployments/nats-surveyor-grafana 3000:3000"
+                echo "  kubectl${NATS_NAMESPACE} port-forward deployments/nats-surveyor-grafana 3000:3000"
                 echo -e " ${NC}"
                 echo "Then open the following in your browser:"
                 echo -e " ${CYAN}"
