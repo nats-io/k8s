@@ -131,7 +131,7 @@ store:
 
 ```yaml
 stan:
-  image: nats-streaming:0.18.0
+  image: nats-streaming:0.23.0
   pullPolicy: IfNotPresent
 ```
 
@@ -358,7 +358,7 @@ Example that will back up the file store when operating in clustered mode:
 
 ```yaml
 stan:
-  image: nats-streaming:0.18.0-alpine
+  image: nats-streaming:0.23.0-alpine
 store:
   limits:
     max_msgs: 5
