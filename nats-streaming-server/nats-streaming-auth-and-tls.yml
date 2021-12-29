@@ -149,7 +149,7 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 5
       - name: metrics
-        image: synadia/prometheus-nats-exporter:0.6.0
+        image: natsio/prometheus-nats-exporter:0.9.0
         args:
         - -connz
         - -routez
