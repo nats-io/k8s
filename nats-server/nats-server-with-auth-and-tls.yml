@@ -145,7 +145,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: spec.nodeName
-        image: connecteverything/nats-boot-config:0.5.2
+        image: natsio/nats-boot-config:0.5.4
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - mountPath: /etc/nats-config/advertise
@@ -247,7 +247,7 @@ spec:
       #                               #
       #################################
       - name: reloader
-        image: connecteverything/nats-server-config-reloader:0.6.0
+        image: natsio/nats-server-config-reloader:0.6.2
         command:
          - "nats-server-config-reloader"
          - "-pid"
@@ -270,7 +270,7 @@ spec:
       #                            #
       ##############################
       - name: metrics
-        image: synadia/prometheus-nats-exporter:0.5.0
+        image: natsio/prometheus-nats-exporter:0.9.0
         args:
         - -connz
         - -routez
