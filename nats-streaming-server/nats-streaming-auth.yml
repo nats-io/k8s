@@ -88,7 +88,7 @@ spec:
       # STAN Server
       containers:
       - name: stan
-        image: nats-streaming:0.16.2
+        image: nats-streaming:0.23.0
         ports:
         - containerPort: 8222
           name: monitor
