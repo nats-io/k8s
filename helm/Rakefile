@@ -4,7 +4,7 @@ require 'yaml'
 require 'digest'
 require 'time'
 
-VERSION = "0.10.0"
+VERSION = "0.11.0"
 CHARTS = ["nats", "stan", "nack", "nats-kafka"]
 URL = "https://github.com/nats-io/k8s/releases/download/v#{VERSION}/"
 
