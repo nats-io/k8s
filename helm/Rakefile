@@ -1,0 +1,76 @@
+# encoding: UTF-8
+require 'rake'
+require 'yaml'
+require 'digest'
+require 'time'
+
+VERSION = "0.10.0"
+CHARTS = ["nats", "stan", "nack", "nats-kafka"]
+URL = "https://github.com/nats-io/k8s/releases/download/v#{VERSION}/"
+
+desc 'packages a chart'
+task 'helm:package', :chart do |t, args|
+  chart = args[:chart]
+  charts = if chart.nil?
+             CHARTS
+           elsif not CHARTS.include? chart
+             raise "Invalid chart '#{chart}', has to be one of: #{CHARTS}"
+           else
+             [chart]
+           end
+  charts.each do |chart|
+    chart_path = "charts/#{chart}/Chart.yaml"
+    puts "=== Updating '#{chart_path}' (version: #{VERSION})"
+
+    f = File.read(chart_path, encoding: 'utf-8')
+    yml = YAML.load(f)
+    yml["version"] = VERSION
+    of = File.open(chart_path, 'w')
+    of.write(yml.to_yaml)
+    of.close
+
+    Dir.chdir "charts" do |dir|
+      o = `helm package #{chart}`
+      puts "#{o}"
+      puts
+    end
+  end
+end
+
+task 'helm:index', :chart do |t, args|
+  o = File.read("charts/index.yaml")
+  yaml = YAML.load(o)
+  chart = args[:chart]
+  charts = if chart.nil?
+             CHARTS
+           elsif not CHARTS.include? chart
+             raise "Invalid chart '#{chart}', has to be one of: #{CHARTS}"
+           else
+             [chart]
+           end
+
+  charts.each do |chart|
+    releases = yaml['entries'][chart]
+
+    # Find a release with the same version as latest.
+    ok = releases.select { |release| release['version'] == VERSION }
+    next unless ok.empty?
+
+    chart_path = "charts/#{chart}/Chart.yaml"
+    f = File.read(chart_path, encoding: 'utf-8')
+    chart_yaml = YAML.load(f)
+
+    package_name = "#{chart}-#{VERSION}.tgz"
+    sha256 = Digest::SHA256.file "charts/#{package_name}"
+    digest = sha256.hexdigest
+    chart_yaml['digest'] = digest
+    chart_yaml['urls'] = [URL + package_name]
+    chart_yaml['created'] = Time.now.iso8601(6)
+    releases.insert(0, chart_yaml)
+  end
+  yaml['generated'] = Time.now.iso8601(6)
+
+  of = File.open("charts/index.yaml", 'w')
+  of.write(yaml.to_yaml)
+  of.close
+end

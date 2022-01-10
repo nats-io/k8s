@@ -1,9 +1,10 @@
+---
 apiVersion: v1
 entries:
   nack:
   - apiVersion: v2
     appVersion: 0.6.0
-    created: "2021-10-29T15:56:04.678388-07:00"
+    created: '2021-10-29T15:56:04.678388-07:00'
     description: A Helm chart for NACK
     digest: b90b4f3a0451babd5d6feeb11d23c07fc5cc5cfed8da0e09a633c7c8f7dafeac
     icon: https://nats.io/img/nats-icon-color.png
@@ -24,7 +25,7 @@ entries:
     version: 0.9.2
   - apiVersion: v2
     appVersion: 0.5.0
-    created: "2021-09-29T10:54:50.146099-07:00"
+    created: '2021-09-29T10:54:50.146099-07:00'
     description: A Helm chart for NACK
     digest: fd9a082aa71920e5b554c92f87c25a8b50d545585445c1b1da83b4626c5c5c5c
     icon: https://nats.io/img/nats-icon-color.png
@@ -45,7 +46,7 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: 0.4.0
-    created: "2021-09-17T14:27:36.322171-07:00"
+    created: '2021-09-17T14:27:36.322171-07:00'
     description: A Helm chart for NACK
     digest: 134f0897d22a76520e6a4aca3697859bbc414c62c05bdb97c5f21943a9b6f219
     icon: https://nats.io/img/nats-icon-color.png
@@ -66,7 +67,7 @@ entries:
     version: 0.8.9
   - apiVersion: v2
     appVersion: 0.4.0
-    created: "2021-08-17T14:27:36.322171-07:00"
+    created: '2021-08-17T14:27:36.322171-07:00'
     description: A Helm chart for NACK
     digest: ccd71c0bf1e30416bdb959bee2d30ebc8764993608c04aba919eb0aa2e4c538d
     icon: https://nats.io/img/nats-icon-color.png
@@ -87,7 +88,7 @@ entries:
     version: 0.8.7
   - apiVersion: v2
     appVersion: 0.3.0
-    created: "2021-05-11T10:21:31.086957-07:00"
+    created: '2021-05-11T10:21:31.086957-07:00'
     description: A Helm chart for NACK
     digest: dcc966db5e5d90f5b6e0300f9ad0f402348836e4c0766b84f27a6e8b8334ef24
     icon: https://nats.io/img/nats-icon-color.png
@@ -106,7 +107,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: 0.2.0
-    created: "2020-11-04T11:39:46.05421-08:00"
+    created: '2020-11-04T11:39:46.05421-08:00'
     description: A Helm chart for NACK
     digest: f289313842b5613f83d2bdc3c9f8c00c0be6d0e35c5d0a075be1074d71f9a3e0
     icon: https://nats.io/img/nats-icon-color.png
@@ -125,7 +126,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2020-10-07T07:35:30.794425-07:00"
+    created: '2020-10-07T07:35:30.794425-07:00'
     description: A Helm chart for NACK
     digest: af8d25b6f3a51c35d6fd8b40b67317fb4039fc5791930ee03582c28688fa7870
     icon: https://nats.io/img/nats-icon-color.png
@@ -145,7 +146,7 @@ entries:
   nats-kafka:
   - apiVersion: v2
     appVersion: 0.2.1
-    created: "2021-10-29T16:02:54.023266-07:00"
+    created: '2021-10-29T16:02:54.023266-07:00'
     description: A multi-connector bridge between NATS and Kafka.
     digest: ebc92f4e3d7c4b651268ee0f573a6ab9e5e999bada94e7cf525a9a12c607a4bb
     name: nats-kafka
@@ -156,7 +157,7 @@ entries:
   nats-operator:
   - apiVersion: v2
     appVersion: 0.7.4
-    created: "2020-11-10T11:29:23.706158-08:00"
+    created: '2020-11-10T11:29:23.706158-08:00'
     description: NATS operator creates/configures/manages nats clusters atop Kubernetes
     digest: 2e83d6d8c5681e97c65a7b8e6d2870135c25f2c35f8f3795fd517b233c48d3d8
     home: https://github.com/nats-io/nats-operator
@@ -184,7 +185,7 @@ entries:
   nats:
   - apiVersion: v2
     appVersion: 2.6.5
-    created: "2021-12-02T13:33:09.844776-08:00"
+    created: '2021-12-02T13:33:09.844776-08:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 31b72c74bdef3b806a64b36be9a5baa241fd7ba8a141958ea80879635698376d
@@ -210,7 +211,7 @@ entries:
     version: 0.10.0
   - apiVersion: v2
     appVersion: 2.6.3
-    created: "2021-10-29T15:56:04.752928-07:00"
+    created: '2021-10-29T15:56:04.752928-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: d8a05b909ff718a4a8f7149fa728cf670d40dde290e9076e51f1b98099043475
@@ -236,7 +237,7 @@ entries:
     version: 0.9.2
   - apiVersion: v2
     appVersion: 2.6.1
-    created: "2021-09-29T10:54:50.225792-07:00"
+    created: '2021-09-29T10:54:50.225792-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 23a70e10ab513af51488f763100b223284d44971261177e0f7a722758c662add
@@ -262,33 +263,33 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: 2.5.0
-    created: "2021-09-14T17:53:30.869646746+01:00"
+    created: '2021-09-14T17:53:30.869646746+01:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 919cb716b5b445467ec5d9da40c9ea85038e5b065e94a6186a32a5b36f357496
     home: http://github.com/nats-io/k8s
     icon: https://nats.io/img/nats-icon-color.png
     keywords:
-      - nats
-      - messaging
-      - cncf
+    - nats
+    - messaging
+    - cncf
     maintainers:
-      - email: wally@nats.io
-        name: Waldemar Quevedo
-        url: https://github.com/wallyqs
-      - email: colin@nats.io
-        name: Colin Sullivan
-        url: https://github.com/ColinSullivan1
-      - email: jaime@nats.io
-        name: Jaime Piña
-        url: https://github.com/variadico
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+    - email: colin@nats.io
+      name: Colin Sullivan
+      url: https://github.com/ColinSullivan1
+    - email: jaime@nats.io
+      name: Jaime Piña
+      url: https://github.com/variadico
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.9/nats-0.8.9.tgz
     version: 0.8.9
   - apiVersion: v2
     appVersion: 2.3.4
-    created: "2021-08-19T14:27:36.356311-07:00"
+    created: '2021-08-19T14:27:36.356311-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 907517f072c0d7b72ee6e46721b8737d8316380088b50d9685a27dad78d8098a
@@ -314,7 +315,7 @@ entries:
     version: 0.8.8
   - apiVersion: v2
     appVersion: 2.3.4
-    created: "2021-08-17T14:27:36.356311-07:00"
+    created: '2021-08-17T14:27:36.356311-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: eb178e088519dae69a1d825831cacaa1bbb9ec65e661c0028f809f3da4735702
@@ -340,7 +341,7 @@ entries:
     version: 0.8.7
   - apiVersion: v2
     appVersion: 2.3.4
-    created: "2021-08-13T06:53:17.857519-07:00"
+    created: '2021-08-13T06:53:17.857519-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: b896b88944167113e1345a830c875703e7f510a81a941677724b185fd535e6fa
@@ -366,7 +367,7 @@ entries:
     version: 0.8.6
   - apiVersion: v2
     appVersion: 2.3.2
-    created: "2021-07-19T08:05:38.037499-07:00"
+    created: '2021-07-19T08:05:38.037499-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 2a77afd55fd4d8ff9da89a72b11ec9a60fcf44add02a4daf04472717e55cfb25
@@ -389,7 +390,7 @@ entries:
     version: 0.8.4
   - apiVersion: v2
     appVersion: 2.3.1
-    created: "2021-07-01T12:38:06.324485-07:00"
+    created: '2021-07-01T12:38:06.324485-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 6140acbe49801072c05fb0b99c5e9f69a201a8c1b3d80d2a102dc61c4df6ceed
@@ -412,7 +413,7 @@ entries:
     version: 0.8.2
   - apiVersion: v2
     appVersion: 2.2.3
-    created: "2021-05-11T10:24:20.873855-07:00"
+    created: '2021-05-11T10:24:20.873855-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 5fa3d9189e0df168caab14fa56a23b2a4c39252fd29a2f87c638febf2c0ee8ad
@@ -435,7 +436,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: 2.1.9
-    created: "2020-12-04T09:34:09.654791-08:00"
+    created: '2020-12-04T09:34:09.654791-08:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 4b76d161be29c8ea599f10579f204a8bd8969cc5f96cf48030299bcd3c86ac42
@@ -456,7 +457,7 @@ entries:
     version: 0.7.5
   - apiVersion: v2
     appVersion: 2.1.9
-    created: "2020-11-30T12:12:52.503324-08:00"
+    created: '2020-11-30T12:12:52.503324-08:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: f65d10a6e6ba8209340dda5490d8247b9ecf6febe49448428eaa8c0fd9a677da
@@ -477,7 +478,7 @@ entries:
     version: 0.7.4
   - apiVersion: v2
     appVersion: 2.1.9
-    created: "2020-11-10T11:29:23.700452-08:00"
+    created: '2020-11-10T11:29:23.700452-08:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 3371f5ea8c3251336073d9c04147e2a23ee3a76f9b7a71969d2de98e22755be9
@@ -498,7 +499,7 @@ entries:
     version: 0.7.2
   - apiVersion: v2
     appVersion: 2.1.9
-    created: "2020-11-04T11:39:46.104659-08:00"
+    created: '2020-11-04T11:39:46.104659-08:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 0ee861b8d59245fbf47ae1df3524b85eaf1e36c817ca583fd7fc1b846895acc1
@@ -519,7 +520,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: 2.1.8
-    created: "2020-10-12T10:57:00.063589-07:00"
+    created: '2020-10-12T10:57:00.063589-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 21bad6b7df7d897ace10498f70932d41db66d15d2f99b20128ef36ddb26abc61
@@ -540,7 +541,7 @@ entries:
     version: 0.6.2
   - apiVersion: v2
     appVersion: 2.1.8
-    created: "2020-10-07T07:35:30.840941-07:00"
+    created: '2020-10-07T07:35:30.840941-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 8202f77547fbe67e1be7145844fa8a672200217b548f39f4e2f98576559727ff
@@ -561,7 +562,7 @@ entries:
     version: 0.6.0
   - apiVersion: v2
     appVersion: 2.1.8
-    created: "2020-09-28T15:03:27.312011-07:00"
+    created: '2020-09-28T15:03:27.312011-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 4588dd15fb5b1faa777fd4450a8d0822757960d97890ba89dd5bdf91a70dd9ba
@@ -582,7 +583,7 @@ entries:
     version: 0.5.6
   - apiVersion: v2
     appVersion: 2.1.8
-    created: "2020-09-04T14:47:19.15453-07:00"
+    created: '2020-09-04T14:47:19.15453-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: ac974dcf144ec23bd945fdef2a1b07a8b8a455f2406d0c4381a1fa50b27d80dd
@@ -603,7 +604,7 @@ entries:
     version: 0.5.2
   - apiVersion: v2
     appVersion: 2.1.7
-    created: "2020-07-19T17:33:58.473762-07:00"
+    created: '2020-07-19T17:33:58.473762-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 9c473ace4a024496ecae799543a60b6eef996cdab2a6d98fcec289fdcef6a402
@@ -624,7 +625,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 2.1.7
-    created: "2020-06-19T22:47:01.762232-07:00"
+    created: '2020-06-19T22:47:01.762232-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: c6fb648be370c789c55e4583703d4216203e894c6f168a13029462869f2c4150
@@ -645,7 +646,7 @@ entries:
     version: 0.4.2
   - apiVersion: v2
     appVersion: 2.1.7
-    created: "2020-05-26T14:33:09.666462-07:00"
+    created: '2020-05-26T14:33:09.666462-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 522cd28e983f0982fc3e65158a65d90131eb75e036cf6173f27969baa3d25709
@@ -666,7 +667,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 2.1.6
-    created: "2020-05-05T14:33:09.666462-07:00"
+    created: '2020-05-05T14:33:09.666462-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 3a949a823e9007d037eedf69cae803f0355385fcfce4538343eca46f96cf7a84
@@ -687,7 +688,7 @@ entries:
     version: 0.3.10
   - apiVersion: v2
     appVersion: 2.1.6
-    created: "2020-04-16T09:24:30.920477-07:00"
+    created: '2020-04-16T09:24:30.920477-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 6104712edce733b977b98663e48367ddfd4c782b93779e59b4e84eb7918b2ee3
@@ -705,10 +706,10 @@ entries:
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.8/nats-0.3.8.tgz
-    version: 0.3.8    
+    version: 0.3.8
   - apiVersion: v2
     appVersion: 2.1.6
-    created: "2020-04-10T16:35:36.998121-07:00"
+    created: '2020-04-10T16:35:36.998121-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 77d03a9ff6450d8d5a65670844c0d523702b744d9fe26a650167ff3464fbd61f
@@ -729,7 +730,7 @@ entries:
     version: 0.3.6
   - apiVersion: v2
     appVersion: 2.1.6
-    created: "2020-04-03T11:38:30.685897-07:00"
+    created: '2020-04-03T11:38:30.685897-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 2667916f7b18047b5015c065828bf61e06916228c287e88e573623e36ddc4d3a
@@ -750,7 +751,7 @@ entries:
     version: 0.3.4
   - apiVersion: v2
     appVersion: 2.1.6
-    created: "2020-04-03T08:25:32.302616-07:00"
+    created: '2020-04-03T08:25:32.302616-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 633b48eb980b00659579739ff6b32c7576c7ecc339533b92d70a062ea4c85961
@@ -771,7 +772,7 @@ entries:
     version: 0.3.2
   - apiVersion: v2
     appVersion: 2.1.6
-    created: "2020-04-02T21:20:08.662671-07:00"
+    created: '2020-04-02T21:20:08.662671-07:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 51d30784678c99981f47d76bc0f697b95b201feaefbc73d81c6cefae028960fb
@@ -792,7 +793,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 2.1.4
-    created: "2020-03-04T12:58:26.614467-08:00"
+    created: '2020-03-04T12:58:26.614467-08:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 508e43d33272c1bb98f60b730188015feac4b26102fc5a1133cd4258506b1342
@@ -813,7 +814,7 @@ entries:
     version: 0.2.2
   - apiVersion: v2
     appVersion: 2.1.4
-    created: "2020-03-04T12:58:26.613712-08:00"
+    created: '2020-03-04T12:58:26.613712-08:00'
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
     digest: 055fba444015ba5e7af72be94e37d29a02efe124a0baff0fdb8aa52d1bc1ed97
@@ -833,7 +834,7 @@ entries:
   stan:
   - apiVersion: v2
     appVersion: 0.23.0
-    created: "2021-12-02T13:33:09.939381-08:00"
+    created: '2021-12-02T13:33:09.939381-08:00'
     description: A Helm chart for NATS Streaming
     digest: 5f6ead54230275e7bbe58f354bd1f13b3a03b1e6f3b56b75c306f8eae4478a4c
     icon: https://nats.io/img/nats-icon-color.png
@@ -864,7 +865,7 @@ entries:
     version: 0.10.0
   - apiVersion: v2
     appVersion: 0.23.0
-    created: "2021-10-29T16:02:54.08127-07:00"
+    created: '2021-10-29T16:02:54.08127-07:00'
     description: A Helm chart for NATS Streaming
     digest: b01ee74036863967410139c6453f5800d92bdb8848ef8da6cf2be43cbed2bbc1
     icon: https://nats.io/img/nats-icon-color.png
@@ -895,7 +896,7 @@ entries:
     version: 0.9.2
   - apiVersion: v2
     appVersion: 0.22.1
-    created: "2021-09-29T10:54:50.280137-07:00"
+    created: '2021-09-29T10:54:50.280137-07:00'
     description: A Helm chart for NATS Streaming
     digest: 589b561af9e32e8b5cc34d53d68b3a5ea94d0b43dbfc6b919662dce07eb87125
     icon: https://nats.io/img/nats-icon-color.png
@@ -926,7 +927,7 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: 0.22.1
-    created: "2021-09-16T14:27:36.380326-07:00"
+    created: '2021-09-16T14:27:36.380326-07:00'
     description: A Helm chart for NATS Streaming
     digest: f847e000a2e09aafa48c04cce50eba94c0b481fbc91d30804da4dc5e25c849e7
     icon: https://nats.io/img/nats-icon-color.png
@@ -955,7 +956,7 @@ entries:
     version: 0.8.9
   - apiVersion: v2
     appVersion: 0.22.1
-    created: "2021-08-17T14:27:36.380326-07:00"
+    created: '2021-08-17T14:27:36.380326-07:00'
     description: A Helm chart for NATS Streaming
     digest: cacef80f69e5b76825ac17f588cf2d961467e8968ada436f1c63edb0978d96d1
     icon: https://nats.io/img/nats-icon-color.png
@@ -986,7 +987,7 @@ entries:
     version: 0.8.7
   - apiVersion: v2
     appVersion: 0.21.2
-    created: "2021-05-11T10:21:31.198283-07:00"
+    created: '2021-05-11T10:21:31.198283-07:00'
     description: A Helm chart for NATS Streaming
     digest: e20c44c50de9c89b9709dbca87bb20e1b11edfb4f24cfe16f18c683603d3965f
     icon: https://nats.io/img/nats-icon-color.png
@@ -1013,7 +1014,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: 0.19.0
-    created: "2020-11-30T12:12:52.540281-08:00"
+    created: '2020-11-30T12:12:52.540281-08:00'
     description: A Helm chart for NATS Streaming
     digest: 14f09d416c3d95d782cb0181139bd0722d0f623f2933fb9b91c9f0c253692677
     icon: https://nats.io/img/nats-icon-color.png
@@ -1040,7 +1041,7 @@ entries:
     version: 0.7.4
   - apiVersion: v2
     appVersion: 0.19.0
-    created: "2020-11-10T11:29:23.73921-08:00"
+    created: '2020-11-10T11:29:23.73921-08:00'
     description: A Helm chart for NATS Streaming
     digest: 8c7f359800d2d745c94f7571599c2b81f26a96e62c0bbc2f88622987733e949b
     icon: https://nats.io/img/nats-icon-color.png
@@ -1067,7 +1068,7 @@ entries:
     version: 0.7.2
   - apiVersion: v2
     appVersion: 0.19.0
-    created: "2020-11-04T11:39:46.14427-08:00"
+    created: '2020-11-04T11:39:46.14427-08:00'
     description: A Helm chart for NATS Streaming
     digest: 28529ccc74fd3d6210e438779d11d03a059c0f747f0a0398a6f712a69bc0c337e
     icon: https://nats.io/img/nats-icon-color.png
@@ -1094,7 +1095,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: 0.18.0
-    created: "2020-10-12T10:57:00.084544-07:00"
+    created: '2020-10-12T10:57:00.084544-07:00'
     description: A Helm chart for NATS Streaming
     digest: dc076d3b4bef0fd4bbc6a612c536a787ff68e9d3432a8e9e7577955e2afef85d
     icon: https://nats.io/img/nats-icon-color.png
@@ -1121,7 +1122,7 @@ entries:
     version: 0.6.2
   - apiVersion: v2
     appVersion: 0.18.0
-    created: "2020-10-07T07:35:30.867743-07:00"
+    created: '2020-10-07T07:35:30.867743-07:00'
     description: A Helm chart for NATS Streaming
     digest: 2d3a7f0d5d31afe946b941c662594527718abbdb81133c63216fbf520288e9eb
     icon: https://nats.io/img/nats-icon-color.png
@@ -1148,7 +1149,7 @@ entries:
     version: 0.6.0
   - apiVersion: v2
     appVersion: 0.18.0
-    created: "2020-09-28T15:21:44.878607-07:00"
+    created: '2020-09-28T15:21:44.878607-07:00'
     description: A Helm chart for NATS Streaming
     digest: 2651e4faf7d75948d6a19d16ed0c479d70b809143d588a8370fbd4d7b1957401
     icon: https://nats.io/img/nats-icon-color.png
@@ -1173,7 +1174,7 @@ entries:
     version: 0.5.6
   - apiVersion: v2
     appVersion: 0.18.0
-    created: "2020-09-14T16:43:26.649389-07:00"
+    created: '2020-09-14T16:43:26.649389-07:00'
     description: A Helm chart for NATS Streaming
     digest: a1d0914434a48d5234d704456b6fc758cf63ccf7e2481c1af86299eb0c5bafb2
     icon: https://nats.io/img/nats-icon-color.png
@@ -1198,7 +1199,7 @@ entries:
     version: 0.5.4
   - apiVersion: v2
     appVersion: 0.18.0
-    created: "2020-09-04T14:47:19.163319-07:00"
+    created: '2020-09-04T14:47:19.163319-07:00'
     description: A Helm chart for NATS Streaming
     digest: bc2142852510f7d55a1965ec6727891913bc9178723e95eb9c7a538229ba5cc7
     icon: https://nats.io/img/nats-icon-color.png
@@ -1223,7 +1224,7 @@ entries:
     version: 0.5.2
   - apiVersion: v2
     appVersion: 0.18.0
-    created: "2020-07-19T17:33:58.481928-07:00"
+    created: '2020-07-19T17:33:58.481928-07:00'
     description: A Helm chart for NATS Streaming
     digest: 87ef88ff707ec6caea703afd528a6b6074f6d785cb93557ac55de711c22c92ba
     icon: https://nats.io/img/nats-icon-color.png
@@ -1248,7 +1249,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 0.17.0
-    created: "2020-06-19T22:47:01.783453-07:00"
+    created: '2020-06-19T22:47:01.783453-07:00'
     description: A Helm chart for NATS Streaming
     digest: a5e37654a4a51ca85c50026b3863ed16da809bcb55aadcdf202d0c0d6d3f3b56
     icon: https://nats.io/img/nats-icon-color.png
@@ -1273,7 +1274,7 @@ entries:
     version: 0.4.2
   - apiVersion: v2
     appVersion: 0.17.0
-    created: "2020-05-26T14:33:09.693566-07:00"
+    created: '2020-05-26T14:33:09.693566-07:00'
     description: A Helm chart for NATS Streaming
     digest: e4ae73570d3ed6e340c5489c01b4643ac65efec30880d2aa2cb2d6f8f0483df6
     icon: https://nats.io/img/nats-icon-color.png
@@ -1298,7 +1299,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 0.17.0
-    created: "2020-05-05T14:33:09.693566-07:00"
+    created: '2020-05-05T14:33:09.693566-07:00'
     description: A Helm chart for NATS Streaming
     digest: 9eb78f0f30eceef13749b8dbe00deef52be400773e7ac8f019779da080f29bd3
     icon: https://nats.io/img/nats-icon-color.png
@@ -1323,7 +1324,7 @@ entries:
     version: 0.3.10
   - apiVersion: v2
     appVersion: 0.17.0
-    created: "2020-04-10T16:35:37.013084-07:00"
+    created: '2020-04-10T16:35:37.013084-07:00'
     description: A Helm chart for NATS Streaming
     digest: 64cf379e1d0f5c2e7e7eddd8945ce71f408e13bdd41dff6b52693d76d40b4fb5
     icon: https://nats.io/img/nats-icon-color.png
@@ -1348,7 +1349,7 @@ entries:
     version: 0.3.6
   - apiVersion: v2
     appVersion: 0.17.0
-    created: "2020-04-03T08:25:32.310714-07:00"
+    created: '2020-04-03T08:25:32.310714-07:00'
     description: A Helm chart for NATS Streaming
     digest: 341236096cbef84987ce68373d27a3ec020fa5d4c5d5e3883dd40a65c30c9cab
     icon: https://nats.io/img/nats-icon-color.png
@@ -1373,7 +1374,7 @@ entries:
     version: 0.3.2
   - apiVersion: v2
     appVersion: 0.17.0
-    created: "2020-04-02T21:22:25.946345-07:00"
+    created: '2020-04-02T21:22:25.946345-07:00'
     description: A Helm chart for NATS Streaming
     digest: f2d6f9f7d8a0001f142a6adb65be2c9249c4183a30bd9a6e80d5798a6762949b
     icon: https://nats.io/img/nats-icon-color.png
@@ -1398,7 +1399,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 0.17.0
-    created: "2020-03-04T12:58:26.618814-08:00"
+    created: '2020-03-04T12:58:26.618814-08:00'
     description: A Helm chart for NATS Streaming
     digest: 8db5333798aff4be6ddbc6db7131a34a9214334a4aab4287dda73b180d6fbb9f
     icon: https://nats.io/img/nats-icon-color.png
@@ -1423,7 +1424,7 @@ entries:
     version: 0.2.2
   - apiVersion: v2
     appVersion: 0.17.0
-    created: "2020-03-04T12:58:26.615937-08:00"
+    created: '2020-03-04T12:58:26.615937-08:00'
     description: A Helm chart for NATS Streaming
     digest: 843e57c05a1dc345450280eb293721d79440c45374b313eefdcaa3cb59cfaaa2
     icon: https://nats.io/img/nats-icon-color.png
@@ -1447,7 +1448,7 @@ entries:
   nats-account-server:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-05-11T10:21:31.160483-07:00"
+    created: '2021-05-11T10:21:31.160483-07:00'
     description: A Helm chart for the NATS.io JWT Account Server
     digest: 0626e7465b72a164f6de98fa4ad0d58080b9fec4f46f6d6d2d7456520f3c1667
     home: http://github.com/nats-io/k8s
@@ -1469,7 +1470,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: 0.8.6
-    created: "2020-04-10T16:35:37.004841-07:00"
+    created: '2020-04-10T16:35:37.004841-07:00'
     description: A Helm chart for the NATS.io JWT Account Server
     digest: ae3c8bab2eb45f6be91be8ee4c9023519726bddbd57513687b8b27ac759f6023
     home: http://github.com/nats-io/k8s
@@ -1491,7 +1492,7 @@ entries:
     version: 0.3.6
   - apiVersion: v2
     appVersion: 0.8.6
-    created: "2020-04-03T15:34:18.169597-07:00"
+    created: '2020-04-03T15:34:18.169597-07:00'
     description: A Helm chart for the NATS.io JWT Account Server
     digest: 75b46ce25c3f7f9eb042be789b6874d26374078534e68f9d5eb5ef9ebab204d2
     home: http://github.com/nats-io/k8s
@@ -1513,7 +1514,7 @@ entries:
     version: 0.3.4
   - apiVersion: v2
     appVersion: 0.8.6
-    created: "2020-04-03T08:25:32.304898-07:00"
+    created: '2020-04-03T08:25:32.304898-07:00'
     description: A Helm chart for the NATS.io JWT Account Server
     digest: cc47d5cdca9247d7d13c1a8fc239b630b62b7015c2255ef46797953bd67170e6
     home: http://github.com/nats-io/k8s
@@ -1535,7 +1536,7 @@ entries:
     version: 0.3.2
   - apiVersion: v2
     appVersion: 0.8.6
-    created: "2020-04-02T21:57:47.563808-07:00"
+    created: '2020-04-02T21:57:47.563808-07:00'
     description: A Helm chart for the NATS.io JWT Account Server
     digest: b3160dba852175ed962bd6cabbbd486d328432d1e682dfbf4efa96dfc003f985
     home: http://github.com/nats-io/k8s
@@ -1558,7 +1559,7 @@ entries:
   surveyor:
   - apiVersion: v2
     appVersion: latest
-    created: "2021-10-29T16:02:54.081757-07:00"
+    created: '2021-10-29T16:02:54.081757-07:00'
     description: NATS Monitoring, Simplified.
     digest: 71e4d183831140cb3ce010d8329b3bc0c16f9e116d2b04fbd31fcbac9d7f4ddd
     name: surveyor
@@ -1566,4 +1567,4 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/surveyor-0.9.2.tgz
     version: 0.9.2
-generated: "2020-10-05T12:58:26.609239-08:00"
+generated: '2022-01-10T14:33:33.691881-08:00'
