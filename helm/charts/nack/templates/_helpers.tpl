@@ -6,6 +6,13 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Define the namespace where the content of the chart will be deployed.
+*/}}
+{{- define "jsc.namespace" -}}
+{{- default .Release.Namespace .Values.namespaceOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Define the serviceaccountname
 */}}
 {{- define "jsc.serviceAccountName" -}}

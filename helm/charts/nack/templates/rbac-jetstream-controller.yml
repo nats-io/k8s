@@ -3,14 +3,14 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ template "jsc.serviceAccountName" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "jsc.namespace" }}
 {{- if .Values.namespaced }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ template "jsc.serviceAccountName" . }}-role
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "jsc.namespace" }}
 rules:
 - apiGroups:
   - ''
@@ -51,11 +51,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ template "jsc.serviceAccountName" . }}-role-binding
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "jsc.namespace" }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "jsc.serviceAccountName" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "jsc.namespace" }}
 roleRef:
   kind: Role
   name: {{ template "jsc.serviceAccountName" . }}-role
@@ -66,7 +66,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ template "jsc.serviceAccountName" . }}-cluster-role
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "jsc.namespace" }}
 rules:
 - apiGroups:
   - ''
@@ -107,11 +107,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: {{ template "jsc.serviceAccountName" . }}-cluster-role-binding
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "jsc.namespace" }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "jsc.serviceAccountName" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "jsc.namespace" }}
 roleRef:
   kind: ClusterRole
   name: {{ template "jsc.serviceAccountName" . }}-cluster-role
