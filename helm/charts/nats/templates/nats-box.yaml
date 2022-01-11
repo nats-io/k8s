@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "nats.fullname" . }}-box
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ include "nats.namespace" . }}
   labels:
     app: {{ include "nats.fullname" . }}-box
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}

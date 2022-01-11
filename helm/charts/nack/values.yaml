@@ -40,6 +40,7 @@ jetstream:
 namespaced: false
 
 nameOverride: ""
+namespaceOverride: ""
 imagePullSecrets: []
 serviceAccountName: ""
 

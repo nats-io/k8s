@@ -79,7 +79,7 @@ spec:
           - --creds=/etc/jsc-creds/{{ .secret.key }}
           {{- end }}
           {{- if .Values.namespaced }}
-          - --namespace={{ .Release.Namespace }}
+          - --namespace={{ template "jsc.namespace" . }}
           {{- end }}
           {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.settings.client_cert }}
           - --tlscert={{ .Values.jetstream.tls.settings.client_cert }}

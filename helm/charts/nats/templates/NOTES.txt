@@ -15,7 +15,7 @@ in the NATS documentation website:
 NATS Box has been deployed into your cluster, you can
 now use the NATS tools within the container as follows:
 
-  kubectl exec -n {{ .Release.Namespace }} -it deployment/{{ template "nats.fullname" . }}-box -- /bin/sh -l
+  kubectl exec -n {{ template "nats.namespace" . }} -it deployment/{{ template "nats.fullname" . }}-box -- /bin/sh -l
 
   nats-box:~# nats-sub test &
   nats-box:~# nats-pub test hi
