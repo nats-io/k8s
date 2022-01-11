@@ -3,7 +3,7 @@ kind: NetworkPolicy
 apiVersion: {{ template "networkPolicy.apiVersion" . }}
 metadata:
   name: {{ include "nats.fullname" . }}
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ include "nats.namespace" . }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
 spec:

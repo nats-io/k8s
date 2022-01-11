@@ -6,7 +6,7 @@ metadata:
   {{- if .Values.exporter.serviceMonitor.namespace }}
   namespace: {{ .Values.exporter.serviceMonitor.namespace }}
   {{- else }}
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ include "nats.namespace" . }}
   {{- end }}
   {{- if .Values.exporter.serviceMonitor.labels }}
   labels:

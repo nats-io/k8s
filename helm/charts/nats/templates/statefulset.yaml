@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "nats.fullname" . }}
-  namespace: {{ .Release.Namespace | quote }}
+  namespace: {{ include "nats.namespace" . }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
     {{- if .Values.statefulSetAnnotations}}
@@ -95,7 +95,7 @@ spec:
         {{- . | toYaml | nindent 6 }}
       {{- end }}
       {{- end }}
-  
+
       # Local volume shared with the reloader.
       - name: pid
         emptyDir: {}
