@@ -2,6 +2,8 @@
 nameOverride: ""
 # fullnameOverride overrides nats-kafka.fullname
 fullnameOverride: ""
+# namespaceOverride overrides nats-kafka.namespace
+namespaceOverride: ""
 replicaCount: 1
 
 image:

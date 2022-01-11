@@ -55,7 +55,7 @@ nats:
     writeDeadline:
     maxPending:
     maxPings:
-    
+
     # How many seconds should pass before sending a PING
     # to a client that has no activity.
     pingInterval:
@@ -77,9 +77,9 @@ nats:
   # of the NATS Server.
   # NOTE: For this to work the name of the configuration has to be
   # called `nats.conf`.
-  # 
+  #
   # e.g. kubectl create secret generic custom-nats-conf --from-file nats.conf
-  # 
+  #
   # customConfigSecret:
   #  name:
   #
@@ -101,7 +101,6 @@ nats:
   #    - name: config-vol
   #      configMap:
   #        name: log-config
-
 
   jetstream:
     enabled: false
@@ -197,6 +196,7 @@ mqtt:
   #   key: "tls.key"
 
 nameOverride: ""
+namespaceOverride: ""
 
 # An array of imagePullSecrets, and they have to be created manually in the same namespace
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -320,7 +320,7 @@ leafnodes:
 #
 gateway:
   enabled: false
-  name: 'default'
+  name: "default"
   # authorization:
   #   user: foo
   #   password: pwd
@@ -363,7 +363,7 @@ bootconfig:
   image: natsio/nats-boot-config:0.5.4
   pullPolicy: IfNotPresent
   securityContext: {}
-  
+
 # NATS Box
 #
 # https://github.com/nats-io/nats-box
