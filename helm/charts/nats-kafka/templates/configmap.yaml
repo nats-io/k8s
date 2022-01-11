@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "nats-kafka.fullname" . }}-config
+  namespace: {{ include "nats-kafka.namespace" . }}
   labels:
     {{- include "nats-kafka.labels" . | nindent 4 }}
 data:

@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "nats-kafka.fullname" . }}
+  namespace: {{ include "nats-kafka.namespace" . }}
   labels:
     {{- include "nats-kafka.labels" . | nindent 4 }}
     {{- if .Values.natskafka.deploymentLabels }}
