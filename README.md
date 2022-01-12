@@ -13,7 +13,7 @@ and other tools from the NATS ecosystem on Kubernetes.
 
 ## Getting started with NATS using Helm
 
-In this repo you can find the Helm 3 based [charts](https://github.com/nats-io/k8s/tree/master/helm/charts) to install NATS and NATS Streaming (STAN).
+In this repo you can find the Helm 3 based [charts](https://github.com/nats-io/k8s/tree/master/helm/charts) to install NATS.
 
 ```sh
 > helm repo add nats https://nats-io.github.io/k8s/helm/charts/
@@ -24,7 +24,6 @@ NAME          	URL
 nats          	https://nats-io.github.io/k8s/helm/charts/
 
 > helm install my-nats nats/nats
-> helm install my-stan nats/stan --set stan.nats.url=nats://my-nats:4222
 ```
 
 ## License
