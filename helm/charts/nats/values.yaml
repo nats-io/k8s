@@ -45,6 +45,9 @@ nats:
 
   resources: {}
 
+  client:
+    portName: "client"
+
   # Server settings.
   limits:
     maxConnections:
