@@ -35,7 +35,7 @@ spec:
     appProtocol: http
     {{- end }}
   {{- end }}
-  - name: {{ .Values.nats.clientPortName | default client }}
+  - name: {{ .Values.nats.client.portName }}
     port: 4222
     {{- if .Values.appProtocol.enabled }}
     appProtocol: tcp
