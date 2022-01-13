@@ -70,6 +70,9 @@ spec:
           imagePullPolicy: {{ .Values.jetstream.pullPolicy }}
           command:
           - /jetstream-controller
+          {{- if .Values.jetstream.klogLevel }}
+          - -v={{ .Values.jetstream.klogLevel }}
+          {{- end }}
           {{- if .Values.jetstream.nats.url }}
           - -s={{ .Values.jetstream.nats.url }}
           {{- else }}
