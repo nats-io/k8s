@@ -50,7 +50,7 @@ kctl() {
         i=0
         until [ $i -ge 10 ]
         do
-                kubectl "${NATS_NAMESPACE} $@" && break
+                kubectl ${NATS_NAMESPACE:+"-n" "$NATS_NAMESPACE"} "$@" && break
                 i=$((i+1))
 
                 if [ "$i" -ge 2 ]; then
@@ -199,7 +199,7 @@ main() {
                                 exit 0
                                 ;;
                         -n|--namespace)
-                                NATS_NAMESPACE=" -n $2"
+                                NATS_NAMESPACE="$2"
                                 shift
                                 ;;
                         --without-surveyor)
@@ -321,7 +321,7 @@ main() {
         echo "You can now start receiving and sending messages using "
         echo "the nats-box instance deployed into your namespace:"
         echo
-        echo -e "  ${CYAN}kubectl${NATS_NAMESPACE} exec -it nats-box -- /bin/sh -l ${NC}"
+        echo -e "  ${CYAN}kubectl${NATS_NAMESPACE:+ -n $NATS_NAMESPACE} exec -it nats-box -- /bin/sh -l ${NC}"
         echo
         if [ $with_auth = true ]; then
                 echo "Using the test account user:"
@@ -366,7 +366,7 @@ main() {
         if [ $with_surveyor = true ]; then
                 echo "You can also connect to your monitoring dashboard:"
                 echo -e " ${CYAN}"
-                echo "  kubectl${NATS_NAMESPACE} port-forward deployments/nats-surveyor-grafana 3000:3000"
+                echo "  kubectl${NATS_NAMESPACE:+ -n $NATS_NAMESPACE} port-forward deployments/nats-surveyor-grafana 3000:3000"
                 echo -e " ${NC}"
                 echo "Then open the following in your browser:"
                 echo -e " ${CYAN}"
