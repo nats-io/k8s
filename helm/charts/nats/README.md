@@ -28,19 +28,19 @@ nats:
 
   # How many seconds should pass before sending a PING
   # to a client that has no activity.
-  pingInterval: 
+  pingInterval:
 
   # Server settings.
   limits:
-    maxConnections: 
-    maxSubscriptions: 
-    maxControlLine: 
-    maxPayload: 
+    maxConnections:
+    maxSubscriptions:
+    maxControlLine:
+    maxPayload:
 
-    writeDeadline: 
-    maxPending: 
-    maxPings: 
-    lameDuckDuration: 
+    writeDeadline:
+    maxPending:
+    maxPings:
+    lameDuckDuration:
 
   # Number of seconds to wait for client connections to end after the pod termination is requested
   terminationGracePeriodSeconds: 60
@@ -53,11 +53,11 @@ nats:
 ```yaml
 nats:
   logging:
-    debug: 
-    trace: 
-    logtime: 
-    connectErrorReports: 
-    reconnectErrorReports: 
+    debug:
+    trace:
+    logtime:
+    connectErrorReports:
+    reconnectErrorReports:
 ```
 
 ### TLS setup for client connections
@@ -125,11 +125,11 @@ leafnodes:
   #  TLS Configuration  #
   #                     #
   #######################
-  # 
+  #
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  # 
+  #
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
-  # 
+  #
   tls:
     secret:
       name: nats-client-tls
@@ -202,7 +202,7 @@ subjects:
 
 The container image of the initializer can be customized via:
 
-```yaml  
+```yaml
 bootconfig:
   image: natsio/nats-boot-config:latest
   pullPolicy: IfNotPresent
@@ -210,7 +210,7 @@ bootconfig:
 
 ### Using LoadBalancers
 
-In case of using a load balancer for external access, it is recommended to disable no advertise 
+In case of using a load balancer for external access, it is recommended to disable no advertise
 so that internal ips from the NATS Servers are not advertised to the clients connecting through
 the load balancer.
 
@@ -281,9 +281,9 @@ gateway:
   #  TLS Configuration  #
   #                     #
   #######################
-  # 
+  #
   #  # You can find more on how to setup and trouble shoot TLS connnections at:
-  # 
+  #
   #  # https://docs.nats.io/nats-server/configuration/securing_nats/tls
   #
   # tls:
@@ -319,10 +319,10 @@ auth:
     ##############################
     type: memory
 
-    # 
+    #
     # Use a configmap reference which will be mounted
     # into the container.
-    # 
+    #
     configMap:
       name: nats-accounts
       key: resolver.conf
@@ -517,7 +517,7 @@ Next, generate the NATS resolver config. This will be used to fill in the values
 For example the result of generating this:
 
 ```sh
-nsc generate config --sys-account SYS --nats-resolver 
+nsc generate config --sys-account SYS --nats-resolver
 
 # Operator named KO
 operator: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJqdGkiOiJDRlozRlE0WURNTUc1Q1UzU0FUWVlHWUdQUDJaQU1QUzVNRUdNWFdWTUJFWUdIVzc2WEdBIiwiaWF0IjoxNjMyNzgzMDk2LCJpc3MiOiJPQ0lWMlFGSldJTlpVQVQ1VDJZSkJJUkMzQjZKS01TWktRTkY1S0dQNE4zS1o0RkZEVkFXWVhDTCIsIm5hbWUiOiJLTyIsInN1YiI6Ik9DSVYyUUZKV0lOWlVBVDVUMllKQklSQzNCNkpLTVNaS1FORjVLR1A0TjNLWjRGRkRWQVdZWENMIiwibmF0cyI6eyJ0eXBlIjoib3BlcmF0b3IiLCJ2ZXJzaW9uIjoyfX0.e3gvJ-C1IBznmbUljeT_wbLRl1akv5IGBS3rbxs6mzzTvf3zlqQI4wDKVE8Gvb8qfTX6TIwocClfOqNaN3k3CQ
@@ -605,7 +605,7 @@ auth:
 Finally, using a local port-forward make it possible to establish a connection to one of the servers and upload the accounts.
 
 ```sh
-nsc push --system-account SYS -u nats://localhost:4222 -A 
+nsc push --system-account SYS -u nats://localhost:4222 -A
 [ OK ] push to nats-server "nats://localhost:4222" using system account "SYS":
        [ OK ] push JS1 to nats-server with nats account resolver:
               [ OK ] pushed "JS1" to nats-server nats-0: jwt updated
@@ -631,7 +631,7 @@ You can find the image at: https://github.com/nats-io/nats-box
 ```yaml
 natsbox:
   enabled: true
-  image: nats:alpine
+  image: natsio/nats-box:latest
   pullPolicy: IfNotPresent
 
   # credentials:
