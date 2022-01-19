@@ -11,9 +11,12 @@
 In this repository you can find several examples of how to deploy NATS, NATS Streaming 
 and other tools from the NATS ecosystem on Kubernetes.
 
+- [NATS Helm Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nats#jetstream)
+- [NATS Streaming Helm Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/stan)
+
 ## Getting started with NATS using Helm
 
-In this repo you can find the Helm 3 based [charts](https://github.com/nats-io/k8s/tree/master/helm/charts) to install NATS.
+In this repo you can find the Helm 3 based [charts](https://github.com/nats-io/k8s/tree/main/helm/charts) to install NATS.
 
 ```sh
 > helm repo add nats https://nats-io.github.io/k8s/helm/charts/
