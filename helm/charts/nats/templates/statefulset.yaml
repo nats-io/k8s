@@ -251,10 +251,10 @@ spec:
         resources:
           {{- toYaml .Values.nats.resources | nindent 10 }}
         ports:
-        - containerPort: 4222
+        - containerPort: {{ .Values.nats.client.port }}
           name: {{ .Values.nats.client.portName }}
           {{- if .Values.nats.externalAccess }}
-          hostPort: 4222
+          hostPort: {{ .Values.nats.client.port }}
           {{- end }}
         - containerPort: 7422
           name: leafnodes

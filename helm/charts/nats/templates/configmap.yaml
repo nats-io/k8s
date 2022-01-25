@@ -8,6 +8,9 @@ metadata:
     {{- include "nats.labels" . | nindent 4 }}
 data:
   nats.conf: |
+    # NATS Clients Port
+    port: {{ .Values.nats.client.port }}
+
     # PID file shared with configuration reloader.
     pid_file: "/var/run/nats/nats.pid"
 
