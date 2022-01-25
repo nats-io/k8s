@@ -3,6 +3,27 @@ apiVersion: v1
 entries:
   nack:
   - apiVersion: v2
+    appVersion: 0.6.1
+    description: A Helm chart for NACK
+    name: nack
+    keywords:
+    - nats
+    - jetstream
+    - cncf
+    version: 0.11.2
+    maintainers:
+    - name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+      email: wally@nats.io
+    - name: Jaime Piña
+      url: https://github.com/variadico
+      email: jaime@nats.io
+    icon: https://nats.io/img/nats-icon-color.png
+    digest: 71836ca4ac22eccd320b6947f989244f33313bf7c1b4f9201291725caa68732d
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.11.2/nack-0.11.2.tgz
+    created: '2022-01-24T17:54:10.228808-08:00'
+  - apiVersion: v2
     appVersion: 0.6.0
     description: A Helm chart for NACK
     name: nack
@@ -166,6 +187,16 @@ entries:
     version: 0.6.0
   nats-kafka:
   - apiVersion: v2
+    version: 0.11.2
+    appVersion: 0.2.1
+    type: application
+    name: nats-kafka
+    description: A multi-connector bridge between NATS and Kafka.
+    digest: '068d7b53211fd3aac04aa25c8f28f1a775afe3c2f513e4525046812188fafccb'
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.11.2/nats-kafka-0.11.2.tgz
+    created: '2022-01-24T17:54:10.228885-08:00'
+  - apiVersion: v2
     version: 0.11.0
     appVersion: 0.2.1
     type: application
@@ -214,6 +245,32 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.7.2/nats-operator-0.7.4.tgz
     version: 0.7.4
   nats:
+  - apiVersion: v2
+    appVersion: 2.7.0
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
+      Communications Technology.
+    name: nats
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    version: 0.11.2
+    home: http://github.com/nats-io/k8s
+    maintainers:
+    - name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+      email: wally@nats.io
+    - name: Colin Sullivan
+      url: https://github.com/ColinSullivan1
+      email: colin@nats.io
+    - name: Jaime Piña
+      url: https://github.com/variadico
+      email: jaime@nats.io
+    icon: https://nats.io/img/nats-icon-color.png
+    digest: ec2a38f21a4b77dff6e909c4176f33fe151d46fe0a5f244347b2991aea348833
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.11.2/nats-0.11.2.tgz
+    created: '2022-01-24T17:54:10.228526-08:00'
   - apiVersion: v2
     appVersion: 2.6.5
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
@@ -889,6 +946,37 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/nats-0.2.0.tgz
     version: 0.2.0
   stan:
+  - apiVersion: v2
+    appVersion: 0.23.2
+    description: A Helm chart for NATS Streaming
+    name: stan
+    keywords:
+    - nats
+    - streaming
+    - stan
+    - delivery
+    - ratelimit
+    - replay
+    - statefulset
+    - cncf
+    version: 0.11.2
+    maintainers:
+    - name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+      email: wally@nats.io
+    - name: Colin Sullivan
+      url: https://github.com/ColinSullivan1
+      email: colin@nats.io
+    - name: Jaime Piña
+      url: https://github.com/variadico
+      email: jaime@nats.io
+    - name: rchenzheng
+      url: https://github.com/rchenzheng
+    icon: https://nats.io/img/nats-icon-color.png
+    digest: 03ca0d876524aa040447f1b04431da9c3510e271131e14c924c481fdf4b4d5df
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/v0.11.2/stan-0.11.2.tgz
+    created: '2022-01-24T17:54:10.228695-08:00'
   - apiVersion: v2
     appVersion: 0.23.1
     description: A Helm chart for NATS Streaming
@@ -1655,4 +1743,4 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/surveyor-0.9.2.tgz
     version: 0.9.2
-generated: '2022-01-10T14:48:46.303508-08:00'
+generated: '2022-01-24T17:54:10.228889-08:00'

@@ -21,7 +21,7 @@ using a NATS client with JetStream support for management or the `nats` utility.
 First, we'll need to NATS cluster that has enabled JetStream.  You can install
 one as follows:
 
-```sh
+```yaml
 nats:
   image: nats:alpine
 

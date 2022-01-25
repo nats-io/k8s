@@ -4,7 +4,7 @@ require 'yaml'
 require 'digest'
 require 'time'
 
-VERSION = "0.11.0"
+VERSION = "0.11.2"
 CHARTS = ["nats", "stan", "nack", "nats-kafka"]
 URL = "https://github.com/nats-io/k8s/releases/download/v#{VERSION}/"
 
@@ -37,6 +37,7 @@ task 'helm:package', :chart do |t, args|
   end
 end
 
+desc 'updates helm index'
 task 'helm:index', :chart do |t, args|
   o = File.read("charts/index.yaml")
   yaml = YAML.load(o)
