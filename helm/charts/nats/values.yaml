@@ -18,6 +18,40 @@ nats:
     enabled: false
     port: 6000
 
+  # Toggle using health check probes to better detect failures.
+  healthcheck:
+    # Enable liveness checks.  If this fails, then the NATS Server will restarted.
+    liveness:
+      enabled: true
+
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+
+    # Check for the server to be ready for connections during startup.
+    readiness:
+      enabled: true
+
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+
+    # Enable startup checks.
+    # NOTE: Only works on NATS Server +2.7.1.
+    # This is recommended for NATS JetStream deployments.
+    startup:
+      enabled: false
+
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 30
+
   # securityContext for the nats container
   securityContext: {}
 
@@ -332,7 +366,7 @@ gateway:
 
   # You can add an implicit advertise address instead of using from Node's IP
   # could also be a fqdn address
-  #advertise: "nats.example.com"
+  # advertise: "nats.example.com"
 
   #############################
   #                           #
@@ -374,7 +408,7 @@ bootconfig:
 #
 natsbox:
   enabled: true
-  image: natsio/nats-box:0.7.0
+  image: natsio/nats-box:0.8.0
   pullPolicy: IfNotPresent
   securityContext: {}
 
@@ -595,3 +629,4 @@ k8sClusterDomain: cluster.local
 
 # Add labels to all the deployed resources
 commonLabels: {}
+

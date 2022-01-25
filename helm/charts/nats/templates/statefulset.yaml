@@ -435,20 +435,56 @@ spec:
           {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
           {{- end }}
 
-        # Liveness/Readiness probes against the monitoring.
-        #
+        ################################
+        #                              #
+        # Liveness/Readiness probes.   #
+        #                              #
+        ################################
+        {{- if .Values.nats.healthcheck }}
+
+        {{- with .Values.nats.healthcheck.liveness }}
+        {{- if .enabled }}
         livenessProbe:
           httpGet:
             path: /
             port: 8222
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .initialDelaySeconds }}
+          timeoutSeconds: {{ .timeoutSeconds }}
+          periodSeconds: {{ .periodSeconds }}
+          successThreshold: {{ .successThreshold }}
+          failureThreshold: {{ .failureThreshold }}
+        {{- end }}
+        {{- end }}
+
+        {{- with .Values.nats.healthcheck.readiness }}
+        {{- if .enabled }}
         readinessProbe:
           httpGet:
             path: /
             port: 8222
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .initialDelaySeconds }}
+          timeoutSeconds: {{ .timeoutSeconds }}
+          periodSeconds: {{ .periodSeconds }}
+          successThreshold: {{ .successThreshold }}
+          failureThreshold: {{ .failureThreshold }}
+        {{- end }}
+        {{- end }}
+
+        {{- with .Values.nats.healthcheck.startup }}
+        {{- if .enabled }}
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8222
+          initialDelaySeconds: {{ .initialDelaySeconds }}
+          timeoutSeconds: {{ .timeoutSeconds }}
+          periodSeconds: {{ .periodSeconds }}
+          successThreshold: {{ .successThreshold }}
+          failureThreshold: {{ .failureThreshold }}
+        {{- end }}
+        {{- end }}
+
+        {{- end }}
 
         # Gracefully stop NATS Server on pod deletion or image upgrade.
         #
