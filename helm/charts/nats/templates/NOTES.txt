@@ -19,7 +19,7 @@ now use the NATS tools within the container as follows:
 
   nats-box:~# nats-sub test &
   nats-box:~# nats-pub test hi
-  nats-box:~# nc {{ template "nats.fullname" . }} 4222
+  nats-box:~# nc {{ template "nats.fullname" . }} {{ .Values.nats.client.port }}
 
 {{- end }}
 

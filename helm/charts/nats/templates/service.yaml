@@ -36,7 +36,7 @@ spec:
     {{- end }}
   {{- end }}
   - name: {{ .Values.nats.client.portName }}
-    port: 4222
+    port: {{ .Values.nats.client.port }}
     {{- if .Values.appProtocol.enabled }}
     appProtocol: tcp
     {{- end }}
