@@ -4,7 +4,7 @@
 #                             #
 ###############################
 nats:
-  image: nats:2.7.0-alpine
+  image: nats:2.7.1-alpine
   pullPolicy: IfNotPresent
 
   # The servers name prefix, must be used for example when we want a NATS cluster
@@ -17,6 +17,49 @@ nats:
   profiling:
     enabled: false
     port: 6000
+
+  # Toggle using health check probes to better detect failures.
+  healthcheck:
+    # NOTE: Only works on NATS Server +2.7.1.
+    # This is recommended to be enabled for NATS JetStream deployments upgrades.
+    enableHealthz: true
+
+    # Enable liveness checks.  If this fails, then the NATS Server will restarted.
+    liveness:
+      enabled: true
+
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+      # Only for Kubernetes +1.22 that have pod level probes enabled.
+      terminationGracePeriodSeconds:
+
+    # Periodically check for the server to be ready for connections while
+    # the NATS container is running.
+    # Disabled by default since covered by startup probe and it is the same
+    # as the liveness check.
+    readiness:
+      enabled: false
+
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+
+    # Enable startup checks to confirm server is ready for traffic.
+    # This is recommended for JetStream deployments since in cluster mode
+    # it will try to ensure that the server is ready to serve streams.
+    startup:
+      enabled: true
+
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      failureThreshold: 30
 
   # securityContext for the nats container
   securityContext: {}
@@ -67,7 +110,8 @@ nats:
     # NOTE: this should be at least the same as 'terminationGracePeriodSeconds'
     lameDuckDuration: "120s"
 
-  # Default lame duck duration in the server is 2 minutes.
+  # terminationGracePeriodSeconds determines how long to allow for a pod
+  # to be restarted.
   terminationGracePeriodSeconds: 120
 
   logging:
@@ -375,7 +419,7 @@ bootconfig:
 #
 natsbox:
   enabled: true
-  image: natsio/nats-box:0.7.0
+  image: natsio/nats-box:0.8.0
   pullPolicy: IfNotPresent
   securityContext: {}
 
@@ -596,3 +640,7 @@ k8sClusterDomain: cluster.local
 
 # Add labels to all the deployed resources
 commonLabels: {}
+
+# podManagementPolicy controls how pods are created during initial scale up,
+# when replacing pods on nodes, or when scaling down.
+podManagementPolicy: Parallel

@@ -22,6 +22,9 @@ spec:
   replicas: 1
   {{- end }}
   serviceName: {{ include "nats.fullname" . }}
+
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
+
   template:
     metadata:
       {{- if or .Values.podAnnotations .Values.exporter.enabled }}
@@ -435,20 +438,69 @@ spec:
           {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
           {{- end }}
 
-        # Liveness/Readiness probes against the monitoring.
-        #
+        #######################
+        #                     #
+        # Healthcheck Probes  #
+        #                     #
+        #######################
+        {{- if .Values.nats.healthcheck }}
+
+        {{- with .Values.nats.healthcheck.liveness }}
+        {{- if .enabled }}
         livenessProbe:
           httpGet:
             path: /
             port: 8222
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .initialDelaySeconds }}
+          timeoutSeconds: {{ .timeoutSeconds }}
+          periodSeconds: {{ .periodSeconds }}
+          successThreshold: {{ .successThreshold }}
+          failureThreshold: {{ .failureThreshold }}
+          {{- if .terminationGracePeriodSeconds }}
+          terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds }}
+          {{- end }}
+        {{- end }}
+        {{- end }}
+
+        {{- with .Values.nats.healthcheck.readiness }}
+        {{- if .enabled }}
         readinessProbe:
           httpGet:
             path: /
             port: 8222
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .initialDelaySeconds }}
+          timeoutSeconds: {{ .timeoutSeconds }}
+          periodSeconds: {{ .periodSeconds }}
+          successThreshold: {{ .successThreshold }}
+          failureThreshold: {{ .failureThreshold }}
+        {{- end }}
+        {{- end }}
+
+        {{- if .Values.nats.healthcheck.startup.enabled }}
+        startupProbe:
+          httpGet:
+            {{- $parts := split ":" .Values.nats.image }}
+            {{- $tag := $parts._1 }}
+            {{- $version := semver $tag }}
+            {{- $simpleVersion := printf "%d.%d.%d" $version.Major $version.Minor $version.Patch }}
+            {{- if and (and .Release.IsUpgrade (semverCompare "~2.7.1" $simpleVersion) .Values.nats.healthcheck.enableHealthz ) }}
+            # During upgrades, healthz will be enabled instead to allow for a grace period
+            # in case of JetStream enabled deployments to form quorum and streams to catch up.
+            path: /healthz
+            {{- else }}
+            path: /
+            {{- end }}
+            port: 8222
+        {{- with .Values.nats.healthcheck.startup }}
+          initialDelaySeconds: {{ .initialDelaySeconds }}
+          timeoutSeconds: {{ .timeoutSeconds }}
+          periodSeconds: {{ .periodSeconds }}
+          successThreshold: {{ .successThreshold }}
+          failureThreshold: {{ .failureThreshold }}
+        {{- end }}
+        {{- end }}
+
+        {{- end }}
 
         # Gracefully stop NATS Server on pod deletion or image upgrade.
         #
@@ -462,7 +514,7 @@ spec:
               command:
               - "/bin/sh"
               - "-c"
-              - "nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep {{ .Values.nats.terminationGracePeriodSeconds }}"
+              - "nats-server -sl=ldm=/var/run/nats/nats.pid"
 
       #################################
       #                               #
