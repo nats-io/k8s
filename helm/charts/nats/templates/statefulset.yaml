@@ -438,11 +438,11 @@ spec:
           {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
           {{- end }}
 
-        ################################
-        #                              #
-        # Liveness/Readiness probes.   #
-        #                              #
-        ################################
+        #######################
+        #                     #
+        # Healthcheck Probes  #
+        #                     #
+        #######################
         {{- if .Values.nats.healthcheck }}
 
         {{- with .Values.nats.healthcheck.liveness }}
@@ -456,6 +456,9 @@ spec:
           periodSeconds: {{ .periodSeconds }}
           successThreshold: {{ .successThreshold }}
           failureThreshold: {{ .failureThreshold }}
+          {{- if .terminationGracePeriodSeconds }}
+          terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds }}
+          {{- end }}
         {{- end }}
         {{- end }}
 
@@ -473,12 +476,18 @@ spec:
         {{- end }}
         {{- end }}
 
-        {{- with .Values.nats.healthcheck.startup }}
-        {{- if .enabled }}
+        {{- if .Values.nats.healthcheck.startup.enabled }}
         startupProbe:
           httpGet:
+            {{- if and .Values.nats.healthcheck.useHealthz .Release.IsUpgrade }}
+            # During upgrades, healthz will be enabled instead to allow for a grace period
+            # in case of JetStream enabled deployments to form quorum and streams to catch up.
             path: /healthz
+            {{- else }}
+            path: /
+            {{- end }}
             port: 8222
+        {{- with .Values.nats.healthcheck.startup }}
           initialDelaySeconds: {{ .initialDelaySeconds }}
           timeoutSeconds: {{ .timeoutSeconds }}
           periodSeconds: {{ .periodSeconds }}
@@ -501,7 +510,7 @@ spec:
               command:
               - "/bin/sh"
               - "-c"
-              - "nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep {{ .Values.nats.terminationGracePeriodSeconds }}"
+              - "nats-server -sl=ldm=/var/run/nats/nats.pid"
 
       #################################
       #                               #

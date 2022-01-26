@@ -20,6 +20,10 @@ nats:
 
   # Toggle using health check probes to better detect failures.
   healthcheck:
+    # NOTE: Only works on NATS Server +2.7.1.
+    # This is recommended to be enabled for NATS JetStream deployments upgrades.
+    useHealthz: false
+
     # Enable liveness checks.  If this fails, then the NATS Server will restarted.
     liveness:
       enabled: true
@@ -29,10 +33,15 @@ nats:
       periodSeconds: 10
       successThreshold: 1
       failureThreshold: 3
+      # Only for Kubernetes +1.22 that have pod level probes enabled.
+      terminationGracePeriodSeconds:
 
-    # Check for the server to be ready for connections during startup.
+    # Periodically check for the server to be ready for connections while
+    # the NATS container is running.
+    # Disabled by default since covered by startup probe and it is the same
+    # as the liveness check.
     readiness:
-      enabled: true
+      enabled: false
 
       initialDelaySeconds: 10
       timeoutSeconds: 5
@@ -40,11 +49,11 @@ nats:
       successThreshold: 1
       failureThreshold: 3
 
-    # Enable startup checks.
-    # NOTE: Only works on NATS Server +2.7.1.
-    # This is recommended for NATS JetStream deployments.
+    # Enable startup checks to confirm server is ready for traffic.
+    # This is recommended for JetStream deployments since in cluster mode
+    # it will try to ensure that the server is ready to serve streams.
     startup:
-      enabled: false
+      enabled: true
 
       initialDelaySeconds: 10
       timeoutSeconds: 5
@@ -101,7 +110,8 @@ nats:
     # NOTE: this should be at least the same as 'terminationGracePeriodSeconds'
     lameDuckDuration: "120s"
 
-  # Default lame duck duration in the server is 2 minutes.
+  # terminationGracePeriodSeconds determines how long to allow for a pod
+  # to be restarted.
   terminationGracePeriodSeconds: 120
 
   logging:
