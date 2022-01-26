@@ -278,6 +278,10 @@ data:
       advertise: {{ .Values.gateway.advertise }}
       {{- end }}
 
+      {{- if .Values.gateway.rejectUnknownCluster }}
+      reject_unknown_cluster: {{ .Values.gateway.rejectUnknownCluster }}
+      {{- end }}
+
       {{- if .Values.gateway.authorization }}
       authorization {
         {{- with .Values.gateway.authorization.user }}
