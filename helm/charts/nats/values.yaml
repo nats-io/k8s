@@ -329,10 +329,11 @@ gateway:
   #   user: foo
   #   password: pwd
   #   timeout: 0.5
+  # rejectUnknownCluster: false
 
   # You can add an implicit advertise address instead of using from Node's IP
   # could also be a fqdn address
-  #advertise: "nats.example.com"
+  # advertise: "nats.example.com"
 
   #############################
   #                           #
