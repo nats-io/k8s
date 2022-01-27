@@ -70,8 +70,9 @@ Return the NATS cluster routes.
 */}}
 {{- define "nats.clusterRoutes" -}}
 {{- $name := (include "nats.fullname" . ) -}}
+{{- $namespace := (include "nats.namespace" . ) -}}
 {{- range $i, $e := until (.Values.cluster.replicas | int) -}}
-{{- printf "nats://%s-%d.%s.%s.svc.%s:6222," $name $i $name $.Release.Namespace $.Values.k8sClusterDomain -}}
+{{- printf "nats://%s-%d.%s.%s.svc.%s:6222," $name $i $name $namespace $.Values.k8sClusterDomain -}}
 {{- end -}}
 {{- end }}
 
