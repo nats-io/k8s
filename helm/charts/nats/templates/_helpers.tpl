@@ -107,6 +107,9 @@ tls {
 {{- if .timeout }}
     timeout: {{ .timeout }}
 {{- end }}
+{{- if .cipherSuites }}
+    cipher_suites: {{ toRawJson .cipherSuites }}
+{{- end }}
 }
 {{- end }}
 
