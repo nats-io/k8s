@@ -30,7 +30,20 @@ nats:
 
       initialDelaySeconds: 10
       timeoutSeconds: 5
-      periodSeconds: 10
+      # NOTE: liveness check + terminationGracePeriodSeconds can introduce unecessarily long outages
+      # due to the coupling between liveness probe and terminationGracePeriodSeconds.
+      # To avoid this, we make the periodSeconds of the liveness check to be about half the default
+      # time that it takes for lame duck graceful stop.
+      #
+      # In case of using Kubernetes +1.22 with probe-level terminationGracePeriodSeconds
+      # we could revise this but for now keep a minimal liveness check.
+      #
+      # More info:
+      #
+      #  https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#probe-level-terminationgraceperiodseconds
+      #  https://github.com/kubernetes/kubernetes/issues/64715
+      #
+      periodSeconds: 60
       successThreshold: 1
       failureThreshold: 3
       # Only for Kubernetes +1.22 that have pod level probes enabled.
