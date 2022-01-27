@@ -657,3 +657,7 @@ commonLabels: {}
 # podManagementPolicy controls how pods are created during initial scale up,
 # when replacing pods on nodes, or when scaling down.
 podManagementPolicy: Parallel
+
+# Toggle that this is an upgrade to enable healthz, in case not
+# using `helm upgrade` command to apply upgrades.
+upgrade: false

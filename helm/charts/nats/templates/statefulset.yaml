@@ -483,7 +483,7 @@ spec:
             {{- $tag := $parts._1 }}
             {{- $version := semver $tag }}
             {{- $simpleVersion := printf "%d.%d.%d" $version.Major $version.Minor $version.Patch }}
-            {{- if and (and .Release.IsUpgrade (semverCompare "~2.7.1" $simpleVersion) .Values.nats.healthcheck.enableHealthz ) }}
+            {{- if and (and (or .Release.IsUpgrade .Values.upgrade) (semverCompare "~2.7.1" $simpleVersion) .Values.nats.healthcheck.enableHealthz ) }}
             # During upgrades, healthz will be enabled instead to allow for a grace period
             # in case of JetStream enabled deployments to form quorum and streams to catch up.
             path: /healthz
