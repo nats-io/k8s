@@ -37,6 +37,24 @@ natskafka:
   additionalArguments: []
   additionalVolumes: {}
   additionalVolumeMounts: {}
+
+  # Affinity for pod assignment
+  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  affinity: {}
+
+  # Node labels for pod assignment
+  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  nodeSelector: {}
+
+  # Node tolerations for server scheduling to nodes with taints
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  #
+  tolerations: []
+  #  - key: "key"
+  #    operator: "Equal|Exists"
+  #    value: "value"
+  #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
   nats:
     servers: []
     connectTimeout: 5000
