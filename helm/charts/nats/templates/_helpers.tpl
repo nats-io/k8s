@@ -62,7 +62,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Return the proper NATS image name
 */}}
 {{- define "nats.clusterAdvertise" -}}
+{{- if $.Values.useFQDN }}
 {{- printf "$(POD_NAME).%s.$(POD_NAMESPACE).svc.%s" (include "nats.fullname" . ) $.Values.k8sClusterDomain }}
+{{- else }}
+{{- printf "$(POD_NAME).%s.$(POD_NAMESPACE)" (include "nats.fullname" . ) }}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -72,7 +76,11 @@ Return the NATS cluster routes.
 {{- $name := (include "nats.fullname" . ) -}}
 {{- $namespace := (include "nats.namespace" . ) -}}
 {{- range $i, $e := until (.Values.cluster.replicas | int) -}}
+{{- if $.Values.useFQDN }}
 {{- printf "nats://%s-%d.%s.%s.svc.%s:6222," $name $i $name $namespace $.Values.k8sClusterDomain -}}
+{{- else }}
+{{- printf "nats://%s-%d.%s.%s:6222," $name $i $name $namespace -}}
+{{- end }}
 {{- end -}}
 {{- end }}
 
