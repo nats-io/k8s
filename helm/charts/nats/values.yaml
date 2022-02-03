@@ -651,6 +651,9 @@ networkPolicy:
 # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 k8sClusterDomain: cluster.local
 
+# Define if NATS is using FQDN name for clustering (i.e. nats-0.nats.default.svc.cluster.local) or short name (i.e. nats-0.nats.default).
+useFQDN: true
+
 # Add labels to all the deployed resources
 commonLabels: {}
 
