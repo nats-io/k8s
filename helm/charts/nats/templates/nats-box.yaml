@@ -46,6 +46,9 @@ spec:
         secret:
           secretName: {{ .Values.natsbox.credentials.secret.name }}
       {{- end }}
+      {{- if .Values.natsbox.extraVolumes }}
+      {{- toYaml .Values.natsbox.extraVolumes | nindent 6}}
+      {{- end }}
       {{- with .Values.nats.tls }}
       {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-clients-volume
@@ -97,6 +100,9 @@ spec:
         {{- if .Values.natsbox.credentials }}
         - name: nats-sys-creds
           mountPath: /etc/nats-config/creds
+        {{- end }}
+        {{- if .Values.natsbox.extraVolumeMounts }}
+        {{- toYaml .Values.natsbox.extraVolumeMounts | nindent 8 }}
         {{- end }}
         {{- with .Values.nats.tls }}
         #######################
