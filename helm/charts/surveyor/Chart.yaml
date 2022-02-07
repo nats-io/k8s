@@ -4,6 +4,6 @@ description: NATS Monitoring, Simplified.
 
 type: application
 
-version: 0.9.2
+version: 0.13.0
 
-appVersion: latest
+appVersion: 0.2.2

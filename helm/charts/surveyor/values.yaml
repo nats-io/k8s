@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: synadia/nats-surveyor
+  repository: natsio/nats-surveyor
   pullPolicy: IfNotPresent
   tag: latest
 
