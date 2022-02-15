@@ -68,6 +68,7 @@ This will cause STAN  to connect to NATS using TLS, given a
 secret containing the ca.crt, tls.crt, and tls.key.
 
 ```yaml
+stan:
   tls:
     enabled: true
     # the secret containing the client ca.crt, tls.crt, and tls.key for STAN
