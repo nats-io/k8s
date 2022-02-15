@@ -44,6 +44,9 @@ data:
     {{- $_ := set $nats_tls "secretPath" "/etc/nats-certs/clients" }}
     {{- tpl (include "nats.tlsConfig" $nats_tls) $ | nindent 4}}
     {{- end }}
+
+    allow_non_tls: {{ .Values.nats.tls.allow_non_tls }}
+    
     {{- end }}
 
     {{- if .Values.nats.jetstream.enabled }}
