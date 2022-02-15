@@ -226,6 +226,7 @@ nats:
   #
 
   # tls:
+  #   allow_non_tls: false
   #   secret:
   #     name: nats-client-tls
   #   ca: "ca.crt"

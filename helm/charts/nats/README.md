@@ -777,3 +777,23 @@ spec:
   imagePullSecrets:
     - name: myRegistry
 ```
+
+### Mixed TLS and non TLS mode
+
+You can use the `nats.tls.allowNonTLS` option to allow a cluster to use TLS connections
+and plain connections:
+
+```yaml
+nats:
+  client:
+    port: 4222
+
+  tls:
+    allowNonTLS: true
+    secret:
+      name: nats-server-tls
+    ca: "ca.crt"
+    cert: "tls.crt"
+    key: "tls.key"
+    timeout: "5s"
+```
