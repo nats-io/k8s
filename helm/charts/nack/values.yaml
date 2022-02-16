@@ -48,7 +48,7 @@ podAnnotations: {}
 
 # Toggle whether to use setup a Pod Security Context
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-securityContext: null
+securityContext: {}
 # securityContext:
 #   fsGroup: 1000
 #   runAsUser: 1000
@@ -56,7 +56,7 @@ securityContext: null
 
 # Configure a container security context
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-containerSecurityContext: null
+containerSecurityContext: {}
 # containerSecurityContext:
 #   allowPrivilegeEscalation: false
 #   readOnlyRootFilesystem: true
