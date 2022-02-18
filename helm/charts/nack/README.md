@@ -36,7 +36,6 @@ nats:
       enabled: true
       storageDirectory: /data/jetstream
       size: 10Gi
-      storageClassName: default
 
 natsbox:
   enabled: false

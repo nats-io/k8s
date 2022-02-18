@@ -372,7 +372,6 @@ nats:
       enabled: true
       size: 1Gi
       storageDirectory: /data/
-      storageClassName: default
 ```
 
 ### Using with an existing PersistentVolumeClaim
@@ -429,7 +428,6 @@ nats:
       enabled: true
       size: "1Gi"
       storageDirectory: /data/
-      storageClassName: default
 
 cluster:
   enabled: true
