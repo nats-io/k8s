@@ -606,6 +606,10 @@ websocket:
   sameOrigin: false
   allowedOrigins: []
 
+  # This will optionally specify what host:port for websocket
+  # connections to be advertised in the cluster.
+  # advertise: "host:port"
+
 appProtocol:
   enabled: false
 
