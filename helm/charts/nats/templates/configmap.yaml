@@ -418,6 +418,9 @@ data:
       {{- with .Values.websocket.allowedOrigins }}
       allowed_origins: {{ toRawJson . }}
       {{- end }}
+      {{- with .Values.websocket.advertise }}
+      advertise: {{ . }}
+      {{- end }}
     }
     {{- end }}
 
