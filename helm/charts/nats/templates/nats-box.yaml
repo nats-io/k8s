@@ -93,9 +93,9 @@ spec:
               - cp /etc/nats-certs/clients/{{ $secretName }}/* /usr/local/share/ca-certificates && update-ca-certificates
         {{- end }}
         command:
-         - "tail"
-         - "-f"
-         - "/dev/null"
+        - "tail"
+        - "-f"
+        - "/dev/null"
         volumeMounts:
         {{- if .Values.natsbox.credentials }}
         - name: nats-sys-creds
