@@ -83,15 +83,15 @@ spec:
       # Common volumes for the containers.
       volumes:
       - name: config-volume
-        {{ if .Values.nats.customConfigSecret }}
+        {{- if .Values.nats.customConfigSecret }}
         secret:
           secretName: {{ .Values.nats.customConfigSecret.name }}
-        {{ else }}
+        {{- else }}
         configMap:
           name: {{ include "nats.fullname" . }}-config
-        {{ end }}
+        {{- end }}
 
-      {{/* User extended config volumes*/}}
+      {{- /* User extended config volumes*/}}
       {{- if .Values.nats.config }}
       # User extended config volumes
       {{- with .Values.nats.config }}
@@ -195,12 +195,12 @@ spec:
       {{- toYaml .Values.additionalVolumes | nindent 6 }}
       {{- end }}
 
-      {{ if and .Values.nats.externalAccess .Values.nats.advertise }}
+      {{- if and .Values.nats.externalAccess .Values.nats.advertise }}
       # Assume that we only use the service account in case we want to
       # figure out what is the current external public IP from the server
       # in order to be able to advertise correctly.
       serviceAccountName: {{ .Values.nats.serviceAccount }}
-      {{ end }}
+      {{- end }}
 
       # Required to be able to HUP signal and apply config
       # reload to the server without restarting the pod.
@@ -295,11 +295,11 @@ spec:
         {{- end }}
 
         command:
-         - "nats-server"
-         - "--config"
-         - "/etc/nats-config/nats.conf"
+        - "nats-server"
+        - "--config"
+        - "/etc/nats-config/nats.conf"
         {{- if .Values.nats.profiling.enabled }}
-         - "--profile={{ .Values.nats.profiling.port }}"
+        - "--profile={{ .Values.nats.profiling.port }}"
         {{- end }}
 
         # Required to be able to define an environment variable
@@ -331,112 +331,112 @@ spec:
         {{- end }}
         {{- end }}
         volumeMounts:
-          - name: config-volume
-            mountPath: /etc/nats-config
-          - name: pid
-            mountPath: /var/run/nats
-          {{- if and .Values.nats.externalAccess .Values.nats.advertise }}
-          - mountPath: /etc/nats-config/advertise
-            name: advertiseconfig
-            subPath: advertise
-          {{- end }}
+        - name: config-volume
+          mountPath: /etc/nats-config
+        - name: pid
+          mountPath: /var/run/nats
+        {{- if and .Values.nats.externalAccess .Values.nats.advertise }}
+        - mountPath: /etc/nats-config/advertise
+          name: advertiseconfig
+          subPath: advertise
+        {{- end }}
 
-          {{/* User extended config volumes*/}}
-          {{- range .Values.nats.config }}
-          # User extended config volumes
-          - name: {{ .name }}
-            mountPath: /etc/nats-config/{{ .name }}
-          {{- end }}
+        {{- /* User extended config volumes*/}}
+        {{- range .Values.nats.config }}
+        # User extended config volumes
+        - name: {{ .name }}
+          mountPath: /etc/nats-config/{{ .name }}
+        {{- end }}
 
 
-          {{- if and .Values.auth.enabled .Values.auth.resolver }}
-          {{- if eq .Values.auth.resolver.type "memory" }}
-          - name: resolver-volume
-            mountPath: /etc/nats-config/accounts
-          {{- end }}
+        {{- if and .Values.auth.enabled .Values.auth.resolver }}
+        {{- if eq .Values.auth.resolver.type "memory" }}
+        - name: resolver-volume
+          mountPath: /etc/nats-config/accounts
+        {{- end }}
 
-          {{- if eq .Values.auth.resolver.type "full" }}
-          {{- if .Values.auth.resolver.configMap }}
-          - name: resolver-volume
-            mountPath: /etc/nats-config/accounts
-          {{- end }}
-          {{- if and .Values.auth.resolver .Values.auth.resolver.store }}
-          - name: nats-jwt-pvc
-            mountPath: {{ .Values.auth.resolver.store.dir }}
-          {{- end }}
-          {{- end }}
+        {{- if eq .Values.auth.resolver.type "full" }}
+        {{- if .Values.auth.resolver.configMap }}
+        - name: resolver-volume
+          mountPath: /etc/nats-config/accounts
+        {{- end }}
+        {{- if and .Values.auth.resolver .Values.auth.resolver.store }}
+        - name: nats-jwt-pvc
+          mountPath: {{ .Values.auth.resolver.store.dir }}
+        {{- end }}
+        {{- end }}
 
-          {{- if eq .Values.auth.resolver.type "URL" }}
-          - name: operator-jwt-volume
-            mountPath: /etc/nats-config/operator
-          {{- end }}
-          {{- end }}
+        {{- if eq .Values.auth.resolver.type "URL" }}
+        - name: operator-jwt-volume
+          mountPath: /etc/nats-config/operator
+        {{- end }}
+        {{- end }}
 
-          {{- if .Values.nats.jetstream.fileStorage.enabled }}
-          - name: {{ include "nats.fullname" . }}-js-pvc
-            mountPath: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
-          {{- end }}
+        {{- if .Values.nats.jetstream.fileStorage.enabled }}
+        - name: {{ include "nats.fullname" . }}-js-pvc
+          mountPath: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
+        {{- end }}
 
-          {{- with .Values.nats.tls }}
-          #######################
-          #                     #
-          #  TLS Volumes Mounts #
-          #                     #
-          #######################
-          {{ $secretName := tpl .secret.name $ }}
-          - name: {{ $secretName }}-clients-volume
-            mountPath: /etc/nats-certs/clients/{{ $secretName }}
-          {{- end }}
-          {{- with .Values.mqtt.tls }}
-          {{ $secretName := tpl .secret.name $ }}
-          - name: {{ $secretName }}-mqtt-volume
-            mountPath: /etc/nats-certs/mqtt/{{ $secretName }}
-          {{- end }}
-          {{- with .Values.cluster.tls }}
-          {{- if not .custom }}
-          {{ $secretName := tpl .secret.name $ }}
-          - name: {{ $secretName }}-cluster-volume
-            mountPath: /etc/nats-certs/cluster/{{ $secretName }}
-          {{- end }}
-          {{- end }}
-          {{- with .Values.leafnodes.tls }}
-          {{- if not .custom }}
-          {{ $secretName := tpl .secret.name $ }}
-          - name: {{ $secretName }}-leafnodes-volume
-            mountPath: /etc/nats-certs/leafnodes/{{ $secretName }}
-          {{- end }}
-          {{- end }}
-          {{- with .Values.gateway.tls }}
-          {{ $secretName := tpl .secret.name $ }}
-          - name: {{ $secretName }}-gateways-volume
-            mountPath: /etc/nats-certs/gateways/{{ $secretName }}
-          {{- end }}
+        {{- with .Values.nats.tls }}
+        #######################
+        #                     #
+        #  TLS Volumes Mounts #
+        #                     #
+        #######################
+        {{ $secretName := tpl .secret.name $ }}
+        - name: {{ $secretName }}-clients-volume
+          mountPath: /etc/nats-certs/clients/{{ $secretName }}
+        {{- end }}
+        {{- with .Values.mqtt.tls }}
+        {{ $secretName := tpl .secret.name $ }}
+        - name: {{ $secretName }}-mqtt-volume
+          mountPath: /etc/nats-certs/mqtt/{{ $secretName }}
+        {{- end }}
+        {{- with .Values.cluster.tls }}
+        {{- if not .custom }}
+        {{ $secretName := tpl .secret.name $ }}
+        - name: {{ $secretName }}-cluster-volume
+          mountPath: /etc/nats-certs/cluster/{{ $secretName }}
+        {{- end }}
+        {{- end }}
+        {{- with .Values.leafnodes.tls }}
+        {{- if not .custom }}
+        {{ $secretName := tpl .secret.name $ }}
+        - name: {{ $secretName }}-leafnodes-volume
+          mountPath: /etc/nats-certs/leafnodes/{{ $secretName }}
+        {{- end }}
+        {{- end }}
+        {{- with .Values.gateway.tls }}
+        {{ $secretName := tpl .secret.name $ }}
+        - name: {{ $secretName }}-gateways-volume
+          mountPath: /etc/nats-certs/gateways/{{ $secretName }}
+        {{- end }}
 
-          {{- with .Values.websocket.tls }}
-          {{ $secretName := tpl .secret.name $ }}
-          - name: {{ $secretName }}-ws-volume
-            mountPath: /etc/nats-certs/ws/{{ $secretName }}
-          {{- end }}
+        {{- with .Values.websocket.tls }}
+        {{ $secretName := tpl .secret.name $ }}
+        - name: {{ $secretName }}-ws-volume
+          mountPath: /etc/nats-certs/ws/{{ $secretName }}
+        {{- end }}
 
-          {{- if .Values.leafnodes.enabled }}
-          #
-          # Leafnode credential volumes
-          #
-          {{- range .Values.leafnodes.remotes }}
-          {{- with .credentials }}
-          - name: {{ .secret.name }}-volume
-            mountPath: /etc/nats-creds/{{ .secret.name }}
-          {{- end }}
-          {{- with .tls }}
-          - name: {{ .secret.name }}-volume
-            mountPath: /etc/nats-certs/leafnodes/{{ .secret.name }}
-          {{- end }}
-          {{- end }}
-          {{- end }}
+        {{- if .Values.leafnodes.enabled }}
+        #
+        # Leafnode credential volumes
+        #
+        {{- range .Values.leafnodes.remotes }}
+        {{- with .credentials }}
+        - name: {{ .secret.name }}-volume
+          mountPath: /etc/nats-creds/{{ .secret.name }}
+        {{- end }}
+        {{- with .tls }}
+        - name: {{ .secret.name }}-volume
+          mountPath: /etc/nats-certs/leafnodes/{{ .secret.name }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
 
-          {{- if .Values.additionalVolumeMounts }}
-          {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
-          {{- end }}
+        {{- if .Values.additionalVolumeMounts }}
+        {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
+        {{- end }}
 
         #######################
         #                     #
@@ -521,7 +521,7 @@ spec:
       #  NATS Configuration Reloader  #
       #                               #
       #################################
-      {{ if .Values.reloader.enabled }}
+      {{- if .Values.reloader.enabled }}
       - name: reloader
         image: {{ .Values.reloader.image }}
         imagePullPolicy: {{ .Values.reloader.pullPolicy }}
@@ -532,31 +532,31 @@ spec:
         resources:
           {{- toYaml .Values.reloader.resources | nindent 10 }}
         command:
-         - "nats-server-config-reloader"
-         - "-pid"
-         - "/var/run/nats/nats.pid"
-         - "-config"
-         - "/etc/nats-config/nats.conf"
+        - "nats-server-config-reloader"
+        - "-pid"
+        - "/var/run/nats/nats.pid"
+        - "-config"
+        - "/etc/nats-config/nats.conf"
         {{- range .Values.reloader.extraConfigs }}
-         - "-config"
-         - {{ . | quote }}
+        - "-config"
+        - {{ . | quote }}
         {{- end }}
         volumeMounts:
-          - name: config-volume
-            mountPath: /etc/nats-config
-          - name: pid
-            mountPath: /var/run/nats
-          {{- if .Values.additionalVolumeMounts }}
-          {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
-          {{- end }}
-      {{ end }}
+        - name: config-volume
+          mountPath: /etc/nats-config
+        - name: pid
+          mountPath: /var/run/nats
+        {{- if .Values.additionalVolumeMounts }}
+        {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
+        {{- end }}
+      {{- end }}
 
       ##############################
       #                            #
       #  NATS Prometheus Exporter  #
       #                            #
       ##############################
-      {{ if .Values.exporter.enabled }}
+      {{- if .Values.exporter.enabled }}
       - name: metrics
         image: {{ .Values.exporter.image }}
         imagePullPolicy: {{ .Values.exporter.pullPolicy }}
@@ -583,7 +583,7 @@ spec:
         ports:
         - containerPort: 7777
           name: metrics
-      {{ end }}
+      {{- end }}
 
       {{- if .Values.additionalContainers }}
         {{- toYaml .Values.additionalContainers | nindent 6 }}
