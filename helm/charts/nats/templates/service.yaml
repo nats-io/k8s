@@ -16,6 +16,7 @@ spec:
   selector:
     {{- include "nats.selectorLabels" . | nindent 4 }}
   clusterIP: None
+  publishNotReadyAddresses: true
   {{- if .Values.topologyKeys }}
   topologyKeys:
      {{- .Values.topologyKeys | toYaml | nindent 4 }}
