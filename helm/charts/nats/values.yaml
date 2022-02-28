@@ -20,8 +20,10 @@ nats:
 
   # Toggle using health check probes to better detect failures.
   healthcheck:
-    # NOTE: Only works on NATS Server +2.7.1.
-    # This is recommended to be enabled for NATS JetStream deployments upgrades.
+    # /healthz health check endpoint was introduced in NATS Server 2.7.1
+    # Attempt to detect /healthz support by inspecting if tag is >=2.7.1
+    detectHealthz: true
+    # Enable /healthz startupProbe for controlled upgrades of NATS JetStream
     enableHealthz: true
 
     # Enable liveness checks.  If this fails, then the NATS Server will restarted.
@@ -671,7 +673,3 @@ commonLabels: {}
 # podManagementPolicy controls how pods are created during initial scale up,
 # when replacing pods on nodes, or when scaling down.
 podManagementPolicy: Parallel
-
-# Toggle that this is an upgrade to enable healthz, in case not
-# using `helm upgrade` command to apply upgrades.
-upgrade: false

@@ -478,11 +478,9 @@ spec:
         startupProbe:
           httpGet:
             {{- $parts := split ":" .Values.nats.image }}
-            {{- $tag := $parts._1 }}
-            {{- $version := semver $tag }}
-            {{- $simpleVersion := printf "%d.%d.%d" $version.Major $version.Minor $version.Patch }}
-            {{- if and (and (or .Release.IsUpgrade .Values.upgrade) (semverCompare "~2.7.1" $simpleVersion) .Values.nats.healthcheck.enableHealthz ) }}
-            # During upgrades, healthz will be enabled instead to allow for a grace period
+            {{- $simpleVersion := $parts._1 | default "latest" | regexFind "\\d+(\\.\\d+)?(\\.\\d+)?" | default "2.7.1" }}
+            {{- if and .Values.nats.healthcheck.enableHealthz (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.7.1" $simpleVersion)) }}
+            # for NATS server versions >=2.7.1, healthz will be enabled to allow for a grace period
             # in case of JetStream enabled deployments to form quorum and streams to catch up.
             path: /healthz
             {{- else }}
