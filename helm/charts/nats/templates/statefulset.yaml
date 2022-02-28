@@ -6,11 +6,9 @@ metadata:
   namespace: {{ include "nats.namespace" . }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
-    {{- if .Values.statefulSetAnnotations}}
+  {{- if .Values.statefulSetAnnotations }}
   annotations:
-  {{- range $key, $value := .Values.statefulSetAnnotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+    {{- toYaml .Values.statefulSetAnnotations | nindent 4 }}
   {{- end }}
 spec:
   selector:
@@ -34,8 +32,8 @@ spec:
         prometheus.io/port: "7777"
         prometheus.io/scrape: "true"
       {{- end }}
-      {{- range $key, $value := .Values.podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
+      {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
       {{- end }}
       labels:
@@ -618,15 +616,11 @@ spec:
         name: {{ include "nats.fullname" . }}-js-pvc
         {{- if .Values.nats.jetstream.fileStorage.annotations }}
         annotations:
-        {{- range $key, $value := .Values.nats.jetstream.fileStorage.annotations }}
-          {{ $key }}: {{ $value | quote }}
-        {{- end }}
+          {{- toYaml .Values.nats.jetstream.fileStorage.annotations | nindent 10 }}
         {{- end }}
       spec:
         accessModes:
-        {{- range .Values.nats.jetstream.fileStorage.accessModes }}
-          - {{ . | quote }}
-        {{- end }}
+          {{- toYaml .Values.nats.jetstream.fileStorage.accessModes | nindent 10 }}
         resources:
           requests:
             storage: {{ .Values.nats.jetstream.fileStorage.size }}

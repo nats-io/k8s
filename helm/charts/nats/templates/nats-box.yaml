@@ -25,9 +25,7 @@ spec:
         {{- end }}
       {{- if .Values.natsbox.podAnnotations }}
       annotations:
-        {{- range $key, $value := .Values.natsbox.podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
-        {{- end }}
+        {{- toYaml .Values.natsbox.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
       {{- with .Values.natsbox.affinity }}

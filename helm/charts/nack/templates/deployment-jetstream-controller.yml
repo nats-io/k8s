@@ -18,9 +18,7 @@ spec:
     metadata:
       {{- if .Values.podAnnotations }}
       annotations:
-      {{- range $key, $value := .Values.podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
-      {{- end }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
       labels:
         app: {{ template "jsc.name" . }}
