@@ -25,9 +25,8 @@ spec:
         prometheus.io/port: "7777"
         prometheus.io/scrape: "true"
       {{- end }}
-      {{- range $key, $value := .Values.podAnnotations }}
-        {{ $key }}: {{ $value | quote }}
-      {{- end }}
+      {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
       labels:
         app: {{ template "stan.name" . }}
