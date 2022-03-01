@@ -7,10 +7,12 @@ on:
       - main
     paths:
       - 'helm/charts/**'
+      - '!helm/charts/index.yaml'
       - '.github/workflows/test.yaml'
   pull_request:
     paths:
       - 'helm/charts/**'
+      - '!helm/charts/index.yaml'
       - '.github/workflows/test.yaml'
 
 jobs:

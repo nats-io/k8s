@@ -1,0 +1,3 @@
+# https://github.com/helm/chart-releaser#config-file
+pages-branch: feature/release
+pages-index-path: helm/charts/index.yaml
