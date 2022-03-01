@@ -734,14 +734,14 @@ Sets the pods cpu/memory requests/limits
 nats:
   resources:
     requests:
-      cpu: 2
-      memory: 4Gi
-    limits:
       cpu: 4
-      memory: 6Gi
+      memory: 8Gi
+    limits:
+      cpu: 6
+      memory: 10Gi
 ```
 
-No resources are set by default.
+No resources are set by default. It is recommended for NATS JetStream deployments to allocate at least 8Gi of memory and 4 cpus.
 
 #### Annotations
 
