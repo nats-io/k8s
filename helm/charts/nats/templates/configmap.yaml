@@ -48,7 +48,7 @@ data:
     {{- if .Values.nats.tls.allowNonTLS }}
     allow_non_tls: {{ .Values.nats.tls.allowNonTLS }}
     {{- end }}
-   
+
     {{- end }}
 
     {{- if .Values.nats.jetstream.enabled }}
