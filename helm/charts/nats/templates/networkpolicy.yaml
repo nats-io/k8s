@@ -8,69 +8,72 @@ metadata:
     {{- include "nats.labels" . | nindent 4 }}
 spec:
   podSelector:
-    matchLabels: {{- include "nats.selectorLabels" . | nindent 6 }}
+    matchLabels:
+      {{- include "nats.selectorLabels" . | nindent 6 }}
   policyTypes:
   - Ingress
   - Egress
   egress:
-    # Allow dns resolution
-    - ports:
-      - port: 53
-        protocol: UDP
-    # Allow outbound connections to other cluster pods
-    - ports:
-      - port: 4222
-        protocol: TCP
-      - port: 6222
-        protocol: TCP
-      - port: 8222
-        protocol: TCP
-      - port: 7777
-        protocol: TCP
-      - port: 7422
-        protocol: TCP
-      - port: 7522
-        protocol: TCP
-      to:
-      - podSelector:
-          matchLabels: {{- include "nats.selectorLabels" . | nindent 14 }}
-    {{- if .Values.networkPolicy.extraEgress }}
-    {{- include "tplvalues.render" ( dict "value" .Values.networkPolicy.extraEgress "context" $ ) | nindent 4 }}
-    {{- end }}
+  # Allow dns resolution
+  - ports:
+    - port: 53
+      protocol: UDP
+  # Allow outbound connections to other cluster pods
+  - ports:
+    - port: 4222
+      protocol: TCP
+    - port: 6222
+      protocol: TCP
+    - port: 8222
+      protocol: TCP
+    - port: 7777
+      protocol: TCP
+    - port: 7422
+      protocol: TCP
+    - port: 7522
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          {{- include "nats.selectorLabels" . | nindent 10 }}
+  {{- if .Values.networkPolicy.extraEgress }}
+  {{- include "tplvalues.render" ( dict "value" .Values.networkPolicy.extraEgress "context" $ ) | nindent 2 }}
+  {{- end }}
   ingress:
-    # Allow inbound connections
-    - ports:
-      - port: 4222
-        protocol: TCP
-      - port: 6222
-        protocol: TCP
-      - port: 8222
-        protocol: TCP
-      - port: 7777
-        protocol: TCP
-      - port: 7422
-        protocol: TCP
-      - port: 7522
-        protocol: TCP
-      {{- if not .Values.networkPolicy.allowExternal }}
-      from:
-        - podSelector:
-            matchLabels:
-              {{ include "nats.fullname" . }}-client: "true"
-        - podSelector:
-            matchLabels: {{- include "nats.selectorLabels" . | nindent 14 }}
-        {{- if .Values.networkPolicy.ingressNSMatchLabels }}
-        - namespaceSelector:
-            matchLabels:
-              {{- toYaml .Values.networkPolicy.ingressNSMatchLabels | nindent 14 }}
-          {{- if .Values.networkPolicy.ingressNSPodMatchLabels }}
-          podSelector:
-            matchLabels:
-              {{- toYaml .Values.networkPolicy.ingressNSPodMatchLabels | nindent 14 }}
-          {{- end }}
-        {{- end }}
+  # Allow inbound connections
+  - ports:
+    - port: 4222
+      protocol: TCP
+    - port: 6222
+      protocol: TCP
+    - port: 8222
+      protocol: TCP
+    - port: 7777
+      protocol: TCP
+    - port: 7422
+      protocol: TCP
+    - port: 7522
+      protocol: TCP
+    {{- if not .Values.networkPolicy.allowExternal }}
+    from:
+    - podSelector:
+        matchLabels:
+          {{ include "nats.fullname" . }}-client: "true"
+    - podSelector:
+        matchLabels:
+          {{- include "nats.selectorLabels" . | nindent 10 }}
+    {{- if .Values.networkPolicy.ingressNSMatchLabels }}
+    - namespaceSelector:
+        matchLabels:
+          {{- toYaml .Values.networkPolicy.ingressNSMatchLabels | nindent 10 }}
+      {{- if .Values.networkPolicy.ingressNSPodMatchLabels }}
+      podSelector:
+        matchLabels:
+          {{- toYaml .Values.networkPolicy.ingressNSPodMatchLabels | nindent 10 }}
       {{- end }}
-    {{- if .Values.networkPolicy.extraIngress }}
-    {{- include "tplvalues.render" ( dict "value" .Values.networkPolicy.extraIngress "context" $ ) | nindent 4 }}
     {{- end }}
+    {{- end }}
+  {{- if .Values.networkPolicy.extraIngress }}
+  {{- include "tplvalues.render" ( dict "value" .Values.networkPolicy.extraIngress "context" $ ) | nindent 2 }}
+  {{- end }}
 {{- end }}
