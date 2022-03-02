@@ -480,7 +480,7 @@ natsbox:
   #    operator: "Equal|Exists"
   #    value: "value"
   #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
-  
+
   # Additional nats-box server Volume mounts
   extraVolumeMounts: []
 

@@ -47,9 +47,12 @@ jobs:
         uses: helm/chart-testing-action@v2.2.0
 
       - name: Run chart-testing (lint)
-        run: |
-          ct lint --all --chart-dirs helm/charts
-        continue-on-error: true
+        run: |-
+          ct lint \
+            --all \
+            --chart-dirs helm/charts \
+            --excluded-charts nats-account-server,nats-kafka,nats-operator,surveyor \
+            --validate-maintainers=false
 
       - name: Create k8s cluster
         run: |-
@@ -65,5 +68,7 @@ jobs:
       - name: Run chart-testing (install)
         run: |-
           sudo microk8s.kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/main/deploy/crds.yml
-          ct install --all --chart-dirs helm/charts --excluded-charts nats-account-server,nats-kafka,nats-operator,surveyor
-
+          ct install \
+            --all \
+            --chart-dirs helm/charts \
+            --excluded-charts nats-account-server,nats-kafka,nats-operator,surveyor
