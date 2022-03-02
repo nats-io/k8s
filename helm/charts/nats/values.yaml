@@ -301,8 +301,9 @@ podAnnotations: {}
 # Define a Pod Disruption Budget for the stateful set
 # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
 podDisruptionBudget:
+  enabled: true
+  maxUnavailable: 1
   # minAvailable: 1
-  # maxUnavailable: 1
 
 # Node labels for pod assignment
 # Ref: https://kubernetes.io/docs/user-guide/node-selection/
