@@ -45,7 +45,7 @@ nats:
       #  https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#probe-level-terminationgraceperiodseconds
       #  https://github.com/kubernetes/kubernetes/issues/64715
       #
-      periodSeconds: 60
+      periodSeconds: 30
       successThreshold: 1
       failureThreshold: 3
       # Only for Kubernetes +1.22 that have pod level probes enabled.
@@ -122,12 +122,15 @@ nats:
     # to a client that has no activity.
     pingInterval:
 
-    # NOTE: this should be at least the same as 'terminationGracePeriodSeconds'
-    lameDuckDuration: "120s"
+    # grace period after pod begins shutdown before starting to close client connections
+    lameDuckGracePeriod: "10s"
 
-  # terminationGracePeriodSeconds determines how long to allow for a pod
-  # to be restarted.
-  terminationGracePeriodSeconds: 120
+    # duration over which to slowly close close client connections after lameDuckGracePeriod has passed
+    lameDuckDuration: "30s"
+
+  # terminationGracePeriodSeconds determines how long to wait for graceful shutdown
+  # this should be at least `lameDuckGracePeriod` + `lameDuckDuration` + 20s shutdown overhead
+  terminationGracePeriodSeconds: 60
 
   logging:
     debug:

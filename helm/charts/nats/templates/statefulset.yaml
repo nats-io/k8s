@@ -503,14 +503,12 @@ spec:
         lifecycle:
           preStop:
             exec:
-              # Using the alpine based NATS image, we add an extra sleep that is
-              # the same amount as the terminationGracePeriodSeconds to allow
-              # the NATS Server to gracefully terminate the client connections.
+              # send the lame duck shutdown signal to trigger a graceful shutdown
+              # nats-server will ignore the TERM signal it receives after this
               #
               command:
-              - "/bin/sh"
-              - "-c"
-              - "nats-server -sl=ldm=/var/run/nats/nats.pid"
+              - "nats-server"
+              - "-sl=ldm=/var/run/nats/nats.pid"
 
       #################################
       #                               #

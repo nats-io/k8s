@@ -384,6 +384,10 @@ data:
     write_deadline: {{ . }}
     {{- end }}
 
+    {{- with .Values.nats.limits.lameDuckGracePeriod }}
+    lame_duck_grace_period: {{ . }}
+    {{- end }}
+
     {{- with .Values.nats.limits.lameDuckDuration }}
     lame_duck_duration: {{ . }}
     {{- end }}
