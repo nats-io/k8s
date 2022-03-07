@@ -142,6 +142,6 @@ Usage:
   {{- if typeIs "string" .value }}
     {{- tpl .value .context }}
   {{- else }}
-    {{- tpl (.value | toYaml) .context }}
+    {{- tpl (toYaml .value) .context }}
   {{- end }}
 {{- end -}}

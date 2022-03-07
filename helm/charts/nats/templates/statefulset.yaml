@@ -42,25 +42,25 @@ spec:
         {{- tpl (toYaml .Values.statefulSetPodLabels) . | nindent 8 }}
         {{- end }}
     spec:
-{{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-{{- toYaml . | nindent 8 }}
-{{- end }}
-{{- with .Values.securityContext }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.securityContext }}
       securityContext:
-{{- toYaml . | nindent 8 }}
-{{- end }}
-{{- with .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
-{{- tpl (toYaml .) $ | nindent 8 }}
-{{- end }}
-{{- with .Values.nodeSelector }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
       nodeSelector: {{ toYaml . | nindent 8 }}
-{{- end }}
-{{- with .Values.tolerations }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations: {{ toYaml . | nindent 8 }}
-{{- end }}
-{{- if .Values.topologySpreadConstraints }}
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
       {{- range .Values.topologySpreadConstraints }}
       {{- if and .maxSkew .topologyKey }}
@@ -74,10 +74,10 @@ spec:
             {{- include "nats.selectorLabels" $ | nindent 12 }}
       {{- end }}
       {{- end }}
-{{- end }}
-{{- if .Values.priorityClassName }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
-{{- end }}
+      {{- end }}
       # Common volumes for the containers.
       volumes:
       - name: config-volume
@@ -93,7 +93,7 @@ spec:
       {{- if .Values.nats.config }}
       # User extended config volumes
       {{- with .Values.nats.config }}
-        {{- . | toYaml | nindent 6 }}
+      {{- toYaml . | nindent 6 }}
       {{- end }}
       {{- end }}
 
@@ -225,7 +225,7 @@ spec:
         imagePullPolicy: {{ .Values.bootconfig.pullPolicy }}
         {{- if .Values.bootconfig.securityContext }}
         securityContext:
-        {{- .Values.bootconfig.securityContext | toYaml | nindent 8 }}
+          {{- toYaml .Values.bootconfig.securityContext | nindent 10 }}
         {{- end }}
         resources:
           {{- toYaml .Values.bootconfig.resources | nindent 10 }}
@@ -247,7 +247,7 @@ spec:
         imagePullPolicy: {{ .Values.nats.pullPolicy }}
         {{- if .Values.nats.securityContext }}
         securityContext:
-        {{- .Values.nats.securityContext | toYaml | nindent 10 }}
+          {{- toYaml .Values.nats.securityContext | nindent 10 }}
         {{- end }}
         resources:
           {{- toYaml .Values.nats.resources | nindent 10 }}
@@ -433,7 +433,7 @@ spec:
         {{- end }}
 
         {{- if .Values.additionalVolumeMounts }}
-        {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
+        {{- toYaml .Values.additionalVolumeMounts | nindent 8 }}
         {{- end }}
 
         #######################
@@ -521,7 +521,7 @@ spec:
         imagePullPolicy: {{ .Values.reloader.pullPolicy }}
         {{- if .Values.reloader.securityContext }}
         securityContext:
-        {{- .Values.reloader.securityContext | toYaml | nindent 10 }}
+          {{- toYaml .Values.reloader.securityContext | nindent 10 }}
         {{- end }}
         resources:
           {{- toYaml .Values.reloader.resources | nindent 10 }}
@@ -541,7 +541,7 @@ spec:
         - name: pid
           mountPath: /var/run/nats
         {{- if .Values.additionalVolumeMounts }}
-        {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
+        {{- toYaml .Values.additionalVolumeMounts | nindent 8 }}
         {{- end }}
       {{- end }}
 
@@ -556,7 +556,7 @@ spec:
         imagePullPolicy: {{ .Values.exporter.pullPolicy }}
         {{- if .Values.exporter.securityContext }}
         securityContext:
-        {{- .Values.exporter.securityContext | toYaml | nindent 10 }}
+          {{- toYaml .Values.exporter.securityContext | nindent 10 }}
         {{- end }}
         resources:
           {{- toYaml .Values.exporter.resources | nindent 10 }}
@@ -580,7 +580,7 @@ spec:
       {{- end }}
 
       {{- if .Values.additionalContainers }}
-        {{- toYaml .Values.additionalContainers | nindent 6 }}
+      {{- toYaml .Values.additionalContainers | nindent 6 }}
       {{- end }}
 
   volumeClaimTemplates:

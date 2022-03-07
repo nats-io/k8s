@@ -13,17 +13,17 @@ spec:
 
   pod:
     {{- if .Values.cluster.annotations }}
-    annotations: {{ .Values.cluster.annotations | toYaml | nindent 6 }}
+    annotations: {{ toYaml .Values.cluster.annotations | nindent 6 }}
     {{- end }}
     {{- if .Values.cluster.resources }}
-    resources: {{ .Values.cluster.resources | toYaml | nindent 6 }}
+    resources: {{ toYaml .Values.cluster.resources | nindent 6 }}
     {{- end }}
     enableConfigReload: {{ .Values.cluster.configReload.enabled }}
     reloaderImage: {{ .Values.cluster.configReload.repository }}
     reloaderImageTag: {{ .Values.cluster.configReload.tag }}
     reloaderImagePullPolicy: {{ .Values.cluster.configReload.pullPolicy }}
     {{- if .Values.cluster.configReload.resources }}
-    reloaderResources: {{ .Values.cluster.configReload.resources | toYaml | nindent 6 }}
+    reloaderResources: {{ toYaml .Values.cluster.configReload.resources | nindent 6 }}
     {{- end }}
     enableMetrics: {{ .Values.cluster.metrics.enabled }}
     metricsImage: {{ .Values.cluster.metrics.repository }}

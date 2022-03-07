@@ -30,7 +30,7 @@ spec:
     spec:
       {{- with .Values.natsbox.affinity }}
       affinity:
-      {{- tpl (toYaml .) $ | nindent 8 }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
       {{- end }}
       {{- with .Values.natsbox.nodeSelector }}
       nodeSelector: {{ toYaml . | nindent 8 }}
@@ -53,13 +53,13 @@ spec:
         secret:
           secretName: {{ $secretName }}
       {{- end }}
-{{- with .Values.securityContext }}
+      {{- with .Values.securityContext }}
       securityContext:
-{{ toYaml . | indent 8 }}
-{{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-      {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
       - name: nats-box
@@ -67,7 +67,7 @@ spec:
         imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
         {{- if .Values.natsbox.securityContext }}
         securityContext:
-        {{- .Values.natsbox.securityContext | toYaml | nindent 10 }}
+          {{- toYaml .Values.natsbox.securityContext | nindent 10 }}
         {{- end }}
         resources:
           {{- toYaml .Values.natsbox.resources | nindent 10 }}

@@ -17,7 +17,7 @@ spec:
   publishNotReadyAddresses: true
   {{- if .Values.topologyKeys }}
   topologyKeys:
-     {{- .Values.topologyKeys | toYaml | nindent 4 }}
+    {{- toYaml .Values.topologyKeys | nindent 4 }}
   {{- end }}
   ports:
   {{- if .Values.websocket.enabled }}

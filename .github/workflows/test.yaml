@@ -54,6 +54,23 @@ jobs:
             --excluded-charts nats-account-server,nats-kafka,nats-operator,surveyor \
             --validate-maintainers=false
 
+      - name: Check nindent levels
+        run: |-
+          rc=0
+          for i in $(seq 2 2 20); do
+            if find \
+              helm/charts/nack \
+              helm/charts/nats \
+              helm/charts/stan \
+              -name "*.yaml" \
+            | xargs grep -E "^[ ]*\{[^\}]+nindent $i" \
+            | grep -Ev "^[^:]+:[ ]{$i}\{"; then
+              echo "invalid nindent $i found; nindent should match template indentation"
+              rc=1
+            fi
+          done
+          exit "$rc"
+
       - name: Create k8s cluster
         run: |-
           sudo snap install microk8s --channel="${{ matrix.k8s }}/stable" --classic
