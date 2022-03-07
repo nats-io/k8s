@@ -354,7 +354,7 @@ no_auth_user: {{ . }}
 authorization {
   users: [
   {{- range . }}
-  {{- toRawJson . | nindent 4 }},
+    {{- toRawJson . | nindent 4 }},
   {{- end }}
   ]
 }

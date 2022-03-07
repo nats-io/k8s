@@ -36,14 +36,14 @@ spec:
       {{- if .Values.stan.nats.serviceRoleAuth.enabled }}
       serviceAccountName: {{ template "stan.serviceAccountName" . }}
       {{- end }}
-{{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-{{- toYaml . | nindent 8 }}
-{{- end }}
-{{- with .Values.securityContext }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.securityContext }}
       securityContext:
-{{ toYaml . | indent 8 }}
-{{- end }}
+        {{ toYaml . | indent 8 }}
+      {{- end }}
       terminationGracePeriodSeconds: 30
       volumes:
       - configMap:
@@ -90,7 +90,7 @@ spec:
 
       affinity:
         {{- if .Values.affinity }}
-          {{- toYaml .Values.affinity | nindent 8 }}
+        {{- toYaml .Values.affinity | nindent 8 }}
         {{- else }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -134,7 +134,7 @@ spec:
           image: {{ .Values.stan.image }}
           {{- if .Values.stan.securityContext }}
           securityContext:
-          {{- .Values.stan.securityContext | toYaml | nindent 12 }}
+            {{- toYaml .Values.stan.securityContext | nindent 12 }}
           {{- end }}
           args:
           - -sc
@@ -247,7 +247,7 @@ spec:
           image: amazon/aws-cli
           {{- if .Values.store.backup.securityContext }}
           securityContext:
-          {{- .Values.store.backup.securityContext | toYaml | nindent 12 }}
+            {{- toYaml .Values.store.backup.securityContext | nindent 12 }}
           {{- end }}
           command: ["/bin/sh", "-c"]
           args:
@@ -304,7 +304,7 @@ spec:
           image: {{ .Values.exporter.image }}
           {{- if .Values.exporter.securityContext }}
           securityContext:
-          {{- .Values.exporter.securityContext | toYaml | nindent 12 }}
+            {{- toYaml .Values.exporter.securityContext | nindent 12 }}
           {{- end }}
           args:
           - -connz
