@@ -638,9 +638,18 @@ natsbox:
   #     key: sys.creds
 ```
 
+### Configuration Checksum
+
+A configuration checksum annotation is enabled by default on StatefulSet Pods in order to force a rollout when the NATS configuration changes.  This checksum is only applied by `helm` commands, and will not change if configuration is modified outside of setting `helm` values.
+
+```yaml
+nats:
+  configChecksumAnnotation: true
+```
+
 ### Configuration Reload sidecar
 
-The NATS config reloader image to use:
+The NATS configuration reload sidecar is enabled by default; it passes the configuration reload signal to the NATS server when it detects configuration changes:
 
 ```yaml
 reloader:
@@ -651,7 +660,7 @@ reloader:
 
 ### Prometheus Exporter sidecar
 
-You can toggle whether to start the sidecar that can be used to feed metrics to Prometheus:
+The Prometheus Exporter sidecar is enabled by default; it can be used to feed metrics to Prometheus:
 
 ```yaml
 exporter:
