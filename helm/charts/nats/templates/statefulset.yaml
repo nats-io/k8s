@@ -25,12 +25,15 @@ spec:
 
   template:
     metadata:
-      {{- if or .Values.podAnnotations .Values.exporter.enabled }}
+      {{- if or .Values.exporter.enabled .Values.nats.configChecksumAnnotation .Values.podAnnotations }}
       annotations:
       {{- if .Values.exporter.enabled }}
         prometheus.io/path: /metrics
         prometheus.io/port: "7777"
         prometheus.io/scrape: "true"
+      {{- end }}
+      {{- if .Values.nats.configChecksumAnnotation }}
+        checksum/config: {{ tpl (.Files.Glob "files/configmap/*").AsConfig . | sha256sum }}
       {{- end }}
       {{- if .Values.podAnnotations }}
         {{- toYaml .Values.podAnnotations | nindent 8 }}

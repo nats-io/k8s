@@ -62,7 +62,7 @@ jobs:
               helm/charts/nack \
               helm/charts/nats \
               helm/charts/stan \
-              -name "*.yaml" \
+              -type f \
             | xargs grep -E "^[ ]*\{[^\}]+nindent $i" \
             | grep -Ev "^[^:]+:[ ]{$i}\{"; then
               echo "invalid nindent $i found; nindent should match template indentation"

@@ -76,6 +76,10 @@ nats:
       successThreshold: 1
       failureThreshold: 30
 
+  # Adds a hash of the ConfigMap as a pod annotation
+  # This will cause the StatefulSet to roll when the ConfigMap is updated
+  configChecksumAnnotation: true
+
   # securityContext for the nats container
   securityContext: {}
 
