@@ -9,6 +9,13 @@ helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm install my-nats nats/nats
 ```
 
+## Breaking Change Log
+
+- **0.12.0**: The `podManagementPolicy` value was introduced and set to `Parallel` by default, which controls the StatefulSet `spec.podManagementPolicy` field.  This field is immutable and cannot be changed on an existing StatefulSet; to upgrade from an older chart version, add the value:
+  ```yaml
+  podManagementPolicy: OrderedReady
+  ```
+
 ## Configuration
 
 ### Server Image
