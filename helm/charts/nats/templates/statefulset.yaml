@@ -33,7 +33,7 @@ spec:
         prometheus.io/scrape: "true"
       {{- end }}
       {{- if .Values.nats.configChecksumAnnotation }}
-        checksum/config: {{ tpl (.Files.Glob "files/configmap/*").AsConfig . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       {{- end }}
       {{- if .Values.podAnnotations }}
         {{- toYaml .Values.podAnnotations | nindent 8 }}
