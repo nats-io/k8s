@@ -55,12 +55,12 @@ spec:
     appProtocol: http
     {{- end }}
   - name: leafnodes
-    port: 7422
+    port: {{ .Values.leafnodes.port }}
     {{- if .Values.appProtocol.enabled }}
     appProtocol: tcp
     {{- end }}
   - name: gateways
-    port: 7522
+    port: {{ .Values.gateway.port }}
     {{- if .Values.appProtocol.enabled }}
     appProtocol: tcp
     {{- end }}

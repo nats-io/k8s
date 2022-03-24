@@ -28,9 +28,9 @@ spec:
       protocol: TCP
     - port: 7777
       protocol: TCP
-    - port: 7422
+    - port: {{ .Values.leafnodes.port }}
       protocol: TCP
-    - port: 7522
+    - port: {{ .Values.gateway.port }}
       protocol: TCP
     to:
     - podSelector:
@@ -50,9 +50,9 @@ spec:
       protocol: TCP
     - port: 7777
       protocol: TCP
-    - port: 7422
+    - port: {{ .Values.leafnodes.port }}
       protocol: TCP
-    - port: 7522
+    - port: {{ .Values.gateway.port }}
       protocol: TCP
     {{- if not .Values.networkPolicy.allowExternal }}
     from:
