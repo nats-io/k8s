@@ -11,6 +11,17 @@ helm install my-nats nats/nats
 
 ## Breaking Change Log
 
+- **0.15.0**: For users with JetStream enabled (`nats.jetstream.enabled = true`): `nats.jetstream.fileStorage.enabled` now defaults to `true` and `nats.jetstream.fileStorage.size` now defaults to `10Gi`.  This updates the StatefulSet `spec.volumeClaimTemplates` field, which is immutable and cannot be changed on an existing StatefulSet; to upgrade from an older chart version, add the value:
+  ```yaml
+  nats:
+    jetstream:
+      fileStorage:
+        # add if enabled was previously the default setting
+        # not recommended; it would be better to migrate to a StatefulSet with storage enabled
+        enabled: false
+        # add if size was previously the default setting
+        size: 1Gi
+  ```
 - **0.12.0**: The `podManagementPolicy` value was introduced and set to `Parallel` by default, which controls the StatefulSet `spec.podManagementPolicy` field.  This field is immutable and cannot be changed on an existing StatefulSet; to upgrade from an older chart version, add the value:
   ```yaml
   podManagementPolicy: OrderedReady
@@ -22,7 +33,7 @@ helm install my-nats nats/nats
 
 ```yaml
 nats:
-  image: nats:2.6.5-alpine
+  image: nats:2.7.4-alpine
   pullPolicy: IfNotPresent
 ```
 
@@ -364,6 +375,8 @@ auth:
 
 ### Setting up Memory and File Storage
 
+File Storage is **always** recommended, since JetStream's RAFT Meta Group will be persisted to file storage.  The Storage Class used should be block storage.  NFS is not recommended.
+
 ```yaml
 nats:
   image: nats:alpine
@@ -377,8 +390,8 @@ nats:
 
     fileStorage:
       enabled: true
-      size: 1Gi
-      storageDirectory: /data/
+      size: 10Gi
+      # storageClassName: gp2 # NOTE: AWS setup but customize as needed for your infra.
 ```
 
 ### Using with an existing PersistentVolumeClaim
@@ -433,8 +446,7 @@ nats:
 
     fileStorage:
       enabled: true
-      size: "1Gi"
-      storageDirectory: /data/
+      size: "10Gi"
 
 cluster:
   enabled: true
@@ -458,9 +470,8 @@ nats:
 
     fileStorage:
       enabled: true
-      size: "8Gi"
-      storageDirectory: /data/
-      storageClassName: gp2
+      size: "10Gi"
+      # storageClassName: gp2 # NOTE: AWS setup but customize as needed for your infra.
 
 cluster:
   enabled: true
@@ -562,7 +573,7 @@ Now we start the server with the NATS Account Resolver (`auth.resolver.type=full
 
 ```yaml
 nats:
-  image: nats:2.6.1-alpine
+  image: nats:2.7.4-alpine
 
   logging:
     debug: false
@@ -577,9 +588,8 @@ nats:
 
     fileStorage:
       enabled: true
-      size: "4Gi"
-      storageDirectory: /data/
-      storageClassName: gp2 # NOTE: AWS setup but customize as needed for your infra.
+      size: "10Gi"
+      # storageClassName: gp2 # NOTE: AWS setup but customize as needed for your infra.
 
 cluster:
   enabled: true

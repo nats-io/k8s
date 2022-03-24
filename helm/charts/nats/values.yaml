@@ -207,16 +207,16 @@ nats:
     #                          #
     ############################
     fileStorage:
-      enabled: false
+      enabled: true
       storageDirectory: /data
 
       # Set for use with existing PVC
       # existingClaim: jetstream-pvc
-      # claimStorageSize: 1Gi
+      # claimStorageSize: 10Gi
 
       # Use below block to create new persistent volume
       # only used if existingClaim is not specified
-      size: 1Gi
+      size: 10Gi
       # storageClassName: ""
       accessModes:
         - ReadWriteOnce
