@@ -20,7 +20,7 @@ spec:
       protocol: UDP
   # Allow outbound connections to other cluster pods
   - ports:
-    - port: 4222
+    - port: {{ .Values.nats.client.port }}
       protocol: TCP
     - port: 6222
       protocol: TCP
@@ -42,7 +42,7 @@ spec:
   ingress:
   # Allow inbound connections
   - ports:
-    - port: 4222
+    - port: {{ .Values.nats.client.port }}
       protocol: TCP
     - port: 6222
       protocol: TCP

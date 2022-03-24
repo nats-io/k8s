@@ -17,11 +17,11 @@ spec:
     - /bin/sh
     - -ec
     - |
-      nats reply -s nats://$NATS_HOST:4222 'name.>' --command "echo {{1}}" &
+      nats reply -s nats://$NATS_HOST:{{ .Values.nats.client.port }} 'name.>' --command "echo {{1}}" &
     - |
       "&&"
     - |
-      name=$(nats request -s nats://$NATS_HOST:4222 name.test '' 2>/dev/null)
+      name=$(nats request -s nats://$NATS_HOST:{{ .Values.nats.client.port }} name.test '' 2>/dev/null)
     - |
       "&&"
     - |
