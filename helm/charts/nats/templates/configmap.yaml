@@ -177,7 +177,7 @@ data:
     #################
     leafnodes {
       {{- if .Values.leafnodes.enabled }}
-      listen: "0.0.0.0:7422"
+      listen: "0.0.0.0:{{ .Values.leafnodes.port }}"
       {{- end }}
 
       {{- if and .Values.nats.advertise .Values.nats.externalAccess }}
@@ -277,7 +277,7 @@ data:
     #################
     gateway {
       name: {{ .Values.gateway.name }}
-      port: 7522
+      port: {{ .Values.gateway.port }}
 
       {{- if .Values.gateway.advertise }}
       advertise: {{ .Values.gateway.advertise }}

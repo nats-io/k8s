@@ -20,7 +20,7 @@ spec:
       protocol: UDP
   # Allow outbound connections to other cluster pods
   - ports:
-    - port: 4222
+    - port: {{ .Values.nats.client.port }}
       protocol: TCP
     - port: 6222
       protocol: TCP
@@ -28,9 +28,9 @@ spec:
       protocol: TCP
     - port: 7777
       protocol: TCP
-    - port: 7422
+    - port: {{ .Values.leafnodes.port }}
       protocol: TCP
-    - port: 7522
+    - port: {{ .Values.gateway.port }}
       protocol: TCP
     to:
     - podSelector:
@@ -42,7 +42,7 @@ spec:
   ingress:
   # Allow inbound connections
   - ports:
-    - port: 4222
+    - port: {{ .Values.nats.client.port }}
       protocol: TCP
     - port: 6222
       protocol: TCP
@@ -50,9 +50,9 @@ spec:
       protocol: TCP
     - port: 7777
       protocol: TCP
-    - port: 7422
+    - port: {{ .Values.leafnodes.port }}
       protocol: TCP
-    - port: 7522
+    - port: {{ .Values.gateway.port }}
       protocol: TCP
     {{- if not .Values.networkPolicy.allowExternal }}
     from:

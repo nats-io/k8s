@@ -260,15 +260,19 @@ spec:
           {{- if .Values.nats.externalAccess }}
           hostPort: {{ .Values.nats.client.port }}
           {{- end }}
-        - containerPort: 7422
+          {{- if .Values.leafnodes.enabled }}
+        - containerPort: {{ .Values.leafnodes.port }}
           name: leafnodes
           {{- if .Values.nats.externalAccess }}
-          hostPort: 7422
+          hostPort: {{ .Values.leafnodes.port }}
           {{- end }}
-        - containerPort: 7522
+          {{- end }}
+          {{- if .Values.gateway.enabled }}
+        - containerPort: {{ .Values.gateway.port }}
           name: gateways
           {{- if .Values.nats.externalAccess }}
-          hostPort: 7522
+          hostPort: {{ .Values.gateway.port }}
+          {{- end }}
           {{- end }}
         - containerPort: 6222
           name: cluster

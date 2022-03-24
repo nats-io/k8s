@@ -363,6 +363,7 @@ cluster:
 #
 leafnodes:
   enabled: false
+  port: 7422
   noAdvertise: false
   # remotes:
   #   - url: "tls://connect.ngs.global:7422"
@@ -392,6 +393,7 @@ leafnodes:
 #
 gateway:
   enabled: false
+  port: 7522
   name: "default"
   # authorization:
   #   user: foo
