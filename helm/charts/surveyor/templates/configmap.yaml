@@ -11,7 +11,9 @@ data:
     {
       "name": "{{ .name }}",
       {{- if .tls }}
+      {{- if .tls.ca }}
       "tls_ca": "/etc/nats-certs/accounts/{{ .name }}/{{ .tls.ca }}",
+      {{- end }}
       "tls_cert": "/etc/nats-certs/accounts/{{ .name }}/{{ .tls.cert }}",
       "tls_key": "/etc/nats-certs/accounts/{{ .name }}/{{ .tls.key }}"
       {{- end }}
