@@ -10,7 +10,7 @@ nats:
 
     fileStorage:
       enabled: true
-      size: "1Gi"
+      size: "10Gi"
       storageDirectory: /data/
       storageClassName: do-block-storage
 
