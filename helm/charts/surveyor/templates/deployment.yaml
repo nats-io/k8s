@@ -53,7 +53,9 @@ spec:
            {{- end }}
 
            {{- with .tls }}
+           {{- if .ca }}
             - -tlscacert=/etc/nats-certs/clients/{{ .ca }}
+           {{- end }}
             - -tlskey=/etc/nats-certs/clients/{{ .key }}
             - -tlscert=/etc/nats-certs/clients/{{ .cert }}
            {{- end }}

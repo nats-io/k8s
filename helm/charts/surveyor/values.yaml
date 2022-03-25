@@ -78,17 +78,17 @@ config:
   # Expected number of servers
   expectedServers: 1
 
-  # Required if auth is enabled.
+  # Required if NATS auth is enabled
   # credentials:
   #   secret:
   #     name: nats-sys-creds
   #     key: sys.creds
 
-  # Required if tls is enabled.
+  # Required for NATS mutual TLS
   # tls:
   #    secret:
   #      name: nats-client-tls
-  #    ca: "ca.crt"
+  #    ca: "ca.crt" # optional
   #    cert: "tls.crt"
   #    key: "tls.key"
 
@@ -99,6 +99,6 @@ config:
     #   tls:
     #     secret:
     #       name: test-user-tls
-    #     ca: "ca.crt"
+    #     ca: "ca.crt" # optional
     #     cert: "tls.crt"
     #     key: "tls.key"
