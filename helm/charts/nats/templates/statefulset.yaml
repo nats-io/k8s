@@ -124,7 +124,7 @@ spec:
         emptyDir: {}
       {{- end }}
 
-      {{- if and .Values.nats.jetstream.fileStorage.enabled .Values.nats.jetstream.fileStorage.existingClaim }}
+      {{- if and .Values.nats.jetstream.enabled .Values.nats.jetstream.fileStorage.enabled .Values.nats.jetstream.fileStorage.existingClaim }}
       # Persistent volume for jetstream running with file storage option
       - name: {{ include "nats.fullname" . }}-js-pvc
         persistentVolumeClaim:
@@ -377,7 +377,7 @@ spec:
         {{- end }}
         {{- end }}
 
-        {{- if .Values.nats.jetstream.fileStorage.enabled }}
+        {{- if and .Values.nats.jetstream.enabled .Values.nats.jetstream.fileStorage.enabled }}
         - name: {{ include "nats.fullname" . }}-js-pvc
           mountPath: {{ .Values.nats.jetstream.fileStorage.storageDirectory }}
         {{- end }}
@@ -609,7 +609,7 @@ spec:
   {{- end }}
   {{- end }}
 
-  {{- if and .Values.nats.jetstream.fileStorage.enabled (not .Values.nats.jetstream.fileStorage.existingClaim) }}
+  {{- if and .Values.nats.jetstream.enabled .Values.nats.jetstream.fileStorage.enabled (not .Values.nats.jetstream.fileStorage.existingClaim) }}
   #####################################
   #                                   #
   #  Jetstream New Persistent Volume  #
