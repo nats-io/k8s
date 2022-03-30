@@ -1,4 +1,4 @@
-{{ if and .Values.nats.externalAccess .Values.nats.advertise }}
+{{ if and .Values.nats.serviceAccount }}
 ---
 apiVersion: v1
 kind: ServiceAccount
