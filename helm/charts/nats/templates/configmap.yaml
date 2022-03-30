@@ -425,6 +425,9 @@ data:
       {{- with .Values.websocket.advertise }}
       advertise: {{ . }}
       {{- end }}
+      {{- with .Values.websocket.handshakeTimeout }}
+      handshake_timeout: {{ . | quote }}
+      {{- end }}
     }
     {{- end }}
 
