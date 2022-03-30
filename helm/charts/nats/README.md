@@ -174,7 +174,7 @@ nats:
   externalAccess: true
 
   # Toggle to disable client advertisements (connect_urls),
-  # in case of running behind a load balancer (which is not recommended)
+  # in case of running behind a load balancer
   # it might be required to disable advertisements.
   advertise: true
 
