@@ -13,7 +13,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -25,11 +25,10 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
-          version: v3.8.0
+          version: v3.8.1
 
-      # using fork while awaiting merge of https://github.com/helm/chart-releaser/pull/151
       - name: Run chart-releaser
-        uses: caleblloyd/helm-chart-releaser-action@v1.3.1
+        uses: helm/chart-releaser-action@v1.4.0
         with:
           charts_dir: helm/charts
           charts_repo_url: https://nats-io.github.io/k8s/helm/charts
