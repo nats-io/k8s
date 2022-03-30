@@ -196,10 +196,7 @@ spec:
       {{- toYaml .Values.additionalVolumes | nindent 6 }}
       {{- end }}
 
-      {{- if and .Values.nats.externalAccess .Values.nats.advertise }}
-      # Assume that we only use the service account in case we want to
-      # figure out what is the current external public IP from the server
-      # in order to be able to advertise correctly.
+      {{- if and .Values.nats.serviceAccount }}
       serviceAccountName: {{ .Values.nats.serviceAccount }}
       {{- end }}
 

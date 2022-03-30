@@ -92,9 +92,6 @@ nats:
   # it might be required to disable advertisements.
   advertise: true
 
-  # In case both external access and advertise are enabled
-  # then a service account would be required to be able to
-  # gather the public ip from a node.
   serviceAccount: "nats-server"
 
   # The number of connect attempts against discovered routes.
