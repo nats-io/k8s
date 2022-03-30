@@ -622,6 +622,9 @@ websocket:
   # connections to be advertised in the cluster.
   # advertise: "host:port"
 
+  # Set the handshake timeout for websocket connections
+  # handshakeTimeout: 5s
+
 appProtocol:
   enabled: false
 
