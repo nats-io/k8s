@@ -92,7 +92,17 @@ nats:
   # it might be required to disable advertisements.
   advertise: true
 
-  serviceAccount: "nats-server"
+  # In case both external access and advertise are enabled
+  # then a service account would be required to be able to
+  # gather the public ip from a node.
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
 
   # The number of connect attempts against discovered routes.
   connectRetries: 120
