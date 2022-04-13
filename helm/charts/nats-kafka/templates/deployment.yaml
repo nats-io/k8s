@@ -25,6 +25,8 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tagOverride | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.natskafka.resources | nindent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/nats-kafka
