@@ -1,0 +1,12 @@
+nats:
+  image: nats:alpine
+
+cluster:
+  enabled: true
+  replicas: 3
+  noAdvertise: false
+
+  authorization:
+    user: foo
+    password: pwd
+    timeout: 0.5
