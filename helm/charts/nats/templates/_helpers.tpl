@@ -74,7 +74,7 @@ Return the NATS cluster auth.
 */}}
 {{- define "nats.clusterAuth" -}}
 {{- if $.Values.cluster.authorization }}
-{{- printf "%s:%s@" $.Values.cluster.authorization.user $.Values.cluster.authorization.password -}}
+{{- printf "%s:%s@" (urlquery $.Values.cluster.authorization.user) (urlquery $.Values.cluster.authorization.password) -}}
 {{- else }}
 {{- end }}
 {{- end }}

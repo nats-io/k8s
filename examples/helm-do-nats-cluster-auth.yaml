@@ -8,5 +8,5 @@ cluster:
 
   authorization:
     user: foo
-    password: pwd
+    password: pwd&pwd
     timeout: 0.5
