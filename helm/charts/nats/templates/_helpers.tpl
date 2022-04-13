@@ -145,3 +145,15 @@ Usage:
     {{- tpl (toYaml .value) .context }}
   {{- end }}
 {{- end -}}
+
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "nats.serviceAccountName" -}}
+{{- if .Values.nats.serviceAccount.create }}
+{{- default (include "nats.fullname" .) .Values.nats.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.nats.serviceAccount.name }}
+{{- end }}
+{{- end }}
