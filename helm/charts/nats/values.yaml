@@ -452,7 +452,7 @@ bootconfig:
 #
 natsbox:
   enabled: true
-  image: natsio/nats-box:0.8.1
+  image: natsio/nats-box:0.10.0
   pullPolicy: IfNotPresent
   securityContext: {}
 
