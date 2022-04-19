@@ -196,9 +196,7 @@ spec:
       {{- toYaml .Values.additionalVolumes | nindent 6 }}
       {{- end }}
 
-
       serviceAccountName: {{ include "nats.serviceAccountName" . }}
-
 
       # Required to be able to HUP signal and apply config
       # reload to the server without restarting the pod.

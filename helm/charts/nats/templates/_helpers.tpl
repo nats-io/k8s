@@ -85,12 +85,12 @@ Return the NATS cluster routes.
 {{- define "nats.clusterRoutes" -}}
 {{- $name := (include "nats.fullname" . ) -}}
 {{- $namespace := (include "nats.namespace" . ) -}}
-{{- $clusterauth := (include "nats.clusterAuth" . ) -}}
+{{- $clusterAuth := (include "nats.clusterAuth" . ) -}}
 {{- range $i, $e := until (.Values.cluster.replicas | int) -}}
 {{- if $.Values.useFQDN }}
-{{- printf "nats://%s%s-%d.%s.%s.svc.%s:6222," $clusterauth $name $i $name $namespace $.Values.k8sClusterDomain -}}
+{{- printf "nats://%s%s-%d.%s.%s.svc.%s:6222," $clusterAuth $name $i $name $namespace $.Values.k8sClusterDomain -}}
 {{- else }}
-{{- printf "nats://%s%s-%d.%s.%s:6222," $clusterauth $name $i $name $namespace -}}
+{{- printf "nats://%s%s-%d.%s.%s:6222," $clusterAuth $name $i $name $namespace -}}
 {{- end }}
 {{- end -}}
 {{- end }}
