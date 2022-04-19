@@ -1,6 +1,6 @@
 ---
 apiVersion: v2
-version: 0.13.0
+version: 0.13.1
 appVersion: 1.2.2
 type: application
 name: nats-kafka
