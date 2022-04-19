@@ -1,5 +1,5 @@
-
-{{- if or (.Values.nats.serviceAccount.create) (and .Values.nats.externalAccess .Values.nats.advertise) -}}
+{{- if or (.Values.nats.serviceAccount.create) (and .Values.nats.externalAccess .Values.nats.advertise) }}
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -11,8 +11,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 {{- end }}
-
-{{ if and .Values.nats.externalAccess .Values.nats.advertise }}
+{{- if and .Values.nats.externalAccess .Values.nats.advertise }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -36,4 +35,4 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "nats.serviceAccountName" . }}
   namespace: {{ include "nats.namespace" . }}
-{{ end }}
+{{- end }}
