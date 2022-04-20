@@ -10,6 +10,11 @@ nats:
   # The servers name prefix, must be used for example when we want a NATS cluster
   # spanning multiple Kubernetes clusters.
   serverNamePrefix: ""
+  
+  # Server Tags 
+  serverTags:
+  # - "for"
+  # - "bar"
 
   # Toggle profiling.
   # This enables nats-server pprof (profiling) port, so you can see goroutines
@@ -184,6 +189,9 @@ nats:
 
     # Jetstream Domain
     domain:
+
+    # Jetstream Unique Tag prevent placing a stream in the same availability zone twice.
+    uniqueTag:
 
     ##########################
     #                        #
