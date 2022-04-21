@@ -10,8 +10,8 @@ nats:
   # The servers name prefix, must be used for example when we want a NATS cluster
   # spanning multiple Kubernetes clusters.
   serverNamePrefix: ""
-  
-  # Server Tags 
+
+  # Server Tags
   serverTags:
   # - "foo"
   # - "bar"
