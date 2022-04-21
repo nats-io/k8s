@@ -11,6 +11,11 @@ nats:
   # spanning multiple Kubernetes clusters.
   serverNamePrefix: ""
 
+  # Server Tags
+  serverTags:
+  # - "foo"
+  # - "bar"
+
   # Toggle profiling.
   # This enables nats-server pprof (profiling) port, so you can see goroutines
   # stacks, memory heap sizes, etc.
@@ -184,6 +189,9 @@ nats:
 
     # Jetstream Domain
     domain:
+
+    # Jetstream Unique Tag prevent placing a stream in the same availability zone twice.
+    uniqueTag:
 
     ##########################
     #                        #

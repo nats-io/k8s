@@ -33,6 +33,14 @@ data:
     http: 8222
     server_name: {{- if .Values.nats.serverNamePrefix  }}$SERVER_NAME{{- else }}$POD_NAME{{- end }}
 
+    {{- if .Values.nats.serverTags }}
+    server_tags: [
+      {{- range .Values.nats.serverTags }}
+        "{{ . }}",
+      {{- end }}
+    ]
+    {{- end }}
+
     {{- if .Values.nats.tls }}
     #####################
     #                   #
@@ -83,6 +91,10 @@ data:
       {{- else }}
       {{- .Values.nats.jetstream.fileStorage.size }}
       {{- end }}
+      {{- end }}
+
+      {{- if .Values.nats.jetstream.uniqueTag }}
+      unique_tag: {{ .Values.nats.jetstream.uniqueTag }}
       {{- end }}
     }
     {{- end }}
