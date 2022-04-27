@@ -280,6 +280,8 @@ A super cluster can be formed by pointing to remote gateways.
 You can find more about gateways in the NATS documentation:
 https://docs.nats.io/nats-server/configuration/gateways
 
+> ⚠️ Note: When using Gateways and JetStream make sure that the deployment name is different so that the generated server names do not collide.
+
 ```yaml
 gateway:
   enabled: false
