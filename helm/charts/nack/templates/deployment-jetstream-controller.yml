@@ -74,6 +74,7 @@ spec:
         - name: jsc
           image: {{ .Values.jetstream.image }}
           imagePullPolicy: {{ .Values.jetstream.pullPolicy }}
+          workingDir: /nack
           command:
           - /jetstream-controller
           {{- if .Values.jetstream.klogLevel }}
@@ -118,6 +119,8 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
+          - name: runtime
+            mountPath: /nack
           {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.secretName }}
           - name: jsc-client-tls-volume
             mountPath: /etc/nats/certs
@@ -126,3 +129,6 @@ spec:
           - name: jsc-sys-creds
             mountPath: /etc/jsc-creds
           {{- end }}
+      volumes:
+        - name : runtime
+          emptyDir : {}
