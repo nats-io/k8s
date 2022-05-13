@@ -573,6 +573,9 @@ spec:
         resources:
           requests:
             storage: {{ .Values.auth.resolver.store.size }}
+        {{- if .Values.auth.resolver.store.storageClassName }}
+        storageClassName: {{ .Values.auth.resolver.store.storageClassName | quote }}
+        {{- end }}
   {{- end }}
   {{- end }}
 

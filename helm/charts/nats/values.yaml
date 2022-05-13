@@ -603,6 +603,9 @@ auth:
       # Size of the account JWT storage.
       size: 1Gi
 
+      # StorageClass of JWT storage claim.
+      # storageClassName: ""
+
     ##############################
     #                            #
     # Memory resolver settings   #
