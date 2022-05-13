@@ -133,6 +133,65 @@ tls {
 }
 {{- end }}
 
+{{- define "nats.tlsReloaderArgs" -}}
+{{ $secretName := .secret.name }}
+{{ $secretPath := .secretPath }}
+{{- with .ca }}
+- -config
+- {{ $secretPath }}/{{ $secretName }}/{{ . }}
+{{- end }}
+{{- with .cert }}
+- -config
+- {{ $secretPath }}/{{ $secretName }}/{{ . }}
+{{- end }}
+{{- with .key }}
+- -config
+- {{ $secretPath }}/{{ $secretName }}/{{ . }}
+{{- end }}
+{{- end }}
+
+{{- define "nats.tlsVolumeMounts" -}}
+{{- with .Values.nats.tls }}
+#######################
+#                     #
+#  TLS Volumes Mounts #
+#                     #
+#######################
+{{ $secretName := tpl .secret.name $ }}
+- name: {{ $secretName }}-clients-volume
+  mountPath: /etc/nats-certs/clients/{{ $secretName }}
+{{- end }}
+{{- with .Values.mqtt.tls }}
+{{ $secretName := tpl .secret.name $ }}
+- name: {{ $secretName }}-mqtt-volume
+  mountPath: /etc/nats-certs/mqtt/{{ $secretName }}
+{{- end }}
+{{- with .Values.cluster.tls }}
+{{- if not .custom }}
+{{ $secretName := tpl .secret.name $ }}
+- name: {{ $secretName }}-cluster-volume
+  mountPath: /etc/nats-certs/cluster/{{ $secretName }}
+{{- end }}
+{{- end }}
+{{- with .Values.leafnodes.tls }}
+{{- if not .custom }}
+{{ $secretName := tpl .secret.name $ }}
+- name: {{ $secretName }}-leafnodes-volume
+  mountPath: /etc/nats-certs/leafnodes/{{ $secretName }}
+{{- end }}
+{{- end }}
+{{- with .Values.gateway.tls }}
+{{ $secretName := tpl .secret.name $ }}
+- name: {{ $secretName }}-gateways-volume
+  mountPath: /etc/nats-certs/gateways/{{ $secretName }}
+{{- end }}
+{{- with .Values.websocket.tls }}
+{{ $secretName := tpl .secret.name $ }}
+- name: {{ $secretName }}-ws-volume
+  mountPath: /etc/nats-certs/ws/{{ $secretName }}
+{{- end }}
+{{- end }}
+
 {{/*
 Return the appropriate apiVersion for networkpolicy.
 */}}
