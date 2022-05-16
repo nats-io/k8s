@@ -34,6 +34,8 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: 30
       volumes:
+      - name : runtime
+        emptyDir : {}
       {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.secretName }}
       - name: jsc-client-tls-volume
         secret:
@@ -129,6 +131,3 @@ spec:
           - name: jsc-sys-creds
             mountPath: /etc/jsc-creds
           {{- end }}
-      volumes:
-        - name : runtime
-          emptyDir : {}
