@@ -49,7 +49,7 @@ spec:
     {{- if .Values.appProtocol.enabled }}
     appProtocol: http
     {{- end }}
-  - name: metrics
+  - name: {{ .Values.exporter.portName }}
     port: 7777
     {{- if .Values.appProtocol.enabled }}
     appProtocol: http
