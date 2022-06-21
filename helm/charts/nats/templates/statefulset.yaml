@@ -274,7 +274,7 @@ spec:
         - containerPort: 8222
           name: monitor
         - containerPort: 7777
-          name: metrics
+          name: {{ .Values.exporter.portName }}
         {{- if .Values.mqtt.enabled }}
         - containerPort: 1883
           name: mqtt
@@ -550,7 +550,7 @@ spec:
         - http://localhost:8222/
         ports:
         - containerPort: 7777
-          name: metrics
+          name: {{ .Values.exporter.portName }}
       {{- end }}
 
       {{- if .Values.additionalContainers }}

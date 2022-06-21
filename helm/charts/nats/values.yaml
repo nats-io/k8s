@@ -523,6 +523,7 @@ reloader:
 exporter:
   enabled: true
   image: natsio/prometheus-nats-exporter:0.9.3
+  portName: metrics
   pullPolicy: IfNotPresent
   securityContext: {}
   resources: {}
