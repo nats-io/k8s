@@ -644,9 +644,6 @@ websocket:
   # Set the handshake timeout for websocket connections
   # handshakeTimeout: 5s
 
-appProtocol:
-  enabled: false
-
 # Network Policy configuration
 networkPolicy:
   enabled: false
