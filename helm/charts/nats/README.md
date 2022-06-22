@@ -33,7 +33,7 @@ helm install my-nats nats/nats
 
 ```yaml
 nats:
-  image: nats:2.8.0-alpine
+  image: nats:2.8.4-alpine
   pullPolicy: IfNotPresent
 ```
 
@@ -575,7 +575,7 @@ Now we start the server with the NATS Account Resolver (`auth.resolver.type=full
 
 ```yaml
 nats:
-  image: nats:2.8.0-alpine
+  image: nats:2.8.4-alpine
 
   logging:
     debug: false
