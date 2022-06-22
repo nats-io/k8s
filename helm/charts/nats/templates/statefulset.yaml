@@ -547,6 +547,9 @@ spec:
         {{- if .Values.leafnodes.enabled }}
         - -leafz
         {{- end }}
+        {{- if .Values.gateway.enabled }}
+        - -gatewayz
+        {{- end }}
         - http://localhost:8222/
         ports:
         - containerPort: 7777
