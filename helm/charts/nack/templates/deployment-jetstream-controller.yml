@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "jsc.name" . }}
+  namespace: {{ include "jsc.namespace" . }}
   labels:
     app: {{ template "jsc.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
