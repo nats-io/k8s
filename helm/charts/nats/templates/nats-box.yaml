@@ -75,9 +75,7 @@ spec:
         - name: NATS_URL
           value: {{ template "nats.fullname" . }}
         {{- if .Values.natsbox.credentials }}
-        - name: USER_CREDS
-          value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
-        - name: USER2_CREDS
+        - name: NATS_CREDS
           value: /etc/nats-config/creds/{{ .Values.natsbox.credentials.secret.key }}
         {{- end }}
         {{- with .Values.nats.tls }}
