@@ -17,7 +17,7 @@ entries:
       url: https://github.com/wallyqs
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.14.1/nack-0.14.1.tgz
@@ -38,7 +38,7 @@ entries:
       url: https://github.com/wallyqs
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.14.0/nack-0.14.0.tgz
@@ -59,7 +59,7 @@ entries:
       url: https://github.com/wallyqs
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.13.0/nack-0.13.0.tgz
@@ -80,7 +80,7 @@ entries:
       url: https://github.com/wallyqs
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.11.2/nack-0.11.2.tgz
@@ -101,7 +101,7 @@ entries:
       url: https://github.com/wallyqs
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.11.0/nack-0.11.0.tgz
@@ -122,7 +122,7 @@ entries:
       url: https://github.com/wallyqs
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/nack-0.9.2.tgz
@@ -143,7 +143,7 @@ entries:
       url: https://github.com/wallyqs
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.0/nack-0.9.0.tgz
@@ -164,7 +164,7 @@ entries:
       url: https://github.com/wallyqs
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.9/nack-0.8.9.tgz
@@ -185,7 +185,7 @@ entries:
       url: https://github.com/wallyqs
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.7/nack-0.8.7.tgz
@@ -269,7 +269,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - email: caleb@nats.io
       name: Caleb Lloyd
       url: https://github.com/caleblloyd
@@ -298,7 +298,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - email: caleb@nats.io
       name: Caleb Lloyd
       url: https://github.com/caleblloyd
@@ -327,7 +327,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - email: caleb@nats.io
       name: Caleb Lloyd
       url: https://github.com/caleblloyd
@@ -356,7 +356,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - email: caleb@nats.io
       name: Caleb Lloyd
       url: https://github.com/caleblloyd
@@ -385,7 +385,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - email: caleb@nats.io
       name: Caleb Lloyd
       url: https://github.com/caleblloyd
@@ -414,7 +414,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - email: caleb@nats.io
       name: Caleb Lloyd
       url: https://github.com/caleblloyd
@@ -443,7 +443,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - email: caleb@nats.io
       name: Caleb Lloyd
       url: https://github.com/caleblloyd
@@ -472,7 +472,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - email: caleb@nats.io
       name: Caleb Lloyd
       url: https://github.com/caleblloyd
@@ -501,7 +501,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.13.2/nats-0.13.2.tgz
@@ -527,7 +527,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.13.1/nats-0.13.1.tgz
@@ -553,7 +553,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.13.0/nats-0.13.0.tgz
@@ -579,7 +579,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.12.1/nats-0.12.1.tgz
@@ -605,7 +605,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.12.0/nats-0.12.0.tgz
@@ -631,7 +631,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.11.2/nats-0.11.2.tgz
@@ -657,7 +657,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.11.0/nats-0.11.0.tgz
@@ -683,7 +683,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.10.0/nats-0.10.0.tgz
@@ -709,7 +709,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/nats-0.9.2.tgz
@@ -735,7 +735,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.0/nats-0.9.0.tgz
@@ -761,7 +761,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.9/nats-0.8.9.tgz
@@ -787,7 +787,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.8/nats-0.8.8.tgz
@@ -813,7 +813,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.7/nats-0.8.7.tgz
@@ -839,7 +839,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.6/nats-0.8.6.tgz
@@ -1525,7 +1525,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - name: rchenzheng
       url: https://github.com/rchenzheng
     name: stan
@@ -1556,7 +1556,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - name: rchenzheng
       url: https://github.com/rchenzheng
     name: stan
@@ -1587,7 +1587,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - name: rchenzheng
       url: https://github.com/rchenzheng
     name: stan
@@ -1618,7 +1618,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - name: rchenzheng
       url: https://github.com/rchenzheng
     name: stan
@@ -1649,7 +1649,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - name: rchenzheng
       url: https://github.com/rchenzheng
     name: stan
@@ -1680,7 +1680,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - name: rchenzheng
       url: https://github.com/rchenzheng
     name: stan
@@ -1711,7 +1711,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.9/stan-0.8.9.tgz
@@ -1740,7 +1740,7 @@ entries:
       url: https://github.com/ColinSullivan1
     - email: jaime@nats.io
       name: Jaime Piña
-      url: https://github.com/variadico
+      url: https://github.com/nsurfer
     - name: rchenzheng
       url: https://github.com/rchenzheng
     name: stan
