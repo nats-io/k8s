@@ -49,17 +49,8 @@ spec:
           secretName: {{ .Values.jetstream.nats.credentials.secret.name }}
       {{- end }}
 
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - {{ template "jsc.name" . }}
-            topologyKey: kubernetes.io/hostname
 {{- with .Values.affinity }}
+      affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
 {{- with .Values.nodeSelector }}
