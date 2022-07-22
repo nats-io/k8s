@@ -197,6 +197,9 @@ spec:
       {{- end }}
 
       serviceAccountName: {{ include "nats.serviceAccountName" . }}
+      {{- if or (eq .Values.nats.automountServiceAccountToken false) (eq .Values.nats.automountServiceAccountToken true) }}
+      automountServiceAccountToken: {{ .Values.nats.automountServiceAccountToken }}
+      {{- end }}
 
       # Required to be able to HUP signal and apply config
       # reload to the server without restarting the pod.
