@@ -109,6 +109,10 @@ nats:
     # If not set and create is true, a name is generated using the fullname template
     name: ""
 
+  # Toggle whether to automatically mount Service Account token in the pod
+  # null means default value, boolean true/false overrides default value
+  automountServiceAccountToken: null
+
   # The number of connect attempts against discovered routes.
   connectRetries: 120
 
@@ -510,6 +514,10 @@ natsbox:
 
   # Additional nats-box server Volumes
   extraVolumes: []
+
+  # Toggle whether to automatically mount Service Account token in the pod
+  # null means default value, boolean true/false overrides default value
+  automountServiceAccountToken: null
 
 # The NATS config reloader image to use.
 reloader:
