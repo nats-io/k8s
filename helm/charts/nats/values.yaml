@@ -110,8 +110,8 @@ nats:
     name: ""
 
   # Toggle whether to automatically mount Service Account token in the pod
-  # null means default value, boolean true/false overrides default value
-  automountServiceAccountToken: null
+  # not set means default value, boolean true/false overrides default value
+  # automountServiceAccountToken: true
 
   # The number of connect attempts against discovered routes.
   connectRetries: 120
@@ -516,8 +516,8 @@ natsbox:
   extraVolumes: []
 
   # Toggle whether to automatically mount Service Account token in the pod
-  # null means default value, boolean true/false overrides default value
-  automountServiceAccountToken: null
+  # not set means default value, boolean true/false overrides default value
+  # automountServiceAccountToken: true
 
 # The NATS config reloader image to use.
 reloader:
