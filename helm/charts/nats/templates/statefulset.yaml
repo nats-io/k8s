@@ -197,7 +197,7 @@ spec:
       {{- end }}
 
       serviceAccountName: {{ include "nats.serviceAccountName" . }}
-      {{- if or (eq .Values.nats.automountServiceAccountToken false) (eq .Values.nats.automountServiceAccountToken true) }}
+      {{- if hasKey .Values.nats "automountServiceAccountToken" }}
       automountServiceAccountToken: {{ .Values.nats.automountServiceAccountToken }}
       {{- end }}
 

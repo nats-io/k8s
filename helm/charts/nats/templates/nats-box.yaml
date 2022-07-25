@@ -61,7 +61,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or (eq .Values.natsbox.automountServiceAccountToken false) (eq .Values.natsbox.automountServiceAccountToken true) }}
+      {{- if hasKey .Values.natsbox "automountServiceAccountToken" }}
       automountServiceAccountToken: {{ .Values.natsbox.automountServiceAccountToken }}
       {{- end }}
       containers:
