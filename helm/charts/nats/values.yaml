@@ -254,7 +254,7 @@ nats:
   #
 
   # tls:
-  #   allow_non_tls: false
+  #   allowNonTLS: false
   #   secret:
   #     name: nats-client-tls
   #   ca: "ca.crt"
