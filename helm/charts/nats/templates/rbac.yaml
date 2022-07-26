@@ -4,6 +4,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ include "nats.serviceAccountName" . }}
+  namespace: {{ include "nats.namespace" . }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
   {{- with .Values.nats.serviceAccount.annotations }}
