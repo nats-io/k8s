@@ -121,6 +121,9 @@ tls {
 {{- if .verifyAndMap }}
     verify_and_map: {{ .verifyAndMap }}
 {{- end }}
+{{- if .verifyCertAndCheckKnownUrls }}
+    verify_cert_and_check_known_urls: {{ .verifyCertAndCheckKnownUrls }}
+{{- end }}
 {{- if .curvePreferences }}
     curve_preferences: {{ .curvePreferences }}
 {{- end }}
