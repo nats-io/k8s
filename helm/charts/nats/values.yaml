@@ -557,6 +557,10 @@ auth:
   #   # that belong to the global account.
   #   users:
 
+  #   defaultPermissions:
+  #     publish: ["SANDBOX.*"]
+  #     subscribe: ["SANDBOX.>"]
+
   #   # List of accounts with users that can connect
   #   # using basic auth.
   #   accounts:
