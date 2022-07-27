@@ -10,6 +10,9 @@ data:
   {{ .name }}.json: |
     {
       "name": "{{ .name }}",
+      {{- if .credential }}
+      "credential": "{{ .credential }}"
+      {{- end }}      
       {{- if .tls }}
       {{- if .tls.ca }}
       "tls_ca": "/etc/nats-certs/accounts/{{ .name }}/{{ .tls.ca }}",

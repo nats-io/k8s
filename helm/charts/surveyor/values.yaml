@@ -102,3 +102,5 @@ config:
     #     ca: "ca.crt" # optional
     #     cert: "tls.crt"
     #     key: "tls.key"
+    # - name: test2
+    #   credential: /jetstream/youraccount.cred
