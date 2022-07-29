@@ -257,7 +257,11 @@ data:
 
         {{- with .tls }}
         tls: {
-          {{- if .custom }}
+          {{- if .insecure }}
+          {{- with .insecure }}
+          insecure: {{ . }}
+          {{- end }}
+          {{- else if .custom}}
           {{- .custom | nindent 10 }}
           {{- else }}
           {{ $secretName := tpl .secret.name $ }}
