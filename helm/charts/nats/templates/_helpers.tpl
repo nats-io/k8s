@@ -101,6 +101,26 @@ Return the NATS cluster routes.
 {{- end -}}
 {{- end }}
 
+{{- define "nats.authenticationEnv" }}
+{{- if .existingSecret }}
+- name: {{ .envPrefix }}_AUTHORIZATION_USER
+  valueFrom:
+    secretKeyRef:
+      name: {{ .existingSecret }}
+      key: {{ ((.secretKeys).userKey) | default "user" }}
+- name: {{ .envPrefix }}_AUTHORIZATION_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .existingSecret }}
+      key: {{ ((.secretKeys).passwordKey) | default "password" }}
+{{- else }}
+- name: {{ .envPrefix }}_AUTHORIZATION_USER
+  value: {{ .user }}
+- name: {{ .envPrefix }}_AUTHORIZATION_PASSWORD
+  value: {{ .password }}
+{{- end }}
+{{- end }}
+
 {{- define "nats.tlsConfig" -}}
 tls {
 {{- if .cert }}

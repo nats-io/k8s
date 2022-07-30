@@ -301,12 +301,8 @@ data:
 
       {{- if .Values.gateway.authorization }}
       authorization {
-        {{- with .Values.gateway.authorization.user }}
-        user: {{ . }}
-        {{- end }}
-        {{- with .Values.gateway.authorization.password }}
-        password: {{ . }}
-        {{- end }}
+        user: $GATEWAY_AUTHORIZATION_USER
+        password: $GATEWAY_AUTHORIZATION_PASSWORD
         {{- with .Values.gateway.authorization.timeout }}
         timeout: {{ . }}
         {{- end }}

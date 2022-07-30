@@ -188,6 +188,14 @@ nats:
   #      configMap:
   #        name: log-config
 
+  # Provide extra environment variables to NATS that may be used as variables in the configuration.
+  extraEnvVars: []
+  # FOO_ENV: foo
+  # BAR_ENV: bar
+
+  # Provide extra environment variables to NATS from a secret.
+  extraEnvVarsSecret: ""
+
   jetstream:
     enabled: false
 
@@ -418,6 +426,10 @@ gateway:
   #   user: foo
   #   password: pwd
   #   timeout: 0.5
+  #   existingSecret: ""
+  #   secretKeys:
+  #     userKey: "user"
+  #     passwordKey: "password"
   # rejectUnknownCluster: false
 
   # You can add an implicit advertise address instead of using from Node's IP

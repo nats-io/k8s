@@ -333,6 +333,24 @@ spec:
         {{- end }}
         {{- end }}
         {{- end }}
+        
+        {{- range $key, $value := .Values.nats.extraEnvVars }}
+        - name: "{{ tpl $key $ }}"
+          value: "{{ tpl (print $value) $ }}"
+        {{- end }}
+        
+        {{- with .Values.gateway.authorization }}
+        {{- $gateway_auth := merge (dict) . }}
+        {{- $_ := set $gateway_auth "envPrefix" "GATEWAY" }}
+        {{- tpl (include "nats.authenticationEnv" $gateway_auth) $ | nindent 8 }}
+        {{- end }}
+        
+        {{- if .Values.nats.extraEnvVarsSecret }}
+        envFrom:
+          - secretRef:
+              name: "{{ .Values.nats.extraEnvVarsSecret }}"
+        {{- end }}
+
         volumeMounts:
         - name: config-volume
           mountPath: /etc/nats-config
