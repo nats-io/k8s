@@ -48,9 +48,15 @@ data:
     #                   #
     #####################
     {{- with .Values.nats.tls }}
+    {{- if .custom }}
+    tls {
+      {{- .custom | nindent 8 }}
+    }
+    {{- else }}
     {{- $nats_tls := merge (dict) . }}
     {{- $_ := set $nats_tls "secretPath" "/etc/nats-certs/clients" }}
     {{- tpl (include "nats.tlsConfig" $nats_tls) $ | nindent 4}}
+    {{- end }}
     {{- end }}
 
     {{- if .Values.nats.tls.allowNonTLS }}
@@ -108,9 +114,15 @@ data:
       port: 1883
 
       {{- with .Values.mqtt.tls }}
+      {{- if .custom }}
+      tls {
+        {{- .custom | nindent 8 }}
+      }
+      {{- else }}
       {{-  $mqtt_tls := merge (dict) . }}
       {{- $_ := set $mqtt_tls "secretPath" "/etc/nats-certs/mqtt" }}
       {{- tpl (include "nats.tlsConfig" $mqtt_tls) $ | nindent 6}}
+      {{- end }}
       {{- end }}
 
       {{- if .Values.mqtt.noAuthUser }}
@@ -144,9 +156,15 @@ data:
       {{- end }}
 
       {{- with .Values.cluster.tls }}
+      {{- if .custom }}
+      tls {
+        {{- .custom | nindent 8 }}
+      }
+      {{- else }}
       {{-  $cluster_tls := merge (dict) . }}
       {{- $_ := set $cluster_tls "secretPath" "/etc/nats-certs/cluster" }}
       {{- tpl (include "nats.tlsConfig" $cluster_tls) $ | nindent 6}}
+      {{- end }}
       {{- end }}
 
       {{- if .Values.cluster.authorization }}
@@ -318,9 +336,15 @@ data:
       {{- end }}
 
       {{- with .Values.gateway.tls }}
+      {{- if .custom }}
+      tls {
+        {{- .custom | nindent 8 }}
+      }
+      {{- else }}
       {{-  $gateway_tls := merge (dict) . }}
       {{- $_ := set $gateway_tls "secretPath" "/etc/nats-certs/gateways" }}
       {{- tpl (include "nats.tlsConfig" $gateway_tls) $ | nindent 6}}
+      {{- end }}
       {{- end }}
 
       # Gateways array here
@@ -413,20 +437,15 @@ data:
     websocket {
       port: {{ .Values.websocket.port }}
       {{- with .Values.websocket.tls }}
-        {{ $secretName := tpl .secret.name $ }}
-        tls {
-        {{- with .cert }}
-        cert_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
-        {{- end }}
-
-        {{- with .key }}
-        key_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
-        {{- end }}
-
-        {{- with .ca }}
-        ca_file: /etc/nats-certs/ws/{{ $secretName }}/{{ . }}
-        {{- end }}
-        }
+      {{- if .custom }}
+      tls {
+        {{- .custom | nindent 8 }}
+      }
+      {{- else }}
+      {{-  $websocket_tls := merge (dict) . }}
+      {{- $_ := set $websocket_tls "secretPath" "/etc/nats-certs/ws" }}
+      {{- tpl (include "nats.tlsConfig" $websocket_tls) $ | nindent 6}}
+      {{- end }}
       {{- else }}
       no_tls: {{ .Values.websocket.noTLS }}
       {{- end }}

@@ -137,22 +137,28 @@ spec:
       #               #
       #################
       {{- with .Values.nats.tls }}
+      {{- if not .custom }}
       {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-clients-volume
         secret:
           secretName: {{ $secretName }}
       {{- end }}
+      {{- end }}
       {{- with .Values.mqtt.tls }}
+      {{- if not .custom }}
       {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-mqtt-volume
         secret:
           secretName: {{ $secretName }}
       {{- end }}
+      {{- end }}
       {{- with .Values.cluster.tls }}
+      {{- if not .custom }}
       {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-cluster-volume
         secret:
           secretName: {{ $secretName }}
+      {{- end }}
       {{- end }}
       {{- with .Values.leafnodes.tls }}
       {{- if not .custom }}
@@ -163,17 +169,22 @@ spec:
       {{- end }}
       {{- end }}
       {{- with .Values.gateway.tls }}
+      {{- if not .custom }}
       {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-gateways-volume
         secret:
           secretName: {{ $secretName }}
       {{- end }}
+      {{- end }}
       {{- with .Values.websocket.tls }}
+      {{- if not .custom }}
       {{ $secretName := tpl .secret.name $ }}
       - name: {{ $secretName }}-ws-volume
         secret:
           secretName: {{ $secretName }}
       {{- end }}
+      {{- end }}
+      
       {{- if .Values.leafnodes.enabled }}
       #
       # Leafnode credential volumes

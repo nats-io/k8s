@@ -161,13 +161,17 @@ tls {
 #                     #
 #######################
 {{ $secretName := tpl .secret.name $ }}
+{{- if not .custom }}
 - name: {{ $secretName }}-clients-volume
   mountPath: /etc/nats-certs/clients/{{ $secretName }}
 {{- end }}
+{{- end }}
 {{- with .Values.mqtt.tls }}
+{{- if not .custom }}
 {{ $secretName := tpl .secret.name $ }}
 - name: {{ $secretName }}-mqtt-volume
   mountPath: /etc/nats-certs/mqtt/{{ $secretName }}
+{{- end }}
 {{- end }}
 {{- with .Values.cluster.tls }}
 {{- if not .custom }}
@@ -184,14 +188,18 @@ tls {
 {{- end }}
 {{- end }}
 {{- with .Values.gateway.tls }}
+{{- if not .custom }}
 {{ $secretName := tpl .secret.name $ }}
 - name: {{ $secretName }}-gateways-volume
   mountPath: /etc/nats-certs/gateways/{{ $secretName }}
 {{- end }}
+{{- end }}
 {{- with .Values.websocket.tls }}
+{{- if not .custom }}
 {{ $secretName := tpl .secret.name $ }}
 - name: {{ $secretName }}-ws-volume
   mountPath: /etc/nats-certs/ws/{{ $secretName }}
+{{- end }}
 {{- end }}
 {{- end }}
 
