@@ -319,6 +319,11 @@ spec:
               fieldPath: metadata.namespace
         - name: CLUSTER_ADVERTISE
           value: {{ include "nats.clusterAdvertise" . }}
+        - name: GOMEMLIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: nats
+              resource: limits.memory
 
         {{- if .Values.nats.jetstream.enabled }}
         {{- with .Values.nats.jetstream.encryption }}
