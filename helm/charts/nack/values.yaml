@@ -14,6 +14,13 @@ jetstream:
     url:
 
     #
+    # The nkey file to load in to connect to the NATS Server.
+    #
+    # nkey:
+    #   secret:
+    #     name: nats-sys-nkey
+    #     key: sys.nkey
+    #
     # The credentials file to load in to connect to the NATS Server.
     #
     # credentials:
