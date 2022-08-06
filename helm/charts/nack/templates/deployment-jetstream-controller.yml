@@ -49,6 +49,12 @@ spec:
           secretName: {{ .Values.jetstream.nats.credentials.secret.name }}
       {{- end }}
 
+      {{- with .Values.jetstream.nats.nkey }}
+      - name: jsc-sys-nkey
+        secret:
+          secretName: {{ .secret.name }}
+      {{- end}}
+
 {{- with .Values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
@@ -81,6 +87,9 @@ spec:
           {{- end }}
           {{- with .Values.jetstream.nats.credentials }}
           - --creds=/etc/jsc-creds/{{ .secret.key }}
+          {{- end }}
+          {{- with .Values.jetstream.nats.nkey }}
+          - --nkey=/etc/jsc-nkey/{{ .secret.key }}
           {{- end }}
           {{- if .Values.namespaced }}
           - --namespace={{ template "jsc.namespace" . }}
@@ -122,4 +131,8 @@ spec:
           {{- if .Values.jetstream.nats.credentials }}
           - name: jsc-sys-creds
             mountPath: /etc/jsc-creds
+          {{- end }}
+          {{- if .Values.jetstream.nats.nkey }}
+          - name: jsc-sys-nkey
+            mountPath: /etc/jsc-nkey
           {{- end }}
