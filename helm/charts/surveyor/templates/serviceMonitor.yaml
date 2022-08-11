@@ -1,0 +1,27 @@
+{{ if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "surveyor.fullname" . }}
+  {{- if .Values.serviceMonitor.labels }}
+  labels:
+    {{- toYaml .Values.serviceMonitor.labels | nindent 4 }}
+  {{- end }}
+  {{- if .Values.serviceMonitor.annotations }}
+  annotations:
+    {{- toYaml .Values.serviceMonitor.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  endpoints:
+  - port: http
+    path: /metrics
+  {{- if .Values.serviceMonitor.interval }}
+    interval: {{ .Values.serviceMonitor.interval }}
+  {{- end }}
+  {{- if .Values.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "surveyor.selectorLabels" . | nindent 6 }}
+{{- end }}

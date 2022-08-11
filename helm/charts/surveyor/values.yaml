@@ -30,6 +30,13 @@ service:
   type: ClusterIP
   port: 7777
 
+serviceMonitor:
+  enabled: false
+  labels: {}
+  annotations: {}
+  # interval:
+  # scrapeTimeout:
+
 ingress:
   enabled: false
   annotations: {}
