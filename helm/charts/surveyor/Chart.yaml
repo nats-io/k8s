@@ -4,4 +4,4 @@ name: surveyor
 description: NATS Monitoring, Simplified.
 type: application
 version: 0.13.1
-appVersion: 0.2.2
+appVersion: 0.3.0
