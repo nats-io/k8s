@@ -45,7 +45,7 @@ spec:
            {{- end }}
 
            {{- with .timeout }}
-            - -timeout={{ . }}
+            - --timeout={{ . }}
            {{- end }}
 
            {{- with .expectedServers }}
@@ -54,15 +54,15 @@ spec:
 
            {{- with .tls }}
            {{- if .ca }}
-            - -tlscacert=/etc/nats-certs/clients/{{ .ca }}
+            - --tlscacert=/etc/nats-certs/clients/{{ .ca }}
            {{- end }}
-            - -tlskey=/etc/nats-certs/clients/{{ .key }}
-            - -tlscert=/etc/nats-certs/clients/{{ .cert }}
+            - --tlskey=/etc/nats-certs/clients/{{ .key }}
+            - --tlscert=/etc/nats-certs/clients/{{ .cert }}
            {{- end }}
            {{- end }}
 
            {{- if .Values.config.jetstream.enabled }}
-            - -jetstream=/jetstream
+            - --jetstream=/jetstream
            {{- end }}
           ports:
             - name: http
