@@ -454,7 +454,7 @@ gateway:
 # enabled, an initializer container will be used to gather
 # the public ips.
 bootconfig:
-  image: natsio/nats-boot-config:0.7.0
+  image: natsio/nats-boot-config:0.7.2
   pullPolicy: IfNotPresent
   securityContext: {}
 
@@ -522,7 +522,7 @@ natsbox:
 # The NATS config reloader image to use.
 reloader:
   enabled: true
-  image: natsio/nats-server-config-reloader:0.7.0
+  image: natsio/nats-server-config-reloader:0.7.2
   pullPolicy: IfNotPresent
   securityContext: {}
   extraConfigs: []
@@ -530,7 +530,7 @@ reloader:
 # Prometheus NATS Exporter configuration.
 exporter:
   enabled: true
-  image: natsio/prometheus-nats-exporter:0.9.3
+  image: natsio/prometheus-nats-exporter:0.10.0
   portName: metrics
   pullPolicy: IfNotPresent
   securityContext: {}
