@@ -85,6 +85,9 @@ config:
   # Expected number of servers
   expectedServers: 1
 
+  # Enable monitoring account metrics.
+  accounts: false
+
   # Required if NATS auth is enabled
   # credentials:
   #   secret:
