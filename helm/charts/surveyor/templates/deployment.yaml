@@ -44,6 +44,10 @@ spec:
             - -s={{ . }}
            {{- end }}
 
+           {{- with .accounts }}
+            - --accounts
+           {{- end }}
+
            {{- with .timeout }}
             - --timeout={{ . }}
            {{- end }}
