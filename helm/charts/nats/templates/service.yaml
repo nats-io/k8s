@@ -14,7 +14,15 @@ metadata:
 spec:
   selector:
     {{- include "nats.selectorLabels" . | nindent 4 }}
+  {{- if not .Values.nats.requiresExternalIPs.enabled }}
   clusterIP: None
+  {{- end }}
+  {{- if .Values.nats.requiresExternalIPs.enabled }}
+  externalIPs:
+  {{- range $externalIP := .Values.nats.requiresExternalIPs.externalIPs }}
+    - {{- $externalIP | nindent 6 }}
+  {{- end }}
+  {{- end }}
   publishNotReadyAddresses: true
   {{- if .Values.topologyKeys }}
   topologyKeys:

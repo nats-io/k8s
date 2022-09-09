@@ -97,6 +97,11 @@ nats:
   # it might be required to disable advertisements.
   advertise: true
 
+  # Configuration for external IPs for MicroK8s
+  requiresExternalIPs:
+    enabled: false
+    externalIPs: []
+
   # In case both external access and advertise are enabled
   # then a service account would be required to be able to
   # gather the public ip from a node.
