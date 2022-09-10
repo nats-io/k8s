@@ -16,6 +16,13 @@ nats:
   # - "foo"
   # - "bar"
 
+  # Sets GOMEMLIMIT environment variable which makes the Go GC be aware of memory limits
+  # from the container. Recommended to be set to about 90% of the resource memory limits.
+  #
+  # More info about the Go GC: https://go.dev/doc/gc-guide
+  #
+  # gomemlimit: "4GiB"
+
   # Toggle profiling.
   # This enables nats-server pprof (profiling) port, so you can see goroutines
   # stacks, memory heap sizes, etc.
