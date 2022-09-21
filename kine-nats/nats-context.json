@@ -1,0 +1,17 @@
+{
+    "description": "",
+    "url": "nats://nats:4222",
+    "token": "",
+    "user": "test",
+    "password": "test",
+    "creds": "",
+    "nkey": "",
+    "cert": "",
+    "key": "",
+    "ca": "",
+    "nsc": "",
+    "jetstream_domain": "",
+    "jetstream_api_prefix": "",
+    "jetstream_event_prefix": "",
+    "inbox_prefix": ""
+}
