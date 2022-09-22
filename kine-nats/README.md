@@ -33,3 +33,13 @@ export KUBECONFIG="$(pwd)/k3s.yaml"
 # destroy docker compose stack
 docker compose down -v
 ```
+
+## Run Connection Test
+
+```bash
+cd kine
+./scripts/build
+./scripts/package
+. ./scripts/test-helpers
+. ./scripts/test-run-jetstream
+```
