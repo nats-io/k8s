@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  nats:
+    image: nats:2.9.0-alpine
+    ports:
+    - 4222:4222
+    volumes:
+    - ./nats-server.conf:/etc/nats/nats-server.conf
+
+  kine:
+    build: ./
+    command:
+    - --endpoint
+    - nats://?bucket=k3s&contextFile=/etc/nats-context.json
+    volumes:
+    - ./nats-context.json:/etc/nats-context.json
+    depends_on:
+    - nats
+
+  k3s:
+    image: rancher/k3s:v1.24.4-k3s1
+    command: server
+    hostname: k3s
+    tmpfs:
+    - /run
+    - /var/run
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+    privileged: true
+    environment:
+      K3S_DATASTORE_ENDPOINT: http://kine:2379
+    ports:
+    - 6443:6443
+    depends_on:
+    - kine
