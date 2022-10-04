@@ -63,6 +63,7 @@ jobs:
               helm/charts/nats \
               helm/charts/stan \
               -type f \
+              -not -name "*.md" \
             | xargs grep -E "^[ ]*\{[^\}]+nindent $i" \
             | grep -Ev "^[^:]+:[ ]{$i}\{"; then
               echo "invalid nindent $i found; nindent should match template indentation"

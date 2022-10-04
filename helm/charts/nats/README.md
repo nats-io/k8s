@@ -33,7 +33,7 @@ helm install my-nats nats/nats
 
 ```yaml
 nats:
-  image: nats:2.8.4-alpine
+  image: nats:2.9.1-alpine
   pullPolicy: IfNotPresent
 ```
 
@@ -273,6 +273,52 @@ spec:
       targetPort: 7522
       name: gateways
 ```
+
+### Using NATS Chart as a Dependency
+
+In order to fully manage your deployment through Helm, you can use `nats` as a [helm dependency](https://helm.sh/docs/helm/helm_dependency/#helm-dependency).  This is our recommend approach for exposing your NATS deployment with Services or WebSocket Ingresses.
+
+1. Example uses a helm chart named `mynats` (example: `helm create mynats`)
+2. In `Chart.yaml` add the following dependencies block
+    ```yaml
+    dependencies:
+    - name: nats
+      version: 0.18.0
+      repository: https://nats-io.github.io/k8s/helm/charts/
+    ```
+3. Run `helm dep update` now (and any time you update the `nats` dependency version)
+4. Add `nats` settings to the `values.yaml` file:
+    ```yaml
+    # notice the extra nats key here, must match the dependency name in Chart.yaml
+    nats:
+      nats:
+        jetstream:
+          enabled: true
+      cluster:
+        enabled: true
+        # disable cluster advertisements when running behind a load balancer
+        noAdvertise: true
+      
+      # add whatever other nats settings you need here
+    ```
+5. Add a template for your service to `templates/service-lb.yaml`:
+    ```yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: {{ include "mynats.fullname" . }}-lb
+      labels:
+        {{- include "mynats.labels" . | nindent 4 }}
+    spec:
+      type: LoadBalancer
+      selector:
+        {{- include "nats.selectorLabels" .Subcharts.nats | nindent 4 }}
+      ports:
+      - name: nats
+        port: 4222
+        protocol: TCP
+        targetPort: 4222
+    ```
 
 ## Gateways
 
@@ -575,7 +621,7 @@ Now we start the server with the NATS Account Resolver (`auth.resolver.type=full
 
 ```yaml
 nats:
-  image: nats:2.8.4-alpine
+  image: nats:2.9.1-alpine
 
   logging:
     debug: false
