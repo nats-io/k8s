@@ -37,6 +37,9 @@ nats:
     detectHealthz: true
     # Enable /healthz startupProbe for controlled upgrades of NATS JetStream
     enableHealthz: true
+    # Enable /healthz liveness and readiness probes (supported in >=2.9.0)
+    # This is a feature flag and will be removed in future releases
+    enableHealthzLivenessReadiness: false
 
     # Enable liveness checks.  If this fails, then the NATS Server will restarted.
     liveness:
@@ -65,10 +68,8 @@ nats:
 
     # Periodically check for the server to be ready for connections while
     # the NATS container is running.
-    # Disabled by default since covered by startup probe and it is the same
-    # as the liveness check.
     readiness:
-      enabled: false
+      enabled: true
 
       initialDelaySeconds: 10
       timeoutSeconds: 5

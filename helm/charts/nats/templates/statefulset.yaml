@@ -410,12 +410,21 @@ spec:
         #                     #
         #######################
         {{- if .Values.nats.healthcheck }}
+        {{- $serverVersion := (split ":" .Values.nats.image)._1 | default "latest" | regexFind "\\d+(\\.\\d+)?(\\.\\d+)?" | default "2.9.0" }}
+        {{- $enableHealthzStartup := and .Values.nats.healthcheck.enableHealthz (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.7.1" $serverVersion)) }}
+        {{- $enableHealthzLivenessReadiness := and .Values.nats.healthcheck.enableHealthzLivenessReadiness (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.9.0" $serverVersion)) }}
 
         {{- with .Values.nats.healthcheck.liveness }}
         {{- if .enabled }}
         livenessProbe:
           httpGet:
+            {{- if $enableHealthzLivenessReadiness }}
+            # for NATS server versions >=2.9.0, /healthz?js-enabled=true will be enabled
+            # liveness probe checks that the JS server is enabled
+            path: /healthz?js-enabled=true
+            {{- else }}
             path: /
+            {{- end }}
             port: 8222
           initialDelaySeconds: {{ .initialDelaySeconds }}
           timeoutSeconds: {{ .timeoutSeconds }}
@@ -432,7 +441,13 @@ spec:
         {{- if .enabled }}
         readinessProbe:
           httpGet:
+            {{- if $enableHealthzLivenessReadiness }}
+            # for NATS server versions >=2.9.0, /healthz?js-server-only=true will be enabled
+            # readiness probe checks that the JS server is enabled, and is current with the meta leader
+            path: /healthz?js-server-only=true
+            {{- else }}
             path: /
+            {{- end }}
             port: 8222
           initialDelaySeconds: {{ .initialDelaySeconds }}
           timeoutSeconds: {{ .timeoutSeconds }}
@@ -442,20 +457,19 @@ spec:
         {{- end }}
         {{- end }}
 
-        {{- if .Values.nats.healthcheck.startup.enabled }}
+        {{- with .Values.nats.healthcheck.startup }}
+        {{- if .enabled }}
         startupProbe:
           httpGet:
-            {{- $parts := split ":" .Values.nats.image }}
-            {{- $simpleVersion := $parts._1 | default "latest" | regexFind "\\d+(\\.\\d+)?(\\.\\d+)?" | default "2.7.1" }}
-            {{- if and .Values.nats.healthcheck.enableHealthz (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.7.1" $simpleVersion)) }}
-            # for NATS server versions >=2.7.1, healthz will be enabled to allow for a grace period
-            # in case of JetStream enabled deployments to form quorum and streams to catch up.
+            {{- if $enableHealthzStartup }}
+            # for NATS server versions >=2.7.1, /healthz will be enabled
+            # startup probe checks that the JS server is enabled, is current with the meta leader,
+            # and that all streams and consumers assigned to this JS server are current
             path: /healthz
             {{- else }}
             path: /
             {{- end }}
             port: 8222
-        {{- with .Values.nats.healthcheck.startup }}
           initialDelaySeconds: {{ .initialDelaySeconds }}
           timeoutSeconds: {{ .timeoutSeconds }}
           periodSeconds: {{ .periodSeconds }}
