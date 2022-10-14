@@ -411,14 +411,15 @@ spec:
         #######################
         {{- if .Values.nats.healthcheck }}
         {{- $serverVersion := (split ":" .Values.nats.image)._1 | default "latest" | regexFind "\\d+(\\.\\d+)?(\\.\\d+)?" | default "2.9.0" }}
-        {{- $enableHealthzStartup := and .Values.nats.healthcheck.enableHealthz (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.7.1" $serverVersion)) }}
-        {{- $enableHealthzLivenessReadiness := and .Values.nats.healthcheck.enableHealthzLivenessReadiness (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.9.0" $serverVersion)) }}
+        {{- $enableHealthzStartup := and .Values.nats.healthcheck.startup.enableHealthz (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.7.1" $serverVersion)) }}
+        {{- $enableHealthzLiveness := and .Values.nats.healthcheck.liveness.enableHealthz (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.9.0" $serverVersion)) }}
+        {{- $enableHealthzReadiness := and .Values.nats.healthcheck.readiness.enableHealthz (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.9.0" $serverVersion)) }}
 
         {{- with .Values.nats.healthcheck.liveness }}
         {{- if .enabled }}
         livenessProbe:
           httpGet:
-            {{- if $enableHealthzLivenessReadiness }}
+            {{- if $enableHealthzLiveness }}
             # for NATS server versions >=2.9.0, /healthz?js-enabled=true will be enabled
             # liveness probe checks that the JS server is enabled
             path: /healthz?js-enabled=true
@@ -441,7 +442,7 @@ spec:
         {{- if .enabled }}
         readinessProbe:
           httpGet:
-            {{- if $enableHealthzLivenessReadiness }}
+            {{- if $enableHealthzReadiness }}
             # for NATS server versions >=2.9.0, /healthz?js-server-only=true will be enabled
             # readiness probe checks that the JS server is enabled, and is current with the meta leader
             path: /healthz?js-server-only=true

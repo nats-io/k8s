@@ -35,15 +35,12 @@ nats:
     # /healthz health check endpoint was introduced in NATS Server 2.7.1
     # Attempt to detect /healthz support by inspecting if tag is >=2.7.1
     detectHealthz: true
-    # Enable /healthz startupProbe for controlled upgrades of NATS JetStream
-    enableHealthz: true
-    # Enable /healthz liveness and readiness probes (supported in >=2.9.0)
-    # This is a feature flag and will be removed in future releases
-    enableHealthzLivenessReadiness: false
 
     # Enable liveness checks.  If this fails, then the NATS Server will restarted.
     liveness:
       enabled: true
+      # Enable /healthz liveness probes (supported in >=2.9.0)
+      enableHealthz: false
 
       initialDelaySeconds: 10
       timeoutSeconds: 5
@@ -70,6 +67,8 @@ nats:
     # the NATS container is running.
     readiness:
       enabled: true
+      # Enable /healthz readiness probes (supported in >=2.9.0)
+      enableHealthz: false
 
       initialDelaySeconds: 10
       timeoutSeconds: 5
@@ -82,6 +81,8 @@ nats:
     # it will try to ensure that the server is ready to serve streams.
     startup:
       enabled: true
+      # Enable /healthz startupProbe for controlled upgrades of NATS JetStream (supported in >=2.7.1)
+      enableHealthz: true
 
       initialDelaySeconds: 10
       timeoutSeconds: 5
