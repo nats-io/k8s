@@ -105,6 +105,14 @@ data:
       {{- end }}
     }
     {{- end }}
+    {{- if .Values.nats.subjectsMapping }}
+    ###################################
+    #                                 #
+    # NATS subjects mapping           #
+    #                                 #
+    ###################################
+    mappings: {{ toRawJson .Values.nats.subjectsMapping }}
+    {{- end }}
     {{- if .Values.mqtt.enabled }}
     ###################################
     #                                 #

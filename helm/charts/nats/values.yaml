@@ -219,6 +219,21 @@ nats:
   #      configMap:
   #        name: log-config
 
+  # Subject mapping
+  #
+  #   You can find more info at: https://docs.nats.io/running-a-nats-service/configuration/configuring_subject_mapping
+  #
+  # subjectsMapping:
+  #   foo: bar
+  #   foo.cluster.scoped:
+  #     - destination: bar.cluster.scoped
+  #       weight: 70%
+  #       cluster: us-west-1
+  #     - destination: foobar.cluster.scoped
+  #       weight: 30%
+  #       cluster: us-east-1
+  subjectsMapping:
+
   jetstream:
     enabled: false
 
