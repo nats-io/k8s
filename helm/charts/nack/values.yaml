@@ -7,7 +7,6 @@ jetstream:
   enabled: true
   image: natsio/jetstream-controller:0.7.2
   pullPolicy: IfNotPresent
-  replicas: 1
 
   # NATS URL
   nats:
