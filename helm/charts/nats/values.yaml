@@ -462,7 +462,7 @@ gateway:
 # enabled, an initializer container will be used to gather
 # the public ips.
 bootconfig:
-  image: natsio/nats-boot-config:0.7.2
+  image: natsio/nats-boot-config:0.7.4
   pullPolicy: IfNotPresent
   securityContext: {}
 
@@ -472,7 +472,7 @@ bootconfig:
 #
 natsbox:
   enabled: true
-  image: natsio/nats-box:0.13.0
+  image: natsio/nats-box:0.13.2
   pullPolicy: IfNotPresent
   securityContext: {}
 
@@ -530,7 +530,7 @@ natsbox:
 # The NATS config reloader image to use.
 reloader:
   enabled: true
-  image: natsio/nats-server-config-reloader:0.7.2
+  image: natsio/nats-server-config-reloader:0.7.4
   pullPolicy: IfNotPresent
   securityContext: {}
   extraConfigs: []
