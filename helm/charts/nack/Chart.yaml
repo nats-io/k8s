@@ -1,13 +1,13 @@
 ---
 apiVersion: v2
-appVersion: 0.7.2
+appVersion: 0.7.4
 description: A Helm chart for NACK
 name: nack
 keywords:
 - nats
 - jetstream
 - cncf
-version: 0.17.4
+version: 0.17.5
 maintainers:
 - name: Waldemar Quevedo
   url: https://github.com/wallyqs
