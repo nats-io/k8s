@@ -417,64 +417,49 @@ spec:
         {{- with .Values.nats.healthcheck.liveness }}
         {{- if .enabled }}
         livenessProbe:
-          httpGet:
-            {{- if $enableHealthzLivenessReadiness }}
-            # for NATS server versions >=2.9.0, /healthz?js-enabled=true will be enabled
-            # liveness probe checks that the JS server is enabled
-            path: /healthz?js-enabled=true
-            {{- else }}
-            path: /
-            {{- end }}
-            port: 8222
-          initialDelaySeconds: {{ .initialDelaySeconds }}
-          timeoutSeconds: {{ .timeoutSeconds }}
-          periodSeconds: {{ .periodSeconds }}
-          successThreshold: {{ .successThreshold }}
-          failureThreshold: {{ .failureThreshold }}
-          {{- if .terminationGracePeriodSeconds }}
-          terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds }}
+          {{- $probe := merge (dict) . }}
+          {{- $_ := unset $probe "enabled" }}
+          {{- $probeDefault := dict "httpGet" (dict "path" "/" "port" 8222) }}
+          {{- if $enableHealthzLivenessReadiness }}
+          # for NATS server versions >=2.9.0, /healthz?js-enabled=true will be enabled
+          # liveness probe checks that the JS server is enabled
+          {{- $_ := set $probeDefault.httpGet "path" "/healthz?js-enabled=true" }}
           {{- end }}
+          {{- $probe := merge $probe $probeDefault }}
+          {{- toYaml $probe | nindent 10}}
         {{- end }}
         {{- end }}
 
         {{- with .Values.nats.healthcheck.readiness }}
         {{- if .enabled }}
         readinessProbe:
-          httpGet:
-            {{- if $enableHealthzLivenessReadiness }}
-            # for NATS server versions >=2.9.0, /healthz?js-server-only=true will be enabled
-            # readiness probe checks that the JS server is enabled, and is current with the meta leader
-            path: /healthz?js-server-only=true
-            {{- else }}
-            path: /
-            {{- end }}
-            port: 8222
-          initialDelaySeconds: {{ .initialDelaySeconds }}
-          timeoutSeconds: {{ .timeoutSeconds }}
-          periodSeconds: {{ .periodSeconds }}
-          successThreshold: {{ .successThreshold }}
-          failureThreshold: {{ .failureThreshold }}
+          {{- $probe := merge (dict) . }}
+          {{- $_ := unset $probe "enabled" }}
+          {{- $probeDefault := dict "httpGet" (dict "path" "/" "port" 8222) }}
+          {{- if $enableHealthzLivenessReadiness }}
+          # for NATS server versions >=2.9.0, /healthz?js-server-only=true will be enabled
+          # readiness probe checks that the JS server is enabled, and is current with the meta leader
+          {{- $_ := set $probeDefault.httpGet "path" "/healthz?js-server-only=true" }}
+          {{- end }}
+          {{- $probe := merge $probe $probeDefault }}
+          {{- toYaml $probe | nindent 10}}
         {{- end }}
         {{- end }}
 
         {{- with .Values.nats.healthcheck.startup }}
         {{- if .enabled }}
         startupProbe:
-          httpGet:
-            {{- if $enableHealthzStartup }}
-            # for NATS server versions >=2.7.1, /healthz will be enabled
-            # startup probe checks that the JS server is enabled, is current with the meta leader,
-            # and that all streams and consumers assigned to this JS server are current
-            path: /healthz
-            {{- else }}
-            path: /
-            {{- end }}
-            port: 8222
-          initialDelaySeconds: {{ .initialDelaySeconds }}
-          timeoutSeconds: {{ .timeoutSeconds }}
-          periodSeconds: {{ .periodSeconds }}
-          successThreshold: {{ .successThreshold }}
-          failureThreshold: {{ .failureThreshold }}
+          {{- $probe := merge (dict) . }}
+          {{- $_ := unset $probe "enabled" }}
+          {{- $probeDefault := dict "httpGet" (dict "path" "/" "port" 8222) }}
+          {{- if $enableHealthzStartup }}
+          # for NATS server versions >=2.7.1, /healthz will be enabled
+          # startup probe checks that the JS server is enabled, is current with the meta leader,
+          # and that all streams and consumers assigned to this JS server are current
+          {{- $_ := set $probeDefault.httpGet "path" "/healthz" }}
+          {{- end }}
+          {{- $probe := merge $probe $probeDefault }}
+          {{- toYaml $probe | nindent 10}}
         {{- end }}
         {{- end }}
 
