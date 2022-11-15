@@ -329,6 +329,13 @@ affinity: {}
 ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
 priorityClassName: null
 
+## hostNetwork
+hostNetwork: false
+
+## Pod Dns Policy. Default is ClusterFirst
+## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+dnsPolicy: ClusterFirst
+
 # Service topology
 # ref: https://kubernetes.io/docs/concepts/services-networking/service-topology/
 topologyKeys: []
