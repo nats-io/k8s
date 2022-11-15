@@ -81,6 +81,12 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
+      {{- with .Values.dnsPolicy }}
+      dnsPolicy: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hostNetwork }}
+      hostNetwork: {{ toYaml . | nindent 8 }}
+      {{- end }}
       # Common volumes for the containers.
       volumes:
       - name: config-volume
