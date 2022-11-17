@@ -102,6 +102,13 @@ nats:
       # httpGet:
       #   path: /healthz
 
+  ## hostNetwork
+  hostNetwork: false
+
+  ## Pod Dns Policy. Default is ClusterFirst
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+  dnsPolicy: ClusterFirst
+
   # Adds a hash of the ConfigMap as a pod annotation
   # This will cause the StatefulSet to roll when the ConfigMap is updated
   configChecksumAnnotation: true

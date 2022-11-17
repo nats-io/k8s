@@ -81,6 +81,12 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
+      {{- with .Values.nats.dnsPolicy }}
+      dnsPolicy: {{ . }}
+      {{- end }}
+      {{- with .Values.nats.hostNetwork }}
+      hostNetwork: {{ . }}
+      {{- end }}
       # Common volumes for the containers.
       volumes:
       - name: config-volume
