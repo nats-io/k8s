@@ -1,0 +1,6 @@
+version: 2
+updates:
+- package-ecosystem: docker
+  directory: /helm/charts
+  schedule:
+    interval: daily
