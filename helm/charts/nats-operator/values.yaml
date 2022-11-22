@@ -16,7 +16,7 @@ image:
   # connecteverything/nats-operator:0.7.4
   registry: docker.io
   repository: connecteverything/nats-operator
-  tag: 0.7.4
+  tag: 0.8.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
