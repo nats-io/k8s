@@ -1,0 +1,109 @@
+name: bump
+on: 'pull_request'
+
+permissions:
+  contents: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git checkout -b "$GITHUB_HEAD_REF"
+
+      - name: Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v1
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      
+      - name: Install semver
+        run: |-
+          npm install -g semver
+
+      - name: Bump
+        run: |-
+          set -e
+          push=0
+          config='[
+            {
+              "directory": "helm/charts/nack",
+              "dependencyName": "natsio/jetstream-controller"
+            },
+            {
+              "directory": "helm/charts/nats-kafka",
+              "dependencyName": "natsio/nats-kafka"
+            },
+            {
+              "directory": "helm/charts/nats-operator",
+              "dependencyName": "connecteverything/nats-operator"
+            },
+            {
+              "directory": "helm/charts/nats",
+              "dependencyName": "nats"
+            },
+            {
+              "directory": "helm/charts/surveyor",
+              "dependencyName": "natsio/nats-surveyor"
+            }
+          ]'
+
+          deps='${{ steps.dependabot-metadata.outputs.updated-dependencies-json }}'
+
+          for i in $(seq 0 "$(("$(echo "$config" | jq length) - 1"))"); do
+            directory="$(echo "$config" | jq -r ".[$i].directory")"
+            dependencyName="$(echo "$config" | jq -r ".[$i].dependencyName")"
+            match="$(echo "$deps" | jq ".[] | select(.directory == \"/$directory\" and .dependencyName == \"$dependencyName\")")"
+            if [ -z "$match" ]; then
+              continue
+            fi
+
+            updateType="$(echo "$match" | jq -r ".updateType")"
+            prevVersion="$(echo "$match" | jq -r ".prevVersion")"
+            newVersion="$(echo "$match" | jq -r ".newVersion")"
+
+            echo "directory        : $directory"
+            echo "dependencyName   : $dependencyName"
+            echo "updateType       : $updateType"
+            echo "prevVersion      : $prevVersion"
+            echo "newVersion       : $newVersion"
+
+            prevChartVersion=$(sed -rn 's/^version:\s+([0-9]+\.[0-9]+\.[0-9]+)/\1/p' "$directory/Chart.yaml")
+            echo "prevChartVersion : $prevChartVersion"
+
+            semverIncr="patch"
+            if [ $updateType = "version-update:semver-major" ]; then
+              semverIncr="major"
+              if echo "$prevChartVersion" | grep -q "^0\."; then
+                semverIncr="minor"
+              fi
+            elif [ $updateType = "version-update:semver-minor" ]; then
+              semverIncr="minor"
+            fi
+
+            newChartVersion=$(semver -i "$semverIncr" "$prevChartVersion")
+            echo "newChartVersion  : $newChartVersion"
+
+            sed -i "s|^appVersion:\s.*|appVersion: $newVersion|;s|^version:\s.*|version: $newChartVersion|" "$directory/Chart.yaml"
+            
+            git add "$directory/Chart.yaml"
+            if git commit -m "[$(basename "$directory") helm] bump chart to version: $newChartVersion appVersion: $newVersion"; then
+              push=1
+            fi
+          done
+
+          if [ "$push" = "1" ]; then
+            git push -u origin "$GITHUB_HEAD_REF"
+          fi
