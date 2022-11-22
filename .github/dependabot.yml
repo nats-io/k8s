@@ -1,6 +1,22 @@
 version: 2
 updates:
 - package-ecosystem: docker
-  directory: /helm/charts
+  directory: /helm/charts/nack
+  schedule:
+    interval: daily
+- package-ecosystem: docker
+  directory: /helm/charts/nats-kafka
+  schedule:
+    interval: daily
+- package-ecosystem: docker
+  directory: /helm/charts/nats-operator
+  schedule:
+    interval: daily
+- package-ecosystem: docker
+  directory: /helm/charts/nats
+  schedule:
+    interval: daily
+- package-ecosystem: docker
+  directory: /helm/charts/surveyor
   schedule:
     interval: daily
