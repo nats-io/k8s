@@ -12,7 +12,8 @@ In this repository you can find several examples of how to deploy NATS, NATS Str
 and other tools from the NATS ecosystem on Kubernetes.
 
 - [NATS Helm Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nats#jetstream)
-- [NATS Streaming Helm Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/stan)
+- [NATS Surveyor Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/surveyor)
+- [NATS JetStream Controller Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nack)
 
 ## Getting started with NATS using Helm
 
