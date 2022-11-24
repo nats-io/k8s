@@ -96,6 +96,10 @@ data:
       {{- if .Values.nats.jetstream.uniqueTag }}
       unique_tag: {{ .Values.nats.jetstream.uniqueTag }}
       {{- end }}
+
+      {{- if .Values.nats.jetstream.compress }}
+      compress_ok: {{ .Values.nats.jetstream.compress }}
+      {{- end }}
     }
     {{- end }}
     {{- if .Values.mqtt.enabled }}

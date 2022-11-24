@@ -270,6 +270,9 @@ nats:
       annotations:
       # key: "value"
 
+    # Allow optional compression in raft and stream catchup
+    compress:
+
   #######################
   #                     #
   #  TLS Configuration  #
