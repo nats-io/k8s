@@ -32,7 +32,7 @@ helm install my-nats nats/nats
 ### Server Image
 
 ```yaml
-# use a specefic versions
+# use a specific versions
 nats:
   image:
     tag: X.Y.Z-alpine
