@@ -1,3 +1,4 @@
+{{- include "jsc.fixImage" .Values.jetstream -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -72,8 +73,8 @@ spec:
 
       containers:
         - name: jsc
-          image: {{ .Values.jetstream.image }}
-          imagePullPolicy: {{ .Values.jetstream.pullPolicy }}
+          image: {{ include "jsc.image" .Values.jetstream.image }}
+          imagePullPolicy: {{ .Values.jetstream.image.pullPolicy }}
           workingDir: /nack
           command:
           - /jetstream-controller

@@ -1,4 +1,5 @@
 {{- if .Values.natsbox.enabled }}
+{{- include "nats.fixImage" .Values.natsbox -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -66,8 +67,8 @@ spec:
       {{- end }}
       containers:
       - name: nats-box
-        image: {{ .Values.natsbox.image }}
-        imagePullPolicy: {{ .Values.natsbox.pullPolicy }}
+        image: {{ include "nats.image" .Values.natsbox.image }}
+        imagePullPolicy: {{ .Values.natsbox.image.pullPolicy }}
         {{- if .Values.natsbox.securityContext }}
         securityContext:
           {{- toYaml .Values.natsbox.securityContext | nindent 10 }}

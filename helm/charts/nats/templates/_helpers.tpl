@@ -230,3 +230,27 @@ Create the name of the service account to use
 {{- default "default" .Values.nats.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Fix image keys for chart versions <= 0.18.3
+*/}}
+{{- define "nats.fixImage" -}}
+{{- if kindIs "string" .image }}
+{{- $_ := set . "image" (dict "repository" (split ":" .image)._0 "tag" ((split ":" .image)._1 | default "latest") "pullPolicy" "IfNotPresent") }}
+{{- end }}
+{{- if kindIs "string" .pullPolicy }}
+{{- $_ := set .image "pullPolicy" .pullPolicy }}
+{{- $_ := unset . "pullPolicy" }}
+{{- end }}
+{{- end }}
+
+{{/*
+Print the image
+*/}}
+{{- define "nats.image" -}}
+{{- $image := printf "%s:%s" .repository .tag }}
+{{- if .registry }}
+{{- $image = printf "%s/%s" .registry $image }}
+{{- end }}
+{{- $image -}}
+{{- end }}

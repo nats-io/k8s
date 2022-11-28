@@ -5,8 +5,11 @@
 ###############################
 jetstream:
   enabled: true
-  image: natsio/jetstream-controller:0.7.4
-  pullPolicy: IfNotPresent
+  image:
+    repository: natsio/jetstream-controller
+    tag: 0.7.4
+    pullPolicy: IfNotPresent
+    # registry: docker.io
 
   # NATS URL
   nats:

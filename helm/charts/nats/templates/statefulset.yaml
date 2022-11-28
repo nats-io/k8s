@@ -1,3 +1,7 @@
+{{- include "nats.fixImage" .Values.nats -}}
+{{- include "nats.fixImage" .Values.bootconfig -}}
+{{- include "nats.fixImage" .Values.reloader -}}
+{{- include "nats.fixImage" .Values.exporter -}}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -228,8 +232,8 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: spec.nodeName
-        image: {{ .Values.bootconfig.image }}
-        imagePullPolicy: {{ .Values.bootconfig.pullPolicy }}
+        image: {{ include "nats.fixImage" .Values.bootconfig.image }}
+        imagePullPolicy: {{ .Values.bootconfig.image.pullPolicy }}
         {{- if .Values.bootconfig.securityContext }}
         securityContext:
           {{- toYaml .Values.bootconfig.securityContext | nindent 10 }}
@@ -250,8 +254,8 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.nats.terminationGracePeriodSeconds }}
       containers:
       - name: nats
-        image: {{ .Values.nats.image }}
-        imagePullPolicy: {{ .Values.nats.pullPolicy }}
+        image: {{ include "nats.image" .Values.nats.image }}
+        imagePullPolicy: {{ .Values.nats.image.pullPolicy }}
         {{- if .Values.nats.securityContext }}
         securityContext:
           {{- toYaml .Values.nats.securityContext | nindent 10 }}
@@ -416,7 +420,7 @@ spec:
         #                     #
         #######################
         {{- if .Values.nats.healthcheck }}
-        {{- $serverVersion := (split ":" .Values.nats.image)._1 | default "latest" | regexFind "\\d+(\\.\\d+)?(\\.\\d+)?" | default "2.9.0" }}
+        {{- $serverVersion := .Values.nats.image.tag | regexFind "\\d+(\\.\\d+)?(\\.\\d+)?" | default "2.9.0" }}
         {{- $enableHealthzStartup := and .Values.nats.healthcheck.enableHealthz (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.7.1" $serverVersion)) }}
         {{- $enableHealthzLivenessReadiness := and .Values.nats.healthcheck.enableHealthzLivenessReadiness (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.9.0" $serverVersion)) }}
 
@@ -490,8 +494,8 @@ spec:
       #################################
       {{- if .Values.reloader.enabled }}
       - name: reloader
-        image: {{ .Values.reloader.image }}
-        imagePullPolicy: {{ .Values.reloader.pullPolicy }}
+        image: {{ include "nats.image" .Values.reloader.image }}
+        imagePullPolicy: {{ .Values.reloader.image.pullPolicy }}
         {{- if .Values.reloader.securityContext }}
         securityContext:
           {{- toYaml .Values.reloader.securityContext | nindent 10 }}
@@ -536,8 +540,8 @@ spec:
       ##############################
       {{- if .Values.exporter.enabled }}
       - name: metrics
-        image: {{ .Values.exporter.image }}
-        imagePullPolicy: {{ .Values.exporter.pullPolicy }}
+        image: {{ include "nats.image" .Values.exporter.image }}
+        imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
         {{- if .Values.exporter.securityContext }}
         securityContext:
           {{- toYaml .Values.exporter.securityContext | nindent 10 }}

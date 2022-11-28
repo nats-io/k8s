@@ -4,8 +4,11 @@
 #                             #
 ###############################
 nats:
-  image: nats:2.9.8-alpine
-  pullPolicy: IfNotPresent
+  image:
+    repository: nats
+    tag: 2.9.8-alpine
+    pullPolicy: IfNotPresent
+    # registry: docker.io
 
   # The servers name prefix, must be used for example when we want a NATS cluster
   # spanning multiple Kubernetes clusters.
@@ -482,8 +485,12 @@ gateway:
 # enabled, an initializer container will be used to gather
 # the public ips.
 bootconfig:
-  image: natsio/nats-boot-config:0.7.4
-  pullPolicy: IfNotPresent
+  image:
+    repository: natsio/nats-boot-config
+    tag: 0.7.4
+    pullPolicy: IfNotPresent
+    # registry: docker.io
+
   securityContext: {}
 
 # NATS Box
@@ -492,8 +499,12 @@ bootconfig:
 #
 natsbox:
   enabled: true
-  image: natsio/nats-box:0.13.2
-  pullPolicy: IfNotPresent
+  image:
+    repository: natsio/nats-box
+    tag: 0.13.2
+    pullPolicy: IfNotPresent
+    # registry: docker.io
+
   securityContext: {}
 
   # Labels to add to the natsbox deployment
@@ -550,17 +561,25 @@ natsbox:
 # The NATS config reloader image to use.
 reloader:
   enabled: true
-  image: natsio/nats-server-config-reloader:0.7.4
-  pullPolicy: IfNotPresent
+  image:
+    repository: natsio/nats-server-config-reloader
+    tag: 0.7.4
+    pullPolicy: IfNotPresent
+    # registry: docker.io
+
   securityContext: {}
   extraConfigs: []
 
 # Prometheus NATS Exporter configuration.
 exporter:
   enabled: true
-  image: natsio/prometheus-nats-exporter:0.10.0
+  image:
+    repository: natsio/prometheus-nats-exporter
+    tag: 0.10.0
+    pullPolicy: IfNotPresent
+    # registry: docker.io
+
   portName: metrics
-  pullPolicy: IfNotPresent
   securityContext: {}
   resources: {}
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled

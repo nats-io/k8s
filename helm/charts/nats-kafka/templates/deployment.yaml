@@ -1,3 +1,4 @@
+{{- include "nats-kafka.fixImage" .Values.image -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,7 +24,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tagOverride | default .Chart.AppVersion }}"
+          image: {{ include "nats-kafka.image" .Values.image }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.natskafka.resources | nindent 12 }}

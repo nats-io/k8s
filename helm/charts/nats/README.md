@@ -32,9 +32,18 @@ helm install my-nats nats/nats
 ### Server Image
 
 ```yaml
+# use a specefic versions
 nats:
-  image: nats:2.9.3-alpine
-  pullPolicy: IfNotPresent
+  image:
+    tag: X.Y.Z-alpine
+
+# fully custom location
+nats:
+  image:
+    registry: my.custom.registry
+    repository: my-nats
+    tag: latest
+    pullPolicy: Always
 ```
 
 ### Limits
@@ -222,8 +231,8 @@ The container image of the initializer can be customized via:
 
 ```yaml
 bootconfig:
-  image: natsio/nats-boot-config:latest
-  pullPolicy: IfNotPresent
+  image:
+    tag: X.Y.Z
 ```
 
 ### Using LoadBalancers
@@ -233,9 +242,6 @@ so that internal ips from the NATS Servers are not advertised to the clients con
 the load balancer.
 
 ```yaml
-nats:
-  image: nats:alpine
-
 cluster:
   enabled: true
   noAdvertise: true
@@ -427,8 +433,6 @@ File Storage is **always** recommended, since JetStream's RAFT Meta Group will b
 
 ```yaml
 nats:
-  image: nats:alpine
-
   jetstream:
     enabled: true
 
@@ -466,8 +470,6 @@ You can start JetStream so that one pod is bounded to it:
 
 ```yaml
 nats:
-  image: nats:alpine
-
   jetstream:
     enabled: true
 
@@ -483,8 +485,6 @@ nats:
 ```yaml
 
 nats:
-  image: nats:alpine
-
   jetstream:
     enabled: true
 
@@ -507,8 +507,6 @@ cluster:
 
 ```yaml
 nats:
-  image: nats:alpine
-
   jetstream:
     enabled: true
 
@@ -621,8 +619,6 @@ Now we start the server with the NATS Account Resolver (`auth.resolver.type=full
 
 ```yaml
 nats:
-  image: nats:2.9.3-alpine
-
   logging:
     debug: false
     trace: false
@@ -694,8 +690,8 @@ You can find the image at: https://github.com/nats-io/nats-box
 ```yaml
 natsbox:
   enabled: true
-  image: natsio/nats-box:latest
-  pullPolicy: IfNotPresent
+  image:
+    tag: X.Y.Z
 
   # credentials:
   #   secret:
@@ -719,8 +715,8 @@ The NATS configuration reload sidecar is enabled by default; it passes the confi
 ```yaml
 reloader:
   enabled: true
-  image: natsio/nats-server-config-reloader:latest
-  pullPolicy: IfNotPresent
+  image:
+    tag: X.Y.Z
 ```
 
 ### Prometheus Exporter sidecar
@@ -730,8 +726,8 @@ The Prometheus Exporter sidecar is enabled by default; it can be used to feed me
 ```yaml
 exporter:
   enabled: true
-  image: natsio/prometheus-nats-exporter:latest
-  pullPolicy: IfNotPresent
+  image:
+    tag: X.Y.Z
 ```
 
 ### Prometheus operator ServiceMonitor support
