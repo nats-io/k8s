@@ -60,3 +60,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Print the image
+*/}}
+{{- define "surveyor.image" -}}
+{{- $image := printf "%s:%s" .repository .tag }}
+{{- if .registry }}
+{{- $image = printf "%s/%s" .registry $image }}
+{{- end }}
+{{- $image -}}
+{{- end }}

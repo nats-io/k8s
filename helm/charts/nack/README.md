@@ -23,8 +23,6 @@ one as follows:
 
 ```yaml
 nats:
-  image: nats:alpine
-
   jetstream:
     enabled: true
 

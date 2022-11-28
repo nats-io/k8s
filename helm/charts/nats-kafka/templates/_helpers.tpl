@@ -67,3 +67,24 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Fix image keys for chart versions <= 0.13.1
+*/}}
+{{- define "nats-kafka.fixImage" -}}
+{{- if .tagOverride }}
+{{- $_ := set . "tag" .tagOverride }}
+{{- $_ := unset . "tagOverride" }}
+{{- end }}
+{{- end }}
+
+{{/*
+Print the image
+*/}}
+{{- define "nats-kafka.image" -}}
+{{- $image := printf "%s:%s" .repository .tag }}
+{{- if .registry }}
+{{- $image = printf "%s/%s" .registry $image }}
+{{- end }}
+{{- $image -}}
+{{- end }}

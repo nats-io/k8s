@@ -6,8 +6,9 @@ replicaCount: 1
 
 image:
   repository: natsio/nats-surveyor
-  pullPolicy: IfNotPresent
   tag: 0.4.1
+  pullPolicy: IfNotPresent
+  # registry: docker.io
 
 imagePullSecrets: []
 nameOverride: ""

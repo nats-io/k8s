@@ -8,9 +8,9 @@ replicaCount: 1
 
 image:
   repository: natsio/nats-kafka
+  tag: 1.3.0
   pullPolicy: IfNotPresent
-  # tagOverride overrides .Chart.AppVersion
-  tagOverride: ""
+  # registry: docker.io
 
 natskafka:
   reconnectInterval: 5000
