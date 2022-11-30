@@ -232,7 +232,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: spec.nodeName
-        image: {{ include "nats.fixImage" .Values.bootconfig.image }}
+        image: {{ include "nats.image" .Values.bootconfig.image }}
         imagePullPolicy: {{ .Values.bootconfig.image.pullPolicy }}
         {{- if .Values.bootconfig.securityContext }}
         securityContext:
