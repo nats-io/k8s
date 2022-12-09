@@ -423,6 +423,19 @@ spec:
         {{- $serverVersion := .Values.nats.image.tag | regexFind "\\d+(\\.\\d+)?(\\.\\d+)?" | default "2.9.0" }}
         {{- $enableHealthzStartup := and .Values.nats.healthcheck.enableHealthz (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.7.1" $serverVersion)) }}
         {{- $enableHealthzLivenessReadiness := and .Values.nats.healthcheck.enableHealthzLivenessReadiness (or (not .Values.nats.healthcheck.detectHealthz) (semverCompare ">=2.9.0" $serverVersion)) }}
+        {{- $healthzStartupEndpoint := "/healthz" }}
+        {{- $healthzLivenessEndpoint := "/healthz?js-enabled-only=true" }}
+        {{- $healthzReadinessEndpoint := "/healthz?js-server-only=true" }}
+        
+        {{- /* healthz options behaved differently in 2.9.0 - 2.9.9 https://github.com/nats-io/nats-server/pull/3704 */}}
+        {{- if (semverCompare "<=2.9.9" $serverVersion) }}
+        {{- $healthzLivenessEndpoint = "/healthz?js-server-only=true" }}
+        {{- $healthzReadinessEndpoint = "/healthz?js-server-only=true" }}
+        {{- if .Values.nats.jetstream.enabled }}
+        {{- $healthzLivenessEndpoint = print $healthzLivenessEndpoint "&js-enabled=true" }}
+        {{- $healthzReadinessEndpoint = print $healthzReadinessEndpoint "&js-enabled=true" }}
+        {{- end }}
+        {{- end }}
 
         {{- with .Values.nats.healthcheck.liveness }}
         {{- if .enabled }}
@@ -431,9 +444,9 @@ spec:
           {{- $_ := unset $probe "enabled" }}
           {{- $probeDefault := dict "httpGet" (dict "path" "/" "port" 8222) }}
           {{- if $enableHealthzLivenessReadiness }}
-          # for NATS server versions >=2.9.0, /healthz?js-enabled=true will be enabled
+          # for NATS server versions >=2.9.0, {{ $healthzLivenessEndpoint }} will be enabled
           # liveness probe checks that the JS server is enabled
-          {{- $_ := set $probeDefault.httpGet "path" "/healthz?js-enabled=true" }}
+          {{- $_ := set $probeDefault.httpGet "path" $healthzLivenessEndpoint }}
           {{- end }}
           {{- $probe := merge $probe $probeDefault }}
           {{- toYaml $probe | nindent 10}}
@@ -447,9 +460,9 @@ spec:
           {{- $_ := unset $probe "enabled" }}
           {{- $probeDefault := dict "httpGet" (dict "path" "/" "port" 8222) }}
           {{- if $enableHealthzLivenessReadiness }}
-          # for NATS server versions >=2.9.0, /healthz?js-server-only=true will be enabled
+          # for NATS server versions >=2.9.0, {{ $healthzReadinessEndpoint }} will be enabled
           # readiness probe checks that the JS server is enabled, and is current with the meta leader
-          {{- $_ := set $probeDefault.httpGet "path" "/healthz?js-server-only=true" }}
+          {{- $_ := set $probeDefault.httpGet "path" $healthzReadinessEndpoint }}
           {{- end }}
           {{- $probe := merge $probe $probeDefault }}
           {{- toYaml $probe | nindent 10}}
