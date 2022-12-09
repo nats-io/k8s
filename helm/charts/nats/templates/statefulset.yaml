@@ -426,7 +426,7 @@ spec:
         {{- $healthzStartupEndpoint := "/healthz" }}
         {{- $healthzLivenessEndpoint := "/healthz?js-enabled-only=true" }}
         {{- $healthzReadinessEndpoint := "/healthz?js-server-only=true" }}
-        
+
         {{- /* healthz options behaved differently in 2.9.0 - 2.9.9 https://github.com/nats-io/nats-server/pull/3704 */}}
         {{- if (semverCompare "<=2.9.9" $serverVersion) }}
         {{- $healthzLivenessEndpoint = "/healthz?js-server-only=true" }}
@@ -476,10 +476,10 @@ spec:
           {{- $_ := unset $probe "enabled" }}
           {{- $probeDefault := dict "httpGet" (dict "path" "/" "port" 8222) }}
           {{- if $enableHealthzStartup }}
-          # for NATS server versions >=2.7.1, /healthz will be enabled
+          # for NATS server versions >=2.7.1, {{ $healthzStartupEndpoint}} will be enabled
           # startup probe checks that the JS server is enabled, is current with the meta leader,
           # and that all streams and consumers assigned to this JS server are current
-          {{- $_ := set $probeDefault.httpGet "path" "/healthz" }}
+          {{- $_ := set $probeDefault.httpGet "path" $healthzStartupEndpoint }}
           {{- end }}
           {{- $probe := merge $probe $probeDefault }}
           {{- toYaml $probe | nindent 10}}
