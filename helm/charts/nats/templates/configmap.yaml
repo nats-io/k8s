@@ -471,7 +471,7 @@ data:
             {{- end }}
 
             {{- if .systemAccount }}
-            system_account: {{ .systemAccount }}
+            system_account: {{ .systemAccount | quote }}
             {{- end }}
           {{- end }}
 
@@ -501,7 +501,7 @@ data:
     {{- end }}
 
     {{- with .Values.auth.systemAccount }}
-    system_account: {{ . }}
+    system_account: {{ . | quote }}
     {{- end }}
 
     {{- with .Values.auth.token }}
@@ -578,7 +578,6 @@ data:
       timeout: {{ $.Values.auth.timeout }}
       {{- end }}
     }
-
     accounts: {{- toRawJson . }}
     {{- end }}
 
