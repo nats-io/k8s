@@ -528,11 +528,11 @@ cluster:
 auth:
   enabled: true
 
-  systemAccount: sys
+  systemAccount: "$SYS"
 
   basic:
     accounts:
-      sys:
+      $SYS:
         users:
         - user: sys
           pass: sys
