@@ -72,6 +72,9 @@ data:
       {{- else if .Values.nats.jetstream.encryption.secret }}
       key: $JS_KEY
       {{- end}}
+      {{- if .Values.nats.jetstream.encryption.cipher }}
+      cipher: {{ .Values.nats.jetstream.encryption.cipher }}
+      {{- end}}
       {{- end}}
 
       {{- if .Values.nats.jetstream.memStorage.enabled }}

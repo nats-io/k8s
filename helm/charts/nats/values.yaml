@@ -242,6 +242,9 @@ nats:
       #   name: "nats-jetstream-encryption"
       #   key: "key"
 
+      # Use cipher if you want to choose a different cipher from the default.
+      # cipher: aes
+
     #############################
     #                           #
     #  Jetstream Memory Storage #
