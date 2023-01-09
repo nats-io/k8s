@@ -490,7 +490,7 @@ gateway:
 bootconfig:
   image:
     repository: natsio/nats-boot-config
-    tag: 0.8.0
+    tag: 0.9.0
     pullPolicy: IfNotPresent
     # registry: docker.io
 
@@ -566,7 +566,7 @@ reloader:
   enabled: true
   image:
     repository: natsio/nats-server-config-reloader
-    tag: 0.8.0
+    tag: 0.9.0
     pullPolicy: IfNotPresent
     # registry: docker.io
 
