@@ -535,6 +535,10 @@ spec:
         - "-config"
         - {{ . | quote }}
         {{- end }}
+        {{- range .Values.nats.config }}
+        - "-config"
+        - "/etc/nats-config/{{ .name }}/{{ .name }}.conf"
+        {{- end}}
         volumeMounts:
         - name: config-volume
           mountPath: /etc/nats-config
@@ -543,6 +547,12 @@ spec:
         {{- include "nats.tlsVolumeMounts" . | nindent 8 }}
         {{- if .Values.additionalVolumeMounts }}
         {{- toYaml .Values.additionalVolumeMounts | nindent 8 }}
+        {{- end }}
+        {{- /* User extended config volumes*/}}
+        {{- range .Values.nats.config }}
+        # User extended config volumes
+        - name: {{ .name }}
+          mountPath: /etc/nats-config/{{ .name }}
         {{- end }}
       {{- end }}
 
