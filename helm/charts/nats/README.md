@@ -699,6 +699,48 @@ natsbox:
   #     key: sys.creds
 ```
 
+You can also add volumes to nats-box, for example given a PVC like:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nsc-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+```
+
+You can give state to nats-box by using the `extraVolumes` and `extraVolumeMounts` options:
+
+```yaml
+natsbox:
+  enabled: true
+  extraVolumes:
+    - name: nsc
+      persistentVolumeClaim:
+        claimName: nsc-pvc
+  extraVolumeMounts:
+    - mountPath: /nsc
+      name: nsc
+```
+
+example:
+
+```sh
+$ helm install nats-nsc nats/nats -f examples/nats-box-persistent.yaml 
+$ kubectl exec -it deployment/nats-nsc-box -- /bin/sh
+
+# cd /nsc
+/nsc #  curl -fSl https://nats-io.github.io/k8s/setup/nsc-setup.sh | sh
+/nsc #  source .nsc.env 
+/nsc #  nsc list accounts
+```
+
 ### Configuration Checksum
 
 A configuration checksum annotation is enabled by default on StatefulSet Pods in order to force a rollout when the NATS configuration changes.  This checksum is only applied by `helm` commands, and will not change if configuration is modified outside of setting `helm` values.
