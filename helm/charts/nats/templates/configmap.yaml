@@ -99,6 +99,10 @@ data:
       {{- if .Values.nats.jetstream.uniqueTag }}
       unique_tag: {{ .Values.nats.jetstream.uniqueTag }}
       {{- end }}
+
+      {{- if .Values.nats.jetstream.max_outstanding_catchup }}
+      max_outstanding_catchup: {{ .Values.nats.jetstream.max_outstanding_catchup }}
+      {{- end }}
     }
     {{- end }}
     {{- if .Values.mqtt.enabled }}
