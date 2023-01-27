@@ -7,7 +7,7 @@ jetstream:
   enabled: true
   image:
     repository: natsio/jetstream-controller
-    tag: 0.9.0
+    tag: 0.9.2
     pullPolicy: IfNotPresent
     # registry: docker.io
 
