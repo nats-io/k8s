@@ -1,119 +1,31 @@
+{{- $kind := ternary "Role" "ClusterRole" .Values.namespaced -}}
+{{- $kindSuffix := ternary "role" "cluster-role" .Values.namespaced -}}
+
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ template "jsc.serviceAccountName" . }}
   namespace: {{ include "jsc.namespace" . }}
-{{- if .Values.namespaced }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: {{ $kind }}
 metadata:
-  name: {{ template "jsc.serviceAccountName" . }}-role
+  name: {{ template "jsc.serviceAccountName" . }}-{{ $kindSuffix }}
   namespace: {{ include "jsc.namespace" . }}
-rules:
-- apiGroups:
-  - ''
-  resources:
-  - events
-  verbs:
-  - create
-  - update
-  - patch
-- apiGroups:
-  - ''
-  resources:
-  - secrets
-  verbs:
-  - get
-  - watch
-  - list
-- apiGroups:
-  - jetstream.nats.io
-  resources:
-  - streams
-  - streams/status
-  - consumers
-  - consumers/status
-  - streamtemplates
-  - streamtemplates/status
-  - accounts
-  verbs:
-  - create
-  - get
-  - list
-  - watch
-  - patch
-  - update
-  - delete
+{{ tpl .Values.rbacRules . }}
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: {{ printf "%sBinding" $kind}}
 metadata:
-  name: {{ template "jsc.serviceAccountName" . }}-role-binding
+  name: {{ template "jsc.serviceAccountName" . }}-{{ $kindSuffix }}-binding
   namespace: {{ include "jsc.namespace" . }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "jsc.serviceAccountName" . }}
   namespace: {{ include "jsc.namespace" . }}
 roleRef:
-  kind: Role
-  name: {{ template "jsc.serviceAccountName" . }}-role
+  kind: {{ $kind }}
+  name: {{ template "jsc.serviceAccountName" . }}-{{ $kindSuffix }}
   apiGroup: rbac.authorization.k8s.io
-{{- else }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: {{ template "jsc.serviceAccountName" . }}-cluster-role
-  namespace: {{ include "jsc.namespace" . }}
-rules:
-- apiGroups:
-  - ''
-  resources:
-  - events
-  verbs:
-  - create
-  - update
-  - patch
-- apiGroups:
-  - ''
-  resources:
-  - secrets
-  verbs:
-  - get
-  - watch
-  - list
-- apiGroups:
-  - jetstream.nats.io
-  resources:
-  - streams
-  - streams/status
-  - consumers
-  - consumers/status
-  - streamtemplates
-  - streamtemplates/status
-  - accounts
-  verbs:
-  - create
-  - get
-  - list
-  - watch
-  - patch
-  - update
-  - delete
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: {{ template "jsc.serviceAccountName" . }}-cluster-role-binding
-  namespace: {{ include "jsc.namespace" . }}
-subjects:
-- kind: ServiceAccount
-  name: {{ template "jsc.serviceAccountName" . }}
-  namespace: {{ include "jsc.namespace" . }}
-roleRef:
-  kind: ClusterRole
-  name: {{ template "jsc.serviceAccountName" . }}-cluster-role
-  apiGroup: rbac.authorization.k8s.io
-{{- end }}
