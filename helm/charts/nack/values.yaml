@@ -53,6 +53,45 @@ namespaceOverride: ""
 imagePullSecrets: []
 serviceAccountName: ""
 
+# Rules to be applied to ClusterRole or Role
+# Set as a string so that it can be templated to allow further customization
+rbacRules: |
+  rules:
+  - apiGroups:
+    - ''
+    resources:
+    - events
+    verbs:
+    - create
+    - update
+    - patch
+  - apiGroups:
+    - ''
+    resources:
+    - secrets
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - jetstream.nats.io
+    resources:
+    - streams
+    - streams/status
+    - consumers
+    - consumers/status
+    - streamtemplates
+    - streamtemplates/status
+    - accounts
+    verbs:
+    - create
+    - get
+    - list
+    - watch
+    - patch
+    - update
+    - delete
+
 podAnnotations: {}
 
 # Toggle whether to use setup a Pod Security Context
