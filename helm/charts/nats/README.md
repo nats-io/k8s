@@ -73,6 +73,15 @@ nats:
   terminationGracePeriodSeconds: 60
 ```
 
+#### Setting Go Memory Limit (Recommended)
+
+Since NATS Server v2.9 release, it is possible to use the `GOMEMLIMIT` environment variable to signal memory limits to the Go runtime (which is by default unaware of cgroups memory limits).  You should set this to about 90% of the intended available memory resources for the NATS Server container. 
+
+```yaml
+nats:
+  gomemlimit: "4GiB"
+```
+
 ### Logging
 
 *Note*: It is not recommended to enable trace or debug in production since enabling it will significantly degrade performance.
