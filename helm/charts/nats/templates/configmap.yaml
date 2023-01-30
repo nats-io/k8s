@@ -100,8 +100,8 @@ data:
       unique_tag: {{ .Values.nats.jetstream.uniqueTag }}
       {{- end }}
 
-      {{- if .Values.nats.jetstream.max_outstanding_catchup }}
-      max_outstanding_catchup: {{ .Values.nats.jetstream.max_outstanding_catchup }}
+      {{- if .Values.nats.jetstream.maxOutstandingCatchup }}
+      max_outstanding_catchup: {{ .Values.nats.jetstream.maxOutstandingCatchup }}
       {{- end }}
     }
     {{- end }}
