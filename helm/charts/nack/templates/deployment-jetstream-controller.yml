@@ -34,6 +34,9 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       terminationGracePeriodSeconds: 30
       volumes:
       - name : runtime
@@ -55,6 +58,9 @@ spec:
         secret:
           secretName: {{ .secret.name }}
       {{- end}}
+      {{- if .Values.additionalVolumes }}
+      {{- toYaml .Values.additionalVolumes | nindent 6 }}
+      {{- end }}
 
 {{- with .Values.affinity }}
       affinity:
@@ -70,7 +76,9 @@ spec:
 {{- end }}
 
       serviceAccountName: {{ template "jsc.serviceAccountName" . }}
-
+      {{- if hasKey .Values "automountServiceAccountToken" }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      {{- end }}
       containers:
         - name: jsc
           image: {{ include "jsc.image" .Values.jetstream.image }}
@@ -136,4 +144,7 @@ spec:
           {{- if .Values.jetstream.nats.nkey }}
           - name: jsc-sys-nkey
             mountPath: /etc/jsc-nkey
+          {{- end }}
+          {{- if .Values.additionalVolumeMounts }}
+          {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
           {{- end }}
