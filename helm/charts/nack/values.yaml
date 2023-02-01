@@ -52,6 +52,19 @@ nameOverride: ""
 namespaceOverride: ""
 imagePullSecrets: []
 serviceAccountName: ""
+# Toggle whether to automatically mount Service Account token in the pod
+# not set means default value, boolean true/false overrides default value
+# automountServiceAccountToken: true
+
+## Pod priority class name
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+priorityClassName: null
+
+# additionalVolumes are the additional volumes to add
+additionalVolumes: []
+
+# additionalVolumeMounts are the additional volume mounts to add
+additionalVolumeMounts: []
 
 # Rules to be applied to ClusterRole or Role
 # Set as a string so that it can be templated to allow further customization
