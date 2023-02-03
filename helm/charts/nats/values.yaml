@@ -6,7 +6,7 @@
 nats:
   image:
     repository: nats
-    tag: 2.9.11-alpine
+    tag: 2.9.12-alpine
     pullPolicy: IfNotPresent
     # registry: docker.io
 
