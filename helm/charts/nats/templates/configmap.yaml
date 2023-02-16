@@ -111,7 +111,7 @@ data:
     # Mappings                        #
     #                                 #
     ###################################
-    mappings: {{ toRawJson .Values.nats.subjectsMapping }}
+    mappings: {{ toRawJson .Values.nats.mappings }}
     {{- end }}
     {{- if .Values.mqtt.enabled }}
     ###################################
