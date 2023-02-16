@@ -108,7 +108,7 @@ data:
     {{- if .Values.nats.mappings }}
     ###################################
     #                                 #
-    # NATS subjects mapping           #
+    # Mappings                        #
     #                                 #
     ###################################
     mappings: {{ toRawJson .Values.nats.subjectsMapping }}
