@@ -105,6 +105,16 @@ data:
       {{- end }}
     }
     {{- end }}
+    
+    {{- if .Values.nats.mappings }}
+    ###################################
+    #                                 #
+    # Mappings                        #
+    #                                 #
+    ###################################
+    mappings: {{ toRawJson .Values.nats.mappings }}
+    {{- end }}
+
     {{- if .Values.mqtt.enabled }}
     ###################################
     #                                 #
