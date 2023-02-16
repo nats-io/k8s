@@ -112,6 +112,9 @@ spec:
           {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.settings.client_ca }}
           - --tlsca={{ .Values.jetstream.tls.settings.client_ca }}
           {{- end }}
+          {{- if .Values.additionalArgs }}
+          {{- toYaml .Values.additionalArgs | nindent 10 }}
+          {{- end }}
 
           env:
           - name: POD_NAME
