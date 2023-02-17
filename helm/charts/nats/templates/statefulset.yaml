@@ -112,7 +112,7 @@ spec:
 
       # Local volume shared with the reloader.
       - name: pid
-        emptyDir: {}
+        {{- toYaml .Values.pidVolume | nindent 8 }}
 
       {{- if and .Values.auth.enabled .Values.auth.resolver }}
       {{- if .Values.auth.resolver.configMap }}
@@ -131,7 +131,7 @@ spec:
       {{- if and .Values.nats.externalAccess .Values.nats.advertise }}
       # Local volume shared with the advertise config initializer.
       - name: advertiseconfig
-        emptyDir: {}
+        {{- toYaml .Values.advertiseconfigVolume | nindent 8 }}
       {{- end }}
 
       {{- if and .Values.nats.jetstream.enabled .Values.nats.jetstream.fileStorage.enabled .Values.nats.jetstream.fileStorage.existingClaim }}
