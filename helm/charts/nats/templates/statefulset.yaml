@@ -575,10 +575,8 @@ spec:
         resources:
           {{- toYaml .Values.exporter.resources | nindent 10 }}
         args:
-        {{- if .Values.exporter.flags }}
-        {{- range .Values.exporter.flags }}
-        - {{ . }}
-        {{- end }}
+        {{- if .Values.exporter.args }}
+        {{- toYaml .Values.exporter.args | nindent 8 }}
         {{- else }}
         - -connz
         - -routez

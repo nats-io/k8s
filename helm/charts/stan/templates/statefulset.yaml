@@ -307,10 +307,8 @@ spec:
             {{- toYaml .Values.exporter.securityContext | nindent 12 }}
           {{- end }}
           args:
-          {{- if .Values.exporter.flags }}
-          {{- range .Values.exporter.flags }}
-          - {{ . }}
-          {{- end }}
+          {{- if .Values.exporter.args }}
+          {{- toYaml .Values.exporter.args | nindent 10 }}
           {{- else }}
           - -connz
           - -routez

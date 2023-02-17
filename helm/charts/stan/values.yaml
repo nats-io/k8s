@@ -273,8 +273,9 @@ exporter:
   pullPolicy: IfNotPresent
   securityContext: {}
   resources: {}
-  # an array of flags to pass to exporter. See https://github.com/nats-io/prometheus-nats-exporter#usage
-  flags: ~
+  # override the default args passed to the exporter
+  # see https://github.com/nats-io/prometheus-nats-exporter#usage
+  args: []
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled
   serviceMonitor:
     enabled: false
