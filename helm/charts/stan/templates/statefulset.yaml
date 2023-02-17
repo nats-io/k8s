@@ -307,12 +307,18 @@ spec:
             {{- toYaml .Values.exporter.securityContext | nindent 12 }}
           {{- end }}
           args:
+          {{- if .Values.exporter.flags }}
+          {{- range .Values.exporter.flags }}
+          - {{ . }}
+          {{- end }}
+          {{- else }}
           - -connz
           - -routez
           - -subz
           - -varz
           - -channelz
           - -serverz
+          {{- end }}
           - http://localhost:8222/
           ports:
           - containerPort: 7777

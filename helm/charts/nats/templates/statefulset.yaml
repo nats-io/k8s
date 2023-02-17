@@ -575,6 +575,11 @@ spec:
         resources:
           {{- toYaml .Values.exporter.resources | nindent 10 }}
         args:
+        {{- if .Values.exporter.flags }}
+        {{- range .Values.exporter.flags }}
+        - {{ . }}
+        {{- end }}
+        {{- else }}
         - -connz
         - -routez
         - -subz
@@ -589,6 +594,7 @@ spec:
         {{- end }}
         {{- if .Values.gateway.enabled }}
         - -gatewayz
+        {{- end }}
         {{- end }}
         - http://localhost:8222/
         ports:
