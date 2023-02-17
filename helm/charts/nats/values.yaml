@@ -158,6 +158,9 @@ nats:
     port: 4222
     portName: "client"
 
+  # extraEnv is the list of environment variables to add to the nats-server container
+  extraEnv: []
+
   # Server settings.
   limits:
     maxConnections:
@@ -219,6 +222,20 @@ nats:
   #      configMap:
   #        name: log-config
 
+  # mappings is used to configure subject mapping
+  # https://docs.nats.io/running-a-nats-service/configuration/configuring_subject_mapping
+  # e.g:
+  # mappings:
+  #   foo: bar
+  #   foo.cluster.scoped:
+  #     - destination: bar.cluster.scoped
+  #       weight: 70%
+  #       cluster: us-west-1
+  #     - destination: foobar.cluster.scoped
+  #       weight: 30%
+  #       cluster: us-east-1
+  mappings: {}
+
   jetstream:
     enabled: false
 
@@ -277,6 +294,12 @@ nats:
         - ReadWriteOnce
       annotations:
       # key: "value"
+
+    # Use below if fileStorage is not enabled but you are persisting
+    # data using an alternative to PVC (e.g. hostPath)
+    # These set the corresponding jetstream configuration in nats.conf.
+    # store_dir: "/data"
+    # max_file: "10Gi"
 
   #######################
   #                     #

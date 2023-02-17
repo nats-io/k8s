@@ -94,6 +94,13 @@ data:
       {{- else }}
       {{- .Values.nats.jetstream.fileStorage.size }}
       {{- end }}
+      {{- else }}
+      {{- if .Values.nats.jetstream.store_dir }}
+      store_dir: {{ .Values.nats.jetstream.store_dir }}
+      {{- end }}
+      {{- if .Values.nats.jetstream.max_file }}
+      max_file: {{ .Values.nats.jetstream.max_file }}
+      {{- end }}
       {{- end }}
 
       {{- if .Values.nats.jetstream.uniqueTag }}
@@ -105,6 +112,16 @@ data:
       {{- end }}
     }
     {{- end }}
+    
+    {{- if .Values.nats.mappings }}
+    ###################################
+    #                                 #
+    # Mappings                        #
+    #                                 #
+    ###################################
+    mappings: {{ toRawJson .Values.nats.mappings }}
+    {{- end }}
+
     {{- if .Values.mqtt.enabled }}
     ###################################
     #                                 #

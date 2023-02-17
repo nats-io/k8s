@@ -3,6 +3,24 @@ entries:
   nack:
   - apiVersion: v2
     appVersion: 0.9.2
+    created: "2023-02-16T16:17:30.720527157Z"
+    description: A Helm chart for NACK
+    digest: cb6c8de57fc202cabfe0166fdd288f378f2279f9aa3bf8a02f9423eb37f03110
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - jetstream
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+    name: nack
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/nack-0.20.4/nack-0.20.4.tgz
+    version: 0.20.4
+  - apiVersion: v2
+    appVersion: 0.9.2
     created: "2023-02-01T18:45:27.803745418Z"
     description: A Helm chart for NACK
     digest: 4de4757d75c7aee8ef90626b59e0d263acecafee8015f523339ef66370e6e376
@@ -416,6 +434,32 @@ entries:
     - https://github.com/nats-io/k8s/releases/download/v0.6.0/nack-0.6.0.tgz
     version: 0.6.0
   nats:
+  - apiVersion: v2
+    appVersion: 2.9.14-alpine
+    created: "2023-02-16T22:53:27.648037273Z"
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
+      Communications Technology.
+    digest: 50b66c417ffba112b92ff6f1249e7fbc2ae1dd328f42b5753c051ae08fc3f331
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    maintainers:
+    - email: wally@nats.io
+      name: Waldemar Quevedo
+      url: https://github.com/wallyqs
+    - email: colin@nats.io
+      name: Colin Sullivan
+      url: https://github.com/ColinSullivan1
+    - email: caleb@nats.io
+      name: Caleb Lloyd
+      url: https://github.com/caleblloyd
+    name: nats
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/nats-0.19.10/nats-0.19.10.tgz
+    version: 0.19.10
   - apiVersion: v2
     appVersion: 2.9.14-alpine
     created: "2023-02-08T18:40:51.577232316Z"
@@ -2998,4 +3042,4 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/surveyor-0.9.2.tgz
     version: 0.9.2
-generated: "2023-02-08T18:40:51.582945575Z"
+generated: "2023-02-16T22:53:27.648723995Z"

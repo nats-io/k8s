@@ -86,6 +86,7 @@ spec:
           workingDir: /nack
           command:
           - /jetstream-controller
+          args:
           {{- if .Values.jetstream.klogLevel }}
           - -v={{ .Values.jetstream.klogLevel }}
           {{- end }}
@@ -112,7 +113,9 @@ spec:
           {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.settings.client_ca }}
           - --tlsca={{ .Values.jetstream.tls.settings.client_ca }}
           {{- end }}
-
+          {{- with .Values.jetstream.additionalArgs }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
           env:
           - name: POD_NAME
             valueFrom:

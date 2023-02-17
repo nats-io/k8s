@@ -333,6 +333,9 @@ spec:
         - name: GOMEMLIMIT
           value: {{ .Values.nats.gomemlimit | quote }}
         {{- end }}
+        {{- if .Values.nats.extraEnv }}
+        {{- toYaml .Values.nats.extraEnv | nindent 8 }}
+        {{- end }}
 
         {{- if .Values.nats.jetstream.enabled }}
         {{- with .Values.nats.jetstream.encryption }}
