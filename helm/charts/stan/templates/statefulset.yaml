@@ -316,8 +316,8 @@ spec:
           - -varz
           - -channelz
           - -serverz
-          {{- end }}
           - http://localhost:8222/
+          {{- end }}
           ports:
           - containerPort: 7777
             name: metrics

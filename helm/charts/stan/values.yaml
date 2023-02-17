@@ -275,6 +275,7 @@ exporter:
   resources: {}
   # override the default args passed to the exporter
   # see https://github.com/nats-io/prometheus-nats-exporter#usage
+  # make sure to pass HTTP monitoring port URL as last arg, e.g ["-connz", "http://localhost:8222/"]
   args: []
   # Prometheus operator ServiceMonitor support. Exporter has to be enabled
   serviceMonitor:

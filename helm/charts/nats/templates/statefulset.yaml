@@ -593,8 +593,8 @@ spec:
         {{- if .Values.gateway.enabled }}
         - -gatewayz
         {{- end }}
-        {{- end }}
         - http://localhost:8222/
+        {{- end }}
         ports:
         - containerPort: 7777
           name: {{ .Values.exporter.portName }}
