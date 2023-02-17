@@ -307,6 +307,9 @@ spec:
             {{- toYaml .Values.exporter.securityContext | nindent 12 }}
           {{- end }}
           args:
+          {{- if .Values.exporter.args }}
+          {{- toYaml .Values.exporter.args | nindent 10 }}
+          {{- else }}
           - -connz
           - -routez
           - -subz
@@ -314,6 +317,7 @@ spec:
           - -channelz
           - -serverz
           - http://localhost:8222/
+          {{- end }}
           ports:
           - containerPort: 7777
             name: metrics

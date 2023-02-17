@@ -575,6 +575,9 @@ spec:
         resources:
           {{- toYaml .Values.exporter.resources | nindent 10 }}
         args:
+        {{- if .Values.exporter.args }}
+        {{- toYaml .Values.exporter.args | nindent 8 }}
+        {{- else }}
         - -connz
         - -routez
         - -subz
@@ -591,6 +594,7 @@ spec:
         - -gatewayz
         {{- end }}
         - http://localhost:8222/
+        {{- end }}
         ports:
         - containerPort: 7777
           name: {{ .Values.exporter.portName }}
