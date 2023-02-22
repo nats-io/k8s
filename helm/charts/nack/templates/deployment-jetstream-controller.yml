@@ -116,6 +116,9 @@ spec:
           {{- with .Values.jetstream.additionalArgs }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
+          {{- with .Values.readOnly }}
+          - --read-only={{ . }}
+          {{- end }}
           env:
           - name: POD_NAME
             valueFrom:
