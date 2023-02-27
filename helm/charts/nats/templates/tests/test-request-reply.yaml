@@ -10,7 +10,7 @@ metadata:
 spec:
   containers:
   - name: nats-box
-    image: synadia/nats-box
+    image: {{ include "nats.image" .Values.natsbox.image }}
     env:
     - name: NATS_HOST
       value: {{ template "nats.fullname" . }}
