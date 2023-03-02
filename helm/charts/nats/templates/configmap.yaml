@@ -341,6 +341,10 @@ data:
       include "advertise/gateway_advertise.conf"
       {{- end }}
 
+      {{- if .Values.gateway.connectRetries }}
+      connect_retries: {{ .Values.gateway.connectRetries }}
+      {{- end }}
+
       {{- with .Values.gateway.tls }}
       {{-  $gateway_tls := merge (dict) . }}
       {{- $_ := set $gateway_tls "secretPath" "/etc/nats-certs/gateways" }}
