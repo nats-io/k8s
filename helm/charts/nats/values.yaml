@@ -152,6 +152,8 @@ nats:
   # This is helpful if you are updating from Chart version <=7.4
   selectorLabels: {}
 
+  # Resources to add to the container
+  # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
   resources: {}
 
   client:
@@ -521,6 +523,10 @@ bootconfig:
 
   securityContext: {}
 
+  # Resources to add to the container
+  # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+  resources: {}
+
 # NATS Box
 #
 # https://github.com/nats-io/nats-box
@@ -534,6 +540,10 @@ natsbox:
     # registry: docker.io
 
   securityContext: {}
+
+  # Resources to add to the container
+  # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+  resources: {}
 
   # Labels to add to the natsbox deployment
   # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -596,6 +606,11 @@ reloader:
     # registry: docker.io
 
   securityContext: {}
+
+  # Resources to add to the container
+  # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+  resources: {}
+
   extraConfigs: []
 
 # Prometheus NATS Exporter configuration.
@@ -609,7 +624,11 @@ exporter:
 
   portName: metrics
   securityContext: {}
+
+  # Resources to add to the container
+  # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
   resources: {}
+
   # override the default args passed to the exporter
   # see https://github.com/nats-io/prometheus-nats-exporter#usage
   # make sure to pass HTTP monitoring port URL as last arg, e.g ["-connz", "http://localhost:8222/"]
