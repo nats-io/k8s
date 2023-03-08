@@ -95,7 +95,7 @@ nats:
     startup:
       enabled: true
 
-      initialDelaySeconds: 10
+      initialDelaySeconds: 90
       timeoutSeconds: 5
       periodSeconds: 10
       successThreshold: 1
