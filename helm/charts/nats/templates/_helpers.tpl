@@ -73,9 +73,9 @@ Return the proper NATS image name
 Return the NATS cluster auth.
 */}}
 {{- define "nats.clusterAuth" -}}
-{{- if $.Values.cluster.authorization }}
-{{- printf "%s:%s@" (urlquery $.Values.cluster.authorization.user) (urlquery $.Values.cluster.authorization.password) -}}
-{{- else }}
+{{- with .Values.cluster.authorization }}
+{{- if (and .user .password) }}
+{{- printf "%s:%s@" (urlquery .user) (urlquery .password) -}}
 {{- end }}
 {{- end }}
 
