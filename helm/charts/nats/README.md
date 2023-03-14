@@ -105,7 +105,7 @@ https://docs.nats.io/nats-server/configuration/securing_nats/tls
 nats:
   tls:
     secret:
-      name: nats-client-tls
+      name: nats-server-tls
     ca: "ca.crt"
     cert: "tls.crt"
     key: "tls.key"
