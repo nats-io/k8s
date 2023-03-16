@@ -12,6 +12,10 @@ metadata:
     {{- if .Values.natsbox.additionalLabels }}
     {{- tpl (toYaml .Values.natsbox.additionalLabels) $ | nindent 4 }}
     {{- end }}
+  {{- if .Values.natsbox.annotations }}
+  annotations:
+    {{- toYaml .Values.natsbox.annotations | nindent 4 }}
+  {{- end }}
 spec:
   replicas: 1
   selector:

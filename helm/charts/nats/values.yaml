@@ -545,6 +545,11 @@ natsbox:
   # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
   resources: {}
 
+  # Annotations to add to the natsbox deployment
+  # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  annotations: {}
+  #  key: "value"
+
   # Labels to add to the natsbox deployment
   # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   additionalLabels: {}
