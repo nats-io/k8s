@@ -1,0 +1,8 @@
+{{ $name := include "nats.fullname" . }}
+
+cluster:
+  name: {{ $name }}
+  routes:
+  {{- range $i, $e := until (.Values.nats.replicas | int) }}
+  - {{ printf "nats://%s-%d.%s-headless:6222" $name $i $name }}
+  {{- end }}

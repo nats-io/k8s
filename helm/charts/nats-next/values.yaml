@@ -1,0 +1,44 @@
+nats:
+  image:
+    repository: nats
+    tag: 2.9.15-alpine
+    pullPolicy: IfNotPresent
+    # registry: docker.io
+
+  replicas: 1
+
+  # nats.conf
+  config:
+    port: 4222
+    cluster:
+      port: 6222
+    http: 8222
+  configPatch: []
+
+  # nats stateful set
+  statefulSet: {}
+  statefulSetPatch: []
+
+  # nats stateful set -> pod template
+  podTemplate: {}
+  podTemplatePatch: []
+
+  # nats stateful set -> volume claim template
+  volumeClaimTemplate: {}
+  volumeClaimTemplatePatch: []
+
+  # nats stateful set -> pod template -> nats container
+  container: {}
+  containerPatch: []
+
+  # nats service
+  service: {}
+  servicePatch: []
+
+  # nats headless service
+  headlessService: {}
+  headlessServicePatch: []
+
+  # nats config map
+  configMap: {}
+  configMapPatch: []

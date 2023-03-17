@@ -1,0 +1,42 @@
+---
+# config-map.yaml
+{{- $config := tpl (.Files.Get "files/config.yaml") . | fromYaml }}
+{{- $config = mergeOverwrite $config (deepCopy .Values.nats.config) }}
+{{- $config = include "jsonpatch" (dict "doc" $config "patch" .Values.nats.configPatch) | fromJson }}
+{{- $_ := set . "config" $config }}
+{{- $configMap := tpl (.Files.Get "files/config-map.yaml") . | fromYaml }}
+{{- $configMap = mergeOverwrite $configMap (deepCopy .Values.nats.configMap) }}
+{{- $configMap = include "jsonpatch" (dict "doc" $configMap "patch" .Values.nats.configMapPatch) | fromJson }}
+{{ toYaml $configMap }}
+
+---
+# stateful-set.yaml
+{{- $statefulSet := tpl (.Files.Get "files/stateful-set.yaml") . | fromYaml }}
+{{- $statefulSet = mergeOverwrite $statefulSet (deepCopy .Values.nats.statefulSet) }}
+
+{{- $natsContainer := index $statefulSet.spec.template.spec.containers 0 }}
+{{- $natsContainer = mergeOverwrite $natsContainer (deepCopy .Values.nats.container) }}
+{{- $natsContainer = include "jsonpatch" (dict "doc" $natsContainer "patch" .Values.nats.containerPatch) | fromJson }}
+{{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" (list (dict "op" "replace" "path" "/spec/template/spec/containers/0" "value" $natsContainer))) | fromJson }}
+
+{{- $podTemplate := index $statefulSet.spec "template" }}
+{{- $podTemplate := mergeOverwrite $podTemplate (deepCopy .Values.nats.podTemplate) }}
+{{- $podTemplate = include "jsonpatch" (dict "doc" $podTemplate "patch" .Values.nats.podTemplatePatch) | fromJson }}
+{{- $_ = set $statefulSet.spec "template" $podTemplate }}
+
+{{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" .Values.nats.statefulSetPatch) | fromJson }}
+{{ toYaml $statefulSet }}
+
+---
+# service.yaml
+{{- $service := tpl (.Files.Get "files/service.yaml") . | fromYaml }}
+{{- $service = mergeOverwrite $service (deepCopy .Values.nats.service) }}
+{{- $service = include "jsonpatch" (dict "doc" $service "patch" .Values.nats.servicePatch) | fromJson }}
+{{ toYaml $service }}
+
+---
+# headless-service.yaml
+{{- $headlessService := tpl (.Files.Get "files/headless-service.yaml") . | fromYaml }}
+{{- $headlessService = mergeOverwrite $headlessService (deepCopy .Values.nats.headlessService) }}
+{{- $headlessService = include "jsonpatch" (dict "doc" $headlessService "patch" .Values.nats.headlessServicePatch) | fromJson }}
+{{ toYaml $headlessService }}

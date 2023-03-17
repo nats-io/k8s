@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nats.fullname" . }}-headless
+  labels:
+    {{- include "nats.labels" . | nindent 4 }}
+    type: headless
+spec:
+  selector:
+    {{- include "nats.selectorLabels" . | nindent 4 }}
+    type: headless
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  {{- with .config.port }}
+  - port: {{ . }}
+    name: nats
+  {{- end }}
+  {{ with .config.cluster }}
+  {{ with .port }}
+  - port: {{ . }}
+    name: cluster
+  {{- end }}
+  {{- end }}
+  {{ with .config.leafnode }}
+  {{ with .port }}
+  - port: {{ . }}
+    name: leafnode
+  {{- end }}
+  {{- end }}
+  {{ with .config.gateway }}
+  {{ with .port }}
+  - port: {{ . }}
+    name: gateway
+  {{- end }}
+  {{- end }}
+  {{ with .config.http }}
+  - port: {{ . }}
+    name: monitor
+  {{- end }}
+  {{ with .config.mqtt }}
+  {{ with .port }}
+  - port: {{ . }}
+    name: mqtt
+  {{- end }}
+  {{- end }}
+  {{ with .config.websocket }}
+  {{ with .port }}
+  - port: {{ . }}
+    name: websocket
+  {{- end }}
+  {{- end }}
+  {{ with .config.profiling }}
+  {{ with .port }}
+  - port: {{ . }}
+    name: profiling
+  {{- end }}
+  {{- end }}
