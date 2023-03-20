@@ -7,6 +7,28 @@ nats:
 
   replicas: 1
 
+  jetstreamPvc:
+    enabled: false
+    # mount the pvc and set NATS config `jetstream.store_dir`
+    dir: /data/jetstream
+    size: 10Gi
+    storageClassName:
+
+    # nats stateful set -> volume claim templates -> jetstream pvc
+    pvcTemplate: {}
+    pvcTemplatePatch: []
+
+  jwtPvc:
+    enabled: false
+    # mount the pvc and set NATS config `resolver.dir`
+    dir: /data/jwt
+    size: 1Gi
+    storageClassName:
+
+    # nats stateful set -> volume claim templates -> jwt pvc
+    pvcTemplate: {}
+    pvcTemplatePatch: []
+
   # nats.conf
   config:
     port: 4222
@@ -22,10 +44,6 @@ nats:
   # nats stateful set -> pod template
   podTemplate: {}
   podTemplatePatch: []
-
-  # nats stateful set -> volume claim template
-  volumeClaimTemplate: {}
-  volumeClaimTemplatePatch: []
 
   # nats stateful set -> pod template -> nats container
   container: {}

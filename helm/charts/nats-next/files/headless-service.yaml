@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "nats.fullname" . }}-headless
+  name: {{ include "nats.fullname" $ }}-headless
   labels:
     {{- include "nats.labels" . | nindent 4 }}
     type: headless

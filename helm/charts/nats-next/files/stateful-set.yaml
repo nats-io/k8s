@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "nats.fullname" . }}
+  name: {{ include "nats.fullname" $ }}
 spec:
   selector:
     matchLabels:
       {{- include "nats.selectorLabels" . | nindent 6 }}
   replicas: {{ .Values.nats.replicas }}
-  serviceName: {{ include "nats.fullname" . }}-headless
+  serviceName: {{ include "nats.fullname" $ }}-headless
   podManagementPolicy: Parallel
   template:
     metadata:
@@ -17,7 +17,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ include "nats.fullname" . }}-config
+          name: {{ include "nats.fullname" $ }}-config
       terminationGracePeriodSeconds: 60
       containers:
       - name: nats
@@ -75,3 +75,48 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /etc/nats-config
+        {{- with .Values.nats.jetstreamPvc }}
+        {{- if .enabled }}
+        - name: {{ include "nats.fullname" $ }}-js-pvc
+          mountPath: {{ .dir }}
+        {{- end }}
+        {{- end }}
+        {{- with .Values.nats.jwtPvc }}
+        {{- if .enabled }}
+        - name: {{ include "nats.fullname" $ }}-jwt-pvc
+          mountPath: {{ .dir }}
+        {{- end }}
+        {{- end }}
+  {{- if or .Values.nats.jetstreamPvc.enabled .Values.nats.jwtPvc.enabled }}
+  volumeClaimTemplates:
+  {{- with .Values.nats.jetstreamPvc }}
+  {{- if .enabled }}
+  - metadata:
+      name: {{ include "nats.fullname" $ }}-js-pvc
+    spec:
+      accessModes:
+      - ReadWriteOncePod
+      resources:
+        requests:
+          storage: {{ .size | quote }}
+      {{- with .storageClassName }}
+      storageClassName: {{ . | quote }}
+      {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- with .Values.nats.jwtPvc }}
+  {{- if .enabled }}
+  - metadata:
+      name: {{ include "nats.fullname" $ }}-jwt-pvc
+    spec:
+      accessModes:
+      - ReadWriteOncePod
+      resources:
+        requests:
+          storage: {{ .size | quote }}
+      {{- with .storageClassName }}
+      storageClassName: {{ . | quote }}
+      {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}

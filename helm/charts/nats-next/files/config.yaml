@@ -6,3 +6,13 @@ cluster:
   {{- range $i, $e := until (.Values.nats.replicas | int) }}
   - {{ printf "nats://%s-%d.%s-headless:6222" $name $i $name }}
   {{- end }}
+
+{{- if .Values.nats.jetstreamPvc.enabled }}
+jetstream:
+  store_dir: {{ .Values.nats.jetstreamPvc.dir }}
+{{- end }}
+
+{{- if .Values.nats.jwtPvc.enabled }}
+resolver:
+  dir: {{ .Values.nats.jwtPvc.dir }}
+{{- end }}

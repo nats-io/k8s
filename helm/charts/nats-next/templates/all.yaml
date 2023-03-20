@@ -12,18 +12,39 @@
 ---
 # stateful-set.yaml
 {{- $statefulSet := tpl (.Files.Get "files/stateful-set.yaml") . | fromYaml }}
-{{- $statefulSet = mergeOverwrite $statefulSet (deepCopy .Values.nats.statefulSet) }}
 
-{{- $natsContainer := index $statefulSet.spec.template.spec.containers 0 }}
+{{- $i := 0 }}
+{{- $path := printf "/spec/template/spec/containers/%d" $i }}
+{{- $natsContainer := index $statefulSet.spec.template.spec.containers $i }}
 {{- $natsContainer = mergeOverwrite $natsContainer (deepCopy .Values.nats.container) }}
 {{- $natsContainer = include "jsonpatch" (dict "doc" $natsContainer "patch" .Values.nats.containerPatch) | fromJson }}
-{{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" (list (dict "op" "replace" "path" "/spec/template/spec/containers/0" "value" $natsContainer))) | fromJson }}
+{{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" (list (dict "op" "replace" "path" $path "value" $natsContainer))) | fromJson }}
 
 {{- $podTemplate := index $statefulSet.spec "template" }}
-{{- $podTemplate := mergeOverwrite $podTemplate (deepCopy .Values.nats.podTemplate) }}
+{{- $podTemplate = mergeOverwrite $podTemplate (deepCopy .Values.nats.podTemplate) }}
 {{- $podTemplate = include "jsonpatch" (dict "doc" $podTemplate "patch" .Values.nats.podTemplatePatch) | fromJson }}
 {{- $_ = set $statefulSet.spec "template" $podTemplate }}
 
+{{- $i = -1 }}
+{{- if .Values.nats.jetstreamPvc.enabled }}
+{{- $i = add1 $i }}
+{{- $path := printf "/spec/volumeClaimTemplates/%d" $i }}
+{{- $pvc := index $statefulSet.spec.volumeClaimTemplates $i }}
+{{- $pvc = mergeOverwrite $pvc (deepCopy .Values.nats.jetstreamPvc.pvcTemplate) }}
+{{- $pvc = include "jsonpatch" (dict "doc" $pvc "patch" .Values.nats.jetstreamPvc.pvcTemplatePatch) | fromJson }}
+{{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" (list (dict "op" "replace" "path" $path "value" $pvc))) | fromJson }}
+{{- end }}
+
+{{- if .Values.nats.jwtPvc.enabled }}
+{{- $i = add1 $i }}
+{{- $path := printf "/spec/volumeClaimTemplates/%d" $i }}
+{{- $pvc := index $statefulSet.spec.volumeClaimTemplates $i }}
+{{- $pvc = mergeOverwrite $pvc (deepCopy .Values.nats.jwtPvc.pvcTemplate) }}
+{{- $pvc = include "jsonpatch" (dict "doc" $pvc "patch" .Values.nats.jwtPvc.pvcTemplatePatch) | fromJson }}
+{{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" (list (dict "op" "replace" "path" $path "value" $pvc))) | fromJson }}
+{{- end }}
+
+{{- $statefulSet = mergeOverwrite $statefulSet (deepCopy .Values.nats.statefulSet) }}
 {{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" .Values.nats.statefulSetPatch) | fromJson }}
 {{ toYaml $statefulSet }}
 
