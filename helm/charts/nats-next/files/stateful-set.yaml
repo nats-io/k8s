@@ -81,13 +81,13 @@ spec:
           mountPath: {{ .dir }}
         {{- end }}
         {{- end }}
-        {{- with .Values.nats.jwtPvc }}
+        {{- with .Values.nats.resolverPersistence }}
         {{- if .enabled }}
         - name: {{ include "nats.fullname" $ }}-jwt-pvc
           mountPath: {{ .dir }}
         {{- end }}
         {{- end }}
-  {{- if or .Values.nats.jetstreamPvc.enabled .Values.nats.jwtPvc.enabled }}
+  {{- if or .Values.nats.jetstreamPersistence.enabled .Values.nats.resolverPersistence.enabled }}
   volumeClaimTemplates:
   {{- with .Values.nats.jetstreamPvc }}
   {{- if .enabled }}
@@ -104,7 +104,7 @@ spec:
       {{- end }}
   {{- end }}
   {{- end }}
-  {{- with .Values.nats.jwtPvc }}
+  {{- with .Values.nats.resolverPersistence }}
   {{- if .enabled }}
   - metadata:
       name: {{ include "nats.fullname" $ }}-jwt-pvc

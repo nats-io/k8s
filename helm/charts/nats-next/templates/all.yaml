@@ -26,21 +26,21 @@
 {{- $_ = set $statefulSet.spec "template" $podTemplate }}
 
 {{- $i = -1 }}
-{{- if .Values.nats.jetstreamPvc.enabled }}
+{{- if .Values.nats.jetstreamPersistence.enabled }}
 {{- $i = add1 $i }}
 {{- $path := printf "/spec/volumeClaimTemplates/%d" $i }}
 {{- $pvc := index $statefulSet.spec.volumeClaimTemplates $i }}
-{{- $pvc = mergeOverwrite $pvc (deepCopy .Values.nats.jetstreamPvc.pvcTemplate) }}
-{{- $pvc = include "jsonpatch" (dict "doc" $pvc "patch" .Values.nats.jetstreamPvc.pvcTemplatePatch) | fromJson }}
+{{- $pvc = mergeOverwrite $pvc (deepCopy .Values.nats.jetstreamPvcTemplate) }}
+{{- $pvc = include "jsonpatch" (dict "doc" $pvc "patch" .Values.nats.jetstreamPvcTemplatePatch) | fromJson }}
 {{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" (list (dict "op" "replace" "path" $path "value" $pvc))) | fromJson }}
 {{- end }}
 
-{{- if .Values.nats.jwtPvc.enabled }}
+{{- if .Values.nats.resolverPersistence.enabled }}
 {{- $i = add1 $i }}
 {{- $path := printf "/spec/volumeClaimTemplates/%d" $i }}
 {{- $pvc := index $statefulSet.spec.volumeClaimTemplates $i }}
-{{- $pvc = mergeOverwrite $pvc (deepCopy .Values.nats.jwtPvc.pvcTemplate) }}
-{{- $pvc = include "jsonpatch" (dict "doc" $pvc "patch" .Values.nats.jwtPvc.pvcTemplatePatch) | fromJson }}
+{{- $pvc = mergeOverwrite $pvc (deepCopy .Values.nats.resolverPvcTemplate) }}
+{{- $pvc = include "jsonpatch" (dict "doc" $pvc "patch" .Values.nats.resolverPvcTemplatePatch) | fromJson }}
 {{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" (list (dict "op" "replace" "path" $path "value" $pvc))) | fromJson }}
 {{- end }}
 

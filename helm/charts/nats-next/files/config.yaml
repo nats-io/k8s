@@ -7,12 +7,12 @@ cluster:
   - {{ printf "nats://%s-%d.%s-headless:6222" $name $i $name }}
   {{- end }}
 
-{{- if .Values.nats.jetstreamPvc.enabled }}
+{{- if .Values.nats.jetstreamPersistence.enabled }}
 jetstream:
-  store_dir: {{ .Values.nats.jetstreamPvc.dir }}
+  store_dir: {{ .Values.nats.jetstreamPersistence.dir }}
 {{- end }}
 
-{{- if .Values.nats.jwtPvc.enabled }}
+{{- if .Values.nats.resolverPersistence.enabled }}
 resolver:
-  dir: {{ .Values.nats.jwtPvc.dir }}
+  dir: {{ .Values.nats.resolverPersistence.dir }}
 {{- end }}
