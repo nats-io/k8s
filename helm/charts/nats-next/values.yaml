@@ -1,3 +1,64 @@
+############################################################
+# NATS config
+############################################################
+config:
+  protocol:
+    nats:
+      enabled: true
+      port: 4222
+    leafnodes:
+      enabled: false
+      port: 7422
+    websocket:
+      enabled: false
+      port: 8080
+    mqtt:
+      enabled: false
+      port: 1883
+    cluster:
+      enabled: true
+      port: 6222
+    gateway:
+      enabled: false
+      port: 7222
+    monitor:
+      enabled: true
+      port: 8222
+    profiling:
+      enabled: false
+      port: 65432
+
+  # merge or patch the nats config
+  # https://docs.nats.io/running-a-nats-service/configuration
+  merge: {}
+  patch: []
+
+
+############################################################
+# stateful set
+############################################################
+statefulSet:
+  replicas: 1
+
+  # merge or patch the stateful set
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#statefulset-v1-apps
+  merge: {}
+  patch: []
+
+
+############################################################
+# stateful set -> pod template
+############################################################
+podTemplate:
+  # merge or patch the pod template
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
+  merge: {}
+  patch: []
+
+
+############################################################
+# stateful set -> pod template -> nats container
+############################################################
 nats:
   image:
     repository: nats
@@ -5,60 +66,106 @@ nats:
     pullPolicy: IfNotPresent
     # registry: docker.io
 
-  replicas: 1
+  # container port options
+  # port must be enabled in the config.protocol section also
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#containerport-v1-core
+  ports:
+    nats: {}
+    leafnodes: {}
+    websocket: {}
+    mqtt: {}
+    cluster: {}
+    gateway: {}
+    monitor: {}
+    profiling: {}
 
-  jetstreamPersistence:
-    enabled: false
-    # mount the pvc and set NATS config `jetstream.store_dir`
-    dir: /data/jetstream
-    size: 10Gi
-    storageClassName:
+  # merge or patch the container
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+  merge: {}
+  patch: []
 
-  resolverPersistence:
-    enabled: false
-    # mount the pvc and set NATS config `resolver.dir`
-    dir: /data/resolver
-    size: 1Gi
-    storageClassName:
 
-  # nats.conf
-  config:
-    port: 4222
+################################################################################
+# stateful set -> volume claim templates -> jetstream pvc
+############################################################
+jetstreamPvc:
+  enabled: false
+  # mount the pvc and set NATS config `jetstream.store_dir`
+  dir: /data/jetstream
+  size: 10Gi
+  storageClassName:
+  
+  # merge or patch the pvc
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
+  merge: {}
+  patch: []
+
+
+############################################################
+# stateful set -> volume claim templates -> resolver pvc
+############################################################
+resolverPvc:
+  enabled: false
+  # mount the pvc and set NATS config `resolver.dir`
+  dir: /data/resolver
+  size: 1Gi
+  storageClassName:
+
+  # merge or patch the pvc
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
+  merge: {}
+  patch: []
+
+
+############################################################
+# config map
+############################################################
+configMap:
+  # merge or patch the config map
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#configmap-v1-core
+  merge: {}
+  patch: []
+
+
+############################################################
+# service
+############################################################
+service:
+  enabled: true
+
+  # service port options
+  # additional boolean field enable to control whether port is exposed in the service
+  # port must be enabled in the config.protocol section also
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceport-v1-core
+  ports:
+    nats:
+      enabled: true
+    leafnodes:
+      enabled: true
+    websocket:
+      enabled: true
+    mqtt:
+      enabled: true
     cluster:
-      port: 6222
-    http: 8222
-  configPatch: []
+      enabled: false
+    gateway:
+      enabled: false
+    monitor:
+      enabled: false
+    profiling:
+      enabled: false
 
-  # nats stateful set
-  statefulSet: {}
-  statefulSetPatch: []
+  # merge or patch the service
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core
+  merge: {}
+  patch: []
 
-  # nats stateful set -> pod template
-  podTemplate: {}
-  podTemplatePatch: []
 
-  # nats stateful set -> pod template -> nats container
-  container: {}
-  containerPatch: []
-
-  # nats stateful set -> volume claim templates -> jetstream pvc
-  # has no effect if jetstreamPersistence.enabled = false
-  jetstreamPvcTemplate: {}
-  jetstreamPvcTemplatePatch: []
-
-  # nats stateful set -> volume claim templates -> resolver pvc
-  # has no effect if resolverPersistence.enabled = false
-  resolverPvcTemplate: {}
-  resolverPvcTemplatePatch: []
-
-  # nats service
-  service: {}
-  servicePatch: []
-
-  # nats headless service
-  headlessService: {}
-  headlessServicePatch: []
-
-  # nats config map
-  configMap: {}
-  configMapPatch: []
+############################################################
+# headless service
+############################################################
+headlessService:
+  # merge or patch the headless service
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core
+  merge: {}
+  patch: []

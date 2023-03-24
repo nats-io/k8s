@@ -1,0 +1,31 @@
+{{- $ := . }}
+name: nats
+image: {{ include "nats.image" .Values.nats.image }}
+imagePullPolicy: {{ .Values.nats.image.pullPolicy }}
+ports:
+{{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
+{{- $configProtocol := get $.Values.config.protocol $protocol }}
+{{- $containerPort := get $.Values.nats.ports $protocol }}
+{{- if eq $configProtocol.enabled true }}
+- {{ merge (dict "name" $protocol "containerPort" $configProtocol.port) $containerPort | toYaml | nindent 2 }}
+{{- end }}
+{{- end }}
+command:
+- "nats-server"
+- "--config"
+- "/etc/nats-config/nats.conf"
+volumeMounts:
+- name: config
+  mountPath: /etc/nats-config
+{{- with .Values.nats.jetstreamPvc }}
+{{- if .enabled }}
+- name: {{ include "nats.fullname" $ }}-js-pvc
+  mountPath: {{ .dir }}
+{{- end }}
+{{- end }}
+{{- with .Values.nats.resolverPersistence }}
+{{- if .enabled }}
+- name: {{ include "nats.fullname" $ }}-jwt-pvc
+  mountPath: {{ .dir }}
+{{- end }}
+{{- end }}

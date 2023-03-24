@@ -12,8 +12,8 @@ The chart has very few explicit values defined.  Everything in the NATS Config o
 **Merge** - add accounts
 
 ```yaml
-nats:
-  config:
+config:
+  merge:
     accounts:
       A:
         users:
@@ -26,8 +26,8 @@ nats:
 **Patch** - remove http monitoring
 
 ```yaml
-nats:
-  configPatch:
+config:
+  patch:
   - op: remove
     path: /http
 ```
@@ -39,7 +39,7 @@ nats:
 
 ```yaml
 nats:
-  container:
+  merge:
     resources:
       requests:
         memory: 8Gi
@@ -53,7 +53,7 @@ nats:
 
 ```yaml
 nats:
-  containerPatch:
+  patch:
   - op: add
     path: /ports/-
     value:
@@ -61,13 +61,13 @@ nats:
       name: wss
 ```
 
-# PodSpec
+# PodTemplate
 
-**Merge** - add an annottion and a security context
+**Merge** - add an annotation and a security context
 
 ```yaml
-nats:
-  podTemplate:
+podTemplate:
+  merge:
     metadata:
       annotations:
         nats/is: awesome
@@ -79,8 +79,8 @@ nats:
 **Patch** - add a volume
 
 ```yaml
-nats:
-  podTemplatePatch:
+podTemplate:
+  patch:
   - op: add
     path: /spec/volumes/-
     value:

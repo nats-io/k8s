@@ -3,7 +3,8 @@ jsonpatch
 input: map with 2 keys:
 - doc: interface{} valid JSON document
 - patch: []interface{} valid JSON Patch document
-output: JSON string with the patched json result
+output: JSON encoded map with 1 key:
+- doc: interface{} patched json result
 */}}
 {{- define "jsonpatch" -}}
   {{- $params := fromJson (toJson .) -}}
@@ -212,5 +213,5 @@ output: JSON string with the patched json result
     {{- end -}}
 
   {{- end -}}
-  {{- toJson $params.doc -}}
+  {{- toJson (dict "doc" $params.doc) -}}
 {{- end -}}

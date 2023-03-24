@@ -71,3 +71,19 @@ Print the image
 {{- end }}
 {{- $image -}}
 {{- end }}
+
+{{- /*
+nats.loadMergePatch
+input: map with 4 keys:
+- file: name of file to load
+- ctx: context to pass to tpl
+- merge: interface{} to merge
+- patch: []interface{} valid JSON Patch document
+output: JSON encoded map with 1 key:
+- doc: interface{} patched json result
+*/}}
+{{- define "nats.loadMergePatch" -}}
+{{- $doc := tpl (.ctx.Files.Get (printf "files/%s" .file)) .ctx | fromYaml -}}
+{{- $doc = mergeOverwrite $doc (deepCopy .merge) -}}
+{{- get (include "jsonpatch" (dict "doc" $doc "patch" .patch) | fromJson ) "doc" | toYaml -}}
+{{- end }}

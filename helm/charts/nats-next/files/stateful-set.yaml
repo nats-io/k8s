@@ -1,3 +1,4 @@
+{{- $ := . }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -6,117 +7,23 @@ spec:
   selector:
     matchLabels:
       {{- include "nats.selectorLabels" . | nindent 6 }}
-  replicas: {{ .Values.nats.replicas }}
+  replicas: {{ .Values.statefulSet.replicas }}
   serviceName: {{ include "nats.fullname" $ }}-headless
   podManagementPolicy: Parallel
   template:
-    metadata:
-      labels:
-        {{- include "nats.labels" . | nindent 8 }}
-    spec:
-      volumes:
-      - name: config
-        configMap:
-          name: {{ include "nats.fullname" $ }}-config
-      terminationGracePeriodSeconds: 60
-      containers:
-      - name: nats
-        image: {{ include "nats.image" .Values.nats.image }}
-        imagePullPolicy: {{ .Values.nats.image.pullPolicy }}
-        ports:
-        {{- with .config.port }}
-        - containerPort: {{ . }}
-          name: nats
-        {{- end }}
-        {{ with .config.cluster }}
-        {{ with .port }}
-        - containerPort: {{ . }}
-          name: cluster
-        {{- end }}
-        {{- end }}
-        {{ with .config.leafnode }}
-        {{ with .port }}
-        - containerPort: {{ . }}
-          name: leafnode
-        {{- end }}
-        {{- end }}
-        {{ with .config.gateway }}
-        {{ with .port }}
-        - containerPort: {{ . }}
-          name: gateway
-        {{- end }}
-        {{- end }}
-        {{ with .config.http }}
-        - containerPort: {{ . }}
-          name: monitor
-        {{- end }}
-        {{ with .config.mqtt }}
-        {{ with .port }}
-        - containerPort: {{ . }}
-          name: mqtt
-        {{- end }}
-        {{- end }}
-        {{ with .config.websocket }}
-        {{ with .port }}
-        - containerPort: {{ . }}
-          name: websocket
-        {{- end }}
-        {{- end }}
-        {{ with .config.profiling }}
-        {{ with .port }}
-        - containerPort: {{ . }}
-          name: profiling
-        {{- end }}
-        {{- end }}
-        command:
-        - "nats-server"
-        - "--config"
-        - "/etc/nats-config/nats.conf"
-        volumeMounts:
-        - name: config
-          mountPath: /etc/nats-config
-        {{- with .Values.nats.jetstreamPvc }}
-        {{- if .enabled }}
-        - name: {{ include "nats.fullname" $ }}-js-pvc
-          mountPath: {{ .dir }}
-        {{- end }}
-        {{- end }}
-        {{- with .Values.nats.resolverPersistence }}
-        {{- if .enabled }}
-        - name: {{ include "nats.fullname" $ }}-jwt-pvc
-          mountPath: {{ .dir }}
-        {{- end }}
-        {{- end }}
-  {{- if or .Values.nats.jetstreamPersistence.enabled .Values.nats.resolverPersistence.enabled }}
+    {{- with .Values.podTemplate }}
+    {{ include "nats.loadMergePatch" (dict "file" "pod-template.yaml" "ctx" $ "merge" .merge "patch" .patch) | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.jetstreamPvc.enabled .Values.resolverPvc.enabled }}
   volumeClaimTemplates:
-  {{- with .Values.nats.jetstreamPvc }}
+  {{- with .Values.jetstreamPvc }}
   {{- if .enabled }}
-  - metadata:
-      name: {{ include "nats.fullname" $ }}-js-pvc
-    spec:
-      accessModes:
-      - ReadWriteOncePod
-      resources:
-        requests:
-          storage: {{ .size | quote }}
-      {{- with .storageClassName }}
-      storageClassName: {{ . | quote }}
-      {{- end }}
+  - {{ include "nats.loadMergePatch" (dict "file" "jetstream-pvc.yaml" "ctx" $ "merge" .merge "patch" .patch) | nindent 4 }}
   {{- end }}
   {{- end }}
-  {{- with .Values.nats.resolverPersistence }}
+  {{- with .Values.resolverPvc }}
   {{- if .enabled }}
-  - metadata:
-      name: {{ include "nats.fullname" $ }}-jwt-pvc
-    spec:
-      accessModes:
-      - ReadWriteOncePod
-      resources:
-        requests:
-          storage: {{ .size | quote }}
-      {{- with .storageClassName }}
-      storageClassName: {{ . | quote }}
-      {{- end }}
+  - {{ include "nats.loadMergePatch" (dict "file" "resolver-pvc.yaml" "ctx" $ "merge" .merge "patch" .patch) | nindent 4 }}
   {{- end }}
   {{- end }}
   {{- end }}

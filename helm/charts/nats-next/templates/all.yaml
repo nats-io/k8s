@@ -1,63 +1,28 @@
----
-# config-map.yaml
-{{- $config := tpl (.Files.Get "files/config.yaml") . | fromYaml }}
-{{- $config = mergeOverwrite $config (deepCopy .Values.nats.config) }}
-{{- $config = include "jsonpatch" (dict "doc" $config "patch" .Values.nats.configPatch) | fromJson }}
-{{- $_ := set . "config" $config }}
-{{- $configMap := tpl (.Files.Get "files/config-map.yaml") . | fromYaml }}
-{{- $configMap = mergeOverwrite $configMap (deepCopy .Values.nats.configMap) }}
-{{- $configMap = include "jsonpatch" (dict "doc" $configMap "patch" .Values.nats.configMapPatch) | fromJson }}
-{{ toYaml $configMap }}
 
+{{- $values := get (include "tplYaml" (dict "doc" .Values "ctx" $) | fromJson) "doc" }}
+{{- $_ := set $ "Values" $values -}}
 ---
 # stateful-set.yaml
-{{- $statefulSet := tpl (.Files.Get "files/stateful-set.yaml") . | fromYaml }}
-
-{{- $i := 0 }}
-{{- $path := printf "/spec/template/spec/containers/%d" $i }}
-{{- $natsContainer := index $statefulSet.spec.template.spec.containers $i }}
-{{- $natsContainer = mergeOverwrite $natsContainer (deepCopy .Values.nats.container) }}
-{{- $natsContainer = include "jsonpatch" (dict "doc" $natsContainer "patch" .Values.nats.containerPatch) | fromJson }}
-{{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" (list (dict "op" "replace" "path" $path "value" $natsContainer))) | fromJson }}
-
-{{- $podTemplate := index $statefulSet.spec "template" }}
-{{- $podTemplate = mergeOverwrite $podTemplate (deepCopy .Values.nats.podTemplate) }}
-{{- $podTemplate = include "jsonpatch" (dict "doc" $podTemplate "patch" .Values.nats.podTemplatePatch) | fromJson }}
-{{- $_ = set $statefulSet.spec "template" $podTemplate }}
-
-{{- $i = -1 }}
-{{- if .Values.nats.jetstreamPersistence.enabled }}
-{{- $i = add1 $i }}
-{{- $path := printf "/spec/volumeClaimTemplates/%d" $i }}
-{{- $pvc := index $statefulSet.spec.volumeClaimTemplates $i }}
-{{- $pvc = mergeOverwrite $pvc (deepCopy .Values.nats.jetstreamPvcTemplate) }}
-{{- $pvc = include "jsonpatch" (dict "doc" $pvc "patch" .Values.nats.jetstreamPvcTemplatePatch) | fromJson }}
-{{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" (list (dict "op" "replace" "path" $path "value" $pvc))) | fromJson }}
+{{- with .Values.statefulSet }}
+{{ include "nats.loadMergePatch" (dict "file" "stateful-set.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
 {{- end }}
-
-{{- if .Values.nats.resolverPersistence.enabled }}
-{{- $i = add1 $i }}
-{{- $path := printf "/spec/volumeClaimTemplates/%d" $i }}
-{{- $pvc := index $statefulSet.spec.volumeClaimTemplates $i }}
-{{- $pvc = mergeOverwrite $pvc (deepCopy .Values.nats.resolverPvcTemplate) }}
-{{- $pvc = include "jsonpatch" (dict "doc" $pvc "patch" .Values.nats.resolverPvcTemplatePatch) | fromJson }}
-{{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" (list (dict "op" "replace" "path" $path "value" $pvc))) | fromJson }}
-{{- end }}
-
-{{- $statefulSet = mergeOverwrite $statefulSet (deepCopy .Values.nats.statefulSet) }}
-{{- $statefulSet = include "jsonpatch" (dict "doc" $statefulSet "patch" .Values.nats.statefulSetPatch) | fromJson }}
-{{ toYaml $statefulSet }}
-
----
-# service.yaml
-{{- $service := tpl (.Files.Get "files/service.yaml") . | fromYaml }}
-{{- $service = mergeOverwrite $service (deepCopy .Values.nats.service) }}
-{{- $service = include "jsonpatch" (dict "doc" $service "patch" .Values.nats.servicePatch) | fromJson }}
-{{ toYaml $service }}
 
 ---
 # headless-service.yaml
-{{- $headlessService := tpl (.Files.Get "files/headless-service.yaml") . | fromYaml }}
-{{- $headlessService = mergeOverwrite $headlessService (deepCopy .Values.nats.headlessService) }}
-{{- $headlessService = include "jsonpatch" (dict "doc" $headlessService "patch" .Values.nats.headlessServicePatch) | fromJson }}
-{{ toYaml $headlessService }}
+{{- with .Values.headlessService }}
+{{ include "nats.loadMergePatch" (dict "file" "headless-service.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
+{{- end }}
+
+{{- with .Values.service }}
+{{- if .enabled }}
+---
+#service
+{{ include "nats.loadMergePatch" (dict "file" "service.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
+{{- end }}
+{{- end }}
+
+---
+# config-map.yaml
+{{- with .Values.configMap }}
+{{ include "nats.loadMergePatch" (dict "file" "config-map.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
+{{- end }}

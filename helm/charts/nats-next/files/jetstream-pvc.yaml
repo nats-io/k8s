@@ -1,0 +1,14 @@
+{{- $ := . }}
+{{- with .Values.jetstreamPvc }}
+metadata:
+  name: {{ include "nats.fullname" $ }}-js-pvc
+  spec:
+    accessModes:
+    - ReadWriteOncePod
+    resources:
+      requests:
+        storage: {{ .size | quote }}
+    {{- with .storageClassName }}
+    storageClassName: {{ . | quote }}
+    {{- end }}
+{{- end }}

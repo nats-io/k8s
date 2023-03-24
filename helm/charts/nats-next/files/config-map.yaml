@@ -1,3 +1,4 @@
+{{- $ := . }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,4 +7,6 @@ metadata:
     {{- include "nats.labels" . | nindent 4 }}
 data:
   nats.conf: |
-    {{- include "toPrettyRawJson" .config | nindent 4 }}
+    {{- with $.Values.config }}
+    {{ include "toPrettyRawJson" (include "nats.loadMergePatch" (dict "file" "nats-config.yaml" "ctx" $ "merge" .merge "patch" .patch) | fromYaml) | nindent 4 }}
+    {{- end }}   
