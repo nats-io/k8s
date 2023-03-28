@@ -130,3 +130,6 @@ config:
     #     ca: "ca.crt" # optional
     #     cert: "tls.crt"
     #     key: "tls.key"
+    # - name: basic
+    #   username: username
+    #   password: password
