@@ -99,7 +99,7 @@ nats:
       timeoutSeconds: 5
       periodSeconds: 10
       successThreshold: 1
-      failureThreshold: 30
+      failureThreshold: 90
 
       # Override the health check path
       # httpGet:
