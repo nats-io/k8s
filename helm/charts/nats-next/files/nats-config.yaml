@@ -38,6 +38,7 @@ mqtt:
 cluster:
   name: {{ $name }}
   port: {{ .port }}
+  no_advertise: true
   routes:
   {{- range $i, $_ := until ($.Values.statefulSet.replicas | int) }}
   - {{ printf "nats://%s-%d.%s-headless:6222" $name $i $name }}
@@ -64,7 +65,7 @@ prof_port: {{ .port }}
 {{- end }}
 {{- end }}
 
-{{- with $.Values.jetstream -}}
+{{- with $.Values.config.jetstream -}}
 {{- if .enabled }}
 jetstream:
   {{- with .memStorage }}
