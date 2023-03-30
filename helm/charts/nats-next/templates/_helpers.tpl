@@ -87,3 +87,19 @@ output: JSON encoded map with 1 key:
 {{- $doc = mergeOverwrite $doc (deepCopy .merge) -}}
 {{- get (include "jsonpatch" (dict "doc" $doc "patch" .patch) | fromJson ) "doc" | toYaml -}}
 {{- end }}
+
+
+{{- /*
+nats.formatConfig
+input: map[string]interface{}
+output: string with following format rules
+1. keys ending in $natsRaw are unquoted
+2. keys ending in $natsInclude are converted to include directives
+*/}}
+{{- define "nats.formatConfig" -}}
+  {{-
+    (regexReplaceAll "\"<<\\s+(.*)\\s+>>\""
+      (regexReplaceAll "\".*\\$include\": \"(.*)\",?" (include "toPrettyRawJson" .) "include ${1};")
+    "${1}")
+  -}}
+{{- end -}}

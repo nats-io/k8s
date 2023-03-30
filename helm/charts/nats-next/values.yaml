@@ -30,6 +30,35 @@ config:
 
   # merge or patch the nats config
   # https://docs.nats.io/running-a-nats-service/configuration
+  # following special rules apply
+  #  1. strings that start with << and end with >> will be unquoted
+  #     use this for variables and numbers with units
+  #  2. keys ending in $include will be switched to include directives
+  #     keys are sorted alphabetically, use prefix before $includes to control includes ordering
+  #     paths should be relative to /etc/nats-config/nats.conf
+  # example:
+  #
+  #   merge:
+  #     $include: ./my-config.conf
+  #     zzz$include: ./my-config-last.conf
+  #     server_name: nats
+  #     authorization:
+  #       token: << $TOKEN >>
+  #     jetstream:
+  #       max_mem: << 1GB >>
+  #
+  # will yield the config:
+  # {
+  #   include ./my-config.conf;
+  #   "authorization": {
+  #     "token": $TOKEN
+  #   },
+  #   "jetstream": {
+  #     "max_mem": 1GB
+  #   },
+  #   "server_name": "nats",
+  #   include ./my-config-last.conf;
+  # }
   merge: {}
   patch: []
 
