@@ -2,6 +2,19 @@
 # NATS config
 ############################################################
 config:
+  jetstream:
+    enabled: true
+
+    memStorage:
+      enabled: false
+      size: 1Gi
+
+    fileStorage:
+      size: 10Gi
+      enabled: true
+      # disk will be mounted to <dir>/jetstream
+      dir: /data
+
   protocol:
     nats:
       enabled: true
@@ -112,9 +125,17 @@ nats:
     monitor: {}
     profiling: {}
 
-  env:
-    # should be ~90% of the memory limit
-    GOMEMLIMIT: 7GiB
+  # map with key as env var name, value can be string or map
+  # example:
+  #
+  #   env:
+  #     GOMEMLIMIT: 7GiB
+  #     TOKEN:
+  #       valueFrom:
+  #         secretKeyRef:
+  #           name: nats-auth
+  #           key: token
+  env: {}
 
   # merge or patch the container
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
@@ -123,32 +144,24 @@ nats:
 
 
 ############################################################
-# jetstream settings
+# stateful set -> volume claim templates -> jetstream pvc
 ############################################################
-jetstream:
+jetstreamPvc:
+  # 2 config setings must also be enabled
+  #  config.jetstream.enabled
+  #  config.jetstream.fileStorage.enabled
   enabled: true
+  storageClassName:
 
-  memStorage:
-    enabled: false
-    size: 1Gi
-
-  fileStorage:
-    enabled: true
-    # disk will be mounted to <storageDirectory>/jetstream
-    dir: /data
-    size: 10Gi
-
-    ############################################################
-    # stateful set -> volume claim templates -> jetstream pvc
-    ############################################################
-    pvc:
-      enabled: true
-      storageClassName:
-      
-      # merge or patch the pvc
-      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
-      merge: {}
-      patch: []
+  # size is inferred from
+  #   config.jetstream.fileStorage.size
+  # dir is inferred from
+  #   config.jetstream.fileStorage.dir
+  
+  # merge or patch the pvc
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
+  merge: {}
+  patch: []
 
 
 ############################################################
@@ -156,9 +169,9 @@ jetstream:
 ############################################################
 resolverPvc:
   enabled: false
+  size: 1Gi
   # mount the pvc and set NATS config `resolver.dir`
   dir: /data/resolver
-  size: 1Gi
   storageClassName:
 
   # merge or patch the pvc

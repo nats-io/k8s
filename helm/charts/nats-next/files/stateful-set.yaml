@@ -15,11 +15,9 @@ spec:
     {{ include "nats.loadMergePatch" (dict "file" "pod-template.yaml" "ctx" $ "merge" .merge "patch" .patch) | nindent 4 }}
     {{- end }}
   volumeClaimTemplates:
-  {{- if and .Values.jetstream.enabled .Values.jetstream.fileStorage.enabled }}
-  {{- with .Values.jetstream.fileStorage.pvc }}
-  {{- if .enabled }}
+  {{- if and .Values.config.jetstream.enabled .Values.config.jetstream.fileStorage.enabled .Values.jetstreamPvc.enabled }}
+  {{- with .Values.jetstreamPvc }}
   - {{ include "nats.loadMergePatch" (dict "file" "jetstream-pvc.yaml" "ctx" $ "merge" .merge "patch" .patch) | nindent 4 }}
-  {{- end }}
   {{- end }}
   {{- end }}
   {{- with .Values.resolverPvc }}

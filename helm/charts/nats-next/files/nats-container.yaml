@@ -67,10 +67,10 @@ livenessProbe:
 volumeMounts:
 - name: config
   mountPath: /etc/nats-config
-{{- with .Values.jetstream }}
-{{- if and .enabled .fileStorage.enabled .fileStorage.pvc.enabled }}
+{{- if and .Values.config.jetstream.enabled .Values.config.jetstream.fileStorage.enabled .Values.jetstreamPvc.enabled }}
+{{- with .Values.config.jetstream.fileStorage }}
 - name: {{ include "nats.fullname" $ }}-js-pvc
-  mountPath: {{ printf "%s/jetstream" .fileStorage.dir | quote }}
+  mountPath: {{ printf "%s/jetstream" .dir | quote }}
 {{- end }}
 {{- end }}
 {{- with .Values.resolverPvc }}
