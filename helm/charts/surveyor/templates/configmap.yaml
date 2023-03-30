@@ -7,7 +7,19 @@ metadata:
     {{- include "surveyor.labels" . | nindent 4 }}
 data:
   {{- range .Values.config.jetstream.accounts }}
+  {{- $d := dict }}  
+  {{- if .tls }}
+  {{- if .tls.ca }}  
+  {{- $_ := set $d "tls_ca" (printf "/etc/nats-certs/accounts/%s/%s" .name .tls.ca)}}
+  {{- end }}
+  {{- if .tls.cert }}
+  {{- $_ := set $d "tls_cert" (printf "/etc/nats-certs/accounts/%s/%s" .name .tls.cert)}}
+  {{- end }}
+  {{- if .tls.key }}  
+  {{- $_ := set $d "tls_key" (printf "/etc/nats-certs/accounts/%s/%s" .name .tls.key)}}
+  {{- end }}
+  {{- end }}
   {{ .name }}.json: |
-    {{ . | toJson }}
+    {{ merge $d (omit . "tls") | toJson }}
   {{- end }}
 {{- end }}
