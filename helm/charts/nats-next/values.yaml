@@ -59,9 +59,7 @@ config:
   #   "server_name": "nats",
   #   include ./my-config-last.conf;
   # }
-  merge:
-    lame_duck_grace_period: 10s
-    lame_duck_duration: 30s
+  merge: {}
   patch: []
 
 
@@ -87,10 +85,7 @@ podTemplate:
 
   # merge or patch the pod template
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
-  merge:
-    spec:
-      # should be at least `lame_duck_grace_period` + `lame_duck_duration` + 20s shutdown overhead
-      terminationGracePeriodSeconds: 60
+  merge: {}
   patch: []
 
 
@@ -123,14 +118,7 @@ nats:
 
   # merge or patch the container
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
-  merge:
-    resources:
-      requests:
-        cpu: "1"
-        memory: 4Gi
-      limits:
-        cpu: "2"
-        memory: 8Gi
+  merge: {}
   patch: []
 
 
