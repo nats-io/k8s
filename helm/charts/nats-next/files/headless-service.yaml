@@ -8,7 +8,6 @@ metadata:
 spec:
   selector:
     {{- include "nats.selectorLabels" . | nindent 4 }}
-    type: headless
   clusterIP: None
   publishNotReadyAddresses: true
   ports:

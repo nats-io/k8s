@@ -59,7 +59,9 @@ config:
   #   "server_name": "nats",
   #   include ./my-config-last.conf;
   # }
-  merge: {}
+  merge:
+    lame_duck_grace_period: 10s
+    lame_duck_duration: 30s
   patch: []
 
 
@@ -79,9 +81,16 @@ statefulSet:
 # stateful set -> pod template
 ############################################################
 podTemplate:
+  # adds a hash of the ConfigMap as a pod annotation
+  # this will cause the StatefulSet to roll when the ConfigMap is updated
+  configChecksumAnnotation: true
+
   # merge or patch the pod template
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
-  merge: {}
+  merge:
+    spec:
+      # should be at least `lame_duck_grace_period` + `lame_duck_duration` + 20s shutdown overhead
+      terminationGracePeriodSeconds: 60
   patch: []
 
 
@@ -108,26 +117,50 @@ nats:
     monitor: {}
     profiling: {}
 
+  env:
+    # should be ~90% of the memory limit
+    GOMEMLIMIT: 7GiB
+
   # merge or patch the container
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
-  merge: {}
+  merge:
+    resources:
+      requests:
+        cpu: "1"
+        memory: 4Gi
+      limits:
+        cpu: "2"
+        memory: 8Gi
   patch: []
 
 
-################################################################################
-# stateful set -> volume claim templates -> jetstream pvc
 ############################################################
-jetstreamPvc:
-  enabled: false
-  # mount the pvc and set NATS config `jetstream.store_dir`
-  dir: /data/jetstream
-  size: 10Gi
-  storageClassName:
-  
-  # merge or patch the pvc
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
-  merge: {}
-  patch: []
+# jetstream settings
+############################################################
+jetstream:
+  enabled: true
+
+  memStorage:
+    enabled: false
+    size: 1Gi
+
+  fileStorage:
+    enabled: true
+    # disk will be mounted to <storageDirectory>/jetstream
+    dir: /data
+    size: 10Gi
+
+    ############################################################
+    # stateful set -> volume claim templates -> jetstream pvc
+    ############################################################
+    pvc:
+      enabled: true
+      storageClassName:
+      
+      # merge or patch the pvc
+      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
+      merge: {}
+      patch: []
 
 
 ############################################################

@@ -2,13 +2,13 @@
 {{- with .Values.resolverPvc }}
 metadata:
   name: {{ include "nats.fullname" $ }}-resolver-pvc
-  spec:
-    accessModes:
-    - ReadWriteOncePod
-    resources:
-      requests:
-        storage: {{ .size | quote }}
-    {{- with .storageClassName }}
-    storageClassName: {{ . | quote }}
-    {{- end }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .size | quote }}
+  {{- with .storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
 {{- end }}

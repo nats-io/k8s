@@ -2,6 +2,14 @@
 {{- $values := get (include "tplYaml" (dict "doc" .Values "ctx" $) | fromJson) "doc" }}
 {{- $_ := set $ "Values" $values -}}
 ---
+# config-map.yaml
+{{- with .Values.configMap }}
+{{- $configMap := include "nats.loadMergePatch" (dict "file" "config-map.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
+{{ $configMap }}
+{{- $_ := set $ "configChecksum" (sha256sum $configMap) -}}
+{{- end }}
+
+---
 # stateful-set.yaml
 {{- with .Values.statefulSet }}
 {{ include "nats.loadMergePatch" (dict "file" "stateful-set.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
@@ -19,10 +27,4 @@
 #service
 {{ include "nats.loadMergePatch" (dict "file" "service.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
 {{- end }}
-{{- end }}
-
----
-# config-map.yaml
-{{- with .Values.configMap }}
-{{ include "nats.loadMergePatch" (dict "file" "config-map.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
 {{- end }}

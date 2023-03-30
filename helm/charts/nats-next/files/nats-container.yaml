@@ -1,7 +1,9 @@
 {{- $ := . }}
 name: nats
+
 image: {{ include "nats.image" .Values.nats.image }}
 imagePullPolicy: {{ .Values.nats.image.pullPolicy }}
+
 ports:
 {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
 {{- $configProtocol := get $.Values.config.protocol $protocol }}
@@ -10,22 +12,70 @@ ports:
 - {{ merge (dict "name" $protocol "containerPort" $configProtocol.port) $containerPort | toYaml | nindent 2 }}
 {{- end }}
 {{- end }}
+
 command:
 - "nats-server"
 - "--config"
 - "/etc/nats-config/nats.conf"
+{{- with .Values.nats.env }}
+
+env:
+{{- range $k, $v := . }}
+{{- if kindIs "string" $v }}
+- name: {{ $k | quote }}
+  value: {{ $v | quote }}
+{{- else if kindIs "map" $v }}
+- {{ merge (dict "name" $k) $v | toYaml | nindent 2 }}
+{{- else }}
+{{- fail (cat "env var" $k "must be string or map, got" (kindOf $v)) }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- with .Values.config.protocol.monitor }}
+{{- if .enabled }}
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: {{ .port }}
+  initialDelaySeconds: 10
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 90
+readinessProbe:
+  httpGet:
+    path: /healthz?js-server-only=true
+    port: {{ .port }}
+  initialDelaySeconds: 10
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+livenessProbe:
+  httpGet:
+    path: /healthz?js-enabled-only=true
+    port: {{ .port }}
+  initialDelaySeconds: 10
+  timeoutSeconds: 5
+  periodSeconds: 30
+  successThreshold: 1
+  failureThreshold: 3
+{{- end }}
+{{- end }}
+
 volumeMounts:
 - name: config
   mountPath: /etc/nats-config
-{{- with .Values.nats.jetstreamPvc }}
-{{- if .enabled }}
+{{- with .Values.jetstream }}
+{{- if and .enabled .fileStorage.enabled .fileStorage.pvc.enabled }}
 - name: {{ include "nats.fullname" $ }}-js-pvc
-  mountPath: {{ .dir }}
+  mountPath: {{ printf "%s/jetstream" .fileStorage.dir | quote }}
 {{- end }}
 {{- end }}
-{{- with .Values.nats.resolverPersistence }}
+{{- with .Values.resolverPvc }}
 {{- if .enabled }}
 - name: {{ include "nats.fullname" $ }}-jwt-pvc
-  mountPath: {{ .dir }}
+  mountPath: {{ .dir | quote }}
 {{- end }}
 {{- end }}

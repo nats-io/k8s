@@ -1,18 +1,95 @@
 {{- $ := . }}
-{{ $name := include "nats.fullname" . }}
-cluster:
-  name: {{ $name }}
-  routes:
-  {{- range $i, $e := until (.Values.statefulSet.replicas | int) }}
-  - {{ printf "nats://%s-%d.%s-headless:6222" $name $i $name }}
-  {{- end }}
+{{ $name := include "nats.fullname" $ }}
+{{- with .Values.config }}
 
-{{- if .Values.jetstreamPvc.enabled }}
-jetstream:
-  store_dir: {{ .Values.nats.jetstreamPvc.dir }}
+server_name: << $HOSTNAME >>
+lame_duck_grace_period: 10s
+lame_duck_duration: 30s
+
+{{- with .protocol.nats }}
+{{- if .enabled }}
+port: {{ .port }}
+{{- end }}
 {{- end }}
 
-{{- if .Values.resolverPvc.enabled }}
+{{- with .protocol.leafnodes }}
+{{- if .enabled }}
+leafnodes:
+  port: {{ .port }}
+{{- end }}
+{{- end }}
+
+{{- with .protocol.websocket }}
+{{- if .enabled }}
+websocket:
+  port: {{ .port }}
+{{- end }}
+{{- end }}
+
+{{- with .protocol.mqtt }}
+{{- if .enabled }}
+mqtt:
+  port: {{ .port }}
+{{- end }}
+{{- end }}
+
+{{- with .protocol.cluster }}
+{{- if .enabled }}
+cluster:
+  name: {{ $name }}
+  port: {{ .port }}
+  routes:
+  {{- range $i, $_ := until ($.Values.statefulSet.replicas | int) }}
+  - {{ printf "nats://%s-%d.%s-headless:6222" $name $i $name }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- with .protocol.gateway }}
+{{- if .enabled }}
+gateway:
+  port: {{ .port }}
+{{- end }}
+{{- end }}
+
+{{- with .protocol.monitor }}
+{{- if .enabled }}
+http_port: {{ .port }}
+{{- end }}
+{{- end }}
+
+{{- with .protocol.profiling }}
+{{- if .enabled }}
+prof_port: {{ .port }}
+{{- end }}
+{{- end }}
+
+{{- with $.Values.jetstream -}}
+{{- if .enabled }}
+jetstream:
+  {{- with .memStorage }}
+  {{- if .enabled }}
+  max_memory_store: << {{ .size }} >>
+  {{- else }}
+  max_memory_store: 0
+  {{- end }}
+  {{- end }}
+  {{- with .fileStorage }}
+  {{- if .enabled }}
+  max_file_store: << {{ .size }} >>
+  store_dir: {{ .dir }}
+  {{- else }}
+  max_file_store: 0
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- with $.Values.resolverPvc -}}
+{{- if .enabled }}
 resolver:
-  dir: {{ .Values.resolverPvc.dir }}
+  dir: {{ .dir }}
+{{- end }}
+{{- end }}
+
 {{- end }}

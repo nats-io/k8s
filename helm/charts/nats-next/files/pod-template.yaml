@@ -2,13 +2,16 @@
 metadata:
   labels:
     {{- include "nats.labels" . | nindent 8 }}
+  annotations:
+    {{- if .Values.podTemplate.configChecksumAnnotation }}
+    checksum/config: {{ .configChecksum }}
+    {{- end }}
 spec:
   volumes:
   - name: config
     configMap:
       name: {{ include "nats.fullname" $ }}-config
-  terminationGracePeriodSeconds: 60
   containers:
-  {{- with $.Values.nats }}
+  {{- with .Values.nats }}
   - {{ include "nats.loadMergePatch" (dict "file" "nats-container.yaml" "ctx" $ "merge" .merge "patch" .patch) | nindent 4 }}
   {{- end }}
