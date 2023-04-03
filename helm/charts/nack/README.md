@@ -3,9 +3,6 @@
 ## TL;DR;
 
 ```console
-# First, need to install the CRDs manually.
-kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/v0.6.0/deploy/crds.yml
-
 helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm install nats nats/nats
 helm install nack-jsc nats/nack --set jetstream.nats.url=nats://nats:4222
@@ -43,7 +40,7 @@ natsbox:
 helm install nats nats/nats -f deploy-nats.yaml
 ```
 
-Now install the JetStream CRDs and Controller.  In case of using credentials, you need to make them available as a secret:
+Now install the JetStream Controller. In case of using credentials, you need to make them available as a secret:
 
 ```sh
 kubectl create secret generic nats-user-creds --from-file ./nsc/nkeys/creds/KO/JS1/js.creds
@@ -158,6 +155,14 @@ order 1
 [#2] Received JetStream message: consumer: mystream > my-push-consumer / subject: orders.received /
 delivered: 1 / consumer seq: 2 / stream seq: 2 / ack: false
 order 2
+```
+
+### CRDs & upgrading the chart version
+
+As part of the Helm chart, CRDs are installed. Should you update the underlying NACK version through an Chart version update, you might want to reapply the CRDs as Helm is not updating CRDs during an upgrade:
+
+```
+kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/v0.6.0/deploy/crds.yml
 ```
 
 ### Local Development
