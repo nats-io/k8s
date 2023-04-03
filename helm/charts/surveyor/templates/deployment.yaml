@@ -137,7 +137,7 @@ spec:
         # Mount accounts configmap
         - name: accounts-config-map
           configMap:
-            name: "{{- include "surveyor.fullname" $ }}-accounts"
+            name: {{ include "surveyor.fullname" $ }}-accounts
         {{- end }}
         {{- end }}
 
