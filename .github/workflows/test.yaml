@@ -6,14 +6,14 @@ on:
     branches:
       - main
     paths:
-      - 'helm/charts/**'
-      - '!helm/charts/index.yaml'
-      - '.github/workflows/test.yaml'
+      - "helm/charts/**"
+      - "!helm/charts/index.yaml"
+      - ".github/workflows/test.yaml"
   pull_request:
     paths:
-      - 'helm/charts/**'
-      - '!helm/charts/index.yaml'
-      - '.github/workflows/test.yaml'
+      - "helm/charts/**"
+      - "!helm/charts/index.yaml"
+      - ".github/workflows/test.yaml"
 
 jobs:
   lint-test:
@@ -85,8 +85,11 @@ jobs:
 
       - name: Run chart-testing (install)
         run: |-
-          sudo microk8s.kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/main/deploy/crds.yml
           ct install \
             --all \
             --chart-dirs helm/charts \
             --excluded-charts nats-account-server,nats-kafka,nats-operator,surveyor
+
+      - name: Run chart-testing (CRD upgrade)
+        run: |-
+          sudo microk8s.kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/main/deploy/crds.yml
