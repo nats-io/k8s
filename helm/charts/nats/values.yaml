@@ -535,7 +535,7 @@ natsbox:
   enabled: true
   image:
     repository: natsio/nats-box
-    tag: 0.13.7
+    tag: 0.13.8
     pullPolicy: IfNotPresent
     # registry: docker.io
 
