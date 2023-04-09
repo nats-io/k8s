@@ -3,6 +3,10 @@
 {{- $_ := set $ "Values" $values -}}
 ---
 # config-map.yaml
+{{- with .Values.config }}
+{{- $config := include "nats.loadMergePatch" (dict "file" "nats-config.yaml" "ctx" $ "merge" .merge "patch" .patch) | fromYaml }}
+{{- $_ := set $ "config" $config -}}
+{{- end }}
 {{- with .Values.configMap }}
 {{- $configMap := include "nats.loadMergePatch" (dict "file" "config-map.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
 {{ $configMap }}

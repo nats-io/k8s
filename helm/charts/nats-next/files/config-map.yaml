@@ -7,6 +7,4 @@ metadata:
     {{- include "nats.labels" . | nindent 4 }}
 data:
   nats.conf: |
-    {{- with $.Values.config }}
-    {{- include "nats.formatConfig" (include "nats.loadMergePatch" (dict "file" "nats-config.yaml" "ctx" $ "merge" .merge "patch" .patch) | fromYaml) | nindent 4 }}
-    {{- end }}
+    {{- include "nats.formatConfig" .config | nindent 4 }}

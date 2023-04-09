@@ -7,11 +7,34 @@ metadata:
     checksum/config: {{ .configChecksum }}
     {{- end }}
 spec:
+  {{- if .Values.reloader.enabled }}
+  shareProcessNamespace: true
+  {{- end }}
+
+  containers:
+  # nats
+  {{- $nats := dict }}
+  {{- with .Values.nats }}
+  {{- $nats = include "nats.loadMergePatch" (dict "file" "nats-container.yaml" "ctx" $ "merge" .merge "patch" .patch) | fromYaml}}
+  - {{ toYaml $nats | nindent 4 }}
+  {{- end }}
+  # reloader
+  {{- with .Values.reloader }}
+  {{- if .enabled }}
+  - {{ include "nats.loadMergePatch" (dict "file" "reloader-container.yaml" "ctx" (merge (dict "natsVolumeMounts" $nats.volumeMounts) $) "merge" .merge "patch" .patch) | nindent 4 }}
+  {{- end }}
+  {{- end }}
+
   volumes:
   # nats config
   - name: config
     configMap:
       name: {{ include "nats.fullname" $ }}-config
+  # PID volume
+  {{- if .Values.reloader.enabled }}
+  - name: pid
+    emptyDir: {}
+  {{- end }}
   # TLS secrets
   {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" }}
   {{- $configProtocol := get $.Values.config.protocol $protocol }}
@@ -20,9 +43,4 @@ spec:
     secret:
       secretName: {{ $configProtocol.tls.secretName | quote }}
   {{- end }}
-  {{- end }}
-  containers:
-  # nats
-  {{- with .Values.nats }}
-  - {{ include "nats.loadMergePatch" (dict "file" "nats-container.yaml" "ctx" $ "merge" .merge "patch" .patch) | nindent 4 }}
   {{- end }}

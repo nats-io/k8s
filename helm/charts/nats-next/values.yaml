@@ -216,6 +216,29 @@ nats:
 
 
 ############################################################
+# stateful set -> pod template -> reloader container
+############################################################
+reloader:
+  enabled: true
+  image:
+    repository: natsio/nats-server-config-reloader
+    tag: 0.10.1
+    pullPolicy: IfNotPresent
+  # env var map, see nats.env for an example
+  env: {}
+
+  # all nats container volume mounts with the following prefixes
+  # will be mounted into the reloader container
+  natsVolumeMountPrefixes:
+  - /etc/
+
+  # merge or patch the container
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+  merge: {}
+  patch: []
+
+
+############################################################
 # stateful set -> volume claim templates -> jetstream pvc
 ############################################################
 jetstreamPvc:

@@ -72,6 +72,22 @@ Print the image
 {{- $image -}}
 {{- end }}
 
+{{/*
+translates env var map to list
+*/}}
+{{- define "nats.env" -}}
+{{- range $k, $v := . }}
+{{- if kindIs "string" $v }}
+- name: {{ $k | quote }}
+  value: {{ $v | quote }}
+{{- else if kindIs "map" $v }}
+- {{ merge (dict "name" $k) $v | toYaml | nindent 2 }}
+{{- else }}
+{{- fail (cat "env var" $k "must be string or map, got" (kindOf $v)) }}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{- /*
 nats.loadMergePatch
 input: map with 4 keys:
@@ -87,6 +103,33 @@ output: JSON encoded map with 1 key:
 {{- $doc = mergeOverwrite $doc (deepCopy .merge) -}}
 {{- get (include "jsonpatch" (dict "doc" $doc "patch" .patch) | fromJson ) "doc" | toYaml -}}
 {{- end }}
+
+
+{{- /*
+nats.reloaderConfig
+input: map with 2 keys:
+- config: interface{} nats config
+- dir: dir config file is in
+output: YAML list of reloader config files
+*/}}
+{{- define "nats.reloaderConfig" -}}
+  {{- $dir := trimSuffix "/" .dir -}}
+  {{- with .config -}}
+  {{- if kindIs "map" . -}}
+    {{- range $k, $v := . -}}
+      {{- if or (eq $k "cert_file") (eq $k "key_file") (eq $k "ca_file") }}
+- config
+- {{ $v }}
+      {{- else if hasSuffix "$include" $k }}
+- config
+- {{ clean (printf "%s/%s" $dir $v) }}
+      {{- else }}
+        {{- include "nats.reloaderConfig" (dict "config" $v "dir" $dir) }}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- end -}}
+{{- end -}}
 
 
 {{- /*

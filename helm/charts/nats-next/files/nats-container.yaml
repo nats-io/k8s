@@ -1,4 +1,5 @@
 {{- $ := . }}
+{{- $pidFile := ternary "/var/run/nats/nats.pid" "/var/run/nats.pid" .Values.reloader.enabled }}
 name: nats
 
 image: {{ include "nats.image" .Values.nats.image }}
@@ -13,24 +14,22 @@ ports:
 {{- end }}
 {{- end }}
 
-command:
-- "nats-server"
-- "--config"
-- "/etc/nats-config/nats.conf"
-{{- with .Values.nats.env }}
+args:
+- --config
+- /etc/nats-config/nats.conf
 
+{{- with .Values.nats.env }}
 env:
-{{- range $k, $v := . }}
-{{- if kindIs "string" $v }}
-- name: {{ $k | quote }}
-  value: {{ $v | quote }}
-{{- else if kindIs "map" $v }}
-- {{ merge (dict "name" $k) $v | toYaml | nindent 2 }}
-{{- else }}
-{{- fail (cat "env var" $k "must be string or map, got" (kindOf $v)) }}
+{{- include "nats.env" . }}
 {{- end }}
-{{- end }}
-{{- end }}
+
+lifecycle:
+  preStop:
+    exec:
+      # send the lame duck shutdown signal to trigger a graceful shutdown
+      command:
+      - nats-server
+      - -sl=ldm={{ $pidFile }}
 
 {{- with .Values.config.protocol.monitor }}
 {{- if .enabled }}
@@ -67,6 +66,10 @@ livenessProbe:
 volumeMounts:
 - name: config
   mountPath: /etc/nats-config
+{{- if .Values.reloader.enabled }}
+- name: pid
+  mountPath: /var/run/nats
+{{- end}}
 {{- if and .Values.config.jetstream.enabled .Values.config.jetstream.fileStorage.enabled .Values.jetstreamPvc.enabled }}
 {{- with .Values.config.jetstream.fileStorage }}
 - name: {{ include "nats.fullname" $ }}-js-pvc
