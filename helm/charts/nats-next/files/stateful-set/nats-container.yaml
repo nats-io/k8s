@@ -7,7 +7,7 @@ imagePullPolicy: {{ .Values.nats.image.pullPolicy }}
 
 ports:
 {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
-{{- $configProtocol := get $.Values.config.protocol $protocol }}
+{{- $configProtocol := get $.Values.config $protocol }}
 {{- $containerPort := get $.Values.nats.ports $protocol }}
 {{- if $configProtocol.enabled }}
 - {{ merge (dict "name" $protocol "containerPort" $configProtocol.port) $containerPort | toYaml | nindent 2 }}
@@ -31,7 +31,7 @@ lifecycle:
       - nats-server
       - -sl=ldm={{ $pidFile }}
 
-{{- with .Values.config.protocol.monitor }}
+{{- with .Values.config.monitor }}
 {{- if .enabled }}
 startupProbe:
   httpGet:
@@ -70,20 +70,22 @@ volumeMounts:
 - name: pid
   mountPath: /var/run/nats
 {{- end}}
-{{- if and .Values.config.jetstream.enabled .Values.config.jetstream.fileStorage.enabled .Values.jetstreamPvc.enabled }}
-{{- with .Values.config.jetstream.fileStorage }}
+{{- with .Values.config.jetstream }}
+{{- if and .enabled .fileStorage.enabled .fileStorage.pvc.enabled }}
+{{- with .fileStorage }}
 - name: {{ include "nats.fullname" $ }}-js-pvc
   mountPath: {{ printf "%s/jetstream" .dir | quote }}
 {{- end }}
 {{- end }}
-{{- with .Values.resolverPvc }}
-{{- if .enabled }}
+{{- end }}
+{{- with .Values.config.resolver }}
+{{- if and .enabled .pvc.enabled }}
 - name: {{ include "nats.fullname" $ }}-jwt-pvc
   mountPath: {{ .dir | quote }}
 {{- end }}
 {{- end }}
 {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" }}
-{{- $configProtocol := get $.Values.config.protocol $protocol }}
+{{- $configProtocol := get $.Values.config $protocol }}
 {{- if and $configProtocol.enabled $configProtocol.tls.enabled $configProtocol.tls.secretName }}
 - name: {{ $protocol }}-tls
   mountPath: {{ $configProtocol.tls.dir | quote }}

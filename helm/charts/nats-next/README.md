@@ -52,8 +52,8 @@ statefulSet:
   replicas: 3
 
 config:
-  merge:
-    cluster:
+  cluster:
+    merge:
       authorization:
         user: foo
         password:

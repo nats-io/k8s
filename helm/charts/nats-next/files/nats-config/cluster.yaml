@@ -1,0 +1,17 @@
+{{- $ := . }}
+{{- $name := include "nats.fullname" $ }}
+{{- with .Values.config.cluster }}
+name: {{ $name }}
+port: {{ .port }}
+no_advertise: true
+routes:
+{{- range $i, $_ := until ($.Values.statefulSet.replicas | int) }}
+- {{ printf "nats://%s-%d.%s-headless:6222" $name $i $name }}
+{{- end }}
+
+{{- with .tls }}
+{{- if .enabled }}
+tls: {{ include "nats.loadMergePatch" (merge (dict "file" "nats-config/tls.yaml" "ctx" (merge (dict "tls" .) $)) .) | nindent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -10,108 +10,175 @@ config:
       size: 1Gi
 
     fileStorage:
-      size: 10Gi
       enabled: true
+      size: 10Gi
       # disk will be mounted to <dir>/jetstream
       dir: /data
 
-  protocol:
-    nats:
+      # stateful set -> volume claim templates -> jetstream pvc
+      # size is inferred from config.jetstream.filestorage.size
+      pvc:
+        enabled: true
+        storageClassName:
+        
+        # merge or patch the jetstream pvc
+        # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core
+        merge: {}
+        patch: []
+    
+    # merge or patch the jetstream config
+    # https://docs.nats.io/running-a-nats-service/configuration#jetstream
+    merge: {}
+    patch: []
+
+  nats:
+    enabled: true
+    port: 4222
+    tls:
+      enabled: false
+      # set secretName in order to mount a secret to dir
+      secretName:
+      dir: /etc/nats-certs/nats
+      cert: tls.cert
+      key: tls.key
+      ca:
+      # merge or patch the tls config
+      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+      merge: {}
+      patch: []
+
+  leafnodes:
+    enabled: false
+    port: 7422
+    tls:
+      enabled: false
+      # set secretName in order to mount a secret to dir
+      secretName:
+      dir: /etc/nats-certs/leafnodes
+      cert: tls.cert
+      key: tls.key
+      ca:
+      # merge or patch the tls config
+      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+      merge: {}
+      patch: []
+
+    # merge or patch the leafnodes config
+    # https://docs.nats.io/running-a-nats-service/configuration/leafnodes/leafnode_conf
+    merge: {}
+    patch: []
+      
+  websocket:
+    enabled: false
+    port: 8080
+    tls:
+      enabled: false
+      # set secretName in order to mount a secret to dir
+      secretName:
+      dir: /etc/nats-certs/websocket
+      cert: tls.cert
+      key: tls.key
+      ca:
+      # merge or patch the tls config
+      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+      merge: {}
+      patch: []
+
+    # merge or patch the websocket config
+    # https://docs.nats.io/running-a-nats-service/configuration/websocket/websocket_conf
+    merge: {}
+    patch: []
+
+  mqtt:
+    enabled: false
+    port: 1883
+    tls:
+      enabled: false
+      # set secretName in order to mount a secret to dir
+      secretName:
+      dir: /etc/nats-certs/mqtt
+      cert: tls.cert
+      key: tls.key
+      ca:
+      # merge or patch the tls config
+      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+      merge: {}
+      patch: []
+
+    # merge or patch the mqtt config
+    # https://docs.nats.io/running-a-nats-service/configuration/mqtt/mqtt_config
+    merge: {}
+    patch: []
+
+  cluster:
+    enabled: true
+    port: 6222
+    tls:
+      enabled: false
+      # set secretName in order to mount a secret to dir
+      secretName:
+      dir: /etc/nats-certs/cluster
+      cert: tls.cert
+      key: tls.key
+      ca:
+      # merge or patch the tls config
+      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+      merge: {}
+      patch: []
+
+    # merge or patch the cluster config
+    # https://docs.nats.io/running-a-nats-service/configuration/clustering/cluster_config
+    merge: {}
+    patch: []
+
+  gateway:
+    enabled: false
+    port: 7222
+    tls:
+      enabled: false
+      # set secretName in order to mount a secret to dir
+      secretName:
+      dir: /etc/nats-certs/gateway
+      cert: tls.cert
+      key: tls.key
+      ca:
+      # merge or patch the tls config
+      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+      merge: {}
+      patch: []
+
+    # merge or patch the gateway config
+    # https://docs.nats.io/running-a-nats-service/configuration/gateways/gateway#gateway-configuration-block
+    merge: {}
+    patch: []
+
+  monitor:
+    enabled: true
+    port: 8222
+
+  profiling:
+    enabled: false
+    port: 65432
+
+  resolver:
+    enabled: false
+    dir: /data/resolver
+
+    # stateful set -> volume claim templates -> resolver pvc
+    pvc:
       enabled: true
-      port: 4222
-      tls:
-        enabled: false
-        # set secretName in order to mount a secret to dir
-        secretName:
-        dir: /etc/nats-certs/nats
-        cert: tls.cert
-        key: tls.key
-        ca:
-        # merge or patch the tls config
-        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-        merge: {}
-        patch: []
-    leafnodes:
-      enabled: false
-      port: 7422
-      tls:
-        enabled: false
-        # set secretName in order to mount a secret to dir
-        secretName:
-        dir: /etc/nats-certs/leafnodes
-        cert: tls.cert
-        key: tls.key
-        ca:
-        # merge or patch the tls config
-        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-        merge: {}
-        patch: []
-    websocket:
-      enabled: false
-      port: 8080
-      tls:
-        enabled: false
-        # set secretName in order to mount a secret to dir
-        secretName:
-        dir: /etc/nats-certs/websocket
-        cert: tls.cert
-        key: tls.key
-        ca:
-        # merge or patch the tls config
-        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-        merge: {}
-        patch: []
-    mqtt:
-      enabled: false
-      port: 1883
-      tls:
-        enabled: false
-        # set secretName in order to mount a secret to dir
-        secretName:
-        dir: /etc/nats-certs/mqtt
-        cert: tls.cert
-        key: tls.key
-        ca:
-        # merge or patch the tls config
-        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-        merge: {}
-        patch: []
-    cluster:
-      enabled: true
-      port: 6222
-      tls:
-        enabled: false
-        # set secretName in order to mount a secret to dir
-        secretName:
-        dir: /etc/nats-certs/cluster
-        cert: tls.cert
-        key: tls.key
-        ca:
-        # merge or patch the tls config
-        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-        merge: {}
-        patch: []
-    gateway:
-      enabled: false
-      port: 7222
-      tls:
-        enabled: false
-        # set secretName in order to mount a secret to dir
-        secretName:
-        dir: /etc/nats-certs/gateway
-        cert: tls.cert
-        key: tls.key
-        ca:
-        # merge or patch the tls config
-        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-        merge: {}
-        patch: []
-    monitor:
-      enabled: true
-      port: 8222
-    profiling:
-      enabled: false
-      port: 65432
+      size: 1Gi
+      storageClassName:
+
+      # merge or patch the pvc
+      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
+      merge: {}
+      patch: []
+
+    # merge or patch the resolver
+    # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/auth_intro/jwt/resolver
+    merge: {}
+    patch: []
 
   # merge or patch the nats config
   # https://docs.nats.io/running-a-nats-service/configuration
@@ -185,7 +252,7 @@ nats:
     # registry: docker.io
 
   # container port options
-  # port must be enabled in the config.protocol section also
+  # must be enabled in the config section also
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#containerport-v1-core
   ports:
     nats: {}
@@ -239,40 +306,38 @@ reloader:
 
 
 ############################################################
-# stateful set -> volume claim templates -> jetstream pvc
+# stateful set -> pod template -> prometheus exporter container
 ############################################################
-jetstreamPvc:
-  # 2 config setings must also be enabled
-  #  config.jetstream.enabled
-  #  config.jetstream.fileStorage.enabled
-  enabled: true
-  storageClassName:
-
-  # size is inferred from
-  #   config.jetstream.fileStorage.size
-  # dir is inferred from
-  #   config.jetstream.fileStorage.dir
-  
-  # merge or patch the pvc
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
-  merge: {}
-  patch: []
-
-
-############################################################
-# stateful set -> volume claim templates -> resolver pvc
-############################################################
-resolverPvc:
+# config.monitor must be enabled
+promExporter:
   enabled: false
-  size: 1Gi
-  # mount the pvc and set NATS config `resolver.dir`
-  dir: /data/resolver
-  storageClassName:
+  image:
+    repository: natsio/prometheus-nats-exporter
+    tag: 0.10.1
+    pullPolicy: IfNotPresent
+    # registry: docker.io
 
-  # merge or patch the pvc
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
+  port: 7777
+  # env var map, see nats.env for an example
+  env: {}
+  # all nats container volume mounts with the following prefixes
+  # will be mounted into the reloader container
+  natsVolumeMountPrefixes:
+  - /etc/
+  
+
+  # merge or patch the container
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
   merge: {}
   patch: []
+
+  podMonitor:
+    enabled: false
+
+    # merge or patch the pod monitor
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+    merge: {}
+    patch: []
 
 
 ############################################################
@@ -293,7 +358,7 @@ service:
 
   # service port options
   # additional boolean field enable to control whether port is exposed in the service
-  # port must be enabled in the config.protocol section also
+  # must be enabled in the config section also
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceport-v1-core
   ports:
     nats:

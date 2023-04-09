@@ -1,14 +1,13 @@
-
 {{- $values := get (include "tplYaml" (dict "doc" .Values "ctx" $) | fromJson) "doc" }}
 {{- $_ := set $ "Values" $values -}}
 ---
 # config-map.yaml
 {{- with .Values.config }}
-{{- $config := include "nats.loadMergePatch" (dict "file" "nats-config.yaml" "ctx" $ "merge" .merge "patch" .patch) | fromYaml }}
+{{- $config := include "nats.loadMergePatch" (merge (dict "file" "nats-config/nats-config.yaml" "ctx" $) .) | fromYaml }}
 {{- $_ := set $ "config" $config -}}
 {{- end }}
 {{- with .Values.configMap }}
-{{- $configMap := include "nats.loadMergePatch" (dict "file" "config-map.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
+{{- $configMap := include "nats.loadMergePatch" (merge (dict "file" "config-map.yaml" "ctx" $) .) }}
 {{ $configMap }}
 {{- $_ := set $ "configChecksum" (sha256sum $configMap) -}}
 {{- end }}
@@ -16,19 +15,29 @@
 ---
 # stateful-set.yaml
 {{- with .Values.statefulSet }}
-{{ include "nats.loadMergePatch" (dict "file" "stateful-set.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
+{{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/stateful-set.yaml" "ctx" $) .) }}
 {{- end }}
 
 ---
 # headless-service.yaml
 {{- with .Values.headlessService }}
-{{ include "nats.loadMergePatch" (dict "file" "headless-service.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
+{{ include "nats.loadMergePatch" (merge (dict "file" "headless-service.yaml" "ctx" $) .) }}
 {{- end }}
 
 {{- with .Values.service }}
 {{- if .enabled }}
 ---
-#service
-{{ include "nats.loadMergePatch" (dict "file" "service.yaml" "ctx" $ "merge" .merge "patch" .patch) }}
+# service.yaml
+{{ include "nats.loadMergePatch" (merge (dict "file" "service.yaml" "ctx" $) .) }}
+{{- end }}
+{{- end }}
+
+{{- with .Values.promExporter }}
+{{- if and .enabled .podMonitor.enabled }}
+{{- with .podMonitor }}
+---
+# prom-exporter-pod-monitor.yaml
+{{ include "nats.loadMergePatch" (merge (dict "file" "prom-exporter-pod-monitor.yaml" "ctx" $) .) }}
+{{- end }}
 {{- end }}
 {{- end }}

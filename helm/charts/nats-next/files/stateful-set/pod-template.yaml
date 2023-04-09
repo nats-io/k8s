@@ -15,13 +15,18 @@ spec:
   # nats
   {{- $nats := dict }}
   {{- with .Values.nats }}
-  {{- $nats = include "nats.loadMergePatch" (dict "file" "nats-container.yaml" "ctx" $ "merge" .merge "patch" .patch) | fromYaml}}
+  {{- $nats = include "nats.loadMergePatch" (merge (dict "file" "stateful-set/nats-container.yaml" "ctx" $) .) | fromYaml}}
   - {{ toYaml $nats | nindent 4 }}
   {{- end }}
   # reloader
   {{- with .Values.reloader }}
   {{- if .enabled }}
-  - {{ include "nats.loadMergePatch" (dict "file" "reloader-container.yaml" "ctx" (merge (dict "natsVolumeMounts" $nats.volumeMounts) $) "merge" .merge "patch" .patch) | nindent 4 }}
+  - {{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/reloader-container.yaml" "ctx" (merge (dict "natsVolumeMounts" $nats.volumeMounts) $)) .) | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  {{- with .Values.promExporter }}
+  {{- if .enabled }}
+  - {{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/prom-exporter-container.yaml" "ctx" $) .) | nindent 4 }}
   {{- end }}
   {{- end }}
 
@@ -37,7 +42,7 @@ spec:
   {{- end }}
   # TLS secrets
   {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" }}
-  {{- $configProtocol := get $.Values.config.protocol $protocol }}
+  {{- $configProtocol := get $.Values.config $protocol }}
   {{- if and $configProtocol.enabled $configProtocol.tls.enabled $configProtocol.tls.secretName }}
   - name: {{ $protocol }}-tls
     secret:
