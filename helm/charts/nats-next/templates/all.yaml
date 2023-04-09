@@ -41,3 +41,23 @@
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{- with .Values.natsBox }}
+{{- if .enabled }}
+{{- with .deployment}}
+---
+# nats-box/deployment.yaml
+{{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/deployment.yaml" "ctx" $) .) }}
+{{- end }}
+{{- with .contextSecret}}
+---
+# nats-box/context-secret.yaml
+{{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/context-secret.yaml" "ctx" $) .) }}
+{{- end }}
+{{- with .deployment}}
+---
+# nats-box/contents-secret.yaml
+{{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/contents-secret.yaml" "ctx" $) .) }}
+{{- end }}
+{{- end }}
+{{- end }}

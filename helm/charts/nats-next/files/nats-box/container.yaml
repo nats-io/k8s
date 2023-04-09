@@ -1,0 +1,45 @@
+{{- $ := . }}
+name: nats-box
+
+image: {{ include "nats.image" .Values.natsBox.container.image }}
+imagePullPolicy: {{ .Values.natsBox.container.image.pullPolicy }}
+
+{{- with .Values.natsBox.container.env }}
+env:
+{{- include "nats.env" . }}
+{{- end }}
+
+command:
+- sh
+args:
+- -c
+- |
+  mkdir -p "$XDG_CONFIG_HOME/nats"
+  cd "$XDG_CONFIG_HOME/nats"
+  if ! [ -s context ]; then
+    ln -s /etc/nats-context context
+  fi
+  if ! [ -f context.txt ]; then
+    echo -n "default" > context.txt
+  fi
+  stop_signal () {
+      exit 0
+  }
+  trap stop_signal SIGINT SIGTERM
+  while true; do
+    sleep 0.1
+  done
+volumeMounts:
+- name: context
+  mountPath: /etc/nats-context
+- name: contents
+  mountPath: /etc/nats-contents
+{{- range $ctxKey, $ctxVal := .Values.natsBox.context }}
+{{- range $secretKey, $secretVal := dict "creds" "nats-creds" "nkey" "nats-nkeys" "tls" "nats-certs" }}
+{{- $secret := get $ctxVal $secretKey }}
+{{- if $secret.secretName }}
+- name: ctx-{{ $ctxKey }}-{{ $secretKey }}
+  mountPath: /etc/{{ $secretVal }}/{{ $ctxKey }}
+{{- end }}
+{{- end }}
+{{- end }}

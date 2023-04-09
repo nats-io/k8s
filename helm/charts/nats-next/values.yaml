@@ -36,7 +36,7 @@ config:
     port: 4222
     tls:
       enabled: false
-      # set secretName in order to mount a secret to dir
+      # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/nats
       cert: tls.cert
@@ -52,7 +52,7 @@ config:
     port: 7422
     tls:
       enabled: false
-      # set secretName in order to mount a secret to dir
+      # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/leafnodes
       cert: tls.cert
@@ -73,7 +73,7 @@ config:
     port: 8080
     tls:
       enabled: false
-      # set secretName in order to mount a secret to dir
+      # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/websocket
       cert: tls.cert
@@ -94,7 +94,7 @@ config:
     port: 1883
     tls:
       enabled: false
-      # set secretName in order to mount a secret to dir
+      # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/mqtt
       cert: tls.cert
@@ -115,7 +115,7 @@ config:
     port: 6222
     tls:
       enabled: false
-      # set secretName in order to mount a secret to dir
+      # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/cluster
       cert: tls.cert
@@ -136,7 +136,7 @@ config:
     port: 7222
     tls:
       enabled: false
-      # set secretName in order to mount a secret to dir
+      # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/gateway
       cert: tls.cert
@@ -291,6 +291,8 @@ reloader:
     repository: natsio/nats-server-config-reloader
     tag: 0.10.1
     pullPolicy: IfNotPresent
+    # registry: docker.io
+
   # env var map, see nats.env for an example
   env: {}
 
@@ -306,7 +308,7 @@ reloader:
 
 
 ############################################################
-# stateful set -> pod template -> prometheus exporter container
+# stateful set -> pod template -> prom-exporter container
 ############################################################
 # config.monitor must be enabled
 promExporter:
@@ -324,7 +326,6 @@ promExporter:
   # will be mounted into the reloader container
   natsVolumeMountPrefixes:
   - /etc/
-  
 
   # merge or patch the container
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
@@ -392,3 +393,80 @@ headlessService:
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core
   merge: {}
   patch: []
+
+
+############################################################
+# nats-box
+############################################################
+natsBox:
+  enabled: true
+
+  context:
+    default:
+      creds:
+        # set contents in order to create a secret with the creds file contents
+        contents:
+        # set secretName in order to mount an existing secret to to /etc/nats-creds/<context-name>
+        secretName:
+        key: nats.creds
+      nkey:
+        # set contents in order to create a secret with the nkey file contents
+        contents:
+        # set secretName in order to mount an existing secret to /etc/nats-nkeys/<context-name>
+        secretName:
+        key: nats.nk
+      tls:
+        # set secretName in order to mount an existing secret to /etc/nats-certs/<context-name>
+        secretName:
+        cert: tls.cert
+        key: tls.key
+        ca:
+
+      # merge or patch the context
+      # https://docs.nats.io/using-nats/nats-tools/nats_cli#nats-contexts
+      merge: {}
+      patch: []
+
+  # deployment -> pod template -> nats-box container
+  container:
+    image:
+      repository: natsio/nats-box
+      tag: 0.13.5
+      pullPolicy: IfNotPresent
+      # registry: docker.io
+
+    # env var map, see nats.env for an example
+    env: {}
+
+    # merge or patch the container
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+    merge: {}
+    patch: []
+
+  # deployment -> pod template
+  podTemplate:
+    # merge or patch the pod template
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
+    merge: {}
+    patch: []
+
+  # deployment
+  deployment:
+    # merge or patch the deployment
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#deployment-v1-apps
+    merge: {}
+    patch: []
+
+  # context secret
+  contextSecret:
+    # merge or patch the context secret
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#secret-v1-core
+    merge: {}
+    patch: []
+
+  # contents secret
+  contentsSecret:
+    # merge or patch the contents secret
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#secret-v1-core
+    merge: {}
+    patch: []

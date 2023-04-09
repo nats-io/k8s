@@ -1,0 +1,44 @@
+{{- $ := . }}
+{{- $contextName := .contextName }}
+{{- $caSet := false }}
+
+# url
+{{- if .Values.service.enabled }}
+url: nats://{{ include "nats.fullname" $ }}
+{{- else }}
+url: nats://{{ include "nats.fullname" $ }}-headless
+{{- end }}
+
+{{- with .context }}
+
+# creds
+{{- if .creds.contents }}
+creds: /etc/nats-contents/{{ $contextName }}.creds
+{{- else if .creds.secretName }}
+creds: /etc/nats-creds/{{ $contextName }}/{{ .creds.key }}
+{{- end }}
+
+# nkey
+{{- if .nkey.contents }}
+nkey: /etc/nats-contents/{{ $contextName }}.nk
+{{- else if .nkey.secretName }}
+nkey: /etc/nats-nkey/{{ $contextName }}/{{ .nkey.key }}
+{{- end }}
+
+# tls
+{{- with .tls }}
+{{- if .secretName }}
+{{- if .cert }}
+cert: /etc/nats-certs/{{ $contextName }}/{{ .cert }}
+{{- end }}
+{{- if .key }}
+key: /etc/nats-certs/{{ $contextName }}/{{ .key }}
+{{- end }}
+{{- if .ca }}
+{{- $caSet = true }}
+ca: /etc/nats-certs/{{ $contextName }}/{{ .ca }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- end }}

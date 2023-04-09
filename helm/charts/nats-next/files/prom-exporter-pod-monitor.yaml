@@ -4,9 +4,11 @@ metadata:
   name: {{ include "nats.fullname" $ }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nats
 spec:
   selector:
     matchLabels:
       {{- include "nats.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: nats
   podMetricsEndpoints:
   - port: prom-metrics

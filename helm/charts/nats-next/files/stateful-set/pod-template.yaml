@@ -1,7 +1,8 @@
 {{- $ := . }}
 metadata:
   labels:
-    {{- include "nats.labels" . | nindent 8 }}
+    {{- include "nats.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nats
   annotations:
     {{- if .Values.podTemplate.configChecksumAnnotation }}
     checksum/config: {{ .configChecksum }}
@@ -15,7 +16,7 @@ spec:
   # nats
   {{- $nats := dict }}
   {{- with .Values.nats }}
-  {{- $nats = include "nats.loadMergePatch" (merge (dict "file" "stateful-set/nats-container.yaml" "ctx" $) .) | fromYaml}}
+  {{- $nats = include "nats.loadMergePatch" (merge (dict "file" "stateful-set/nats-container.yaml" "ctx" $) .) | fromYaml }}
   - {{ toYaml $nats | nindent 4 }}
   {{- end }}
   # reloader

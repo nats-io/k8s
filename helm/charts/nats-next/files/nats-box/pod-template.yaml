@@ -1,0 +1,31 @@
+{{- $ := . }}
+metadata:
+  labels:
+    {{- include "nats.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nats-box
+spec:
+  containers:
+  {{- with .Values.natsBox.container }}
+  - {{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/container.yaml" "ctx" $) .) | nindent 4 }}
+  {{- end }}
+
+  volumes:
+  # context secret
+  - name: context
+    secret:
+      secretName: {{ include "nats.fullname" $ }}-box-context
+  # contents secret
+  - name: contents
+    secret:
+      secretName: {{ include "nats.fullname" $ }}-box-contents
+  # context secrets
+  {{- range $ctxKey, $ctxVal := .Values.natsBox.context }}
+  {{- range $secretKey, $secretVal := dict "creds" "nats-creds" "nkey" "nats-nkeys" "tls" "nats-certs" }}
+  {{- $secret := get $ctxVal $secretKey }}
+  {{- if $secret.secretName }}
+  - name: ctx-{{ $ctxKey }}-{{ $secretKey }}
+    secret:
+      secretName: {{ $secret.secretName | quote }}
+  {{- end }}
+  {{- end }}
+  {{- end }}

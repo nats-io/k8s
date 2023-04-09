@@ -5,6 +5,7 @@ metadata:
   name: {{ include "nats.fullname" $ }}-config
   labels:
     {{- include "nats.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nats
 data:
   nats.conf: |
     {{- include "nats.formatConfig" .config | nindent 4 }}

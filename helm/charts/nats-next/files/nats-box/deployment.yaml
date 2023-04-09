@@ -1,0 +1,18 @@
+{{- $ := . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nats.fullname" $ }}-box
+  labels:
+    {{- include "nats.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nats-box
+spec:
+  selector:
+    matchLabels:
+      {{- include "nats.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: nats-box
+  replicas: 1
+  template:
+    {{- with .Values.natsBox.podTemplate }}
+    {{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/pod-template.yaml" "ctx" $) .) | nindent 4 }}
+    {{- end }}
