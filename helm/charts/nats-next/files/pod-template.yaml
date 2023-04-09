@@ -8,10 +8,21 @@ metadata:
     {{- end }}
 spec:
   volumes:
+  # nats config
   - name: config
     configMap:
       name: {{ include "nats.fullname" $ }}-config
+  # TLS secrets
+  {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" }}
+  {{- $configProtocol := get $.Values.config.protocol $protocol }}
+  {{- if and $configProtocol.enabled $configProtocol.tls.enabled $configProtocol.tls.secretName }}
+  - name: {{ $protocol }}-tls
+    secret:
+      secretName: {{ $configProtocol.tls.secretName | quote }}
+  {{- end }}
+  {{- end }}
   containers:
+  # nats
   {{- with .Values.nats }}
   - {{ include "nats.loadMergePatch" (dict "file" "nats-container.yaml" "ctx" $ "merge" .merge "patch" .patch) | nindent 4 }}
   {{- end }}

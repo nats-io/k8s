@@ -19,21 +19,93 @@ config:
     nats:
       enabled: true
       port: 4222
+      tls:
+        enabled: false
+        # set secretName in order to mount a secret to dir
+        secretName:
+        dir: /etc/nats-certs/nats
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
     leafnodes:
       enabled: false
       port: 7422
+      tls:
+        enabled: false
+        # set secretName in order to mount a secret to dir
+        secretName:
+        dir: /etc/nats-certs/leafnodes
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
     websocket:
       enabled: false
       port: 8080
+      tls:
+        enabled: false
+        # set secretName in order to mount a secret to dir
+        secretName:
+        dir: /etc/nats-certs/websocket
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
     mqtt:
       enabled: false
       port: 1883
+      tls:
+        enabled: false
+        # set secretName in order to mount a secret to dir
+        secretName:
+        dir: /etc/nats-certs/mqtt
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
     cluster:
       enabled: true
       port: 6222
+      tls:
+        enabled: false
+        # set secretName in order to mount a secret to dir
+        secretName:
+        dir: /etc/nats-certs/cluster
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
     gateway:
       enabled: false
       port: 7222
+      tls:
+        enabled: false
+        # set secretName in order to mount a secret to dir
+        secretName:
+        dir: /etc/nats-certs/gateway
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
     monitor:
       enabled: true
       port: 8222

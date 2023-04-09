@@ -1,0 +1,9 @@
+{{- with .tls }}
+{{- $dir := trimSuffix "/" .dir }}
+cert_file: {{ printf "%s/%s" $dir .cert }}
+key_file: {{ printf "%s/%s" $dir .key }}
+{{- if .ca }}
+ca_file: {{ printf "%s/%s" $dir .ca }}
+verify: true
+{{- end }}
+{{- end }}
