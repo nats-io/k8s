@@ -1,4 +1,4 @@
 # https://github.com/helm/chart-releaser#config-file
-pages-branch: main
+pages-branch: gh-pages
 pages-index-path: helm/charts/index.yaml
 skip-existing: true
