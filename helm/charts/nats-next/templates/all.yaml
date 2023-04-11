@@ -2,33 +2,33 @@
 {{- $_ := set $ "Values" $values -}}
 ---
 # config-map.yaml
-{{- with .Values.nats.config }}
-{{- $config := include "nats.loadMergePatch" (merge (dict "file" "nats/config/config.yaml" "ctx" $) .) | fromYaml }}
+{{- with .Values.config }}
+{{- $config := include "nats.loadMergePatch" (merge (dict "file" "config/config.yaml" "ctx" $) .) | fromYaml }}
 {{- $_ := set $ "config" $config -}}
 {{- end }}
-{{- with .Values.nats.configMap }}
-{{- $configMap := include "nats.loadMergePatch" (merge (dict "file" "nats/config-map.yaml" "ctx" $) .) }}
+{{- with .Values.configMap }}
+{{- $configMap := include "nats.loadMergePatch" (merge (dict "file" "config-map.yaml" "ctx" $) .) }}
 {{ $configMap }}
 {{- $_ := set $ "configChecksum" (sha256sum $configMap) -}}
 {{- end }}
 
 ---
 # stateful-set.yaml
-{{- with .Values.nats.statefulSet }}
-{{ include "nats.loadMergePatch" (merge (dict "file" "nats/stateful-set/stateful-set.yaml" "ctx" $) .) }}
+{{- with .Values.statefulSet }}
+{{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/stateful-set.yaml" "ctx" $) .) }}
 {{- end }}
 
 ---
 # headless-service.yaml
-{{- with .Values.nats.headlessService }}
-{{ include "nats.loadMergePatch" (merge (dict "file" "nats/headless-service.yaml" "ctx" $) .) }}
+{{- with .Values.headlessService }}
+{{ include "nats.loadMergePatch" (merge (dict "file" "headless-service.yaml" "ctx" $) .) }}
 {{- end }}
 
-{{- with .Values.nats.service }}
+{{- with .Values.service }}
 {{- if .enabled }}
 ---
 # service.yaml
-{{ include "nats.loadMergePatch" (merge (dict "file" "nats/service.yaml" "ctx" $) .) }}
+{{ include "nats.loadMergePatch" (merge (dict "file" "service.yaml" "ctx" $) .) }}
 {{- end }}
 {{- end }}
 
@@ -37,7 +37,7 @@
 {{- with .podMonitor }}
 ---
 # prom-exporter-pod-monitor.yaml
-{{ include "nats.loadMergePatch" (merge (dict "file" "nats/prom-exporter-pod-monitor.yaml" "ctx" $) .) }}
+{{ include "nats.loadMergePatch" (merge (dict "file" "prom-exporter-pod-monitor.yaml" "ctx" $) .) }}
 {{- end }}
 {{- end }}
 {{- end }}

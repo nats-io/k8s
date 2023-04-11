@@ -1,5 +1,5 @@
 {{- $ := . }}
-{{- with .Values.nats.config.jetstream }}
+{{- with .Values.config.jetstream }}
 {{- with .memStorage }}
 {{- if .enabled }}
 {{- with .size }}

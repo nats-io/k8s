@@ -11,25 +11,25 @@ spec:
     matchLabels:
       {{- include "nats.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: nats
-  replicas: {{ .Values.nats.replicas }}
+  replicas: {{ .Values.replicas }}
   serviceName: {{ include "nats.fullname" $ }}-headless
   podManagementPolicy: Parallel
   template:
-    {{- with .Values.nats.podTemplate }}
-    {{ include "nats.loadMergePatch" (merge (dict "file" "nats/stateful-set/pod-template.yaml" "ctx" $) .) | nindent 4 }}
+    {{- with .Values.podTemplate }}
+    {{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/pod-template.yaml" "ctx" $) .) | nindent 4 }}
     {{- end }}
   volumeClaimTemplates:
-  {{- with .Values.nats.config.jetstream }}
+  {{- with .Values.config.jetstream }}
   {{- if and .enabled .fileStorage.enabled .fileStorage.pvc.enabled }}
   {{- with .fileStorage.pvc }}
-  - {{ include "nats.loadMergePatch" (merge (dict "file" "nats/stateful-set/jetstream-pvc.yaml" "ctx" $) .) | nindent 4 }}
+  - {{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/jetstream-pvc.yaml" "ctx" $) .) | nindent 4 }}
   {{- end }}
   {{- end }}
     {{- end }}
-  {{- with .Values.nats.config.resolver }}
+  {{- with .Values.config.resolver }}
   {{- if and .enabled .pvc.enabled }}
   {{- with .pvc }}
-  - {{ include "nats.loadMergePatch" (merge (dict "file" "nats/stateful-set/resolver-pvc.yaml" "ctx" $) .) | nindent 4 }}
+  - {{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/resolver-pvc.yaml" "ctx" $) .) | nindent 4 }}
   {{- end }}
   {{- end }}
   {{- end }}

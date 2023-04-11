@@ -1,5 +1,5 @@
 {{- $ := . }}
-{{- with .Values.nats.config.resolver.pvc }}
+{{- with .Values.config.resolver.pvc }}
 metadata:
   name: {{ include "nats.fullname" $ }}-resolver-pvc
 spec:
