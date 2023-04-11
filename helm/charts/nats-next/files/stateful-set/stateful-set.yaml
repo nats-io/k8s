@@ -20,8 +20,8 @@ spec:
     {{- end }}
   volumeClaimTemplates:
   {{- with .Values.config.jetstream }}
-  {{- if and .enabled .fileStorage.enabled .fileStorage.pvc.enabled }}
-  {{- with .fileStorage.pvc }}
+  {{- if and .enabled .fileStore.enabled .fileStore.pvc.enabled }}
+  {{- with .fileStore.pvc }}
   - {{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/jetstream-pvc.yaml" "ctx" $) .) | nindent 4 }}
   {{- end }}
   {{- end }}

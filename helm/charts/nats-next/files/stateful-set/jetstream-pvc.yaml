@@ -1,5 +1,5 @@
 {{- $ := . }}
-{{- with .Values.config.jetstream.fileStorage.pvc }}
+{{- with .Values.config.jetstream.fileStore.pvc }}
 metadata:
   name: {{ include "nats.fullname" $ }}-js-pvc
 spec:
@@ -7,7 +7,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ $.Values.config.jetstream.fileStorage.size | quote }}
+      storage: {{ .size | quote }}
   {{- with .storageClassName }}
   storageClassName: {{ . | quote }}
   {{- end }}

@@ -14,28 +14,31 @@ config:
   jetstream:
     enabled: true
 
-    memStorage:
-      enabled: false
-      size: 1Gi
-
-    fileStorage:
+    fileStore:
       enabled: true
-      size: 10Gi
       # disk will be mounted to <dir>/jetstream
       dir: /data
 
       ############################################################
       # stateful set -> volume claim templates -> jetstream pvc
       ############################################################
-      # size is inferred from config.jetstream.filestorage.size
       pvc:
         enabled: true
+        size: 10Gi
         storageClassName:
         
         # merge or patch the jetstream pvc
         # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core
         merge: {}
         patch: []
+    
+      # defaults to use all of the available pvc size
+      maxSize:
+
+    memoryStore:
+      enabled: false
+      # ensure that container has a sufficient memory limit greater than maxSize
+      maxSize: 1Gi
     
     # merge or patch the jetstream config
     # https://docs.nats.io/running-a-nats-service/configuration#jetstream

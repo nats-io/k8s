@@ -71,8 +71,8 @@ volumeMounts:
   mountPath: /var/run/nats
 {{- end}}
 {{- with .Values.config.jetstream }}
-{{- if and .enabled .fileStorage.enabled .fileStorage.pvc.enabled }}
-{{- with .fileStorage }}
+{{- if and .enabled .fileStore.enabled .fileStore.pvc.enabled }}
+{{- with .fileStore }}
 - name: {{ include "nats.fullname" $ }}-js-pvc
   mountPath: {{ printf "%s/jetstream" .dir | quote }}
 {{- end }}
