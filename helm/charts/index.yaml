@@ -12,9 +12,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.21.0/nack-0.21.0.tgz
@@ -30,9 +30,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.20.4/nack-0.20.4.tgz
@@ -48,9 +48,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.20.3/nack-0.20.3.tgz
@@ -66,9 +66,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.20.2/nack-0.20.2.tgz
@@ -84,9 +84,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.20.1/nack-0.20.1.tgz
@@ -102,9 +102,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.20.0/nack-0.20.0.tgz
@@ -120,9 +120,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.19.0/nack-0.19.0.tgz
@@ -138,9 +138,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.18.0/nack-0.18.0.tgz
@@ -156,9 +156,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.17.5/nack-0.17.5.tgz
@@ -174,12 +174,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.17.4/nack-0.17.4.tgz
@@ -195,12 +192,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.14.2/nack-0.14.2.tgz
@@ -216,12 +210,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.14.1/nack-0.14.1.tgz
@@ -237,12 +228,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/nack-0.14.0/nack-0.14.0.tgz
@@ -258,12 +246,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.13.0/nack-0.13.0.tgz
@@ -279,12 +264,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.11.2/nack-0.11.2.tgz
@@ -300,12 +282,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.11.0/nack-0.11.0.tgz
@@ -321,12 +300,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/nack-0.9.2.tgz
@@ -342,12 +318,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.0/nack-0.9.0.tgz
@@ -363,12 +336,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.9/nack-0.8.9.tgz
@@ -384,12 +354,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.7/nack-0.8.7.tgz
@@ -405,10 +372,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: jaime@nats.io
-      name: Jaime Piña
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.0/nack-0.8.0.tgz
@@ -424,10 +390,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: jaime@nats.io
-      name: Jaime Piña
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.7.0/nack-0.7.0.tgz
@@ -443,10 +408,9 @@ entries:
     - jetstream
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: jaime@nats.io
-      name: Jaime Piña
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nack
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.6.0/nack-0.6.0.tgz
@@ -465,15 +429,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.12/nats-0.19.12.tgz
@@ -491,15 +449,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.11/nats-0.19.11.tgz
@@ -517,15 +469,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.10/nats-0.19.10.tgz
@@ -543,15 +489,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.9/nats-0.19.9.tgz
@@ -569,15 +509,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.8/nats-0.19.8.tgz
@@ -595,15 +529,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.7/nats-0.19.7.tgz
@@ -621,15 +549,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.6/nats-0.19.6.tgz
@@ -647,15 +569,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.5/nats-0.19.5.tgz
@@ -673,15 +589,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.4/nats-0.19.4.tgz
@@ -699,15 +609,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.3/nats-0.19.3.tgz
@@ -725,15 +629,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.2/nats-0.19.2.tgz
@@ -751,15 +649,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.1/nats-0.19.1.tgz
@@ -777,15 +669,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.19.0/nats-0.19.0.tgz
@@ -803,15 +689,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.18.3/nats-0.18.3.tgz
@@ -829,15 +709,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.18.2/nats-0.18.2.tgz
@@ -855,18 +729,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.18.1/nats-0.18.1.tgz
@@ -884,18 +749,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.18.0/nats-0.18.0.tgz
@@ -913,18 +769,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.17.5/nats-0.17.5.tgz
@@ -942,18 +789,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.17.4/nats-0.17.4.tgz
@@ -971,18 +809,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.17.3/nats-0.17.3.tgz
@@ -1000,18 +829,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.17.2/nats-0.17.2.tgz
@@ -1029,18 +849,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.17.1/nats-0.17.1.tgz
@@ -1058,18 +869,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.17.0/nats-0.17.0.tgz
@@ -1087,18 +889,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.16.0/nats-0.16.0.tgz
@@ -1116,18 +909,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.15.1/nats-0.15.1.tgz
@@ -1145,18 +929,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.15.0/nats-0.15.0.tgz
@@ -1174,18 +949,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.14.2/nats-0.14.2.tgz
@@ -1203,18 +969,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.14.1/nats-0.14.1.tgz
@@ -1232,18 +989,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - email: caleb@nats.io
-      name: Caleb Lloyd
-      url: https://github.com/caleblloyd
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.14.0/nats-0.14.0.tgz
@@ -1261,15 +1009,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/nats-0.13.2/nats-0.13.2.tgz
@@ -1287,15 +1029,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.13.1/nats-0.13.1.tgz
@@ -1313,15 +1049,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.13.0/nats-0.13.0.tgz
@@ -1339,15 +1069,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.12.1/nats-0.12.1.tgz
@@ -1365,15 +1089,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.12.0/nats-0.12.0.tgz
@@ -1391,15 +1109,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.11.2/nats-0.11.2.tgz
@@ -1417,15 +1129,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.11.0/nats-0.11.0.tgz
@@ -1443,15 +1149,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.10.0/nats-0.10.0.tgz
@@ -1469,15 +1169,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/nats-0.9.2.tgz
@@ -1495,15 +1189,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.0/nats-0.9.0.tgz
@@ -1521,15 +1209,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.9/nats-0.8.9.tgz
@@ -1547,15 +1229,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.8/nats-0.8.8.tgz
@@ -1573,15 +1249,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.7/nats-0.8.7.tgz
@@ -1599,15 +1269,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.6/nats-0.8.6.tgz
@@ -1625,12 +1289,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - email: jaime@nats.io
-      name: Jaime Piña
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.4/nats-0.8.4.tgz
@@ -1648,12 +1309,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - email: jaime@nats.io
-      name: Jaime Piña
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.2/nats-0.8.2.tgz
@@ -1671,12 +1329,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - email: jaime@nats.io
-      name: Jaime Piña
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.0/nats-0.8.0.tgz
@@ -1694,10 +1349,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.7.4/nats-0.7.5.tgz
@@ -1715,10 +1369,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.7.4/nats-0.7.4.tgz
@@ -1736,10 +1389,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.7.2/nats-0.7.2.tgz
@@ -1757,10 +1409,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.7.0/nats-0.7.0.tgz
@@ -1778,10 +1429,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.6.2/nats-0.6.2.tgz
@@ -1799,10 +1449,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.6.0/nats-0.6.0.tgz
@@ -1820,10 +1469,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.5.6/nats-0.5.6.tgz
@@ -1841,10 +1489,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.5.2/nats-0.5.2.tgz
@@ -1862,10 +1509,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.5.0/nats-0.5.0.tgz
@@ -1883,10 +1529,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.4.2/nats-0.4.2.tgz
@@ -1904,10 +1549,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.4.0/nats-0.4.0.tgz
@@ -1925,10 +1569,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.10/nats-0.3.10.tgz
@@ -1946,10 +1589,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.8/nats-0.3.8.tgz
@@ -1967,10 +1609,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.6/nats-0.3.6.tgz
@@ -1988,10 +1629,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.4/nats-0.3.4.tgz
@@ -2009,10 +1649,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.2/nats-0.3.2.tgz
@@ -2030,10 +1669,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.0/nats-0.3.0.tgz
@@ -2051,10 +1689,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.2.2/nats-0.2.2.tgz
@@ -2072,8 +1709,9 @@ entries:
     - messaging
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/nats-0.2.0.tgz
@@ -2093,10 +1731,9 @@ entries:
     - jwt
     - auth
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats-account-server
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.0/nats-account-server-0.8.0.tgz
@@ -2115,10 +1752,9 @@ entries:
     - jwt
     - auth
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats-account-server
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.6/nats-account-server-0.3.6.tgz
@@ -2137,10 +1773,9 @@ entries:
     - jwt
     - auth
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats-account-server
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.4/nats-account-server-0.3.4.tgz
@@ -2159,10 +1794,9 @@ entries:
     - jwt
     - auth
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats-account-server
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.2/nats-account-server-0.3.2.tgz
@@ -2181,10 +1815,9 @@ entries:
     - jwt
     - auth
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats-account-server
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.0/nats-account-server-0.3.0.tgz
@@ -2266,11 +1899,9 @@ entries:
     - operator
     - pubsub
     maintainers:
-    - email: richerlariviere@gmail.com
-      name: richerlariviere
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats-operator
     sources:
     - https://github.com/nats-io/nats-operator
@@ -2292,12 +1923,9 @@ entries:
     - operator
     - pubsub
     maintainers:
-    - email: richerlariviere@gmail.com
-      name: richerlariviere
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: jaime@nats.io
-      name: Jaime Piña
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: nats-operator
     sources:
     - https://github.com/nats-io/nats-operator
@@ -2321,17 +1949,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - name: rchenzheng
-      url: https://github.com/rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.13.0/stan-0.13.0.tgz
@@ -2352,17 +1972,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - name: rchenzheng
-      url: https://github.com/rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.11.2/stan-0.11.2.tgz
@@ -2383,17 +1995,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - name: rchenzheng
-      url: https://github.com/rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.11.0/stan-0.11.0.tgz
@@ -2414,17 +2018,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - name: rchenzheng
-      url: https://github.com/rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.10.0/stan-0.10.0.tgz
@@ -2445,17 +2041,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - name: rchenzheng
-      url: https://github.com/rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/stan-0.9.2.tgz
@@ -2476,17 +2064,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - name: rchenzheng
-      url: https://github.com/rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.0/stan-0.9.0.tgz
@@ -2507,15 +2087,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.9/stan-0.8.9.tgz
@@ -2536,17 +2110,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-      url: https://github.com/wallyqs
-    - email: colin@nats.io
-      name: Colin Sullivan
-      url: https://github.com/ColinSullivan1
-    - email: jaime@nats.io
-      name: Jaime Piña
-      url: https://github.com/nsurfer
-    - name: rchenzheng
-      url: https://github.com/rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.7/stan-0.8.7.tgz
@@ -2567,13 +2133,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - email: jaime@nats.io
-      name: Jaime Piña
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.8.0/stan-0.8.0.tgz
@@ -2594,13 +2156,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - email: jaime@nats.io
-      name: Jaime Piña
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.7.4/stan-0.7.4.tgz
@@ -2621,13 +2179,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - email: jaime@nats.io
-      name: Jaime Piña
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.7.2/stan-0.7.2.tgz
@@ -2648,13 +2202,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - email: jaime@nats.io
-      name: Jaime Piña
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.7.0/stan-0.7.0.tgz
@@ -2675,13 +2225,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - email: jaime@nats.io
-      name: Jaime Piña
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.6.2/stan-0.6.2.tgz
@@ -2702,13 +2248,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - email: jaime@nats.io
-      name: Jaime Piña
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.6.0/stan-0.6.0.tgz
@@ -2729,11 +2271,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.5.6/stan-0.5.6.tgz
@@ -2754,11 +2294,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.5.4/stan-0.5.4.tgz
@@ -2779,11 +2317,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.5.2/stan-0.5.2.tgz
@@ -2804,11 +2340,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.5.0/stan-0.5.0.tgz
@@ -2829,11 +2363,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.4.2/stan-0.4.2.tgz
@@ -2854,11 +2386,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.4.0/stan-0.4.0.tgz
@@ -2879,11 +2409,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.10/stan-0.3.10.tgz
@@ -2904,11 +2432,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.6/stan-0.3.6.tgz
@@ -2929,11 +2455,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.2/stan-0.3.2.tgz
@@ -2954,11 +2478,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.3.0/stan-0.3.0.tgz
@@ -2979,11 +2501,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - email: colin@nats.io
-      name: Colin Sullivan
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.2.2/stan-0.2.2.tgz
@@ -3004,9 +2524,9 @@ entries:
     - statefulset
     - cncf
     maintainers:
-    - email: wally@nats.io
-      name: Waldemar Quevedo
-    - name: rchenzheng
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
     name: stan
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.2.0/stan-0.2.0.tgz

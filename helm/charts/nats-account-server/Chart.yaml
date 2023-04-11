@@ -3,18 +3,15 @@ appVersion: "1.0.0"
 description: A Helm chart for the NATS.io JWT Account Server
 name: nats-account-server
 keywords:
-  - nats
-  - messaging
-  - cncf
-  - jwt
-  - auth
+- nats
+- messaging
+- cncf
+- jwt
+- auth
 version: 0.8.0
 home: http://github.com/nats-io/k8s
 maintainers:
-  - name: Waldemar Quevedo
-    url: https://github.com/wallyqs
-    email: wally@nats.io
-  - name: Colin Sullivan
-    url: https://github.com/ColinSullivan1
-    email: colin@nats.io
+- email: info@nats.io
+  name: The NATS Authors
+  url: https://github.com/nats-io
 icon: https://nats.io/img/nats-icon-color.png
