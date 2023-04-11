@@ -14,9 +14,7 @@ home: https://github.com/nats-io/nats-operator
 sources:
 - https://github.com/nats-io/nats-operator
 maintainers:
-- name: richerlariviere
-  email: richerlariviere@gmail.com
-- name: Waldemar Quevedo
-  url: https://github.com/wallyqs
-  email: wally@nats.io
+- email: info@nats.io
+  name: The NATS Authors
+  url: https://github.com/nats-io
 icon: https://nats.io/img/nats-icon-color.png
