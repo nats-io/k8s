@@ -32,7 +32,6 @@ config:
     patch: []
 
   nats:
-    enabled: true
     port: 4222
     tls:
       enabled: false

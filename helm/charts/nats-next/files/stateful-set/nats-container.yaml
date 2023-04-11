@@ -86,7 +86,7 @@ volumeMounts:
 {{- end }}
 {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" }}
 {{- $configProtocol := get $.Values.config $protocol }}
-{{- if and $configProtocol.enabled $configProtocol.tls.enabled $configProtocol.tls.secretName }}
+{{- if and (or (eq $protocol "nats") $configProtocol.enabled) $configProtocol.tls.enabled $configProtocol.tls.secretName }}
 - name: {{ $protocol }}-tls
   mountPath: {{ $configProtocol.tls.dir | quote }}
 {{- end }}
