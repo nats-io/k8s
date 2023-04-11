@@ -9,7 +9,7 @@ ports:
 {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
 {{- $configProtocol := get $.Values.config $protocol }}
 {{- $containerPort := get $.Values.container.ports $protocol }}
-{{- if $configProtocol.enabled }}
+{{- if or (eq $protocol "nats") $configProtocol.enabled }}
 - {{ merge (dict "name" $protocol "containerPort" $configProtocol.port) $containerPort | toYaml | nindent 2 }}
 {{- end }}
 {{- end }}
@@ -66,24 +66,24 @@ livenessProbe:
 volumeMounts:
 - name: config
   mountPath: /etc/nats-config
-{{- if .Values.reloader.enabled }}
-- name: pid
-  mountPath: /var/run/nats
-{{- end}}
 {{- with .Values.config.jetstream }}
 {{- if and .enabled .fileStore.enabled .fileStore.pvc.enabled }}
 {{- with .fileStore }}
-- name: {{ include "nats.fullname" $ }}-js
+- name: {{ .pvc.name | default (printf "%s-js" (include "nats.fullname" $)) }}
   mountPath: {{ printf "%s/jetstream" .dir | quote }}
 {{- end }}
 {{- end }}
 {{- end }}
 {{- with .Values.config.resolver }}
 {{- if and .enabled .pvc.enabled }}
-- name: {{ include "nats.fullname" $ }}-resolver
+- name: {{ .pvc.name | default (printf "%s-resolver" (include "nats.fullname" $)) }}
   mountPath: {{ .dir | quote }}
 {{- end }}
 {{- end }}
+{{- if .Values.reloader.enabled }}
+- name: pid
+  mountPath: /var/run/nats
+{{- end}}
 {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" }}
 {{- $configProtocol := get $.Values.config $protocol }}
 {{- if and (or (eq $protocol "nats") $configProtocol.enabled) $configProtocol.tls.enabled $configProtocol.tls.secretName }}

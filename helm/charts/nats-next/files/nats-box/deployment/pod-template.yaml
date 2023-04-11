@@ -13,11 +13,11 @@ spec:
   # context secret
   - name: context
     secret:
-      secretName: {{ include "nats.fullname" $ }}-box-context
+      secretName: {{ .Values.natsBox.contextSecret.name | default (printf "%s-box-context" (include "nats.fullname" $)) }}
   # contents secret
   - name: contents
     secret:
-      secretName: {{ include "nats.fullname" $ }}-box-contents
+      secretName: {{ .Values.natsBox.contentsSecret.name | default (printf "%s-box-contents" (include "nats.fullname" $)) }}
   # context secrets
   {{- range $ctxKey, $ctxVal := .Values.natsBox.context }}
   {{- range $secretKey, $secretVal := dict "creds" "nats-creds" "nkey" "nats-nkeys" "tls" "nats-certs" }}

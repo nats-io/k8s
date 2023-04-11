@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "nats.fullname" $ }}-box
+  name: {{ .Values.natsBox.deployment.name | default (printf "%s-box" (include "nats.fullname" $)) }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
     app.kubernetes.io/component: nats-box

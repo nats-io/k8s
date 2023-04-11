@@ -26,11 +26,13 @@ config:
         enabled: true
         size: 10Gi
         storageClassName:
-        
+
         # merge or patch the jetstream pvc
         # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core
         merge: {}
         patch: []
+        # defaults to "{{ include "nats.fullname" $ }}-js"
+        name:
     
       # defaults to use all of the available pvc size
       maxSize:
@@ -189,6 +191,8 @@ config:
       # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
       merge: {}
       patch: []
+      # defaults to "{{ include "nats.fullname" $ }}-resolver"
+      name:
 
     # merge or patch the resolver
     # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/auth_intro/jwt/resolver
@@ -324,6 +328,9 @@ reloader:
       # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
       merge: {}
       patch: []
+      # defaults to "{{ include "nats.fullname" $ }}"
+      name:
+      
 
 ############################################################
 # service
@@ -357,6 +364,8 @@ service:
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core
   merge: {}
   patch: []
+  # defaults to "{{ include "nats.fullname" $ }}"
+  name:
 
 ############################################################
 # other nats extension points
@@ -368,6 +377,8 @@ statefulSet:
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#statefulset-v1-apps
   merge: {}
   patch: []
+  # defaults to "{{ include "nats.fullname" $ }}"
+  name:
 
 # stateful set -> pod template
 podTemplate:
@@ -386,6 +397,8 @@ headlessService:
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core
   merge: {}
   patch: []
+  # defaults to "{{ include "nats.fullname" $ }}-headless"
+  name:
 
 # config map
 configMap:
@@ -393,6 +406,8 @@ configMap:
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#configmap-v1-core
   merge: {}
   patch: []
+  # defaults to "{{ include "nats.fullname" $ }}-config"
+  name:
 
 
 ############################################################
@@ -460,6 +475,8 @@ natsBox:
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#deployment-v1-apps
     merge: {}
     patch: []
+    # defaults to "{{ include "nats.fullname" $ }}-box"
+    name:
 
   # deployment -> pod template
   podTemplate:
@@ -474,6 +491,8 @@ natsBox:
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#secret-v1-core
     merge: {}
     patch: []
+    # defaults to "{{ include "nats.fullname" $ }}-box-context"
+    name:
 
   # contents secret
   contentsSecret:
@@ -481,3 +500,5 @@ natsBox:
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#secret-v1-core
     merge: {}
     patch: []
+    # defaults to "{{ include "nats.fullname" $ }}-box-contents"
+    name:

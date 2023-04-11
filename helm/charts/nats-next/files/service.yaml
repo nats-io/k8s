@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "nats.fullname" $ }}
+  name: {{ .Values.service.name | default (include "nats.fullname" $) }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
     app.kubernetes.io/component: nats
@@ -15,6 +15,6 @@ spec:
   {{- $configProtocol := get $.Values.config $protocol }}
   {{- $servicePort := get $.Values.service.ports $protocol }}
   {{- if or (eq $protocol "nats") $configProtocol.enabled }}
-  - {{ merge (dict "name" $protocol "port" $configProtocol.port "targetPort" $protocol) (omit $servicePort "enabled") | toYaml | nindent 4 }}
+  - {{ merge (dict "name" $protocol "targetPort" $protocol) (omit $servicePort "enabled") (dict "port" $configProtocol.port) | toYaml | nindent 4 }}
   {{- end }}
   {{- end }}
