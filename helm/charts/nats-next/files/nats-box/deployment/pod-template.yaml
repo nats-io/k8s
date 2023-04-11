@@ -6,7 +6,7 @@ metadata:
 spec:
   containers:
   {{- with .Values.natsBox.container }}
-  - {{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/container.yaml" "ctx" $) .) | nindent 4 }}
+  - {{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/deployment/container.yaml" "ctx" $) .) | nindent 4 }}
   {{- end }}
 
   volumes:

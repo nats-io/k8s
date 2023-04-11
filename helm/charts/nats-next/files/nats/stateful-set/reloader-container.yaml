@@ -1,10 +1,10 @@
 {{- $ := . }}
 name: reloader
 
-image: {{ include "nats.image" .Values.reloader.image }}
-imagePullPolicy: {{ .Values.reloader.image.pullPolicy }}
+image: {{ include "nats.image" .Values.nats.reloader.image }}
+imagePullPolicy: {{ .Values.nats.reloader.image.pullPolicy }}
 
-{{- with .Values.reloader.env }}
+{{- with .Values.nats.reloader.env }}
 env:
 {{- include "nats.env" . }}
 {{- end }}
@@ -20,7 +20,7 @@ volumeMounts:
 - name: pid
   mountPath: /var/run/nats
 {{- range $mnt := .natsVolumeMounts }}
-{{- range $.Values.reloader.natsVolumeMountPrefixes }}
+{{- range $.Values.nats.reloader.natsVolumeMountPrefixes }}
 {{- if (hasPrefix . $mnt.mountPath) }}
 - {{ toYaml $mnt | nindent 2}}
 {{- break }}

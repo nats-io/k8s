@@ -1,405 +1,403 @@
 ############################################################
-# NATS config
+# nats
+#
+# NATS Stateful Set and associated resources
 ############################################################
-config:
-  jetstream:
-    enabled: true
-
-    memStorage:
-      enabled: false
-      size: 1Gi
-
-    fileStorage:
-      enabled: true
-      size: 10Gi
-      # disk will be mounted to <dir>/jetstream
-      dir: /data
-
-      # stateful set -> volume claim templates -> jetstream pvc
-      # size is inferred from config.jetstream.filestorage.size
-      pvc:
-        enabled: true
-        storageClassName:
-        
-        # merge or patch the jetstream pvc
-        # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core
-        merge: {}
-        patch: []
-    
-    # merge or patch the jetstream config
-    # https://docs.nats.io/running-a-nats-service/configuration#jetstream
-    merge: {}
-    patch: []
-
-  nats:
-    port: 4222
-    tls:
-      enabled: false
-      # set secretName in order to mount an existing secret to dir
-      secretName:
-      dir: /etc/nats-certs/nats
-      cert: tls.cert
-      key: tls.key
-      ca:
-      # merge or patch the tls config
-      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-      merge: {}
-      patch: []
-
-  leafnodes:
-    enabled: false
-    port: 7422
-    tls:
-      enabled: false
-      # set secretName in order to mount an existing secret to dir
-      secretName:
-      dir: /etc/nats-certs/leafnodes
-      cert: tls.cert
-      key: tls.key
-      ca:
-      # merge or patch the tls config
-      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-      merge: {}
-      patch: []
-
-    # merge or patch the leafnodes config
-    # https://docs.nats.io/running-a-nats-service/configuration/leafnodes/leafnode_conf
-    merge: {}
-    patch: []
-      
-  websocket:
-    enabled: false
-    port: 8080
-    tls:
-      enabled: false
-      # set secretName in order to mount an existing secret to dir
-      secretName:
-      dir: /etc/nats-certs/websocket
-      cert: tls.cert
-      key: tls.key
-      ca:
-      # merge or patch the tls config
-      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-      merge: {}
-      patch: []
-
-    # merge or patch the websocket config
-    # https://docs.nats.io/running-a-nats-service/configuration/websocket/websocket_conf
-    merge: {}
-    patch: []
-
-  mqtt:
-    enabled: false
-    port: 1883
-    tls:
-      enabled: false
-      # set secretName in order to mount an existing secret to dir
-      secretName:
-      dir: /etc/nats-certs/mqtt
-      cert: tls.cert
-      key: tls.key
-      ca:
-      # merge or patch the tls config
-      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-      merge: {}
-      patch: []
-
-    # merge or patch the mqtt config
-    # https://docs.nats.io/running-a-nats-service/configuration/mqtt/mqtt_config
-    merge: {}
-    patch: []
-
-  cluster:
-    enabled: true
-    port: 6222
-    tls:
-      enabled: false
-      # set secretName in order to mount an existing secret to dir
-      secretName:
-      dir: /etc/nats-certs/cluster
-      cert: tls.cert
-      key: tls.key
-      ca:
-      # merge or patch the tls config
-      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-      merge: {}
-      patch: []
-
-    # merge or patch the cluster config
-    # https://docs.nats.io/running-a-nats-service/configuration/clustering/cluster_config
-    merge: {}
-    patch: []
-
-  gateway:
-    enabled: false
-    port: 7222
-    tls:
-      enabled: false
-      # set secretName in order to mount an existing secret to dir
-      secretName:
-      dir: /etc/nats-certs/gateway
-      cert: tls.cert
-      key: tls.key
-      ca:
-      # merge or patch the tls config
-      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-      merge: {}
-      patch: []
-
-    # merge or patch the gateway config
-    # https://docs.nats.io/running-a-nats-service/configuration/gateways/gateway#gateway-configuration-block
-    merge: {}
-    patch: []
-
-  monitor:
-    enabled: true
-    port: 8222
-
-  profiling:
-    enabled: false
-    port: 65432
-
-  resolver:
-    enabled: false
-    dir: /data/resolver
-
-    # stateful set -> volume claim templates -> resolver pvc
-    pvc:
-      enabled: true
-      size: 1Gi
-      storageClassName:
-
-      # merge or patch the pvc
-      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
-      merge: {}
-      patch: []
-
-    # merge or patch the resolver
-    # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/auth_intro/jwt/resolver
-    merge: {}
-    patch: []
-
-  # merge or patch the nats config
-  # https://docs.nats.io/running-a-nats-service/configuration
-  # following special rules apply
-  #  1. strings that start with << and end with >> will be unquoted
-  #     use this for variables and numbers with units
-  #  2. keys ending in $include will be switched to include directives
-  #     keys are sorted alphabetically, use prefix before $includes to control includes ordering
-  #     paths should be relative to /etc/nats-config/nats.conf
-  # example:
-  #
-  #   merge:
-  #     $include: ./my-config.conf
-  #     zzz$include: ./my-config-last.conf
-  #     server_name: nats
-  #     authorization:
-  #       token: << $TOKEN >>
-  #     jetstream:
-  #       max_mem: << 1GB >>
-  #
-  # will yield the config:
-  # {
-  #   include ./my-config.conf;
-  #   "authorization": {
-  #     "token": $TOKEN
-  #   },
-  #   "jetstream": {
-  #     "max_mem": 1GB
-  #   },
-  #   "server_name": "nats",
-  #   include ./my-config-last.conf;
-  # }
-  merge: {}
-  patch: []
-
-
-############################################################
-# stateful set
-############################################################
-statefulSet:
+nats:
+  # number of replicas in stateful set
   replicas: 1
 
-  # merge or patch the stateful set
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#statefulset-v1-apps
-  merge: {}
-  patch: []
-
-
-############################################################
-# stateful set -> pod template
-############################################################
-podTemplate:
   # adds a hash of the ConfigMap as a pod annotation
   # this will cause the StatefulSet to roll when the ConfigMap is updated
   configChecksumAnnotation: true
 
-  # merge or patch the pod template
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
-  merge: {}
-  patch: []
+  ############################################################
+  # NATS config
+  ############################################################
+  config:
+    jetstream:
+      enabled: true
 
+      memStorage:
+        enabled: false
+        size: 1Gi
 
-############################################################
-# stateful set -> pod template -> nats container
-############################################################
-nats:
-  image:
-    repository: nats
-    tag: 2.9.15-alpine
-    pullPolicy: IfNotPresent
-    # registry: docker.io
+      fileStorage:
+        enabled: true
+        size: 10Gi
+        # disk will be mounted to <dir>/jetstream
+        dir: /data
 
-  # container port options
-  # must be enabled in the config section also
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#containerport-v1-core
-  ports:
-    nats: {}
-    leafnodes: {}
-    websocket: {}
-    mqtt: {}
-    cluster: {}
-    gateway: {}
-    monitor: {}
-    profiling: {}
+        ############################################################
+        # stateful set -> volume claim templates -> jetstream pvc
+        ############################################################
+        # size is inferred from config.jetstream.filestorage.size
+        pvc:
+          enabled: true
+          storageClassName:
+          
+          # merge or patch the jetstream pvc
+          # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core
+          merge: {}
+          patch: []
+      
+      # merge or patch the jetstream config
+      # https://docs.nats.io/running-a-nats-service/configuration#jetstream
+      merge: {}
+      patch: []
 
-  # map with key as env var name, value can be string or map
-  # example:
-  #
-  #   env:
-  #     GOMEMLIMIT: 7GiB
-  #     TOKEN:
-  #       valueFrom:
-  #         secretKeyRef:
-  #           name: nats-auth
-  #           key: token
-  env: {}
+    nats:
+      port: 4222
+      tls:
+        enabled: false
+        # set secretName in order to mount an existing secret to dir
+        secretName:
+        dir: /etc/nats-certs/nats
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
 
-  # merge or patch the container
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
-  merge: {}
-  patch: []
+    leafnodes:
+      enabled: false
+      port: 7422
+      tls:
+        enabled: false
+        # set secretName in order to mount an existing secret to dir
+        secretName:
+        dir: /etc/nats-certs/leafnodes
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
 
+      # merge or patch the leafnodes config
+      # https://docs.nats.io/running-a-nats-service/configuration/leafnodes/leafnode_conf
+      merge: {}
+      patch: []
 
-############################################################
-# stateful set -> pod template -> reloader container
-############################################################
-reloader:
-  enabled: true
-  image:
-    repository: natsio/nats-server-config-reloader
-    tag: 0.10.1
-    pullPolicy: IfNotPresent
-    # registry: docker.io
+    websocket:
+      enabled: false
+      port: 8080
+      tls:
+        enabled: false
+        # set secretName in order to mount an existing secret to dir
+        secretName:
+        dir: /etc/nats-certs/websocket
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
 
-  # env var map, see nats.env for an example
-  env: {}
+      # merge or patch the websocket config
+      # https://docs.nats.io/running-a-nats-service/configuration/websocket/websocket_conf
+      merge: {}
+      patch: []
 
-  # all nats container volume mounts with the following prefixes
-  # will be mounted into the reloader container
-  natsVolumeMountPrefixes:
-  - /etc/
+    mqtt:
+      enabled: false
+      port: 1883
+      tls:
+        enabled: false
+        # set secretName in order to mount an existing secret to dir
+        secretName:
+        dir: /etc/nats-certs/mqtt
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
 
-  # merge or patch the container
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
-  merge: {}
-  patch: []
+      # merge or patch the mqtt config
+      # https://docs.nats.io/running-a-nats-service/configuration/mqtt/mqtt_config
+      merge: {}
+      patch: []
 
+    cluster:
+      enabled: true
+      port: 6222
+      tls:
+        enabled: false
+        # set secretName in order to mount an existing secret to dir
+        secretName:
+        dir: /etc/nats-certs/cluster
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
 
-############################################################
-# stateful set -> pod template -> prom-exporter container
-############################################################
-# config.monitor must be enabled
-promExporter:
-  enabled: false
-  image:
-    repository: natsio/prometheus-nats-exporter
-    tag: 0.10.1
-    pullPolicy: IfNotPresent
-    # registry: docker.io
+      # merge or patch the cluster config
+      # https://docs.nats.io/running-a-nats-service/configuration/clustering/cluster_config
+      merge: {}
+      patch: []
 
-  port: 7777
-  # env var map, see nats.env for an example
-  env: {}
-  # all nats container volume mounts with the following prefixes
-  # will be mounted into the reloader container
-  natsVolumeMountPrefixes:
-  - /etc/
+    gateway:
+      enabled: false
+      port: 7222
+      tls:
+        enabled: false
+        # set secretName in order to mount an existing secret to dir
+        secretName:
+        dir: /etc/nats-certs/gateway
+        cert: tls.cert
+        key: tls.key
+        ca:
+        # merge or patch the tls config
+        # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+        merge: {}
+        patch: []
 
-  # merge or patch the container
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
-  merge: {}
-  patch: []
+      # merge or patch the gateway config
+      # https://docs.nats.io/running-a-nats-service/configuration/gateways/gateway#gateway-configuration-block
+      merge: {}
+      patch: []
 
-  podMonitor:
-    enabled: false
+    monitor:
+      enabled: true
+      port: 8222
 
-    # merge or patch the pod monitor
+    profiling:
+      enabled: false
+      port: 65432
+
+    resolver:
+      enabled: false
+      dir: /data/resolver
+
+      ############################################################
+      # stateful set -> volume claim templates -> resolver pvc
+      ############################################################
+      pvc:
+        enabled: true
+        size: 1Gi
+        storageClassName:
+
+        # merge or patch the pvc
+        # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
+        merge: {}
+        patch: []
+
+      # merge or patch the resolver
+      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/auth_intro/jwt/resolver
+      merge: {}
+      patch: []
+
+    # merge or patch the nats config
+    # https://docs.nats.io/running-a-nats-service/configuration
+    # following special rules apply
+    #  1. strings that start with << and end with >> will be unquoted
+    #     use this for variables and numbers with units
+    #  2. keys ending in $include will be switched to include directives
+    #     keys are sorted alphabetically, use prefix before $includes to control includes ordering
+    #     paths should be relative to /etc/nats-config/nats.conf
+    # example:
+    #
+    #   merge:
+    #     $include: ./my-config.conf
+    #     zzz$include: ./my-config-last.conf
+    #     server_name: nats
+    #     authorization:
+    #       token: << $TOKEN >>
+    #     jetstream:
+    #       max_memory_store: << 1GB >>
+    #
+    # will yield the config:
+    # {
+    #   include ./my-config.conf;
+    #   "authorization": {
+    #     "token": $TOKEN
+    #   },
+    #   "jetstream": {
+    #     "max_memory_store": 1GB
+    #   },
+    #   "server_name": "nats",
+    #   include ./my-config-last.conf;
+    # }
+    merge: {}
+    patch: []
+
+  ############################################################
+  # stateful set -> pod template -> nats container
+  ############################################################
+  container:
+    image:
+      repository: nats
+      tag: 2.9.15-alpine
+      pullPolicy: IfNotPresent
+      # registry: docker.io
+
+    # container port options
+    # must be enabled in the config section also
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#containerport-v1-core
+    ports:
+      nats: {}
+      leafnodes: {}
+      websocket: {}
+      mqtt: {}
+      cluster: {}
+      gateway: {}
+      monitor: {}
+      profiling: {}
+
+    # map with key as env var name, value can be string or map
+    # example:
+    #
+    #   env:
+    #     GOMEMLIMIT: 7GiB
+    #     TOKEN:
+    #       valueFrom:
+    #         secretKeyRef:
+    #           name: nats-auth
+    #           key: token
+    env: {}
+
+    # merge or patch the container
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+    merge: {}
+    patch: []
+
+  ############################################################
+  # stateful set -> pod template -> reloader container
+  ############################################################
+  reloader:
+    enabled: true
+    image:
+      repository: natsio/nats-server-config-reloader
+      tag: 0.10.1
+      pullPolicy: IfNotPresent
+      # registry: docker.io
+
+    # env var map, see nats.env for an example
+    env: {}
+
+    # all nats container volume mounts with the following prefixes
+    # will be mounted into the reloader container
+    natsVolumeMountPrefixes:
+    - /etc/
+
+    # merge or patch the container
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+    merge: {}
+    patch: []
+
+    ############################################################
+    # stateful set -> pod template -> prom-exporter container
+    ############################################################
+    # config.monitor must be enabled
+    promExporter:
+      enabled: false
+      image:
+        repository: natsio/prometheus-nats-exporter
+        tag: 0.10.1
+        pullPolicy: IfNotPresent
+        # registry: docker.io
+
+      port: 7777
+      # env var map, see nats.env for an example
+      env: {}
+
+      # merge or patch the container
+      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+      merge: {}
+      patch: []
+
+      ############################################################
+      # prometheus pod monitor
+      ############################################################
+      podMonitor:
+        enabled: false
+
+        # merge or patch the pod monitor
+        # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+        merge: {}
+        patch: []
+
+  ############################################################
+  # service
+  ############################################################
+  service:
+    enabled: true
+
+    # service port options
+    # additional boolean field enable to control whether port is exposed in the service
+    # must be enabled in the config section also
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceport-v1-core
+    ports:
+      nats:
+        enabled: true
+      leafnodes:
+        enabled: true
+      websocket:
+        enabled: true
+      mqtt:
+        enabled: true
+      cluster:
+        enabled: false
+      gateway:
+        enabled: false
+      monitor:
+        enabled: false
+      profiling:
+        enabled: false
+
+    # merge or patch the service
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core
+    merge: {}
+    patch: []
+
+  ############################################################
+  # other nats extension points
+  ############################################################
+  statefulSet:
+    # merge or patch the stateful set
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#statefulset-v1-apps
+    merge: {}
+    patch: []
+
+  podTemplate:
+    # merge or patch the pod template
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
+    merge: {}
+    patch: []
+
+  headlessService:
+    # merge or patch the headless service
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core
+    merge: {}
+    patch: []
+
+  configMap:
+    # merge or patch the config map
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#configmap-v1-core
     merge: {}
     patch: []
 
 
 ############################################################
-# config map
-############################################################
-configMap:
-  # merge or patch the config map
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#configmap-v1-core
-  merge: {}
-  patch: []
-
-
-############################################################
-# service
-############################################################
-service:
-  enabled: true
-
-  # service port options
-  # additional boolean field enable to control whether port is exposed in the service
-  # must be enabled in the config section also
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceport-v1-core
-  ports:
-    nats:
-      enabled: true
-    leafnodes:
-      enabled: true
-    websocket:
-      enabled: true
-    mqtt:
-      enabled: true
-    cluster:
-      enabled: false
-    gateway:
-      enabled: false
-    monitor:
-      enabled: false
-    profiling:
-      enabled: false
-
-  # merge or patch the service
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core
-  merge: {}
-  patch: []
-
-
-############################################################
-# headless service
-############################################################
-headlessService:
-  # merge or patch the headless service
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core
-  merge: {}
-  patch: []
-
-
-############################################################
 # nats-box
+#
+# NATS Box Deployment and associated resources
 ############################################################
 natsBox:
   enabled: true
 
+  ############################################################
+  # NATS contexts
+  ############################################################
   context:
     default:
       creds:
@@ -426,7 +424,9 @@ natsBox:
       merge: {}
       patch: []
 
+  ############################################################
   # deployment -> pod template -> nats-box container
+  ############################################################
   container:
     image:
       repository: natsio/nats-box
@@ -442,17 +442,21 @@ natsBox:
     merge: {}
     patch: []
 
-  # deployment -> pod template
-  podTemplate:
-    # merge or patch the pod template
-    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
-    merge: {}
-    patch: []
+  ############################################################
+  # other nats-box extension points
+  ############################################################
 
   # deployment
   deployment:
     # merge or patch the deployment
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#deployment-v1-apps
+    merge: {}
+    patch: []
+
+  # deployment -> pod template
+  podTemplate:
+    # merge or patch the pod template
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
     merge: {}
     patch: []
 

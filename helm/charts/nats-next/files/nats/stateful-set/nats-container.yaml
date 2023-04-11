@@ -1,14 +1,14 @@
 {{- $ := . }}
-{{- $pidFile := ternary "/var/run/nats/nats.pid" "/var/run/nats.pid" .Values.reloader.enabled }}
+{{- $pidFile := ternary "/var/run/nats/nats.pid" "/var/run/nats.pid" .Values.nats.reloader.enabled }}
 name: nats
 
-image: {{ include "nats.image" .Values.nats.image }}
-imagePullPolicy: {{ .Values.nats.image.pullPolicy }}
+image: {{ include "nats.image" .Values.nats.container.image }}
+imagePullPolicy: {{ .Values.nats.container.image.pullPolicy }}
 
 ports:
 {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
-{{- $configProtocol := get $.Values.config $protocol }}
-{{- $containerPort := get $.Values.nats.ports $protocol }}
+{{- $configProtocol := get $.Values.nats.config $protocol }}
+{{- $containerPort := get $.Values.nats.container.ports $protocol }}
 {{- if $configProtocol.enabled }}
 - {{ merge (dict "name" $protocol "containerPort" $configProtocol.port) $containerPort | toYaml | nindent 2 }}
 {{- end }}
@@ -18,7 +18,7 @@ args:
 - --config
 - /etc/nats-config/nats.conf
 
-{{- with .Values.nats.env }}
+{{- with .Values.nats.container.env }}
 env:
 {{- include "nats.env" . }}
 {{- end }}
@@ -31,7 +31,7 @@ lifecycle:
       - nats-server
       - -sl=ldm={{ $pidFile }}
 
-{{- with .Values.config.monitor }}
+{{- with .Values.nats.config.monitor }}
 {{- if .enabled }}
 startupProbe:
   httpGet:
@@ -66,11 +66,11 @@ livenessProbe:
 volumeMounts:
 - name: config
   mountPath: /etc/nats-config
-{{- if .Values.reloader.enabled }}
+{{- if .Values.nats.reloader.enabled }}
 - name: pid
   mountPath: /var/run/nats
 {{- end}}
-{{- with .Values.config.jetstream }}
+{{- with .Values.nats.config.jetstream }}
 {{- if and .enabled .fileStorage.enabled .fileStorage.pvc.enabled }}
 {{- with .fileStorage }}
 - name: {{ include "nats.fullname" $ }}-js-pvc
@@ -78,14 +78,14 @@ volumeMounts:
 {{- end }}
 {{- end }}
 {{- end }}
-{{- with .Values.config.resolver }}
+{{- with .Values.nats.config.resolver }}
 {{- if and .enabled .pvc.enabled }}
 - name: {{ include "nats.fullname" $ }}-jwt-pvc
   mountPath: {{ .dir | quote }}
 {{- end }}
 {{- end }}
 {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" }}
-{{- $configProtocol := get $.Values.config $protocol }}
+{{- $configProtocol := get $.Values.nats.config $protocol }}
 {{- if and (or (eq $protocol "nats") $configProtocol.enabled) $configProtocol.tls.enabled $configProtocol.tls.secretName }}
 - name: {{ $protocol }}-tls
   mountPath: {{ $configProtocol.tls.dir | quote }}

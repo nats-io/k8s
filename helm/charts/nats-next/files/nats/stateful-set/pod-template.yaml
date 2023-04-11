@@ -4,30 +4,30 @@ metadata:
     {{- include "nats.labels" . | nindent 4 }}
     app.kubernetes.io/component: nats
   annotations:
-    {{- if .Values.podTemplate.configChecksumAnnotation }}
+    {{- if .Values.nats.configChecksumAnnotation }}
     checksum/config: {{ .configChecksum }}
     {{- end }}
 spec:
-  {{- if .Values.reloader.enabled }}
+  {{- if .Values.nats.reloader.enabled }}
   shareProcessNamespace: true
   {{- end }}
 
   containers:
   # nats
   {{- $nats := dict }}
-  {{- with .Values.nats }}
-  {{- $nats = include "nats.loadMergePatch" (merge (dict "file" "stateful-set/nats-container.yaml" "ctx" $) .) | fromYaml }}
+  {{- with .Values.nats.nats }}
+  {{- $nats = include "nats.loadMergePatch" (merge (dict "file" "nats/stateful-set/nats-container.yaml" "ctx" $) .) | fromYaml }}
   - {{ toYaml $nats | nindent 4 }}
   {{- end }}
   # reloader
-  {{- with .Values.reloader }}
+  {{- with .Values.nats.reloader }}
   {{- if .enabled }}
-  - {{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/reloader-container.yaml" "ctx" (merge (dict "natsVolumeMounts" $nats.volumeMounts) $)) .) | nindent 4 }}
+  - {{ include "nats.loadMergePatch" (merge (dict "file" "nats/stateful-set/reloader-container.yaml" "ctx" (merge (dict "natsVolumeMounts" $nats.volumeMounts) $)) .) | nindent 4 }}
   {{- end }}
   {{- end }}
-  {{- with .Values.promExporter }}
+  {{- with .Values.nats.promExporter }}
   {{- if .enabled }}
-  - {{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/prom-exporter-container.yaml" "ctx" $) .) | nindent 4 }}
+  - {{ include "nats.loadMergePatch" (merge (dict "file" "nats/stateful-set/prom-exporter-container.yaml" "ctx" $) .) | nindent 4 }}
   {{- end }}
   {{- end }}
 
@@ -37,13 +37,13 @@ spec:
     configMap:
       name: {{ include "nats.fullname" $ }}-config
   # PID volume
-  {{- if .Values.reloader.enabled }}
+  {{- if .Values.nats.reloader.enabled }}
   - name: pid
     emptyDir: {}
   {{- end }}
   # TLS secrets
   {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" }}
-  {{- $configProtocol := get $.Values.config $protocol }}
+  {{- $configProtocol := get $.Values.nats.config $protocol }}
   {{- if and (or (eq $protocol "nats") $configProtocol.enabled) $configProtocol.tls.enabled $configProtocol.tls.secretName }}
   - name: {{ $protocol }}-tls
     secret:

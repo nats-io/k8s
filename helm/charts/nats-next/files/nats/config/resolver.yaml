@@ -1,4 +1,4 @@
 {{- $ := . }}
-{{- with .Values.config.resolver }}
+{{- with .Values.nats.config.resolver }}
 dir: {{ .dir }}
 {{- end }}

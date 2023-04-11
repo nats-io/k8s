@@ -25,46 +25,48 @@ Additionally, anything in `values.yaml` can be templated:
 **Merge** - add accounts
 
 ```yaml
-config:
-  merge:
-    accounts:
-      A:
-        users:
-        - {user: a, password: a}
-      B: 
-        users:
-        - {user: b, password: b}
+nats:
+  config:
+    merge:
+      accounts:
+        A:
+          users:
+          - {user: a, password: a}
+        B: 
+          users:
+          - {user: b, password: b}
 ```
 
 **Patch** - remove http monitoring
 
 ```yaml
-config:
-  patch:
-  - op: remove
-    path: /http
+nats:
+  config:
+    patch:
+    - op: remove
+      path: /http
 ```
 
 **Template** - add cluster authorization
 
 ```yaml
-statefulSet:
+nats:
   replicas: 3
 
-config:
-  cluster:
-    merge:
-      authorization:
-        user: foo
-        password:
-          tplYaml: >
-            {{ printf "bar" | bcrypt }}
-      routes:
-      - tplYamlSpread: |
-          {{ $name := include "nats.fullname" . }}
-          {{- range $i, $_ := until ($.Values.statefulSet.replicas | int) }}
-          - {{ printf "nats://foo:bar@%s-%d.%s-headless:6222" $name $i $name }}
-          {{- end }}
+  config:
+    cluster:
+      merge:
+        authorization:
+          user: foo
+          password:
+            tplYaml: >
+              {{ printf "bar" | bcrypt }}
+        routes:
+        - tplYamlSpread: |
+            {{ $name := include "nats.fullname" . }}
+            {{- range $i, $_ := until ($.Values.statefulSet.replicas | int) }}
+            - {{ printf "nats://foo:bar@%s-%d.%s-headless:6222" $name $i $name }}
+            {{- end }}
 ```
 
 templates to the `nats.conf`:
@@ -91,26 +93,28 @@ templates to the `nats.conf`:
 
 ```yaml
 nats:
-  merge:
-    resources:
-      requests:
-        memory: 8Gi
-        cpu: "2"
-      limits:
-        memory: 16Gi
-        cpu: "4"
+  container:
+    merge:
+      resources:
+        requests:
+          memory: 8Gi
+          cpu: "2"
+        limits:
+          memory: 16Gi
+          cpu: "4"
 ```
 
 **Patch** - add a wss port
 
 ```yaml
 nats:
-  patch:
-  - op: add
-    path: /ports/-
-    value:
-      containerPort: 443
-      name: wss
+  container:
+    patch:
+    - op: add
+      path: /ports/-
+      value:
+        containerPort: 443
+        name: wss
 ```
 
 ## PodTemplate
@@ -118,25 +122,27 @@ nats:
 **Merge** - add an annotation and a security context
 
 ```yaml
-podTemplate:
-  merge:
-    metadata:
-      annotations:
-        nats/is: awesome
-    spec:
-      securityContext:
-        runAsUser: 1000
+nats:
+  podTemplate:
+    merge:
+      metadata:
+        annotations:
+          nats/is: awesome
+      spec:
+        securityContext:
+          runAsUser: 1000
 ```
 
 **Patch** - add a volume
 
 ```yaml
-podTemplate:
-  patch:
-  - op: add
-    path: /spec/volumes/-
-    value:
-      name: tls
-      secret:
-        secretName: my-tls-cert
+nats:
+  podTemplate:
+    patch:
+    - op: add
+      path: /spec/volumes/-
+      value:
+        name: tls
+        secret:
+          secretName: my-tls-cert
 ```

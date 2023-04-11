@@ -14,5 +14,5 @@ spec:
   replicas: 1
   template:
     {{- with .Values.natsBox.podTemplate }}
-    {{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/pod-template.yaml" "ctx" $) .) | nindent 4 }}
+    {{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/deployment/pod-template.yaml" "ctx" $) .) | nindent 4 }}
     {{- end }}

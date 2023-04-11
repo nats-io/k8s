@@ -3,7 +3,7 @@
 {{- $caSet := false }}
 
 # url
-{{- if .Values.service.enabled }}
+{{- if .Values.nats.service.enabled }}
 url: nats://{{ include "nats.fullname" $ }}
 {{- else }}
 url: nats://{{ include "nats.fullname" $ }}-headless

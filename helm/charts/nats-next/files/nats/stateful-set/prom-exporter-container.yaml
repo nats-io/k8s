@@ -1,0 +1,30 @@
+name: prom-exporter
+image: {{ include "nats.image" .Values.nats.containers.promExporter.image }}
+imagePullPolicy: {{ .Values.nats.containers.promExporter.image.pullPolicy }}
+
+ports:
+- name: prom-metrics
+  containerPort: {{ .Values.nats.containers.promExporter.port }}
+
+{{- with .Values.nats.containers.promExporter.env }}
+env:
+{{- include "nats.env" . }}
+{{- end }}
+
+args:
+- -connz
+- -routez
+- -subz
+- -varz
+- -prefix=nats
+- -use_internal_server_id
+{{- if .Values.nats.config.jetstream.enabled }}
+- -jsz=all
+{{- end }}
+{{- if .Values.nats.config.leafnodes.enabled }}
+- -leafz
+{{- end }}
+{{- if .Values.nats.config.gateway.enabled }}
+- -gatewayz
+{{- end }}
+- http://localhost:{{ .Values.nats.config.monitor.port }}/
