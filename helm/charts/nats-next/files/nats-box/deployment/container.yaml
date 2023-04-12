@@ -22,7 +22,7 @@ args:
     echo -n "default" > context.txt
   fi
   stop_signal () {
-      exit 0
+    exit 0
   }
   trap stop_signal SIGINT SIGTERM
   while true; do

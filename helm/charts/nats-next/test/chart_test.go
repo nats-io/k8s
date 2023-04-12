@@ -128,18 +128,6 @@ type Test struct {
 
 func HelmRender(t *testing.T, test *Test) *Resources {
 	t.Helper()
-	if test.ReleaseName == "" {
-		test.ReleaseName = "nats"
-	}
-	if test.Namespace == "" {
-		test.Namespace = "nats"
-	}
-	if test.FullName == "" {
-		test.FullName = "nats"
-	}
-	if test.Values == "" {
-		test.Values = "{}"
-	}
 
 	helmChartPath, err := filepath.Abs("..")
 	releaseName := "nats"

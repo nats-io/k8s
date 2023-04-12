@@ -1,12 +1,12 @@
 name: prom-exporter
-image: {{ include "nats.image" .Values.containers.promExporter.image }}
-imagePullPolicy: {{ .Values.containers.promExporter.image.pullPolicy }}
+image: {{ include "nats.image" .Values.promExporter.image }}
+imagePullPolicy: {{ .Values.promExporter.image.pullPolicy }}
 
 ports:
 - name: prom-metrics
-  containerPort: {{ .Values.containers.promExporter.port }}
+  containerPort: {{ .Values.promExporter.port }}
 
-{{- with .Values.containers.promExporter.env }}
+{{- with .Values.promExporter.env }}
 env:
 {{- include "nats.env" . }}
 {{- end }}
