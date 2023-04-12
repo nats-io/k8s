@@ -3,7 +3,8 @@ metadata:
     {{- include "nats.labels" $ | nindent 4 }}
   annotations:
     {{- if .Values.podTemplate.configChecksumAnnotation }}
-    checksum/config: {{ .configChecksum }}
+    {{- $configMap := include "nats.loadMergePatch" (merge (dict "file" "config-map.yaml" "ctx" $) $.Values.configMap) }}
+    checksum/config: {{ sha256sum $configMap }}
     {{- end }}
 spec:
   {{- if .Values.reloader.enabled }}

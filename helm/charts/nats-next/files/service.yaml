@@ -11,7 +11,7 @@ spec:
   {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
   {{- $configProtocol := get $.Values.config $protocol }}
   {{- $servicePort := get $.Values.service.ports $protocol }}
-  {{- if or (eq $protocol "nats") $configProtocol.enabled }}
+  {{- if and (or (eq $protocol "nats") $configProtocol.enabled) $servicePort.enabled }}
   - {{ merge (dict "name" $protocol "targetPort" $protocol) (omit $servicePort "enabled") (dict "port" $configProtocol.port) | toYaml | nindent 4 }}
   {{- end }}
   {{- end }}

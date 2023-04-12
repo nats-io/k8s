@@ -31,6 +31,32 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+Set default values.
+*/}}
+{{- define "nats.defaultValues" -}}
+{{- $name := include "nats.fullname" . -}}
+{{- with .Values -}}
+{{- $_ := set .config.jetstream.fileStore.pvc   "name" (.config.jetstream.fileStore.pvc.name   | default (printf "%s-js" $name)) -}}
+{{- $_ := set .config.resolver.pvc              "name" (.config.resolver.pvc.name              | default (printf "%s-resolver" $name)) -}}
+{{- $_ := set .configMap                        "name" (.configMap.name                        | default (printf "%s-config" $name)) -}}
+{{- $_ := set .headlessService                  "name" (.headlessService.name                  | default (printf "%s-headless" $name)) -}}
+{{- $_ := set .ingress                          "name" (.ingress.name                          | default (printf "%s-ws" $name)) -}}
+{{- $_ := set .natsBox.contentsSecret           "name" (.natsBox.contentsSecret.name           | default (printf "%s-box-contents" $name)) -}}
+{{- $_ := set .natsBox.contextSecret            "name" (.natsBox.contextSecret.name            | default (printf "%s-box-context" $name)) -}}
+{{- $_ := set .natsBox.deployment               "name" (.natsBox.deployment.name               | default (printf "%s-box" $name)) -}}
+{{- $_ := set .service                          "name" (.service.name                          | default $name) -}}
+{{- $_ := set .statefulSet                      "name" (.statefulSet.name                      | default $name) -}}
+{{- $_ := set .promExporter.podMonitor          "name" (.promExporter.podMonitor.name          | default $name) -}}
+{{- end -}}
+{{- $values := get (include "tplYaml" (dict "doc" .Values "ctx" $) | fromJson) "doc" -}}
+{{- $_ := set . "Values" $values -}}
+{{- with .Values.config -}}
+{{- $config := include "nats.loadMergePatch" (merge (dict "file" "config/config.yaml" "ctx" $) .) | fromYaml -}}
+{{- $_ := set $ "config" $config -}}
+{{- end -}}
+{{- end }}
+
+{{/*
 NATS Common labels
 */}}
 {{- define "nats.labels" -}}
