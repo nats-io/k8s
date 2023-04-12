@@ -368,6 +368,28 @@ service:
   name:
 
 ############################################################
+# ingress
+############################################################
+# config.websocket and service must be enabled also
+ingress:
+  enabled: false
+  # must contain at least 1 host otherwise ingress will not be created
+  hosts: []
+  path: /
+  pathType: Exact
+  # sets to the ingress class name
+  className:
+  # set to an existing secret name to enable TLS on the ingress; applies to all hosts
+  tlsSecretName:
+
+  # merge or patch the ingress
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#ingress-v1-networking-k8s-io
+  merge: {}
+  patch: []
+  # defaults to "{{ include "nats.fullname" $ }}-ws"
+  name:
+
+############################################################
 # other nats extension points
 ############################################################
 

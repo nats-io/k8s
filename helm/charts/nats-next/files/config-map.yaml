@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.configMap.name | default (printf "%s-config" (include "nats.fullname" $)) }}
   labels:
-    {{- include "nats.labels" . | nindent 4 }}
+    {{- include "nats.labels" $ | nindent 4 }}
     app.kubernetes.io/component: nats
 data:
   nats.conf: |

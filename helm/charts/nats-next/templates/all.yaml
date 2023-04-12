@@ -32,6 +32,14 @@
 {{- end }}
 {{- end }}
 
+{{- with .Values.ingress }}
+{{- if and .enabled .hosts $.Values.config.websocket.enabled $.Values.service.enabled }}
+---
+# ingress.yaml
+{{ include "nats.loadMergePatch" (merge (dict "file" "ingress.yaml" "ctx" $) .) }}
+{{- end }}
+{{- end }}
+
 {{- with .Values.promExporter }}
 {{- if and .enabled .podMonitor.enabled }}
 {{- with .podMonitor }}

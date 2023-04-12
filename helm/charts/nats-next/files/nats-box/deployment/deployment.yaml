@@ -4,12 +4,12 @@ kind: Deployment
 metadata:
   name: {{ .Values.natsBox.deployment.name | default (printf "%s-box" (include "nats.fullname" $)) }}
   labels:
-    {{- include "nats.labels" . | nindent 4 }}
+    {{- include "nats.labels" $ | nindent 4 }}
     app.kubernetes.io/component: nats-box
 spec:
   selector:
     matchLabels:
-      {{- include "nats.selectorLabels" . | nindent 6 }}
+      {{- include "nats.selectorLabels" $ | nindent 6 }}
       app.kubernetes.io/component: nats-box
   replicas: 1
   template:
