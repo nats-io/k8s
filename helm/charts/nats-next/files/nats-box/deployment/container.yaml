@@ -1,4 +1,3 @@
-{{- $ := . }}
 name: nats-box
 
 image: {{ include "nats.image" .Values.natsBox.container.image }}

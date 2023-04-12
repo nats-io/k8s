@@ -1,16 +1,13 @@
-{{- $ := . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.natsBox.deployment.name | default (printf "%s-box" (include "nats.fullname" $)) }}
+  name: {{ .Values.natsBox.deployment.name }}
   labels:
-    {{- include "nats.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: nats-box
+    {{- include "natsBox.labels" $ | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{- include "nats.selectorLabels" $ | nindent 6 }}
-      app.kubernetes.io/component: nats-box
+      {{- include "natsBox.selectorLabels" $ | nindent 6 }}
   replicas: 1
   template:
     {{- with .Values.natsBox.podTemplate }}

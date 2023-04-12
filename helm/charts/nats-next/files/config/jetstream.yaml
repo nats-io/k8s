@@ -1,4 +1,3 @@
-{{- $ := . }}
 {{- with .Values.config.jetstream }}
 {{- with .memoryStore }}
 {{- if .enabled }}

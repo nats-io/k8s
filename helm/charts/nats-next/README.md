@@ -60,9 +60,8 @@ config:
             {{ printf "bar" | bcrypt }}
       routes:
       - tplYamlSpread: |
-          {{ $name := include "nats.fullname" . }}
-          {{- range $i, $_ := until ($.Values.statefulSet.replicas | int) }}
-          - {{ printf "nats://foo:bar@%s-%d.%s-headless:6222" $name $i $name }}
+          {{- range $i, $_ := until ($.Values.replicas | int) }}
+          - {{ printf "nats://foo:bar@%s-%d.%s:6222" $.Values.statefulSet.name $i $.Values.headlessService.name }}
           {{- end }}
 ```
 

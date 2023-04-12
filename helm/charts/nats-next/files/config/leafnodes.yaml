@@ -1,4 +1,3 @@
-{{- $ := . }}
 {{- with .Values.config.leafnodes }}
 port: {{ .port }}
 

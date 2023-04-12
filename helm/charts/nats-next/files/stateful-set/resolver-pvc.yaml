@@ -1,7 +1,6 @@
-{{- $ := . }}
 {{- with .Values.config.resolver.pvc }}
 metadata:
-  name: {{ .name | default (printf "%s-resolver" (include "nats.fullname" $)) }}
+  name: {{ .name }}
 spec:
   accessModes:
   - ReadWriteOnce

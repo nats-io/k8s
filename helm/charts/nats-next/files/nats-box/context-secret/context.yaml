@@ -1,12 +1,11 @@
-{{- $ := . }}
 {{- $contextName := .contextName }}
 {{- $caSet := false }}
 
 # url
 {{- if .Values.service.enabled }}
-url: nats://{{ include "nats.fullname" $ }}
+url: nats://{{ .Values.service.name }}
 {{- else }}
-url: nats://{{ include "nats.fullname" $ }}-headless
+url: nats://{{ .Values.headlessService.name }}
 {{- end }}
 
 {{- with .context }}

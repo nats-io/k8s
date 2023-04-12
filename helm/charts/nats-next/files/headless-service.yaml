@@ -1,15 +1,12 @@
-{{- $ := . }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.headlessService.name | default (printf "%s-headless" (include "nats.fullname" $)) }}
+  name: {{ .Values.headlessService.name }}
   labels:
     {{- include "nats.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: nats-headless
 spec:
   selector:
     {{- include "nats.selectorLabels" $ | nindent 4 }}
-    app.kubernetes.io/component: nats
   clusterIP: None
   publishNotReadyAddresses: true
   ports:

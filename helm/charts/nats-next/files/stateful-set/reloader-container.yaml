@@ -1,4 +1,3 @@
-{{- $ := . }}
 name: reloader
 
 image: {{ include "nats.image" .Values.reloader.image }}

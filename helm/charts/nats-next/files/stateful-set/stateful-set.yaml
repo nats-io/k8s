@@ -1,18 +1,15 @@
-{{- $ := . }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.statefulSet.name | default (include "nats.fullname" $) }}
+  name: {{ .Values.statefulSet.name }}
   labels:
     {{- include "nats.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: nats
 spec:
   selector:
     matchLabels:
       {{- include "nats.selectorLabels" $ | nindent 6 }}
-      app.kubernetes.io/component: nats
   replicas: {{ .Values.replicas }}
-  serviceName: {{ .Values.headlessService.name | default (printf "%s-headless" (include "nats.fullname" $)) }}
+  serviceName: {{ .Values.headlessService.name }}
   podManagementPolicy: Parallel
   template:
     {{- with .Values.podTemplate }}

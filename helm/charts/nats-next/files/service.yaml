@@ -1,15 +1,12 @@
-{{- $ := . }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.name | default (include "nats.fullname" $) }}
+  name: {{ .Values.service.name }}
   labels:
     {{- include "nats.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: nats
 spec:
   selector:
     {{- include "nats.selectorLabels" $ | nindent 4 }}
-    app.kubernetes.io/component: nats
   ports:
   {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
   {{- $configProtocol := get $.Values.config $protocol }}

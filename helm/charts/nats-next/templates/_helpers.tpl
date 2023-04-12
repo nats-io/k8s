@@ -31,7 +31,7 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-Common labels
+NATS Common labels
 */}}
 {{- define "nats.labels" -}}
 helm.sh/chart: {{ include "nats.chart" . }}
@@ -43,11 +43,33 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Selector labels
+NATS Selector labels
 */}}
 {{- define "nats.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "nats.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: nats
+{{- end }}
+
+{{/*
+NATS Box labels
+*/}}
+{{- define "natsBox.labels" -}}
+helm.sh/chart: {{ include "nats.chart" . }}
+{{ include "natsBox.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+NATS Box Selector labels
+*/}}
+{{- define "natsBox.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "nats.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: nats-box
 {{- end }}
 
 {{/*

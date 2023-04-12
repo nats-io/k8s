@@ -297,39 +297,39 @@ reloader:
   merge: {}
   patch: []
 
+############################################################
+# stateful set -> pod template -> prom-exporter container
+############################################################
+# config.monitor must be enabled
+promExporter:
+  enabled: false
+  image:
+    repository: natsio/prometheus-nats-exporter
+    tag: 0.10.1
+    pullPolicy: IfNotPresent
+    # registry: docker.io
+
+  port: 7777
+  # env var map, see nats.env for an example
+  env: {}
+
+  # merge or patch the container
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+  merge: {}
+  patch: []
+
   ############################################################
-  # stateful set -> pod template -> prom-exporter container
+  # prometheus pod monitor
   ############################################################
-  # config.monitor must be enabled
-  promExporter:
+  podMonitor:
     enabled: false
-    image:
-      repository: natsio/prometheus-nats-exporter
-      tag: 0.10.1
-      pullPolicy: IfNotPresent
-      # registry: docker.io
 
-    port: 7777
-    # env var map, see nats.env for an example
-    env: {}
-
-    # merge or patch the container
+    # merge or patch the pod monitor
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
     merge: {}
     patch: []
-
-    ############################################################
-    # prometheus pod monitor
-    ############################################################
-    podMonitor:
-      enabled: false
-
-      # merge or patch the pod monitor
-      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
-      merge: {}
-      patch: []
-      # defaults to "{{ include "nats.fullname" $ }}"
-      name:
+    # defaults to "{{ include "nats.fullname" $ }}"
+    name:
       
 
 ############################################################
@@ -524,3 +524,45 @@ natsBox:
     patch: []
     # defaults to "{{ include "nats.fullname" $ }}-box-contents"
     name:
+
+
+############################################################
+# extraResources
+#
+# Extra user-defined resources
+############################################################
+#
+# add arbitrary user-generated resources
+# example:
+#
+# config:
+#   websocket:
+#     enabled: true
+# extraResources:
+# - apiVersion: networking.istio.io/v1beta1
+#   kind: VirtualService
+#   metadata:
+#     name:
+#       tplYaml: >
+#         {{ include "nats.fullname" $ | quote }}
+#     labels:
+#       tplYaml: |
+#         {{ include "nats.labels" $ }}
+#   spec:
+#     hosts:
+#     - example.com
+#     gateways:
+#     - my-gateway
+#     http:
+#     - name: default
+#       route:
+#       - destination:
+#           host:
+#             tplYaml: >
+#               {{ .Values.service.name | quote }}
+#           port:
+#             number:
+#               tplYaml: >
+#                 {{ .Values.config.websocket.port }}
+#
+extraResources: []

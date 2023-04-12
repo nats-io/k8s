@@ -1,4 +1,3 @@
-{{- $ := . }}
 {{- $pidFile := ternary "/var/run/nats/nats.pid" "/var/run/nats.pid" .Values.reloader.enabled }}
 {{- with .Values.config }}
 

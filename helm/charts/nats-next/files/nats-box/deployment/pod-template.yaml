@@ -1,8 +1,6 @@
-{{- $ := . }}
 metadata:
   labels:
-    {{- include "nats.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: nats-box
+    {{- include "natsBox.labels" $ | nindent 4 }}
 spec:
   containers:
   {{- with .Values.natsBox.container }}
@@ -13,11 +11,11 @@ spec:
   # context secret
   - name: context
     secret:
-      secretName: {{ .Values.natsBox.contextSecret.name | default (printf "%s-box-context" (include "nats.fullname" $)) }}
+      secretName: {{ .Values.natsBox.contextSecret.name }}
   # contents secret
   - name: contents
     secret:
-      secretName: {{ .Values.natsBox.contentsSecret.name | default (printf "%s-box-contents" (include "nats.fullname" $)) }}
+      secretName: {{ .Values.natsBox.contentsSecret.name }}
   # context secrets
   {{- range $ctxKey, $ctxVal := .Values.natsBox.context }}
   {{- range $secretKey, $secretVal := dict "creds" "nats-creds" "nkey" "nats-nkeys" "tls" "nats-certs" }}

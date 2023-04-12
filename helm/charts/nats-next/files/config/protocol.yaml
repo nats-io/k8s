@@ -1,4 +1,3 @@
-{{- $ := . }}
 {{- with .protocol }}
 port: {{ .port }}
 

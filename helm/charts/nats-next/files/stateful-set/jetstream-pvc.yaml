@@ -1,7 +1,6 @@
-{{- $ := . }}
 {{- with .Values.config.jetstream.fileStore.pvc }}
 metadata:
-  name: {{ .name | default (printf "%s-js" (include "nats.fullname" $)) }}
+  name: {{ .name }}
 spec:
   accessModes:
   - ReadWriteOnce

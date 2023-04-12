@@ -1,12 +1,10 @@
-{{- $ := . }}
-{{- $name := include "nats.fullname" $ }}
 {{- with .Values.config.cluster }}
-name: {{ $name }}
+name: {{ $.Values.statefulSet.name }}
 port: {{ .port }}
 no_advertise: true
 routes:
 {{- range $i, $_ := until ($.Values.replicas | int) }}
-- {{ printf "nats://%s-%d.%s-headless:6222" $name $i $name }}
+- {{ printf "nats://%s-%d.%s:6222" $.Values.statefulSet.name $i $.Values.headlessService.name }}
 {{- end }}
 
 {{- with .tls }}

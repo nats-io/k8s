@@ -1,4 +1,3 @@
-{{- $ := . }}
 {{- $pidFile := ternary "/var/run/nats/nats.pid" "/var/run/nats.pid" .Values.reloader.enabled }}
 name: nats
 
@@ -69,14 +68,14 @@ volumeMounts:
 {{- with .Values.config.jetstream }}
 {{- if and .enabled .fileStore.enabled .fileStore.pvc.enabled }}
 {{- with .fileStore }}
-- name: {{ .pvc.name | default (printf "%s-js" (include "nats.fullname" $)) }}
+- name: {{ .pvc.name }}
   mountPath: {{ printf "%s/jetstream" .dir | quote }}
 {{- end }}
 {{- end }}
 {{- end }}
 {{- with .Values.config.resolver }}
 {{- if and .enabled .pvc.enabled }}
-- name: {{ .pvc.name | default (printf "%s-resolver" (include "nats.fullname" $)) }}
+- name: {{ .pvc.name }}
   mountPath: {{ .dir | quote }}
 {{- end }}
 {{- end }}

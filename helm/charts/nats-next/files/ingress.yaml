@@ -1,12 +1,10 @@
-{{- $ := . }}
 {{- with .Values.ingress }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .name | default (printf "%s-ws" (include "nats.fullname" $)) }}
+  name: {{ .name }}
   labels:
     {{- include "nats.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: nats
 spec:
   {{- with .className }}
   ingressClassName: {{ . | quote }}
@@ -22,7 +20,7 @@ spec:
         pathType: {{ $pathType | quote }}
         backend:
           service:
-            name: {{ $.Values.service.name | default (include "nats.fullname" $) }}
+            name: {{ $.Values.service.name }}
             port:
               name: websocket
   {{- end }}

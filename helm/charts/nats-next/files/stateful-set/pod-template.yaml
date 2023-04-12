@@ -1,8 +1,6 @@
-{{- $ := . }}
 metadata:
   labels:
     {{- include "nats.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: nats
   annotations:
     {{- if .Values.podTemplate.configChecksumAnnotation }}
     checksum/config: {{ .configChecksum }}
@@ -35,7 +33,7 @@ spec:
   # nats config
   - name: config
     configMap:
-      name: {{ include "nats.fullname" $ }}-config
+      name: {{ .Values.configMap.name }}
   # PID volume
   {{- if .Values.reloader.enabled }}
   - name: pid
