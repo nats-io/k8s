@@ -39,12 +39,12 @@ func (d *DynamicDefaultsGetter) Get(t *testing.T) DynamicDefaults {
 		return d.dd
 	}
 
-	r := HelmRender(t, &Test{
-		Values: `
+	test := DefaultTest()
+	test.Values = `
 promExporter:
   enabled: true
-`,
-	})
+`
+	r := HelmRender(t, test)
 
 	require.True(t, r.StatefulSet.HasValue)
 
@@ -68,7 +68,11 @@ promExporter:
 	return d.dd
 }
 
-func DefaultResources(t *testing.T, chartName, releaseName, fullName string) *Resources {
+func DefaultResources(t *testing.T, test *Test) *Resources {
+	fullName := test.FullName
+	chartName := test.ChartName
+	releaseName := test.ReleaseName
+
 	dd := ddg.Get(t)
 	dr := GenerateResources(fullName)
 
@@ -100,6 +104,8 @@ func DefaultResources(t *testing.T, chartName, releaseName, fullName string) *Re
 	}
 
 	oneReplica := int32(1)
+	trueBool := true
+	resource10Gi, _ := resource.ParseQuantity("10Gi")
 
 	return &Resources{
 		Conf: Resource[map[string]any]{
@@ -351,7 +357,7 @@ done
 					},
 					Template: corev1.PodTemplateSpec{
 						ObjectMeta: v1.ObjectMeta{
-							Labels: natsBoxLabels,
+							Labels: natsLabels,
 						},
 						Spec: corev1.PodSpec{
 							Containers: []corev1.Container{
@@ -362,34 +368,123 @@ done
 									},
 									Image:           dd.NatsImage,
 									ImagePullPolicy: "IfNotPresent",
-									Name:            "nats",
-									VolumeMounts: []corev1.VolumeMount{
+									Lifecycle: &corev1.Lifecycle{
+										PreStop: &corev1.LifecycleHandler{
+											Exec: &corev1.ExecAction{
+												Command: []string{
+													"nats-server",
+													"-sl=ldm=/var/run/nats/nats.pid",
+												},
+											},
+										},
+									},
+									LivenessProbe: &corev1.Probe{
+										ProbeHandler: corev1.ProbeHandler{
+											HTTPGet: &corev1.HTTPGetAction{
+												Path: "/healthz?js-enabled-only=true",
+												Port: intstr.FromString("monitor"),
+											},
+										},
+										InitialDelaySeconds: 10,
+										TimeoutSeconds:      5,
+										PeriodSeconds:       30,
+										SuccessThreshold:    1,
+										FailureThreshold:    3,
+									},
+									Name: "nats",
+									Ports: []corev1.ContainerPort{
 										{
-											MountPath: "/etc/nats-context",
-											Name:      "context",
+											Name:          "nats",
+											ContainerPort: 4222,
 										},
 										{
-											MountPath: "/etc/nats-contents",
-											Name:      "contents",
+											Name:          "cluster",
+											ContainerPort: 6222,
+										},
+										{
+											Name:          "monitor",
+											ContainerPort: 8222,
+										},
+									},
+									ReadinessProbe: &corev1.Probe{
+										ProbeHandler: corev1.ProbeHandler{
+											HTTPGet: &corev1.HTTPGetAction{
+												Path: "/healthz?js-server-only=true",
+												Port: intstr.FromString("monitor"),
+											},
+										},
+										InitialDelaySeconds: 10,
+										TimeoutSeconds:      5,
+										PeriodSeconds:       10,
+										SuccessThreshold:    1,
+										FailureThreshold:    3,
+									},
+									StartupProbe: &corev1.Probe{
+										ProbeHandler: corev1.ProbeHandler{
+											HTTPGet: &corev1.HTTPGetAction{
+												Path: "/healthz",
+												Port: intstr.FromString("monitor"),
+											},
+										},
+										InitialDelaySeconds: 10,
+										TimeoutSeconds:      5,
+										PeriodSeconds:       10,
+										SuccessThreshold:    1,
+										FailureThreshold:    90,
+									},
+									VolumeMounts: []corev1.VolumeMount{
+										{
+											MountPath: "/etc/nats-config",
+											Name:      "config",
+										},
+										{
+											MountPath: "/var/run/nats",
+											Name:      "pid",
+										},
+										{
+											MountPath: "/data/jetstream",
+											Name:      fullName + "-js",
+										},
+									},
+								},
+								{
+									Args: []string{
+										"-pid",
+										"/var/run/nats/nats.pid",
+										"-config",
+										"/etc/nats-config/nats.conf",
+									},
+									Image:           dd.ReloaderImage,
+									ImagePullPolicy: "IfNotPresent",
+									Name:            "reloader",
+									VolumeMounts: []corev1.VolumeMount{
+										{
+											MountPath: "/var/run/nats",
+											Name:      "pid",
+										},
+										{
+											MountPath: "/etc/nats-config",
+											Name:      "config",
 										},
 									},
 								},
 							},
+							ShareProcessNamespace: &trueBool,
 							Volumes: []corev1.Volume{
 								{
-									Name: "context",
+									Name: "config",
 									VolumeSource: corev1.VolumeSource{
-										Secret: &corev1.SecretVolumeSource{
-											SecretName: "nats-box-context",
+										ConfigMap: &corev1.ConfigMapVolumeSource{
+											LocalObjectReference: corev1.LocalObjectReference{
+												Name: "nats-config",
+											},
 										},
 									},
 								},
 								{
-									Name: "contents",
+									Name: "pid",
 									VolumeSource: corev1.VolumeSource{
-										Secret: &corev1.SecretVolumeSource{
-											SecretName: "nats-box-contents",
-										},
+										EmptyDir: &corev1.EmptyDirVolumeSource{},
 									},
 								},
 							},
@@ -406,9 +501,7 @@ done
 								},
 								Resources: corev1.ResourceRequirements{
 									Requests: corev1.ResourceList{
-										"Storage": resource.Quantity{
-											Format: "10Gi",
-										},
+										"storage": resource10Gi,
 									},
 								},
 							},
@@ -464,37 +557,9 @@ done
 	}
 }
 
-func TestDefault(t *testing.T) {
-	r := HelmRender(t, &Test{})
-
-	d := DefaultResources(t, "nats", "nats", "nats")
-
-	require.True(t, r.Conf.HasValue)
-	require.Equal(t, d.Conf.Value, r.Conf.Value)
-
-	require.True(t, r.ConfigMap.HasValue)
-
-	require.True(t, r.HeadlessService.HasValue)
-	require.Equal(t, d.HeadlessService.Value, r.HeadlessService.Value)
-
-	require.False(t, r.Ingress.HasValue)
-
-	require.True(t, r.NatsBoxContentsSecret.HasValue)
-	require.Equal(t, d.NatsBoxContentsSecret.Value, r.NatsBoxContentsSecret.Value)
-
-	require.True(t, r.NatsBoxContextSecret.HasValue)
-	require.Equal(t, d.NatsBoxContextSecret.Value, r.NatsBoxContextSecret.Value)
-
-	require.True(t, r.NatsBoxDeployment.HasValue)
-	require.Equal(t, d.NatsBoxDeployment.Value, r.NatsBoxDeployment.Value)
-
-	require.True(t, r.Service.HasValue)
-	require.Equal(t, d.Service.Value, r.Service.Value)
-
-	require.True(t, r.StatefulSet.HasValue)
-	require.Equal(t, d.StatefulSet.Value, r.StatefulSet.Value)
-
-	require.False(t, r.PodMonitor.HasValue)
-	require.False(t, r.ExtraResource0.HasValue)
-	require.False(t, r.ExtraResource1.HasValue)
+func TestDefaultValues(t *testing.T) {
+	t.Parallel()
+	test := DefaultTest()
+	expected := DefaultResources(t, test)
+	RenderAndCheck(t, test, expected)
 }

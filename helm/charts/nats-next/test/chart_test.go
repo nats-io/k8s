@@ -6,6 +6,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/nats-io/nats-server/v2/conf"
 	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -119,18 +120,27 @@ func GenerateResources(fullName string) *Resources {
 }
 
 type Test struct {
-	Name        string
+	ChartName   string
 	ReleaseName string
 	Namespace   string
 	FullName    string
 	Values      string
 }
 
+func DefaultTest() *Test {
+	return &Test{
+		ChartName:   "nats",
+		ReleaseName: "nats",
+		Namespace:   "nats",
+		FullName:    "nats",
+		Values:      "{}",
+	}
+}
+
 func HelmRender(t *testing.T, test *Test) *Resources {
 	t.Helper()
 
 	helmChartPath, err := filepath.Abs("..")
-	releaseName := "nats"
 	require.NoError(t, err)
 
 	tmpFile, err := os.CreateTemp("", "values.*.yaml")
@@ -146,9 +156,9 @@ func HelmRender(t *testing.T, test *Test) *Resources {
 
 	options := &helm.Options{
 		ValuesFiles:    []string{tmpFile.Name()},
-		KubectlOptions: k8s.NewKubectlOptions("", "", "nats"),
+		KubectlOptions: k8s.NewKubectlOptions("", "", test.Namespace),
 	}
-	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, nil)
+	output := helm.RenderTemplate(t, options, helmChartPath, test.ReleaseName, nil)
 	outputs := strings.Split(output, "---")
 
 	resources := GenerateResources("nats")
@@ -185,4 +195,42 @@ func HelmRender(t *testing.T, test *Test) *Resources {
 	resources.Conf.HasValue = true
 
 	return resources
+}
+
+func RenderAndCheck(t *testing.T, test *Test, expected *Resources) {
+	t.Helper()
+	actual := HelmRender(t, test)
+	a := assert.New(t)
+
+	if actual.ConfigMap.Value.Data != nil {
+		natsConf, ok := actual.ConfigMap.Value.Data["nats.conf"]
+		if ok {
+			if expected.ConfigMap.Value.Data == nil {
+				expected.ConfigMap.Value.Data = map[string]string{}
+			}
+			expected.ConfigMap.Value.Data["nats.conf"] = natsConf
+		}
+	}
+
+	if actual.StatefulSet.Value.Spec.Template.Annotations != nil {
+		configMapHash, ok := actual.StatefulSet.Value.Spec.Template.Annotations["checksum/config"]
+		if ok {
+			if expected.StatefulSet.Value.Spec.Template.Annotations == nil {
+				expected.StatefulSet.Value.Spec.Template.Annotations = map[string]string{}
+			}
+			expected.StatefulSet.Value.Spec.Template.Annotations["checksum/config"] = configMapHash
+		}
+	}
+
+	expectedResources := expected.Iter()
+	actualResources := actual.Iter()
+	require.Len(t, actualResources, len(expectedResources))
+
+	for i, _ := range expectedResources {
+		expectedResource := expectedResources[i]
+		actualResource := actualResources[i]
+		if a.Equal(expectedResource.HasValueP, actualResource.HasValueP) && *actualResource.HasValueP {
+			a.Equal(expectedResource.ValueP, actualResource.ValueP)
+		}
+	}
 }

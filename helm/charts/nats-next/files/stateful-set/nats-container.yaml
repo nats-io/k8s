@@ -30,12 +30,11 @@ lifecycle:
       - nats-server
       - -sl=ldm={{ $pidFile }}
 
-{{- with .Values.config.monitor }}
-{{- if .enabled }}
+{{- if .Values.config.monitor.enabled }}
 startupProbe:
   httpGet:
     path: /healthz
-    port: {{ .port }}
+    port: monitor
   initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 10
@@ -44,7 +43,7 @@ startupProbe:
 readinessProbe:
   httpGet:
     path: /healthz?js-server-only=true
-    port: {{ .port }}
+    port: monitor
   initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 10
@@ -53,18 +52,21 @@ readinessProbe:
 livenessProbe:
   httpGet:
     path: /healthz?js-enabled-only=true
-    port: {{ .port }}
+    port: monitor
   initialDelaySeconds: 10
   timeoutSeconds: 5
   periodSeconds: 30
   successThreshold: 1
   failureThreshold: 3
 {{- end }}
-{{- end }}
 
 volumeMounts:
 - name: config
   mountPath: /etc/nats-config
+{{- if .Values.reloader.enabled }}
+- name: pid
+  mountPath: /var/run/nats
+{{- end}}
 {{- with .Values.config.jetstream }}
 {{- if and .enabled .fileStore.enabled .fileStore.pvc.enabled }}
 {{- with .fileStore }}
@@ -79,10 +81,6 @@ volumeMounts:
   mountPath: {{ .dir | quote }}
 {{- end }}
 {{- end }}
-{{- if .Values.reloader.enabled }}
-- name: pid
-  mountPath: /var/run/nats
-{{- end}}
 {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" }}
 {{- $configProtocol := get $.Values.config $protocol }}
 {{- if and (or (eq $protocol "nats") $configProtocol.enabled) $configProtocol.tls.enabled $configProtocol.tls.secretName }}
