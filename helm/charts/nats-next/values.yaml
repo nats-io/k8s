@@ -555,6 +555,10 @@ natsBox:
 #     - my-gateway
 #     http:
 #     - name: default
+#       match:
+#       - name: root
+#         uri:
+#           exact: /
 #       route:
 #       - destination:
 #           host:
