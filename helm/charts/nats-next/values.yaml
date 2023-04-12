@@ -543,10 +543,10 @@ natsBox:
 #   kind: VirtualService
 #   metadata:
 #     name:
-#       tplYaml: >
+#       $tplYaml: >
 #         {{ include "nats.fullname" $ | quote }}
 #     labels:
-#       tplYaml: |
+#       $tplYaml: |
 #         {{ include "nats.labels" $ }}
 #   spec:
 #     hosts:
@@ -558,11 +558,11 @@ natsBox:
 #       route:
 #       - destination:
 #           host:
-#             tplYaml: >
+#             $tplYaml: >
 #               {{ .Values.service.name | quote }}
 #           port:
 #             number:
-#               tplYaml: >
+#               $tplYaml: >
 #                 {{ .Values.config.websocket.port }}
 #
 extraResources: []

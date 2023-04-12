@@ -11,12 +11,12 @@ Additionally, anything in `values.yaml` can be templated:
 
 - maps matching the following syntax will be templated and parsed as YAML:
   ```yaml
-  tplYaml: |
+  $tplYaml: |
     yaml template
   ```
 - maps matching the follow syntax will be templated, parsed as YAML, and spread into the parent map/slice
   ```yaml
-  tplYamlSpread: |
+  $tplYamlSpread: |
     yaml template
   ```
 
@@ -56,10 +56,10 @@ config:
       authorization:
         user: foo
         password:
-          tplYaml: >
+          $tplYaml: >
             {{ printf "bar" | bcrypt }}
       routes:
-      - tplYamlSpread: |
+      - $tplYamlSpread: |
           {{- range $i, $_ := until ($.Values.replicas | int) }}
           - {{ printf "nats://foo:bar@%s-%d.%s:6222" $.Values.statefulSet.name $i $.Values.headlessService.name }}
           {{- end }}

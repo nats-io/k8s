@@ -8,12 +8,12 @@ output: JSON encoded map with 1 key:
 
 maps matching the following syntax will be templated and parsed as YAML
 {
-  tplYaml: string
+  $tplYaml: string
 }
 
 maps matching the follow syntax will be templated, parsed as YAML, and spread into the parent map/slice
 {
-  tplYamlSpread: string
+  $tplYamlSpread: string
 }
 */}}
 {{- define "tplYaml" -}}
@@ -60,14 +60,14 @@ output: JSON encoded map with 1 key:
     {{- end -}}
 
   {{- else if eq $kind "map" -}}
-    {{- if and (eq (len $params.value) 1) (or (hasKey $params.value "tplYaml") (hasKey $params.value "tplYamlSpread")) -}}
-      {{- $tpl := get $params.value "tplYaml" -}}
+    {{- if and (eq (len $params.value) 1) (or (hasKey $params.value "$tplYaml") (hasKey $params.value "$tplYamlSpread")) -}}
+      {{- $tpl := get $params.value "$tplYaml" -}}
       {{- $spread := false -}}
-      {{- if hasKey $params.value "tplYamlSpread" -}}
+      {{- if hasKey $params.value "$tplYamlSpread" -}}
         {{- if eq $params.path "/" -}}
-          {{- fail "cannot tplSpread on root object" -}}
+          {{- fail "cannot $tplYamlSpread on root object" -}}
         {{- end -}}
-        {{- $tpl = get $params.value "tplYamlSpread" -}}
+        {{- $tpl = get $params.value "$tplYamlSpread" -}}
         {{- $spread = true -}}
       {{- end -}}
 
@@ -79,7 +79,7 @@ output: JSON encoded map with 1 key:
       {{- else -}}
         {{- $resKind := kindOf $res -}}
         {{- if and (ne $resKind "invalid") (ne $resKind $params.parentKind) -}}
-           {{- fail (cat "can only tplYamlSpread slice onto a slice or map onto a map; attempted to spread" $resKind "on" $params.parentKind "at path" $params.path) -}}
+           {{- fail (cat "can only $tplYamlSpread slice onto a slice or map onto a map; attempted to spread" $resKind "on" $params.parentKind "at path" $params.path) -}}
         {{- end -}}
           {{- $patch = append $patch (dict "op" "remove" "path" $params.path) -}}
         {{- if eq $resKind "invalid" -}}
