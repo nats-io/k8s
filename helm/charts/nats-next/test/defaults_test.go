@@ -76,36 +76,45 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 	dd := ddg.Get(t)
 	dr := GenerateResources(fullName)
 
-	natsLabels := map[string]string{
-		"app.kubernetes.io/component":  "nats",
-		"app.kubernetes.io/instance":   releaseName,
-		"app.kubernetes.io/managed-by": "Helm",
-		"app.kubernetes.io/name":       chartName,
-		"app.kubernetes.io/version":    dd.VersionLabel,
-		"helm.sh/chart":                dd.HelmChartLabel,
+	natsLabels := func() map[string]string {
+		return map[string]string{
+			"app.kubernetes.io/component":  "nats",
+			"app.kubernetes.io/instance":   releaseName,
+			"app.kubernetes.io/managed-by": "Helm",
+			"app.kubernetes.io/name":       chartName,
+			"app.kubernetes.io/version":    dd.VersionLabel,
+			"helm.sh/chart":                dd.HelmChartLabel,
+		}
 	}
-	natsSelectorLabels := map[string]string{
-		"app.kubernetes.io/component": "nats",
-		"app.kubernetes.io/instance":  releaseName,
-		"app.kubernetes.io/name":      chartName,
+	natsSelectorLabels := func() map[string]string {
+		return map[string]string{
+			"app.kubernetes.io/component": "nats",
+			"app.kubernetes.io/instance":  releaseName,
+			"app.kubernetes.io/name":      chartName,
+		}
 	}
-	natsBoxLabels := map[string]string{
-		"app.kubernetes.io/component":  "nats-box",
-		"app.kubernetes.io/instance":   releaseName,
-		"app.kubernetes.io/managed-by": "Helm",
-		"app.kubernetes.io/name":       chartName,
-		"app.kubernetes.io/version":    dd.VersionLabel,
-		"helm.sh/chart":                dd.HelmChartLabel,
+	natsBoxLabels := func() map[string]string {
+		return map[string]string{
+			"app.kubernetes.io/component":  "nats-box",
+			"app.kubernetes.io/instance":   releaseName,
+			"app.kubernetes.io/managed-by": "Helm",
+			"app.kubernetes.io/name":       chartName,
+			"app.kubernetes.io/version":    dd.VersionLabel,
+			"helm.sh/chart":                dd.HelmChartLabel,
+		}
 	}
-	natsBoxSelectorLabels := map[string]string{
-		"app.kubernetes.io/component": "nats-box",
-		"app.kubernetes.io/instance":  releaseName,
-		"app.kubernetes.io/name":      chartName,
+	natsBoxSelectorLabels := func() map[string]string {
+		return map[string]string{
+			"app.kubernetes.io/component": "nats-box",
+			"app.kubernetes.io/instance":  releaseName,
+			"app.kubernetes.io/name":      chartName,
+		}
 	}
 
 	oneReplica := int32(1)
 	trueBool := true
 	resource10Gi, _ := resource.ParseQuantity("10Gi")
+	exactPath := networkingv1.PathTypeExact
 
 	return &Resources{
 		Conf: Resource[map[string]any]{
@@ -142,7 +151,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName + "-config",
-					Labels: natsLabels,
+					Labels: natsLabels(),
 				},
 			},
 		},
@@ -156,7 +165,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName + "-headless",
-					Labels: natsLabels,
+					Labels: natsLabels(),
 				},
 				Spec: corev1.ServiceSpec{
 					Ports: []corev1.ServicePort{
@@ -176,7 +185,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 							TargetPort: intstr.FromString("monitor"),
 						},
 					},
-					Selector:                 natsSelectorLabels,
+					Selector:                 natsSelectorLabels(),
 					ClusterIP:                "None",
 					PublishNotReadyAddresses: true,
 				},
@@ -188,11 +197,36 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 			Value: networkingv1.Ingress{
 				TypeMeta: v1.TypeMeta{
 					Kind:       "Ingress",
-					APIVersion: "v1",
+					APIVersion: "networking.k8s.io/v1",
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName + "-ws",
-					Labels: natsLabels,
+					Labels: natsLabels(),
+				},
+				Spec: networkingv1.IngressSpec{
+					Rules: []networkingv1.IngressRule{
+						{
+							Host: "demo.nats.io",
+							IngressRuleValue: networkingv1.IngressRuleValue{
+								HTTP: &networkingv1.HTTPIngressRuleValue{
+									Paths: []networkingv1.HTTPIngressPath{
+										{
+											Path:     "/",
+											PathType: &exactPath,
+											Backend: networkingv1.IngressBackend{
+												Service: &networkingv1.IngressServiceBackend{
+													Name: fullName,
+													Port: networkingv1.ServiceBackendPort{
+														Name: "websocket",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -206,7 +240,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName + "-box-contents",
-					Labels: natsBoxLabels,
+					Labels: natsBoxLabels(),
 				},
 				Type: "Opaque",
 			},
@@ -221,7 +255,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName + "-box-context",
-					Labels: natsBoxLabels,
+					Labels: natsBoxLabels(),
 				},
 				Type: "Opaque",
 				StringData: map[string]string{
@@ -242,16 +276,16 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName + "-box",
-					Labels: natsBoxLabels,
+					Labels: natsBoxLabels(),
 				},
 				Spec: appsv1.DeploymentSpec{
 					Replicas: &oneReplica,
 					Selector: &v1.LabelSelector{
-						MatchLabels: natsBoxSelectorLabels,
+						MatchLabels: natsBoxSelectorLabels(),
 					},
 					Template: corev1.PodTemplateSpec{
 						ObjectMeta: v1.ObjectMeta{
-							Labels: natsBoxLabels,
+							Labels: natsBoxLabels(),
 						},
 						Spec: corev1.PodSpec{
 							Containers: []corev1.Container{
@@ -324,7 +358,7 @@ done
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName,
-					Labels: natsLabels,
+					Labels: natsLabels(),
 				},
 				Spec: corev1.ServiceSpec{
 					Ports: []corev1.ServicePort{
@@ -334,7 +368,7 @@ done
 							TargetPort: intstr.FromString("nats"),
 						},
 					},
-					Selector: natsSelectorLabels,
+					Selector: natsSelectorLabels(),
 				},
 			},
 		},
@@ -348,16 +382,16 @@ done
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName,
-					Labels: natsLabels,
+					Labels: natsLabels(),
 				},
 				Spec: appsv1.StatefulSetSpec{
 					Replicas: &oneReplica,
 					Selector: &v1.LabelSelector{
-						MatchLabels: natsSelectorLabels,
+						MatchLabels: natsSelectorLabels(),
 					},
 					Template: corev1.PodTemplateSpec{
 						ObjectMeta: v1.ObjectMeta{
-							Labels: natsLabels,
+							Labels: natsLabels(),
 						},
 						Spec: corev1.PodSpec{
 							Containers: []corev1.Container{
@@ -518,11 +552,21 @@ done
 			Value: monitoringv1.PodMonitor{
 				TypeMeta: v1.TypeMeta{
 					Kind:       "PodMonitor",
-					APIVersion: "v1",
+					APIVersion: "monitoring.coreos.com/v1",
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName,
-					Labels: natsLabels,
+					Labels: natsLabels(),
+				},
+				Spec: monitoringv1.PodMonitorSpec{
+					PodMetricsEndpoints: []monitoringv1.PodMetricsEndpoint{
+						{
+							Port: "prom-metrics",
+						},
+					},
+					Selector: v1.LabelSelector{
+						MatchLabels: natsSelectorLabels(),
+					},
 				},
 			},
 		},
@@ -536,7 +580,7 @@ done
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName + "-extra",
-					Labels: natsLabels,
+					Labels: natsLabels(),
 				},
 			},
 		},
@@ -550,7 +594,7 @@ done
 				},
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName + "-extra",
-					Labels: natsLabels,
+					Labels: natsLabels(),
 				},
 			},
 		},

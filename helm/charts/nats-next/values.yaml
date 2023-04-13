@@ -325,7 +325,7 @@ promExporter:
     enabled: false
 
     # merge or patch the pod monitor
-    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
+    # https://prometheus-operator.dev/docs/operator/api/#monitoring.coreos.com/v1.PodMonitor
     merge: {}
     patch: []
     # defaults to "{{ include "nats.fullname" $ }}"

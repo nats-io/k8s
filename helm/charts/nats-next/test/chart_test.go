@@ -90,7 +90,7 @@ func GenerateResources(fullName string) *Resources {
 			ID: "Service/" + fullName + "-headless",
 		},
 		Ingress: Resource[networkingv1.Ingress]{
-			ID: "Ingress/" + fullName,
+			ID: "Ingress/" + fullName + "-ws",
 		},
 		NatsBoxContentsSecret: Resource[corev1.Secret]{
 			ID: "Secret/" + fullName + "-box-contents",
