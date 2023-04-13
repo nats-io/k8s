@@ -1,4 +1,4 @@
-name: NATS Helm
+name: nats-helm
 
 on:
   pull_request:
@@ -7,8 +7,7 @@ on:
     - .github/workflows/nats-helm.yml
 
 jobs:
-  templateTest:
-    name: Template Test
+  test:
     runs-on: ubuntu-latest
     steps:
 

@@ -44,7 +44,7 @@ config:
         patch: []
         # defaults to "{{ include "nats.fullname" $ }}-js"
         name:
-    
+
       # defaults to use all of the available pvc size
       maxSize:
 
@@ -52,7 +52,7 @@ config:
       enabled: false
       # ensure that container has a sufficient memory limit greater than maxSize
       maxSize: 1Gi
-    
+
     # merge or patch the jetstream config
     # https://docs.nats.io/running-a-nats-service/configuration#jetstream
     merge: {}
@@ -199,7 +199,7 @@ config:
       storageClassName:
 
       # merge or patch the pvc
-      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core  
+      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#persistentvolumeclaim-v1-core
       merge: {}
       patch: []
       # defaults to "{{ include "nats.fullname" $ }}-resolver"
@@ -341,7 +341,7 @@ promExporter:
     patch: []
     # defaults to "{{ include "nats.fullname" $ }}"
     name:
-      
+
 
 ############################################################
 # service
