@@ -57,6 +57,8 @@ jobs:
               helm/charts/stan \
               -type f \
               -not -name "*.md" \
+              -not -name "*.go" \
+              -not -name "_tplYaml.tpl" \
             | xargs grep -E "^[ ]*\{[^\}]+nindent $i" \
             | grep -Ev "^[^:]+:[ ]{$i}\{"; then
               echo "invalid nindent $i found; nindent should match template indentation"
