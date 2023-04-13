@@ -1,7 +1,5 @@
 name: nats-box
-
-image: {{ include "nats.image" .Values.natsBox.container.image }}
-imagePullPolicy: {{ .Values.natsBox.container.image.pullPolicy }}
+{{ include "nats.image" (merge (pick $.Values "global") .Values.natsBox.container.image) }}
 
 {{- with .Values.natsBox.container.env }}
 env:

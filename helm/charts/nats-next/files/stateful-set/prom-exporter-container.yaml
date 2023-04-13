@@ -1,6 +1,5 @@
 name: prom-exporter
-image: {{ include "nats.image" .Values.promExporter.image }}
-imagePullPolicy: {{ .Values.promExporter.image.pullPolicy }}
+{{ include "nats.image" (merge (pick $.Values "global") .Values.promExporter.image) }}
 
 ports:
 - name: prom-metrics

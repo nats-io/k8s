@@ -1,4 +1,14 @@
 ############################################################
+# global
+#
+# Global options
+############################################################
+global:
+  image:
+    pullPolicy:
+    registry:
+
+############################################################
 # nats
 #
 # NATS Stateful Set and associated resources
@@ -240,8 +250,8 @@ container:
   image:
     repository: nats
     tag: 2.9.15-alpine
-    pullPolicy: IfNotPresent
-    # registry: docker.io
+    pullPolicy:
+    registry:
 
   # container port options
   # must be enabled in the config section also
@@ -281,8 +291,8 @@ reloader:
   image:
     repository: natsio/nats-server-config-reloader
     tag: 0.10.1
-    pullPolicy: IfNotPresent
-    # registry: docker.io
+    pullPolicy:
+    registry:
 
   # env var map, see nats.env for an example
   env: {}
@@ -306,8 +316,8 @@ promExporter:
   image:
     repository: natsio/prometheus-nats-exporter
     tag: 0.10.1
-    pullPolicy: IfNotPresent
-    # registry: docker.io
+    pullPolicy:
+    registry:
 
   port: 7777
   # env var map, see nats.env for an example
@@ -433,7 +443,7 @@ configMap:
 
 
 ############################################################
-# nats-box
+# natsBox
 #
 # NATS Box Deployment and associated resources
 ############################################################
@@ -460,8 +470,10 @@ natsBox:
       tls:
         # set secretName in order to mount an existing secret to /etc/nats-certs/<context-name>
         secretName:
-        cert: tls.crt
-        key: tls.key
+        # set cert and key to name of secret data keys to enable mTLS
+        cert:
+        key:
+        # set ca to name of secret data key to verify server CA
         ca:
 
       # merge or patch the context
@@ -476,8 +488,8 @@ natsBox:
     image:
       repository: natsio/nats-box
       tag: 0.13.5
-      pullPolicy: IfNotPresent
-      # registry: docker.io
+      pullPolicy:
+      registry:
 
     # env var map, see nats.env for an example
     env: {}

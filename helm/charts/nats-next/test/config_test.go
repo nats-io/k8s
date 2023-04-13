@@ -109,6 +109,9 @@ func TestConfigMergePatch(t *testing.T) {
 	test := DefaultTest()
 	test.Values = `
 config:
+  merge:
+    ping_interval: 5m
+  patch: [{op: add, path: /ping_max, value: 3}]
   jetstream:
     merge:
       max_outstanding_catchup: "<< 64MB >>"
@@ -157,6 +160,8 @@ config:
       patch: [{op: add, path: /spec/accessModes/-, value: ReadWriteMany}]
 `
 	expected := DefaultResources(t, test)
+	expected.Conf.Value["ping_interval"] = "5m"
+	expected.Conf.Value["ping_max"] = int64(3)
 	expected.Conf.Value["jetstream"].(map[string]any)["max_outstanding_catchup"] = int64(67108864)
 	expected.Conf.Value["jetstream"].(map[string]any)["max_file_store"] = int64(1073741824)
 	expected.Conf.Value["leafnodes"] = map[string]any{

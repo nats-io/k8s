@@ -1,8 +1,6 @@
 {{- $pidFile := ternary "/var/run/nats/nats.pid" "/var/run/nats.pid" .Values.reloader.enabled }}
 name: nats
-
-image: {{ include "nats.image" .Values.container.image }}
-imagePullPolicy: {{ .Values.container.image.pullPolicy }}
+{{ include "nats.image" (merge (pick $.Values "global") .Values.container.image) }}
 
 ports:
 {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}

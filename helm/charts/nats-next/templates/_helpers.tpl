@@ -112,12 +112,15 @@ Create the name of the service account to use
 {{/*
 Print the image
 */}}
-{{- define "nats.image" -}}
+{{- define "nats.image" }}
 {{- $image := printf "%s:%s" .repository .tag }}
-{{- if .registry }}
-{{- $image = printf "%s/%s" .registry $image }}
+{{- if or .registry .global.image.registry }}
+{{- $image = printf "%s/%s" (.registry | default .global.image.registry) $image }}
+{{- end -}}
+image: {{ $image }}
+{{- if or .pullPolicy .global.image.pullPolicy }}
+imagePullPolicy: {{ .pullPolicy | default .global.image.pullPolicy }}
 {{- end }}
-{{- $image -}}
 {{- end }}
 
 {{/*

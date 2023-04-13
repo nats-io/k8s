@@ -309,10 +309,9 @@ while true; do
 done
 `,
 									},
-									Command:         []string{"sh"},
-									Image:           dd.NatsBoxImage,
-									ImagePullPolicy: "IfNotPresent",
-									Name:            "nats-box",
+									Command: []string{"sh"},
+									Image:   dd.NatsBoxImage,
+									Name:    "nats-box",
 									VolumeMounts: []corev1.VolumeMount{
 										{
 											MountPath: "/etc/nats-context",
@@ -400,8 +399,7 @@ done
 										"--config",
 										"/etc/nats-config/nats.conf",
 									},
-									Image:           dd.NatsImage,
-									ImagePullPolicy: "IfNotPresent",
+									Image: dd.NatsImage,
 									Lifecycle: &corev1.Lifecycle{
 										PreStop: &corev1.LifecycleHandler{
 											Exec: &corev1.ExecAction{
@@ -488,9 +486,8 @@ done
 										"-config",
 										"/etc/nats-config/nats.conf",
 									},
-									Image:           dd.ReloaderImage,
-									ImagePullPolicy: "IfNotPresent",
-									Name:            "reloader",
+									Image: dd.ReloaderImage,
+									Name:  "reloader",
 									VolumeMounts: []corev1.VolumeMount{
 										{
 											MountPath: "/var/run/nats",

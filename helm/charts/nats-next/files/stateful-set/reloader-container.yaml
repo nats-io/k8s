@@ -1,7 +1,5 @@
 name: reloader
-
-image: {{ include "nats.image" .Values.reloader.image }}
-imagePullPolicy: {{ .Values.reloader.image.pullPolicy }}
+{{ include "nats.image" (merge (pick $.Values "global") .Values.reloader.image) }}
 
 {{- with .Values.reloader.env }}
 env:

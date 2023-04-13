@@ -27,10 +27,8 @@ nkey: /etc/nats-nkey/{{ $contextName }}/{{ .nkey.key }}
 # tls
 {{- with .tls }}
 {{- if .secretName }}
-{{- if .cert }}
+{{- if and .cert .key }}
 cert: /etc/nats-certs/{{ $contextName }}/{{ .cert }}
-{{- end }}
-{{- if .key }}
 key: /etc/nats-certs/{{ $contextName }}/{{ .key }}
 {{- end }}
 {{- if .ca }}
