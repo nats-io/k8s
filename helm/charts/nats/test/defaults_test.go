@@ -291,16 +291,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 							Containers: []corev1.Container{
 								{
 									Args: []string{
-										"-c",
-										`mkdir -p "$XDG_CONFIG_HOME/nats"
-cd "$XDG_CONFIG_HOME/nats"
-if ! [ -s context ]; then
-  ln -s /etc/nats-context context
-fi
-if ! [ -f context.txt ]; then
-  echo -n "default" > context.txt
-fi
-stop_signal () {
+										`stop_signal () {
   exit 0
 }
 trap stop_signal SIGINT SIGTERM
@@ -309,9 +300,24 @@ while true; do
 done
 `,
 									},
-									Command: []string{"sh"},
-									Image:   dd.NatsBoxImage,
-									Name:    "nats-box",
+									Command: []string{
+										"sh",
+										"-ec",
+										`work_dir="$(pwd)"
+mkdir -p "$XDG_CONFIG_HOME/nats"
+cd "$XDG_CONFIG_HOME/nats"
+if ! [ -s context ]; then
+  ln -s /etc/nats-contexts context
+fi
+if ! [ -f context.txt ]; then
+  echo -n "default" > context.txt
+fi
+cd "$work_dir"
+exec sh -ec "$0"
+`,
+									},
+									Image: dd.NatsBoxImage,
+									Name:  "nats-box",
 									VolumeMounts: []corev1.VolumeMount{
 										{
 											MountPath: "/etc/nats-contexts",
