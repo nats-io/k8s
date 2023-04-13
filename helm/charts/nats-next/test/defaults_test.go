@@ -245,8 +245,8 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 				Type: "Opaque",
 			},
 		},
-		NatsBoxContextSecret: Resource[corev1.Secret]{
-			ID:       dr.NatsBoxContextSecret.ID,
+		NatsBoxContextsSecret: Resource[corev1.Secret]{
+			ID:       dr.NatsBoxContextsSecret.ID,
 			HasValue: true,
 			Value: corev1.Secret{
 				TypeMeta: v1.TypeMeta{
@@ -254,7 +254,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 					APIVersion: "v1",
 				},
 				ObjectMeta: v1.ObjectMeta{
-					Name:   fullName + "-box-context",
+					Name:   fullName + "-box-contexts",
 					Labels: natsBoxLabels(),
 				},
 				Type: "Opaque",
@@ -314,8 +314,8 @@ done
 									Name:    "nats-box",
 									VolumeMounts: []corev1.VolumeMount{
 										{
-											MountPath: "/etc/nats-context",
-											Name:      "context",
+											MountPath: "/etc/nats-contexts",
+											Name:      "contexts",
 										},
 										{
 											MountPath: "/etc/nats-contents",
@@ -326,10 +326,10 @@ done
 							},
 							Volumes: []corev1.Volume{
 								{
-									Name: "context",
+									Name: "contexts",
 									VolumeSource: corev1.VolumeSource{
 										Secret: &corev1.SecretVolumeSource{
-											SecretName: "nats-box-context",
+											SecretName: "nats-box-contexts",
 										},
 									},
 								},

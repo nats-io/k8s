@@ -26,7 +26,7 @@ spec:
   {{- end }}
   {{- if .tlsSecretName }}
   tls:
-    secretName: {{ .tlsSecretName | quote }}
+  - secretName: {{ .tlsSecretName | quote }}
     hosts:
     {{- toYaml .hosts | nindent 4 }}
   {{- end }}

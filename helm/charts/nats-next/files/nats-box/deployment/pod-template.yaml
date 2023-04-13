@@ -8,19 +8,19 @@ spec:
   {{- end }}
 
   volumes:
-  # context secret
-  - name: context
+  # contexts secret
+  - name: contexts
     secret:
-      secretName: {{ .Values.natsBox.contextSecret.name }}
+      secretName: {{ .Values.natsBox.contextsSecret.name }}
   # contents secret
   - name: contents
     secret:
       secretName: {{ .Values.natsBox.contentsSecret.name }}
   # context secrets
-  {{- range $ctxKey, $ctxVal := .Values.natsBox.context }}
+  {{- range $ctxKey, $ctxVal := .Values.natsBox.contexts }}
   {{- range $secretKey, $secretVal := dict "creds" "nats-creds" "nkey" "nats-nkeys" "tls" "nats-certs" }}
   {{- $secret := get $ctxVal $secretKey }}
-  {{- if $secret.secretName }}
+  {{- if and $secret $secret.secretName }}
   - name: ctx-{{ $ctxKey }}-{{ $secretKey }}
     secret:
       secretName: {{ $secret.secretName | quote }}

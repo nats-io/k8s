@@ -11,17 +11,21 @@ url: nats://{{ .Values.headlessService.name }}
 {{- with .context }}
 
 # creds
-{{- if .creds.contents }}
+{{- with .creds}}
+{{- if .contents }}
 creds: /etc/nats-contents/{{ $contextName }}.creds
-{{- else if .creds.secretName }}
-creds: /etc/nats-creds/{{ $contextName }}/{{ .creds.key }}
+{{- else if .secretName }}
+creds: /etc/nats-creds/{{ $contextName }}/{{ .key }}
+{{- end }}
 {{- end }}
 
 # nkey
-{{- if .nkey.contents }}
+{{- with .nkey}}
+{{- if .contents }}
 nkey: /etc/nats-contents/{{ $contextName }}.nk
-{{- else if .nkey.secretName }}
-nkey: /etc/nats-nkey/{{ $contextName }}/{{ .nkey.key }}
+{{- else if .secretName }}
+nkey: /etc/nats-nkeys/{{ $contextName }}/{{ .key }}
+{{- end }}
 {{- end }}
 
 # tls

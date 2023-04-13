@@ -23,7 +23,7 @@ type Resources struct {
 	HeadlessService       Resource[corev1.Service]
 	Ingress               Resource[networkingv1.Ingress]
 	NatsBoxContentsSecret Resource[corev1.Secret]
-	NatsBoxContextSecret  Resource[corev1.Secret]
+	NatsBoxContextsSecret Resource[corev1.Secret]
 	NatsBoxDeployment     Resource[appsv1.Deployment]
 	Service               Resource[corev1.Service]
 	StatefulSet           Resource[appsv1.StatefulSet]
@@ -39,7 +39,7 @@ func (r *Resources) Iter() []MutableResource {
 		r.HeadlessService.Mutable(),
 		r.Ingress.Mutable(),
 		r.NatsBoxContentsSecret.Mutable(),
-		r.NatsBoxContextSecret.Mutable(),
+		r.NatsBoxContextsSecret.Mutable(),
 		r.NatsBoxDeployment.Mutable(),
 		r.Service.Mutable(),
 		r.StatefulSet.Mutable(),
@@ -95,8 +95,8 @@ func GenerateResources(fullName string) *Resources {
 		NatsBoxContentsSecret: Resource[corev1.Secret]{
 			ID: "Secret/" + fullName + "-box-contents",
 		},
-		NatsBoxContextSecret: Resource[corev1.Secret]{
-			ID: "Secret/" + fullName + "-box-context",
+		NatsBoxContextsSecret: Resource[corev1.Secret]{
+			ID: "Secret/" + fullName + "-box-contexts",
 		},
 		NatsBoxDeployment: Resource[appsv1.Deployment]{
 			ID: "Deployment/" + fullName + "-box",

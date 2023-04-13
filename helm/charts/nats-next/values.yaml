@@ -453,7 +453,7 @@ natsBox:
   ############################################################
   # NATS contexts
   ############################################################
-  context:
+  contexts:
     default:
       creds:
         # set contents in order to create a secret with the creds file contents
@@ -519,13 +519,13 @@ natsBox:
     merge: {}
     patch: []
 
-  # context secret
-  contextSecret:
+  # contexts secret
+  contextsSecret:
     # merge or patch the context secret
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#secret-v1-core
     merge: {}
     patch: []
-    # defaults to "{{ include "nats.fullname" $ }}-box-context"
+    # defaults to "{{ include "nats.fullname" $ }}-box-contexts"
     name:
 
   # contents secret

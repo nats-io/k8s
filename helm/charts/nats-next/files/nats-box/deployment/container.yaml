@@ -27,14 +27,14 @@ args:
     sleep 0.1
   done
 volumeMounts:
-- name: context
-  mountPath: /etc/nats-context
+- name: contexts
+  mountPath: /etc/nats-contexts
 - name: contents
   mountPath: /etc/nats-contents
-{{- range $ctxKey, $ctxVal := .Values.natsBox.context }}
+{{- range $ctxKey, $ctxVal := .Values.natsBox.contexts }}
 {{- range $secretKey, $secretVal := dict "creds" "nats-creds" "nkey" "nats-nkeys" "tls" "nats-certs" }}
 {{- $secret := get $ctxVal $secretKey }}
-{{- if $secret.secretName }}
+{{- if and $secret $secret.secretName }}
 - name: ctx-{{ $ctxKey }}-{{ $secretKey }}
   mountPath: /etc/{{ $secretVal }}/{{ $ctxKey }}
 {{- end }}

@@ -42,7 +42,7 @@ Set default values.
 {{- $_ := set .headlessService                  "name" (.headlessService.name                  | default (printf "%s-headless" $name)) -}}
 {{- $_ := set .ingress                          "name" (.ingress.name                          | default (printf "%s-ws" $name)) -}}
 {{- $_ := set .natsBox.contentsSecret           "name" (.natsBox.contentsSecret.name           | default (printf "%s-box-contents" $name)) -}}
-{{- $_ := set .natsBox.contextSecret            "name" (.natsBox.contextSecret.name            | default (printf "%s-box-context" $name)) -}}
+{{- $_ := set .natsBox.contextsSecret            "name" (.natsBox.contextsSecret.name          | default (printf "%s-box-contexts" $name)) -}}
 {{- $_ := set .natsBox.deployment               "name" (.natsBox.deployment.name               | default (printf "%s-box" $name)) -}}
 {{- $_ := set .service                          "name" (.service.name                          | default $name) -}}
 {{- $_ := set .statefulSet                      "name" (.statefulSet.name                      | default $name) -}}
