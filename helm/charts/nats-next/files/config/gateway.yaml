@@ -1,4 +1,5 @@
 {{- with .Values.config.gateway }}
+name: {{ $.Values.statefulSet.name }}
 port: {{ .port }}
 
 {{- with .tls }}

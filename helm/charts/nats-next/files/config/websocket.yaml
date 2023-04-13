@@ -1,5 +1,6 @@
 {{- with .Values.config.websocket }}
 port: {{ .port }}
+compression: true
 
 {{- if .tls.enabled }}
 {{- with .tls }}

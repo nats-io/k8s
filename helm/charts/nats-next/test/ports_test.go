@@ -93,11 +93,13 @@ service:
 	expected := DefaultResources(t, test)
 	expected.Conf.Value["port"] = int64(1001)
 	expected.Conf.Value["leafnodes"] = map[string]any{
-		"port": int64(1002),
+		"port":         int64(1002),
+		"no_advertise": true,
 	}
 	expected.Conf.Value["websocket"] = map[string]any{
-		"port":   int64(1003),
-		"no_tls": true,
+		"port":        int64(1003),
+		"compression": true,
+		"no_tls":      true,
 	}
 	expected.Conf.Value["mqtt"] = map[string]any{
 		"port": int64(1004),
@@ -105,6 +107,7 @@ service:
 	expected.Conf.Value["cluster"].(map[string]any)["port"] = int64(1005)
 	expected.Conf.Value["gateway"] = map[string]any{
 		"port": int64(1006),
+		"name": "nats",
 	}
 	expected.Conf.Value["http_port"] = int64(1007)
 	expected.Conf.Value["prof_port"] = int64(1008)
