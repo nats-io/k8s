@@ -2,26 +2,26 @@
 Expand the name of the chart.
 */}}
 {{- define "nats.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
-{{- define "nats.namespace" -}}
-{{- default .Release.Namespace .Values.namespaceOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
 {{- define "nats.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
 
 {{/*
 Create chart name and version as used by the chart label.
@@ -31,13 +31,39 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-Common labels
+Set default values.
+*/}}
+{{- define "nats.defaultValues" }}
+{{- if not .defaultValuesSet }}
+{{- $name := include "nats.fullname" . }}
+{{- with .Values }}
+{{- $_ := set .config.jetstream.fileStore.pvc   "name" (.config.jetstream.fileStore.pvc.name   | default (printf "%s-js" $name)) }}
+{{- $_ := set .config.resolver.pvc              "name" (.config.resolver.pvc.name              | default (printf "%s-resolver" $name)) }}
+{{- $_ := set .configMap                        "name" (.configMap.name                        | default (printf "%s-config" $name)) }}
+{{- $_ := set .headlessService                  "name" (.headlessService.name                  | default (printf "%s-headless" $name)) }}
+{{- $_ := set .ingress                          "name" (.ingress.name                          | default (printf "%s-ws" $name)) }}
+{{- $_ := set .natsBox.contentsSecret           "name" (.natsBox.contentsSecret.name           | default (printf "%s-box-contents" $name)) }}
+{{- $_ := set .natsBox.contextsSecret            "name" (.natsBox.contextsSecret.name          | default (printf "%s-box-contexts" $name)) }}
+{{- $_ := set .natsBox.deployment               "name" (.natsBox.deployment.name               | default (printf "%s-box" $name)) }}
+{{- $_ := set .service                          "name" (.service.name                          | default $name) }}
+{{- $_ := set .statefulSet                      "name" (.statefulSet.name                      | default $name) }}
+{{- $_ := set .promExporter.podMonitor          "name" (.promExporter.podMonitor.name          | default $name) }}
+{{- end }}
+{{- $values := get (include "tplYaml" (dict "doc" .Values "ctx" $) | fromJson) "doc" }}
+{{- $_ := set . "Values" $values }}
+{{- with .Values.config }}
+{{- $config := include "nats.loadMergePatch" (merge (dict "file" "config/config.yaml" "ctx" $) .) | fromYaml }}
+{{- $_ := set $ "config" $config }}
+{{- end }}
+{{- $_ := set . "defaultValuesSet" true }}
+{{- end }}
+{{- end }}
+
+{{/*
+NATS Common labels
 */}}
 {{- define "nats.labels" -}}
 helm.sh/chart: {{ include "nats.chart" . }}
-{{- range $name, $value := .Values.commonLabels }}
-{{ $name }}: {{ tpl $value $ }}
-{{- end }}
 {{ include "nats.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -46,211 +72,131 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Selector labels
+NATS Selector labels
 */}}
 {{- define "nats.selectorLabels" -}}
-{{- if .Values.nats.selectorLabels }}
-{{ tpl (toYaml .Values.nats.selectorLabels) . }}
-{{- else -}}
 app.kubernetes.io/name: {{ include "nats.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-{{- end }}
-
-
-{{/*
-Return the proper NATS image name
-*/}}
-{{- define "nats.clusterAdvertise" -}}
-{{- if $.Values.useFQDN }}
-{{- printf "$(POD_NAME).%s.$(POD_NAMESPACE).svc.%s" (include "nats.fullname" . ) $.Values.k8sClusterDomain }}
-{{- else }}
-{{- printf "$(POD_NAME).%s.$(POD_NAMESPACE)" (include "nats.fullname" . ) }}
-{{- end }}
+app.kubernetes.io/component: nats
 {{- end }}
 
 {{/*
-Return the NATS cluster auth.
+NATS Box labels
 */}}
-{{- define "nats.clusterAuth" -}}
-{{- if $.Values.cluster.authorization }}
-{{- printf "%s:%s@" (urlquery $.Values.cluster.authorization.user) (urlquery $.Values.cluster.authorization.password) -}}
-{{- else }}
+{{- define "natsBox.labels" -}}
+helm.sh/chart: {{ include "nats.chart" . }}
+{{ include "natsBox.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Return the NATS cluster routes.
+NATS Box Selector labels
 */}}
-{{- define "nats.clusterRoutes" -}}
-{{- $name := (include "nats.fullname" . ) -}}
-{{- $namespace := (include "nats.namespace" . ) -}}
-{{- $clusterAuth := (include "nats.clusterAuth" . ) -}}
-{{- range $i, $e := until (.Values.cluster.replicas | int) -}}
-{{- if $.Values.useFQDN }}
-{{- printf "nats://%s%s-%d.%s.%s.svc.%s:6222," $clusterAuth $name $i $name $namespace $.Values.k8sClusterDomain -}}
-{{- else }}
-{{- printf "nats://%s%s-%d.%s.%s:6222," $clusterAuth $name $i $name $namespace -}}
+{{- define "natsBox.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "nats.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: nats-box
 {{- end }}
-{{- end -}}
-{{- end }}
-
-{{- define "nats.extraRoutes" -}}
-{{- range $i, $url := .Values.cluster.extraRoutes -}}
-{{- printf "%s," $url -}}
-{{- end -}}
-{{- end }}
-
-{{- define "nats.tlsConfig" -}}
-tls {
-{{- if .cert }}
-    cert_file: {{ .secretPath }}/{{ .secret.name }}/{{ .cert }}
-{{- end }}
-{{- if .key }}
-    key_file:  {{ .secretPath }}/{{ .secret.name }}/{{ .key }}
-{{- end }}
-{{- if .ca }}
-    ca_file: {{ .secretPath }}/{{ .secret.name }}/{{ .ca }}
-{{- end }}
-{{- if .insecure }}
-    insecure: {{ .insecure }}
-{{- end }}
-{{- if .verify }}
-    verify: {{ .verify }}
-{{- end }}
-{{- if .verifyAndMap }}
-    verify_and_map: {{ .verifyAndMap }}
-{{- end }}
-{{- if .verifyCertAndCheckKnownUrls }}
-    verify_cert_and_check_known_urls: {{ .verifyCertAndCheckKnownUrls }}
-{{- end }}
-{{- if .curvePreferences }}
-    curve_preferences: {{ .curvePreferences }}
-{{- end }}
-{{- if .timeout }}
-    timeout: {{ .timeout }}
-{{- end }}
-{{- if .cipherSuites }}
-    cipher_suites: {{ toRawJson .cipherSuites }}
-{{- end }}
-}
-{{- end }}
-
-{{- define "nats.tlsReloaderArgs" -}}
-{{ $secretName := .secret.name }}
-{{ $secretPath := .secretPath }}
-{{- with .ca }}
-- -config
-- {{ $secretPath }}/{{ $secretName }}/{{ . }}
-{{- end }}
-{{- with .cert }}
-- -config
-- {{ $secretPath }}/{{ $secretName }}/{{ . }}
-{{- end }}
-{{- with .key }}
-- -config
-- {{ $secretPath }}/{{ $secretName }}/{{ . }}
-{{- end }}
-{{- end }}
-
-{{- define "nats.tlsVolumeMounts" -}}
-{{- with .Values.nats.tls }}
-#######################
-#                     #
-#  TLS Volumes Mounts #
-#                     #
-#######################
-{{ $secretName := tpl .secret.name $ }}
-- name: {{ $secretName }}-clients-volume
-  mountPath: /etc/nats-certs/clients/{{ $secretName }}
-{{- end }}
-{{- with .Values.mqtt.tls }}
-{{ $secretName := tpl .secret.name $ }}
-- name: {{ $secretName }}-mqtt-volume
-  mountPath: /etc/nats-certs/mqtt/{{ $secretName }}
-{{- end }}
-{{- with .Values.cluster.tls }}
-{{- if not .custom }}
-{{ $secretName := tpl .secret.name $ }}
-- name: {{ $secretName }}-cluster-volume
-  mountPath: /etc/nats-certs/cluster/{{ $secretName }}
-{{- end }}
-{{- end }}
-{{- with .Values.leafnodes.tls }}
-{{- if not .custom }}
-{{ $secretName := tpl .secret.name $ }}
-- name: {{ $secretName }}-leafnodes-volume
-  mountPath: /etc/nats-certs/leafnodes/{{ $secretName }}
-{{- end }}
-{{- end }}
-{{- with .Values.gateway.tls }}
-{{ $secretName := tpl .secret.name $ }}
-- name: {{ $secretName }}-gateways-volume
-  mountPath: /etc/nats-certs/gateways/{{ $secretName }}
-{{- end }}
-{{- with .Values.websocket.tls }}
-{{ $secretName := tpl .secret.name $ }}
-- name: {{ $secretName }}-ws-volume
-  mountPath: /etc/nats-certs/ws/{{ $secretName }}
-{{- end }}
-{{- end }}
-
-{{/*
-Return the appropriate apiVersion for networkpolicy.
-*/}}
-{{- define "networkPolicy.apiVersion" -}}
-{{- if semverCompare ">=1.4-0, <1.7-0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "extensions/v1beta1" -}}
-{{- else -}}
-{{- print "networking.k8s.io/v1" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Renders a value that contains template.
-Usage:
-{{ include "tplvalues.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
-*/}}
-{{- define "tplvalues.render" -}}
-  {{- if typeIs "string" .value }}
-    {{- tpl .value .context }}
-  {{- else }}
-    {{- tpl (toYaml .value) .context }}
-  {{- end }}
-{{- end -}}
-
 
 {{/*
 Create the name of the service account to use
 */}}
 {{- define "nats.serviceAccountName" -}}
-{{- if .Values.nats.serviceAccount.create }}
-{{- default (include "nats.fullname" .) .Values.nats.serviceAccount.name }}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "nats.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.nats.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
-Fix image keys for chart versions <= 0.18.3
-*/}}
-{{- define "nats.fixImage" -}}
-{{- if kindIs "string" .image }}
-{{- $_ := set . "image" (dict "repository" (split ":" .image)._0 "tag" ((split ":" .image)._1 | default "latest") "pullPolicy" "IfNotPresent") }}
-{{- end }}
-{{- if kindIs "string" .pullPolicy }}
-{{- $_ := set .image "pullPolicy" .pullPolicy }}
-{{- $_ := unset . "pullPolicy" }}
+{{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
 
 {{/*
 Print the image
 */}}
-{{- define "nats.image" -}}
+{{- define "nats.image" }}
 {{- $image := printf "%s:%s" .repository .tag }}
-{{- if .registry }}
-{{- $image = printf "%s/%s" .registry $image }}
+{{- if or .registry .global.image.registry }}
+{{- $image = printf "%s/%s" (.registry | default .global.image.registry) $image }}
+{{- end -}}
+image: {{ $image }}
+{{- if or .pullPolicy .global.image.pullPolicy }}
+imagePullPolicy: {{ .pullPolicy | default .global.image.pullPolicy }}
 {{- end }}
-{{- $image -}}
 {{- end }}
+
+{{/*
+translates env var map to list
+*/}}
+{{- define "nats.env" -}}
+{{- range $k, $v := . }}
+{{- if kindIs "string" $v }}
+- name: {{ $k | quote }}
+  value: {{ $v | quote }}
+{{- else if kindIs "map" $v }}
+- {{ merge (dict "name" $k) $v | toYaml | nindent 2 }}
+{{- else }}
+{{- fail (cat "env var" $k "must be string or map, got" (kindOf $v)) }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- /*
+nats.loadMergePatch
+input: map with 4 keys:
+- file: name of file to load
+- ctx: context to pass to tpl
+- merge: interface{} to merge
+- patch: []interface{} valid JSON Patch document
+output: JSON encoded map with 1 key:
+- doc: interface{} patched json result
+*/}}
+{{- define "nats.loadMergePatch" -}}
+{{- $doc := tpl (.ctx.Files.Get (printf "files/%s" .file)) .ctx | fromYaml -}}
+{{- $doc = mergeOverwrite $doc (deepCopy .merge) -}}
+{{- get (include "jsonpatch" (dict "doc" $doc "patch" .patch) | fromJson ) "doc" | toYaml -}}
+{{- end }}
+
+
+{{- /*
+nats.reloaderConfig
+input: map with 2 keys:
+- config: interface{} nats config
+- dir: dir config file is in
+output: YAML list of reloader config files
+*/}}
+{{- define "nats.reloaderConfig" -}}
+  {{- $dir := trimSuffix "/" .dir -}}
+  {{- with .config -}}
+  {{- if kindIs "map" . -}}
+    {{- range $k, $v := . -}}
+      {{- if or (eq $k "cert_file") (eq $k "key_file") (eq $k "ca_file") }}
+- -config
+- {{ $v }}
+      {{- else if hasSuffix "$include" $k }}
+- -config
+- {{ clean (printf "%s/%s" $dir $v) }}
+      {{- else }}
+        {{- include "nats.reloaderConfig" (dict "config" $v "dir" $dir) }}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+
+{{- /*
+nats.formatConfig
+input: map[string]interface{}
+output: string with following format rules
+1. keys ending in $natsRaw are unquoted
+2. keys ending in $natsInclude are converted to include directives
+*/}}
+{{- define "nats.formatConfig" -}}
+  {{-
+    (regexReplaceAll "\"<<\\s+(.*)\\s+>>\""
+      (regexReplaceAll "\".*\\$include\": \"(.*)\",?" (include "toPrettyRawJson" .) "include ${1};")
+    "${1}")
+  -}}
+{{- end -}}

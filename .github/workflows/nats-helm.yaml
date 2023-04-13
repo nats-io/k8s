@@ -1,0 +1,28 @@
+name: NATS Helm
+
+on:
+  pull_request:
+    paths:
+    - 'helm/charts/nats/**'
+    - .github/workflows/nats-helm.yml
+
+jobs:
+  templateTest:
+    name: Template Test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Setup repo
+      uses: actions/checkout@v3
+
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+        check-latest: true
+        cache: true
+        cache-dependency-path: helm/charts/nats/test/go.sum
+
+    - name: Test
+      working-directory: helm/charts/nats/test
+      run: go test

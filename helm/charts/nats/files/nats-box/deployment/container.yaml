@@ -8,17 +8,21 @@ env:
 
 command:
 - sh
-args:
-- -c
+- -ec
 - |
+  work_dir="$(pwd)"
   mkdir -p "$XDG_CONFIG_HOME/nats"
   cd "$XDG_CONFIG_HOME/nats"
   if ! [ -s context ]; then
-    ln -s /etc/nats-context context
+    ln -s /etc/nats-contexts context
   fi
   if ! [ -f context.txt ]; then
     echo -n "default" > context.txt
   fi
+  cd "$work_dir"
+  exec sh -ec "$0"
+args:
+- |
   stop_signal () {
     exit 0
   }

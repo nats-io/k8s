@@ -1,6 +1,6 @@
 module github.com/nats-io/k8s/helm/charts/nats-next
 
-go 1.19
+go 1.20
 
 require (
 	github.com/ghodss/yaml v1.0.0
