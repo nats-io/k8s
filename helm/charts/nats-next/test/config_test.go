@@ -572,3 +572,57 @@ max_outstanding_catchup: 64MB
 
 	RenderAndCheck(t, test, expected)
 }
+
+func TestExtraResources(t *testing.T) {
+	t.Parallel()
+	test := DefaultTest()
+	test.Values = `
+extraResources:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name:
+      $tplYaml: >
+        {{ include "nats.fullname" $ }}-extra
+    labels:
+      $tplYaml: |
+        {{ include "nats.labels" $ }}
+  spec:
+    selector:
+      labels:
+        $tplYamlSpread: |
+          {{ include "nats.selectorLabels" $ | nindent 4 }}
+    ports:
+    - $tplYamlSpread: |
+        - name: gateway
+          port: 7222
+          targetPort: gateway
+- $tplYaml: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ include "nats.fullname" $ }}-extra
+      labels:
+        {{- include "nats.labels" $ | nindent 4 }}
+    data:
+      foo: bar
+`
+
+	expected := DefaultResources(t, test)
+
+	expected.ExtraConfigMap.HasValue = true
+	expected.ExtraConfigMap.Value.Data = map[string]string{
+		"foo": "bar",
+	}
+
+	expected.ExtraService.HasValue = true
+	expected.ExtraService.Value.Spec.Ports = []corev1.ServicePort{
+		{
+			Name:       "gateway",
+			Port:       7222,
+			TargetPort: intstr.FromString("gateway"),
+		},
+	}
+
+	RenderAndCheck(t, test, expected)
+}

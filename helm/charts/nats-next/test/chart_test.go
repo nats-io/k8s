@@ -28,8 +28,8 @@ type Resources struct {
 	Service               Resource[corev1.Service]
 	StatefulSet           Resource[appsv1.StatefulSet]
 	PodMonitor            Resource[monitoringv1.PodMonitor]
-	ExtraResource0        Resource[corev1.ConfigMap]
-	ExtraResource1        Resource[corev1.Service]
+	ExtraConfigMap        Resource[corev1.ConfigMap]
+	ExtraService          Resource[corev1.Service]
 }
 
 func (r *Resources) Iter() []MutableResource {
@@ -44,8 +44,8 @@ func (r *Resources) Iter() []MutableResource {
 		r.Service.Mutable(),
 		r.StatefulSet.Mutable(),
 		r.PodMonitor.Mutable(),
-		r.ExtraResource0.Mutable(),
-		r.ExtraResource1.Mutable(),
+		r.ExtraConfigMap.Mutable(),
+		r.ExtraService.Mutable(),
 	}
 }
 
@@ -110,10 +110,10 @@ func GenerateResources(fullName string) *Resources {
 		PodMonitor: Resource[monitoringv1.PodMonitor]{
 			ID: "PodMonitor/" + fullName,
 		},
-		ExtraResource0: Resource[corev1.ConfigMap]{
+		ExtraConfigMap: Resource[corev1.ConfigMap]{
 			ID: "ConfigMap/" + fullName + "-extra",
 		},
-		ExtraResource1: Resource[corev1.Service]{
+		ExtraService: Resource[corev1.Service]{
 			ID: "Service/" + fullName + "-extra",
 		},
 	}

@@ -567,8 +567,8 @@ done
 				},
 			},
 		},
-		ExtraResource0: Resource[corev1.ConfigMap]{
-			ID:       dr.ExtraResource0.ID,
+		ExtraConfigMap: Resource[corev1.ConfigMap]{
+			ID:       dr.ExtraConfigMap.ID,
 			HasValue: false,
 			Value: corev1.ConfigMap{
 				TypeMeta: v1.TypeMeta{
@@ -581,8 +581,8 @@ done
 				},
 			},
 		},
-		ExtraResource1: Resource[corev1.Service]{
-			ID:       dr.ExtraResource1.ID,
+		ExtraService: Resource[corev1.Service]{
+			ID:       dr.ExtraService.ID,
 			HasValue: false,
 			Value: corev1.Service{
 				TypeMeta: v1.TypeMeta{
@@ -592,6 +592,9 @@ done
 				ObjectMeta: v1.ObjectMeta{
 					Name:   fullName + "-extra",
 					Labels: natsLabels(),
+				},
+				Spec: corev1.ServiceSpec{
+					Selector: natsSelectorLabels(),
 				},
 			},
 		},
