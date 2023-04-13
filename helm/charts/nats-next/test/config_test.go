@@ -162,8 +162,8 @@ config:
 	expected := DefaultResources(t, test)
 	expected.Conf.Value["ping_interval"] = "5m"
 	expected.Conf.Value["ping_max"] = int64(3)
-	expected.Conf.Value["jetstream"].(map[string]any)["max_outstanding_catchup"] = int64(67108864)
 	expected.Conf.Value["jetstream"].(map[string]any)["max_file_store"] = int64(1073741824)
+	expected.Conf.Value["jetstream"].(map[string]any)["max_outstanding_catchup"] = int64(67108864)
 	expected.Conf.Value["leafnodes"] = map[string]any{
 		"port":         int64(7422),
 		"no_advertise": false,
@@ -522,6 +522,53 @@ config:
 			TargetPort: intstr.FromString("mqtt"),
 		},
 	}
+
+	RenderAndCheck(t, test, expected)
+}
+
+func TestConfigInclude(t *testing.T) {
+	t.Parallel()
+	test := DefaultTest()
+	test.Values = `
+config:
+  jetstream:
+    merge:
+      000$include: "js.conf"
+  merge:
+    $include: "my-config.conf"
+    zzz$include: "my-config-last.conf"
+configMap:
+  merge:
+    data:
+      js.conf: |
+        max_file_store:  1GB
+        max_outstanding_catchup: 64MB
+      my-config.conf: |
+        ping_interval: "5m"
+      my-config-last.conf: |
+        ping_max: 3
+`
+	expected := DefaultResources(t, test)
+	expected.Conf.Value["ping_interval"] = "5m"
+	expected.Conf.Value["ping_max"] = int64(3)
+	expected.Conf.Value["jetstream"].(map[string]any)["max_file_store"] = int64(1073741824)
+	expected.Conf.Value["jetstream"].(map[string]any)["max_outstanding_catchup"] = int64(67108864)
+
+	expected.ConfigMap.Value.Data = map[string]string{
+		"js.conf": `max_file_store:  1GB
+max_outstanding_catchup: 64MB
+`,
+		"my-config.conf": `ping_interval: "5m"
+`,
+		"my-config-last.conf": `ping_max: 3
+`,
+	}
+
+	reloaderArgs := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args
+	reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-config/my-config.conf")
+	reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-config/js.conf")
+	reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-config/my-config-last.conf")
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args = reloaderArgs
 
 	RenderAndCheck(t, test, expected)
 }

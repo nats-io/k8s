@@ -172,7 +172,7 @@ output: YAML list of reloader config files
 - -config
 - {{ $v }}
       {{- else if hasSuffix "$include" $k }}
-- config
+- -config
 - {{ clean (printf "%s/%s" $dir $v) }}
       {{- else }}
         {{- include "nats.reloaderConfig" (dict "config" $v "dir" $dir) }}
