@@ -166,7 +166,7 @@ output: YAML list of reloader config files
   {{- if kindIs "map" . -}}
     {{- range $k, $v := . -}}
       {{- if or (eq $k "cert_file") (eq $k "key_file") (eq $k "ca_file") }}
-- config
+- -config
 - {{ $v }}
       {{- else if hasSuffix "$include" $k }}
 - config

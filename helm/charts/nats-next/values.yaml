@@ -54,7 +54,7 @@ config:
       # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/nats
-      cert: tls.cert
+      cert: tls.crt
       key: tls.key
       ca:
       # merge or patch the tls config
@@ -70,7 +70,7 @@ config:
       # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/leafnodes
-      cert: tls.cert
+      cert: tls.crt
       key: tls.key
       ca:
       # merge or patch the tls config
@@ -91,7 +91,7 @@ config:
       # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/websocket
-      cert: tls.cert
+      cert: tls.crt
       key: tls.key
       ca:
       # merge or patch the tls config
@@ -112,7 +112,7 @@ config:
       # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/mqtt
-      cert: tls.cert
+      cert: tls.crt
       key: tls.key
       ca:
       # merge or patch the tls config
@@ -133,7 +133,7 @@ config:
       # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/cluster
-      cert: tls.cert
+      cert: tls.crt
       key: tls.key
       ca:
       # merge or patch the tls config
@@ -154,7 +154,7 @@ config:
       # set secretName in order to mount an existing secret to dir
       secretName:
       dir: /etc/nats-certs/gateway
-      cert: tls.cert
+      cert: tls.crt
       key: tls.key
       ca:
       # merge or patch the tls config
@@ -460,7 +460,7 @@ natsBox:
       tls:
         # set secretName in order to mount an existing secret to /etc/nats-certs/<context-name>
         secretName:
-        cert: tls.cert
+        cert: tls.crt
         key: tls.key
         ca:
 

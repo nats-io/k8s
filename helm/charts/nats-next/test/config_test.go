@@ -317,3 +317,206 @@ config:
 
 	RenderAndCheck(t, test, expected)
 }
+
+func TestConfigTls(t *testing.T) {
+	t.Parallel()
+	test := DefaultTest()
+	test.Values = `
+config:
+  nats:
+    tls:
+      enabled: true
+      secretName: nats-tls
+      ca: tls.ca
+      merge:
+        verify_cert_and_check_known_urls: true
+      patch: [{op: add, path: /verify_and_map, value: true}]
+  leafnodes:
+    enabled: true
+    tls:
+      enabled: true
+      secretName: leafnodes-tls
+  websocket:
+    enabled: true
+    tls:
+      enabled: true
+      secretName: websocket-tls
+  mqtt:
+    enabled: true
+    tls:
+      enabled: true
+      secretName: mqtt-tls
+  cluster:
+    tls:
+      enabled: true
+      secretName: cluster-tls
+  gateway:
+    enabled: true
+    tls:
+      enabled: true
+      secretName: gateway-tls
+`
+	expected := DefaultResources(t, test)
+	expected.Conf.Value["leafnodes"] = map[string]any{
+		"port":         int64(7422),
+		"no_advertise": true,
+	}
+	expected.Conf.Value["websocket"] = map[string]any{
+		"port":        int64(8080),
+		"compression": true,
+	}
+	expected.Conf.Value["mqtt"] = map[string]any{
+		"port": int64(1883),
+	}
+	expected.Conf.Value["gateway"] = map[string]any{
+		"port": int64(7222),
+		"name": "nats",
+	}
+
+	volumes := expected.StatefulSet.Value.Spec.Template.Spec.Volumes
+	natsVm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
+	reloaderVm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].VolumeMounts
+	for _, protocol := range []string{"nats", "leafnodes", "websocket", "mqtt", "cluster", "gateway"} {
+		tls := map[string]any{
+			"cert_file": "/etc/nats-certs/" + protocol + "/tls.crt",
+			"key_file":  "/etc/nats-certs/" + protocol + "/tls.key",
+		}
+		if protocol == "nats" {
+			tls["ca_file"] = "/etc/nats-certs/" + protocol + "/tls.ca"
+			tls["verify"] = true
+			tls["verify_cert_and_check_known_urls"] = true
+			tls["verify_and_map"] = true
+			expected.Conf.Value["tls"] = tls
+		} else {
+			expected.Conf.Value[protocol].(map[string]any)["tls"] = tls
+		}
+
+		volumes = append(volumes, corev1.Volume{
+			Name: protocol + "-tls",
+			VolumeSource: corev1.VolumeSource{
+				Secret: &corev1.SecretVolumeSource{
+					SecretName: protocol + "-tls",
+				},
+			},
+		})
+
+		natsVm = append(natsVm, corev1.VolumeMount{
+			MountPath: "/etc/nats-certs/" + protocol,
+			Name:      protocol + "-tls",
+		})
+
+		reloaderVm = append(reloaderVm, corev1.VolumeMount{
+			MountPath: "/etc/nats-certs/" + protocol,
+			Name:      protocol + "-tls",
+		})
+	}
+
+	expected.StatefulSet.Value.Spec.Template.Spec.Volumes = volumes
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = natsVm
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].VolumeMounts = reloaderVm
+
+	// reloader certs are alphabetized
+	reloaderArgs := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args
+	for _, protocol := range []string{"cluster", "gateway", "leafnodes", "mqtt", "nats", "websocket"} {
+		if protocol == "nats" {
+			reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-certs/"+protocol+"/tls.ca")
+		}
+		reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-certs/"+protocol+"/tls.crt", "-config", "/etc/nats-certs/"+protocol+"/tls.key")
+	}
+
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args = reloaderArgs
+
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].Ports = []corev1.ContainerPort{
+		{
+			Name:          "nats",
+			ContainerPort: 4222,
+		},
+		{
+			Name:          "leafnodes",
+			ContainerPort: 7422,
+		},
+		{
+			Name:          "websocket",
+			ContainerPort: 8080,
+		},
+		{
+			Name:          "mqtt",
+			ContainerPort: 1883,
+		},
+		{
+			Name:          "cluster",
+			ContainerPort: 6222,
+		},
+		{
+			Name:          "gateway",
+			ContainerPort: 7222,
+		},
+		{
+			Name:          "monitor",
+			ContainerPort: 8222,
+		},
+	}
+
+	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
+		{
+			Name:       "nats",
+			Port:       4222,
+			TargetPort: intstr.FromString("nats"),
+		},
+		{
+			Name:       "leafnodes",
+			Port:       7422,
+			TargetPort: intstr.FromString("leafnodes"),
+		},
+		{
+			Name:       "websocket",
+			Port:       8080,
+			TargetPort: intstr.FromString("websocket"),
+		},
+		{
+			Name:       "mqtt",
+			Port:       1883,
+			TargetPort: intstr.FromString("mqtt"),
+		},
+		{
+			Name:       "cluster",
+			Port:       6222,
+			TargetPort: intstr.FromString("cluster"),
+		},
+		{
+			Name:       "gateway",
+			Port:       7222,
+			TargetPort: intstr.FromString("gateway"),
+		},
+		{
+			Name:       "monitor",
+			Port:       8222,
+			TargetPort: intstr.FromString("monitor"),
+		},
+	}
+
+	expected.Service.Value.Spec.Ports = []corev1.ServicePort{
+		{
+			Name:       "nats",
+			Port:       4222,
+			TargetPort: intstr.FromString("nats"),
+		},
+		{
+			Name:       "leafnodes",
+			Port:       7422,
+			TargetPort: intstr.FromString("leafnodes"),
+		},
+		{
+			Name:       "websocket",
+			Port:       8080,
+			TargetPort: intstr.FromString("websocket"),
+		},
+		{
+			Name:       "mqtt",
+			Port:       1883,
+			TargetPort: intstr.FromString("mqtt"),
+		},
+	}
+
+	RenderAndCheck(t, test, expected)
+}
