@@ -1,9 +1,10 @@
 package test
 
 import (
+	"testing"
+
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"testing"
 )
 
 func TestPorts(t *testing.T) {
@@ -11,9 +12,12 @@ func TestPorts(t *testing.T) {
 	test := DefaultTest()
 	test.Values = `
 config:
+  cluster:
+    enabled: true
+    port: 1005
   nats:
     port: 1001
-  leafnodes:
+  leafnode:
     enabled: true
     port: 1002
   websocket:
@@ -22,8 +26,6 @@ config:
   mqtt:
     enabled: true
     port: 1004
-  cluster:
-    port: 1005
   gateway:
     enabled: true
     port: 1006
@@ -37,7 +39,7 @@ container:
   ports:
     nats:
       hostPort: 2001
-    leafnodes:
+    leafnode:
       hostPort: 2002
     websocket:
       hostPort: 2003
@@ -61,7 +63,7 @@ service:
       enabled: true
       port: 3001
       nodePort: 4001
-    leafnodes:
+    leafnode:
       enabled: true
       port: 3002
       nodePort: 4002
@@ -92,7 +94,7 @@ service:
 `
 	expected := DefaultResources(t, test)
 	expected.Conf.Value["port"] = int64(1001)
-	expected.Conf.Value["leafnodes"] = map[string]any{
+	expected.Conf.Value["leafnode"] = map[string]any{
 		"port":         int64(1002),
 		"no_advertise": true,
 	}
@@ -104,13 +106,25 @@ service:
 	expected.Conf.Value["mqtt"] = map[string]any{
 		"port": int64(1004),
 	}
-	expected.Conf.Value["cluster"].(map[string]any)["port"] = int64(1005)
+	expected.Conf.Value["cluster"] = map[string]any{
+		"name":         "nats",
+		"no_advertise": true,
+		"port":         int64(1005),
+		"routes": []any{
+			"nats://nats-0.nats-headless:6222",
+			"nats://nats-1.nats-headless:6222",
+			"nats://nats-2.nats-headless:6222",
+		},
+	}
 	expected.Conf.Value["gateway"] = map[string]any{
 		"port": int64(1006),
 		"name": "nats",
 	}
 	expected.Conf.Value["http_port"] = int64(1007)
 	expected.Conf.Value["prof_port"] = int64(1008)
+
+	replicas3 := int32(3)
+	expected.StatefulSet.Value.Spec.Replicas = &replicas3
 
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].Ports = []corev1.ContainerPort{
 		{
@@ -119,7 +133,7 @@ service:
 			HostPort:      2001,
 		},
 		{
-			Name:          "leafnodes",
+			Name:          "leafnode",
 			ContainerPort: 1002,
 			HostPort:      2002,
 		},
@@ -162,9 +176,9 @@ service:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnodes",
+			Name:       "leafnode",
 			Port:       1002,
-			TargetPort: intstr.FromString("leafnodes"),
+			TargetPort: intstr.FromString("leafnode"),
 		},
 		{
 			Name:       "websocket",
@@ -207,10 +221,10 @@ service:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnodes",
+			Name:       "leafnode",
 			Port:       3002,
 			NodePort:   4002,
-			TargetPort: intstr.FromString("leafnodes"),
+			TargetPort: intstr.FromString("leafnode"),
 		},
 		{
 			Name:       "websocket",

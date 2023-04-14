@@ -5,7 +5,6 @@ on:
   pull_request:
     paths:
       - 'helm/charts/**'
-      - '!helm/charts/index.yaml'
       - '.github/workflows/test.yaml'
 
 jobs:
@@ -70,8 +69,7 @@ jobs:
       - name: Create k8s cluster
         run: |-
           sudo snap install microk8s --channel="${{ matrix.k8s }}/stable" --classic
-          sudo microk8s.enable dns
-          sudo microk8s.enable storage
+          sudo microk8s.enable dns hostpath-storage
           sudo microk8s.kubectl wait --for=condition=ready --timeout=60s node --all
           sudo microk8s.kubectl wait --for=condition=ready --timeout=120s --namespace=kube-system pod --all
           mkdir -p ~/.kube

@@ -1,6 +1,11 @@
 package test
 
 import (
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
 	"github.com/ghodss/yaml"
 	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/gruntwork-io/terratest/modules/k8s"
@@ -11,10 +16,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
-	"os"
-	"path/filepath"
-	"strings"
-	"testing"
 )
 
 type Resources struct {
@@ -186,7 +187,7 @@ func HelmRender(t *testing.T, test *Test) *Resources {
 	defer os.RemoveAll(confDir)
 
 	for k, v := range resources.ConfigMap.Value.Data {
-		err := os.WriteFile(filepath.Join(confDir, k), []byte(v), 0644)
+		err := os.WriteFile(filepath.Join(confDir, k), []byte(v), 0o644)
 		require.NoError(t, err)
 	}
 
@@ -226,7 +227,7 @@ func RenderAndCheck(t *testing.T, test *Test, expected *Resources) {
 	actualResources := actual.Iter()
 	require.Len(t, actualResources, len(expectedResources))
 
-	for i, _ := range expectedResources {
+	for i := range expectedResources {
 		expectedResource := expectedResources[i]
 		actualResource := actualResources[i]
 		if a.Equal(expectedResource.HasValueP, actualResource.HasValueP) && *actualResource.HasValueP {

@@ -1,29 +1,46 @@
-############################################################
-# global
-#
+################################################################################
 # Global options
-############################################################
+################################################################################
 global:
   image:
     pullPolicy:
     registry:
 
 
-############################################################
-# nats
-#
+################################################################################
 # NATS Stateful Set and associated resources
-############################################################
-
-# number of replicas in stateful set
-replicas: 1
+################################################################################
 
 ############################################################
 # NATS config
 ############################################################
 config:
+  cluster:
+    enabled: false
+    port: 6222
+    # must be 2 or higher when jetstream is enabled
+    replicas: 3
+
+    tls:
+      enabled: false
+      # set secretName in order to mount an existing secret to dir
+      secretName:
+      dir: /etc/nats-certs/cluster
+      cert: tls.crt
+      key: tls.key
+      ca:
+      # merge or patch the tls config
+      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
+      merge: { }
+      patch: [ ]
+
+    # merge or patch the cluster config
+    # https://docs.nats.io/running-a-nats-service/configuration/clustering/cluster_config
+    merge: { }
+    patch: [ ]
+
   jetstream:
-    enabled: true
+    enabled: false
 
     fileStore:
       enabled: true
@@ -73,14 +90,14 @@ config:
       merge: {}
       patch: []
 
-  leafnodes:
+  leafnode:
     enabled: false
     port: 7422
     tls:
       enabled: false
       # set secretName in order to mount an existing secret to dir
       secretName:
-      dir: /etc/nats-certs/leafnodes
+      dir: /etc/nats-certs/leafnode
       cert: tls.crt
       key: tls.key
       ca:
@@ -89,8 +106,8 @@ config:
       merge: {}
       patch: []
 
-    # merge or patch the leafnodes config
-    # https://docs.nats.io/running-a-nats-service/configuration/leafnodes/leafnode_conf
+    # merge or patch the leafnode config
+    # https://docs.nats.io/running-a-nats-service/configuration/leafnode/leafnode_conf
     merge: {}
     patch: []
 
@@ -133,27 +150,6 @@ config:
 
     # merge or patch the mqtt config
     # https://docs.nats.io/running-a-nats-service/configuration/mqtt/mqtt_config
-    merge: {}
-    patch: []
-
-  cluster:
-    enabled: true
-    port: 6222
-    tls:
-      enabled: false
-      # set secretName in order to mount an existing secret to dir
-      secretName:
-      dir: /etc/nats-certs/cluster
-      cert: tls.crt
-      key: tls.key
-      ca:
-      # merge or patch the tls config
-      # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-      merge: {}
-      patch: []
-
-    # merge or patch the cluster config
-    # https://docs.nats.io/running-a-nats-service/configuration/clustering/cluster_config
     merge: {}
     patch: []
 
@@ -259,7 +255,7 @@ container:
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#containerport-v1-core
   ports:
     nats: {}
-    leafnodes: {}
+    leafnode: {}
     websocket: {}
     mqtt: {}
     cluster: {}
@@ -356,7 +352,7 @@ service:
   ports:
     nats:
       enabled: true
-    leafnodes:
+    leafnode:
       enabled: true
     websocket:
       enabled: true
@@ -539,11 +535,9 @@ natsBox:
     name:
 
 
-############################################################
-# extraResources
-#
+################################################################################
 # Extra user-defined resources
-############################################################
+################################################################################
 #
 # add arbitrary user-generated resources
 # example:

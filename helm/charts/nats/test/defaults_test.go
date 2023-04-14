@@ -1,16 +1,16 @@
 package test
 
 import (
+	"sync"
+	"testing"
+
 	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/require"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"sync"
-	"testing"
 )
 
 type DynamicDefaults struct {
@@ -111,9 +111,8 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 		}
 	}
 
-	oneReplica := int32(1)
+	replicas1 := int32(1)
 	trueBool := true
-	resource10Gi, _ := resource.ParseQuantity("10Gi")
 	exactPath := networkingv1.PathTypeExact
 
 	return &Resources{
@@ -121,19 +120,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 			ID:       dr.Conf.ID,
 			HasValue: true,
 			Value: map[string]any{
-				"cluster": map[string]any{
-					"name":         "nats",
-					"no_advertise": true,
-					"port":         int64(6222),
-					"routes": []any{
-						"nats://nats-0.nats-headless:6222",
-					},
-				},
-				"http_port": int64(8222),
-				"jetstream": map[string]any{
-					"max_memory_store": int64(0),
-					"store_dir":        "/data",
-				},
+				"http_port":              int64(8222),
 				"lame_duck_duration":     "30s",
 				"lame_duck_grace_period": "10s",
 				"pid_file":               "/var/run/nats/nats.pid",
@@ -173,11 +160,6 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 							Name:       "nats",
 							Port:       4222,
 							TargetPort: intstr.FromString("nats"),
-						},
-						{
-							Name:       "cluster",
-							Port:       6222,
-							TargetPort: intstr.FromString("cluster"),
 						},
 						{
 							Name:       "monitor",
@@ -279,7 +261,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 					Labels: natsBoxLabels(),
 				},
 				Spec: appsv1.DeploymentSpec{
-					Replicas: &oneReplica,
+					Replicas: &replicas1,
 					Selector: &v1.LabelSelector{
 						MatchLabels: natsBoxSelectorLabels(),
 					},
@@ -390,7 +372,7 @@ exec sh -ec "$0"
 					Labels: natsLabels(),
 				},
 				Spec: appsv1.StatefulSetSpec{
-					Replicas: &oneReplica,
+					Replicas: &replicas1,
 					Selector: &v1.LabelSelector{
 						MatchLabels: natsSelectorLabels(),
 					},
@@ -436,10 +418,6 @@ exec sh -ec "$0"
 											ContainerPort: 4222,
 										},
 										{
-											Name:          "cluster",
-											ContainerPort: 6222,
-										},
-										{
 											Name:          "monitor",
 											ContainerPort: 8222,
 										},
@@ -478,10 +456,6 @@ exec sh -ec "$0"
 										{
 											MountPath: "/var/run/nats",
 											Name:      "pid",
-										},
-										{
-											MountPath: "/data/jetstream",
-											Name:      fullName + "-js",
 										},
 									},
 								},
@@ -522,23 +496,6 @@ exec sh -ec "$0"
 									Name: "pid",
 									VolumeSource: corev1.VolumeSource{
 										EmptyDir: &corev1.EmptyDirVolumeSource{},
-									},
-								},
-							},
-						},
-					},
-					VolumeClaimTemplates: []corev1.PersistentVolumeClaim{
-						{
-							ObjectMeta: v1.ObjectMeta{
-								Name: fullName + "-js",
-							},
-							Spec: corev1.PersistentVolumeClaimSpec{
-								AccessModes: []corev1.PersistentVolumeAccessMode{
-									"ReadWriteOnce",
-								},
-								Resources: corev1.ResourceRequirements{
-									Requests: corev1.ResourceList{
-										"storage": resource10Gi,
 									},
 								},
 							},

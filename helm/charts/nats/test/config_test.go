@@ -1,11 +1,12 @@
 package test
 
 import (
+	"testing"
+
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"testing"
 )
 
 func TestConfigDisable(t *testing.T) {
@@ -13,21 +14,12 @@ func TestConfigDisable(t *testing.T) {
 	test := DefaultTest()
 	test.Values = `
 config:
-  jetstream:
-    enabled: false
-  cluster:
-    enabled: false
   monitor:
     enabled: false
 `
 	expected := DefaultResources(t, test)
-	delete(expected.Conf.Value, "jetstream")
-	delete(expected.Conf.Value, "cluster")
 	delete(expected.Conf.Value, "http_port")
 
-	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = nil
-	vm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
-	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(vm[:2], vm[3:]...)
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].LivenessProbe = nil
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].ReadinessProbe = nil
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].StartupProbe = nil
@@ -41,12 +33,104 @@ config:
 	RenderAndCheck(t, test, expected)
 }
 
+func TestConfigJetStreamCluster(t *testing.T) {
+	t.Parallel()
+	test := DefaultTest()
+	test.Values = `
+config:
+  cluster:
+    enabled: true
+  jetstream:
+    enabled: true
+`
+	expected := DefaultResources(t, test)
+
+	expected.Conf.Value["cluster"] = map[string]any{
+		"name":         "nats",
+		"no_advertise": true,
+		"port":         int64(6222),
+		"routes": []any{
+			"nats://nats-0.nats-headless:6222",
+			"nats://nats-1.nats-headless:6222",
+			"nats://nats-2.nats-headless:6222",
+		},
+	}
+	expected.Conf.Value["jetstream"] = map[string]any{
+		"max_memory_store": int64(0),
+		"store_dir":        "/data",
+	}
+
+	replicas3 := int32(3)
+	expected.StatefulSet.Value.Spec.Replicas = &replicas3
+
+	vm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(vm, corev1.VolumeMount{
+		MountPath: "/data/jetstream",
+		Name:      test.FullName + "-js",
+	})
+
+	resource10Gi, _ := resource.ParseQuantity("10Gi")
+	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{
+		{
+			ObjectMeta: v1.ObjectMeta{
+				Name: test.FullName + "-js",
+			},
+			Spec: corev1.PersistentVolumeClaimSpec{
+				AccessModes: []corev1.PersistentVolumeAccessMode{
+					"ReadWriteOnce",
+				},
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						"storage": resource10Gi,
+					},
+				},
+			},
+		},
+	}
+
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].Ports = []corev1.ContainerPort{
+		{
+			Name:          "nats",
+			ContainerPort: 4222,
+		},
+		{
+			Name:          "cluster",
+			ContainerPort: 6222,
+		},
+		{
+			Name:          "monitor",
+			ContainerPort: 8222,
+		},
+	}
+
+	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
+		{
+			Name:       "nats",
+			Port:       4222,
+			TargetPort: intstr.FromString("nats"),
+		},
+		{
+			Name:       "cluster",
+			Port:       6222,
+			TargetPort: intstr.FromString("cluster"),
+		},
+		{
+			Name:       "monitor",
+			Port:       8222,
+			TargetPort: intstr.FromString("monitor"),
+		},
+	}
+
+	RenderAndCheck(t, test, expected)
+}
+
 func TestConfigOptions(t *testing.T) {
 	t.Parallel()
 	test := DefaultTest()
 	test.Values = `
 config:
   jetstream:
+    enabled: true
     fileStore:
       dir: /mnt
       pvc:
@@ -56,6 +140,9 @@ config:
     memoryStore:
       enabled: true
       maxSize: 2Gi
+  cluster:
+    enabled: true
+    replicas: 2
   resolver:
     enabled: true
     dir: /mnt/resolver
@@ -65,41 +152,105 @@ config:
 `
 	expected := DefaultResources(t, test)
 
-	expected.Conf.Value["jetstream"].(map[string]any)["store_dir"] = "/mnt"
-	expected.Conf.Value["jetstream"].(map[string]any)["max_file_store"] = int64(1073741824)
-	expected.Conf.Value["jetstream"].(map[string]any)["max_memory_store"] = int64(2147483648)
+	expected.Conf.Value["cluster"] = map[string]any{
+		"name":         "nats",
+		"no_advertise": true,
+		"port":         int64(6222),
+		"routes": []any{
+			"nats://nats-0.nats-headless:6222",
+			"nats://nats-1.nats-headless:6222",
+		},
+	}
+	expected.Conf.Value["jetstream"] = map[string]any{
+		"max_file_store":   int64(1073741824),
+		"max_memory_store": int64(2147483648),
+		"store_dir":        "/mnt",
+	}
 	expected.Conf.Value["resolver"] = map[string]any{
 		"dir": "/mnt/resolver",
 	}
 
-	vct := expected.StatefulSet.Value.Spec.VolumeClaimTemplates
+	replicas2 := int32(2)
+	expected.StatefulSet.Value.Spec.Replicas = &replicas2
+
 	resource5Gi, _ := resource.ParseQuantity("5Gi")
 	storageClassGp3 := "gp3"
-	vct[0].Spec.StorageClassName = &storageClassGp3
-	vct[0].Spec.Resources.Requests["storage"] = resource5Gi
-	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = append(vct, corev1.PersistentVolumeClaim{
-		ObjectMeta: v1.ObjectMeta{
-			Name: test.FullName + "-resolver",
-		},
-		Spec: corev1.PersistentVolumeClaimSpec{
-			AccessModes: []corev1.PersistentVolumeAccessMode{
-				"ReadWriteOnce",
+	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{
+		{
+			ObjectMeta: v1.ObjectMeta{
+				Name: test.FullName + "-js",
 			},
-			Resources: corev1.ResourceRequirements{
-				Requests: corev1.ResourceList{
-					"storage": resource5Gi,
+			Spec: corev1.PersistentVolumeClaimSpec{
+				AccessModes: []corev1.PersistentVolumeAccessMode{
+					"ReadWriteOnce",
 				},
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						"storage": resource5Gi,
+					},
+				},
+				StorageClassName: &storageClassGp3,
 			},
-			StorageClassName: &storageClassGp3,
 		},
-	})
+		{
+			ObjectMeta: v1.ObjectMeta{
+				Name: test.FullName + "-resolver",
+			},
+			Spec: corev1.PersistentVolumeClaimSpec{
+				AccessModes: []corev1.PersistentVolumeAccessMode{
+					"ReadWriteOnce",
+				},
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						"storage": resource5Gi,
+					},
+				},
+				StorageClassName: &storageClassGp3,
+			},
+		},
+	}
 
 	vm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
-	vm[2].MountPath = "/mnt/jetstream"
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(vm, corev1.VolumeMount{
+		MountPath: "/mnt/jetstream",
+		Name:      test.FullName + "-js",
+	}, corev1.VolumeMount{
 		MountPath: "/mnt/resolver",
 		Name:      test.FullName + "-resolver",
 	})
+
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].Ports = []corev1.ContainerPort{
+		{
+			Name:          "nats",
+			ContainerPort: 4222,
+		},
+		{
+			Name:          "cluster",
+			ContainerPort: 6222,
+		},
+		{
+			Name:          "monitor",
+			ContainerPort: 8222,
+		},
+	}
+
+	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
+		{
+			Name:       "nats",
+			Port:       4222,
+			TargetPort: intstr.FromString("nats"),
+		},
+		{
+			Name:       "cluster",
+			Port:       6222,
+			TargetPort: intstr.FromString("cluster"),
+		},
+		{
+			Name:       "monitor",
+			Port:       8222,
+			TargetPort: intstr.FromString("monitor"),
+		},
+	}
 
 	RenderAndCheck(t, test, expected)
 }
@@ -112,7 +263,13 @@ config:
   merge:
     ping_interval: 5m
   patch: [{op: add, path: /ping_max, value: 3}]
+  cluster:
+    enabled: true
+    merge:
+      no_advertise: false
+    patch: [{op: add, path: /advertise, value: "demo.nats.io:6222"}]
   jetstream:
+    enabled: true
     merge:
       max_outstanding_catchup: "<< 64MB >>"
     patch: [{op: add, path: /max_file_store, value: "<< 1GB >>"}]
@@ -122,7 +279,7 @@ config:
           spec:
             storageClassName: gp3
         patch: [{op: add, path: /spec/accessModes/-, value: ReadWriteMany}]
-  leafnodes:
+  leafnode:
     enabled: true
     merge:
       no_advertise: false
@@ -137,10 +294,6 @@ config:
     merge:
       ack_wait: 1m
     patch: [{op: add, path: /max_ack_pending, value: 100}]
-  cluster:
-    merge:
-      no_advertise: false
-    patch: [{op: add, path: /advertise, value: "demo.nats.io:4222"}]
   gateway:
     enabled: true
     merge:
@@ -162,9 +315,24 @@ config:
 	expected := DefaultResources(t, test)
 	expected.Conf.Value["ping_interval"] = "5m"
 	expected.Conf.Value["ping_max"] = int64(3)
-	expected.Conf.Value["jetstream"].(map[string]any)["max_file_store"] = int64(1073741824)
-	expected.Conf.Value["jetstream"].(map[string]any)["max_outstanding_catchup"] = int64(67108864)
-	expected.Conf.Value["leafnodes"] = map[string]any{
+	expected.Conf.Value["cluster"] = map[string]any{
+		"name":         "nats",
+		"no_advertise": false,
+		"advertise":    "demo.nats.io:6222",
+		"port":         int64(6222),
+		"routes": []any{
+			"nats://nats-0.nats-headless:6222",
+			"nats://nats-1.nats-headless:6222",
+			"nats://nats-2.nats-headless:6222",
+		},
+	}
+	expected.Conf.Value["jetstream"] = map[string]any{
+		"max_memory_store":        int64(0),
+		"store_dir":               "/data",
+		"max_file_store":          int64(1073741824),
+		"max_outstanding_catchup": int64(67108864),
+	}
+	expected.Conf.Value["leafnode"] = map[string]any{
 		"port":         int64(7422),
 		"no_advertise": false,
 		"advertise":    "demo.nats.io:7422",
@@ -180,8 +348,6 @@ config:
 		"ack_wait":        "1m",
 		"max_ack_pending": int64(100),
 	}
-	expected.Conf.Value["cluster"].(map[string]any)["no_advertise"] = false
-	expected.Conf.Value["cluster"].(map[string]any)["advertise"] = "demo.nats.io:4222"
 	expected.Conf.Value["gateway"] = map[string]any{
 		"port":      int64(7222),
 		"name":      "nats",
@@ -199,34 +365,57 @@ config:
 		"allow_delete": true,
 	}
 
-	vct := expected.StatefulSet.Value.Spec.VolumeClaimTemplates
-	resource1Gi, _ := resource.ParseQuantity("1Gi")
-	storageClassGp3 := "gp3"
-	vct[0].Spec.StorageClassName = &storageClassGp3
-	vct[0].Spec.AccessModes = append(vct[0].Spec.AccessModes, "ReadWriteMany")
-	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = append(vct, corev1.PersistentVolumeClaim{
-		ObjectMeta: v1.ObjectMeta{
-			Name: test.FullName + "-resolver",
-		},
-		Spec: corev1.PersistentVolumeClaimSpec{
-			AccessModes: []corev1.PersistentVolumeAccessMode{
-				"ReadWriteOnce",
-				"ReadWriteMany",
-			},
-			Resources: corev1.ResourceRequirements{
-				Requests: corev1.ResourceList{
-					"storage": resource1Gi,
-				},
-			},
-			StorageClassName: &storageClassGp3,
-		},
-	})
+	replicas3 := int32(3)
+	expected.StatefulSet.Value.Spec.Replicas = &replicas3
 
 	vm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(vm, corev1.VolumeMount{
+		MountPath: "/data/jetstream",
+		Name:      test.FullName + "-js",
+	}, corev1.VolumeMount{
 		MountPath: "/data/resolver",
 		Name:      test.FullName + "-resolver",
 	})
+
+	resource1Gi, _ := resource.ParseQuantity("1Gi")
+	resource10Gi, _ := resource.ParseQuantity("10Gi")
+	storageClassGp3 := "gp3"
+	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{
+		{
+			ObjectMeta: v1.ObjectMeta{
+				Name: test.FullName + "-js",
+			},
+			Spec: corev1.PersistentVolumeClaimSpec{
+				AccessModes: []corev1.PersistentVolumeAccessMode{
+					"ReadWriteOnce",
+					"ReadWriteMany",
+				},
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						"storage": resource10Gi,
+					},
+				},
+				StorageClassName: &storageClassGp3,
+			},
+		},
+		{
+			ObjectMeta: v1.ObjectMeta{
+				Name: test.FullName + "-resolver",
+			},
+			Spec: corev1.PersistentVolumeClaimSpec{
+				AccessModes: []corev1.PersistentVolumeAccessMode{
+					"ReadWriteOnce",
+					"ReadWriteMany",
+				},
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						"storage": resource1Gi,
+					},
+				},
+				StorageClassName: &storageClassGp3,
+			},
+		},
+	}
 
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].Ports = []corev1.ContainerPort{
 		{
@@ -234,7 +423,7 @@ config:
 			ContainerPort: 4222,
 		},
 		{
-			Name:          "leafnodes",
+			Name:          "leafnode",
 			ContainerPort: 7422,
 		},
 		{
@@ -266,9 +455,9 @@ config:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnodes",
+			Name:       "leafnode",
 			Port:       7422,
-			TargetPort: intstr.FromString("leafnodes"),
+			TargetPort: intstr.FromString("leafnode"),
 		},
 		{
 			Name:       "websocket",
@@ -304,9 +493,9 @@ config:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnodes",
+			Name:       "leafnode",
 			Port:       7422,
-			TargetPort: intstr.FromString("leafnodes"),
+			TargetPort: intstr.FromString("leafnode"),
 		},
 		{
 			Name:       "websocket",
@@ -328,6 +517,11 @@ func TestConfigTls(t *testing.T) {
 	test := DefaultTest()
 	test.Values = `
 config:
+  cluster:
+    enabled: true
+    tls:
+      enabled: true
+      secretName: cluster-tls
   nats:
     tls:
       enabled: true
@@ -336,11 +530,11 @@ config:
       merge:
         verify_cert_and_check_known_urls: true
       patch: [{op: add, path: /verify_and_map, value: true}]
-  leafnodes:
+  leafnode:
     enabled: true
     tls:
       enabled: true
-      secretName: leafnodes-tls
+      secretName: leafnode-tls
   websocket:
     enabled: true
     tls:
@@ -351,10 +545,6 @@ config:
     tls:
       enabled: true
       secretName: mqtt-tls
-  cluster:
-    tls:
-      enabled: true
-      secretName: cluster-tls
   gateway:
     enabled: true
     tls:
@@ -362,7 +552,17 @@ config:
       secretName: gateway-tls
 `
 	expected := DefaultResources(t, test)
-	expected.Conf.Value["leafnodes"] = map[string]any{
+	expected.Conf.Value["cluster"] = map[string]any{
+		"name":         "nats",
+		"no_advertise": true,
+		"port":         int64(6222),
+		"routes": []any{
+			"tls://nats-0.nats-headless:6222",
+			"tls://nats-1.nats-headless:6222",
+			"tls://nats-2.nats-headless:6222",
+		},
+	}
+	expected.Conf.Value["leafnode"] = map[string]any{
 		"port":         int64(7422),
 		"no_advertise": true,
 	}
@@ -378,10 +578,13 @@ config:
 		"name": "nats",
 	}
 
+	replicas3 := int32(3)
+	expected.StatefulSet.Value.Spec.Replicas = &replicas3
+
 	volumes := expected.StatefulSet.Value.Spec.Template.Spec.Volumes
 	natsVm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
 	reloaderVm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].VolumeMounts
-	for _, protocol := range []string{"nats", "leafnodes", "websocket", "mqtt", "cluster", "gateway"} {
+	for _, protocol := range []string{"nats", "leafnode", "websocket", "mqtt", "cluster", "gateway"} {
 		tls := map[string]any{
 			"cert_file": "/etc/nats-certs/" + protocol + "/tls.crt",
 			"key_file":  "/etc/nats-certs/" + protocol + "/tls.key",
@@ -422,7 +625,7 @@ config:
 
 	// reloader certs are alphabetized
 	reloaderArgs := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args
-	for _, protocol := range []string{"cluster", "gateway", "leafnodes", "mqtt", "nats", "websocket"} {
+	for _, protocol := range []string{"cluster", "gateway", "leafnode", "mqtt", "nats", "websocket"} {
 		if protocol == "nats" {
 			reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-certs/"+protocol+"/tls.ca")
 		}
@@ -437,7 +640,7 @@ config:
 			ContainerPort: 4222,
 		},
 		{
-			Name:          "leafnodes",
+			Name:          "leafnode",
 			ContainerPort: 7422,
 		},
 		{
@@ -469,9 +672,9 @@ config:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnodes",
+			Name:       "leafnode",
 			Port:       7422,
-			TargetPort: intstr.FromString("leafnodes"),
+			TargetPort: intstr.FromString("leafnode"),
 		},
 		{
 			Name:       "websocket",
@@ -507,9 +710,9 @@ config:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnodes",
+			Name:       "leafnode",
 			Port:       7422,
-			TargetPort: intstr.FromString("leafnodes"),
+			TargetPort: intstr.FromString("leafnode"),
 		},
 		{
 			Name:       "websocket",
@@ -532,6 +735,7 @@ func TestConfigInclude(t *testing.T) {
 	test.Values = `
 config:
   jetstream:
+    enabled: true
     merge:
       000$include: "js.conf"
   merge:
@@ -551,8 +755,12 @@ configMap:
 	expected := DefaultResources(t, test)
 	expected.Conf.Value["ping_interval"] = "5m"
 	expected.Conf.Value["ping_max"] = int64(3)
-	expected.Conf.Value["jetstream"].(map[string]any)["max_file_store"] = int64(1073741824)
-	expected.Conf.Value["jetstream"].(map[string]any)["max_outstanding_catchup"] = int64(67108864)
+	expected.Conf.Value["jetstream"] = map[string]any{
+		"max_file_store":          int64(1073741824),
+		"max_memory_store":        int64(0),
+		"max_outstanding_catchup": int64(67108864),
+		"store_dir":               "/data",
+	}
 
 	expected.ConfigMap.Value.Data = map[string]string{
 		"js.conf": `max_file_store:  1GB
@@ -569,6 +777,31 @@ max_outstanding_catchup: 64MB
 	reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-config/js.conf")
 	reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-config/my-config-last.conf")
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args = reloaderArgs
+
+	vm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(vm, corev1.VolumeMount{
+		MountPath: "/data/jetstream",
+		Name:      test.FullName + "-js",
+	})
+
+	resource10Gi, _ := resource.ParseQuantity("10Gi")
+	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{
+		{
+			ObjectMeta: v1.ObjectMeta{
+				Name: test.FullName + "-js",
+			},
+			Spec: corev1.PersistentVolumeClaimSpec{
+				AccessModes: []corev1.PersistentVolumeAccessMode{
+					"ReadWriteOnce",
+				},
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						"storage": resource10Gi,
+					},
+				},
+			},
+		},
+	}
 
 	RenderAndCheck(t, test, expected)
 }

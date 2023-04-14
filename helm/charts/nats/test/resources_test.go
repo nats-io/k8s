@@ -1,10 +1,13 @@
 package test
 
 import (
+	"testing"
+
 	corev1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"testing"
 )
 
 func TestResourceOptions(t *testing.T) {
@@ -16,6 +19,8 @@ global:
     pullPolicy: Always
     registry: docker.io
 config:
+  jetstream:
+    enabled: true
   websocket:
     enabled: true
 container:
@@ -90,6 +95,11 @@ natsBox:
 `
 	expected := DefaultResources(t, test)
 
+	expected.Conf.Value["jetstream"] = map[string]any{
+		"max_memory_store": int64(0),
+		"store_dir":        "/data",
+	}
+
 	expected.Conf.Value["websocket"] = map[string]any{
 		"port":        int64(8080),
 		"no_tls":      true,
@@ -121,6 +131,10 @@ natsBox:
 	ctr[0].Env = env
 	ctr[0].Image = "gcr.io/" + ctr[0].Image
 	ctr[0].ImagePullPolicy = "IfNotPresent"
+	ctr[0].VolumeMounts = append(ctr[0].VolumeMounts, corev1.VolumeMount{
+		Name:      test.FullName + "-js",
+		MountPath: "/data/jetstream",
+	})
 
 	// reloader
 	ctr[1].Env = env
@@ -241,6 +255,25 @@ natsBox:
 		},
 	}
 
+	resource10Gi, _ := resource.ParseQuantity("10Gi")
+	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{
+		{
+			ObjectMeta: v1.ObjectMeta{
+				Name: test.FullName + "-js",
+			},
+			Spec: corev1.PersistentVolumeClaimSpec{
+				AccessModes: []corev1.PersistentVolumeAccessMode{
+					"ReadWriteOnce",
+				},
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						"storage": resource10Gi,
+					},
+				},
+			},
+		},
+	}
+
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].Ports = []corev1.ContainerPort{
 		{
 			Name:          "nats",
@@ -249,10 +282,6 @@ natsBox:
 		{
 			Name:          "websocket",
 			ContainerPort: 8080,
-		},
-		{
-			Name:          "cluster",
-			ContainerPort: 6222,
 		},
 		{
 			Name:          "monitor",
@@ -270,11 +299,6 @@ natsBox:
 			Name:       "websocket",
 			Port:       8080,
 			TargetPort: intstr.FromString("websocket"),
-		},
-		{
-			Name:       "cluster",
-			Port:       6222,
-			TargetPort: intstr.FromString("cluster"),
 		},
 		{
 			Name:       "monitor",
@@ -430,7 +454,6 @@ natsBox:
 			"-varz",
 			"-prefix=nats",
 			"-use_internal_server_id",
-			"-jsz=all",
 			"http://localhost:8222/",
 		},
 		Image: dd.PromExporterImage,
@@ -500,10 +523,6 @@ natsBox:
 			ContainerPort: 8080,
 		},
 		{
-			Name:          "cluster",
-			ContainerPort: 6222,
-		},
-		{
 			Name:          "monitor",
 			ContainerPort: 8222,
 		},
@@ -519,11 +538,6 @@ natsBox:
 			Name:       "websocket",
 			Port:       8080,
 			TargetPort: intstr.FromString("websocket"),
-		},
-		{
-			Name:       "cluster",
-			Port:       6222,
-			TargetPort: intstr.FromString("cluster"),
 		},
 		{
 			Name:       "monitor",

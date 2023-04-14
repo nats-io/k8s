@@ -3,8 +3,9 @@ name: {{ $.Values.statefulSet.name }}
 port: {{ .port }}
 no_advertise: true
 routes:
-{{- range $i, $_ := until ($.Values.replicas | int) }}
-- {{ printf "nats://%s-%d.%s:6222" $.Values.statefulSet.name $i $.Values.headlessService.name }}
+{{- $proto := ternary "tls" "nats" .tls.enabled }}
+{{- range $i, $_ := until (int .replicas) }}
+- {{ printf "%s://%s-%d.%s:6222" $proto $.Values.statefulSet.name $i $.Values.headlessService.name }}
 {{- end }}
 
 {{- with .tls }}
