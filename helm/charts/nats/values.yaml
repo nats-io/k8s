@@ -31,13 +31,13 @@ config:
       ca:
       # merge or patch the tls config
       # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
-      merge: { }
-      patch: [ ]
+      merge: {}
+      patch: []
 
     # merge or patch the cluster config
     # https://docs.nats.io/running-a-nats-service/configuration/clustering/cluster_config
-    merge: { }
-    patch: [ ]
+    merge: {}
+    patch: []
 
   jetstream:
     enabled: false
