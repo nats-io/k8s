@@ -387,6 +387,16 @@ exec sh -ec "$0"
 										"--config",
 										"/etc/nats-config/nats.conf",
 									},
+									Env: []corev1.EnvVar{
+										{
+											Name: "POD_NAME",
+											ValueFrom: &corev1.EnvVarSource{
+												FieldRef: &corev1.ObjectFieldSelector{
+													FieldPath: "metadata.name",
+												},
+											},
+										},
+									},
 									Image: dd.NatsImage,
 									Lifecycle: &corev1.Lifecycle{
 										PreStop: &corev1.LifecycleHandler{

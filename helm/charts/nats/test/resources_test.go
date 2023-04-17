@@ -128,7 +128,7 @@ natsBox:
 	ctr := expected.StatefulSet.Value.Spec.Template.Spec.Containers
 
 	// nats
-	ctr[0].Env = env
+	ctr[0].Env = append(ctr[0].Env, env...)
 	ctr[0].Image = "gcr.io/" + ctr[0].Image
 	ctr[0].ImagePullPolicy = "IfNotPresent"
 	ctr[0].VolumeMounts = append(ctr[0].VolumeMounts, corev1.VolumeMount{

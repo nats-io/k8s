@@ -15,8 +15,12 @@ args:
 - --config
 - /etc/nats-config/nats.conf
 
-{{- with .Values.container.env }}
 env:
+- name: POD_NAME
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.name
+{{- with .Values.container.env }}
 {{- include "nats.env" . }}
 {{- end }}
 
