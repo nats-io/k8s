@@ -16,9 +16,11 @@ command:
   if ! [ -s context ]; then
     ln -s /etc/nats-contexts context
   fi
+  {{- if .Values.natsBox.defaultContextName }}
   if ! [ -f context.txt ]; then
-    echo -n "default" > context.txt
+    echo -n {{ .Values.natsBox.defaultContextName | quote }} > context.txt
   fi
+  {{- end }}
   cd "$work_dir"
   exec sh -ec "$0"
 args:

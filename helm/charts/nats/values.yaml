@@ -134,7 +134,7 @@ config:
     ingress:
       enabled: false
       # must contain at least 1 host otherwise ingress will not be created
-      hosts: [ ]
+      hosts: []
       path: /
       pathType: Exact
       # sets to the ingress class name
@@ -144,8 +144,8 @@ config:
 
       # merge or patch the ingress
       # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#ingress-v1-networking-k8s-io
-      merge: { }
-      patch: [ ]
+      merge: {}
+      patch: []
       # defaults to "{{ include "nats.fullname" $ }}-ws"
       name:
 
@@ -268,7 +268,7 @@ config:
 container:
   image:
     repository: nats
-    tag: 2.9.15-alpine
+    tag: 2.9.16-alpine
     pullPolicy:
     registry:
 
@@ -477,6 +477,9 @@ natsBox:
       # https://docs.nats.io/using-nats/nats-tools/nats_cli#nats-contexts
       merge: {}
       patch: []
+
+  # name of context to select by default
+  defaultContextName: default
 
   ############################################################
   # deployment -> pod template -> nats-box container
