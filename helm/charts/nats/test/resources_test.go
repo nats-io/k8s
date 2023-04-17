@@ -62,6 +62,9 @@ promExporter:
           key: token
 podTemplate:
   configChecksumAnnotation: false
+  topologySpreadConstraints:
+    kubernetes.io/hostname:
+      maxSkew: 1
 natsBox:
   contexts:
     loadedSecret:
@@ -170,6 +173,13 @@ natsBox:
 		},
 	})
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers = ctr
+	expected.StatefulSet.Value.Spec.Template.Spec.TopologySpreadConstraints = []corev1.TopologySpreadConstraint{
+		{
+			MaxSkew:       1,
+			TopologyKey:   "kubernetes.io/hostname",
+			LabelSelector: expected.StatefulSet.Value.Spec.Selector,
+		},
+	}
 
 	nbCtr := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0]
 	// nats-box

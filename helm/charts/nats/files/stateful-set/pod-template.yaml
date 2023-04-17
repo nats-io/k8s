@@ -49,3 +49,10 @@ spec:
       secretName: {{ $configProtocol.tls.secretName | quote }}
   {{- end }}
   {{- end }}
+
+  {{- with .Values.podTemplate.topologySpreadConstraints }}
+  topologySpreadConstraints:
+  {{- range $k, $v := . }}
+  - {{ merge (dict "topologyKey" $k "labelSelector" (dict "matchLabels" (include "nats.selectorLabels" $ | fromYaml))) $v | toYaml | nindent 4 }}
+  {{- end }}
+  {{- end}}

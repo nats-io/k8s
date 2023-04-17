@@ -415,6 +415,15 @@ podTemplate:
   # this will cause the StatefulSet to roll when the ConfigMap is updated
   configChecksumAnnotation: true
 
+  # map of topologyKey: topologySpreadConstraint
+  # labelSelector will be added to match StatefulSet pods
+  #
+  # topologySpreadConstraints:
+  #   kubernetes.io/hostname:
+  #     maxSkew: 1
+  #
+  topologySpreadConstraints: {}
+
   # merge or patch the pod template
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
   merge: {}
@@ -560,7 +569,7 @@ natsBox:
 #         {{ include "nats.labels" $ }}
 #   spec:
 #     hosts:
-#     - example.com
+#     - demo.nats.io
 #     gateways:
 #     - my-gateway
 #     http:
