@@ -9,9 +9,6 @@ spec:
     matchLabels:
       {{- include "nats.selectorLabels" $ | nindent 6 }}
   {{- if .Values.config.cluster.enabled }}
-  {{- if and .Values.config.jetstream.enabled (lt (int .Values.config.cluster.replicas) 2) }}
-  {{- fail "cluster replicas must be >= 2 when jetstream is enabled" }}
-  {{- end }}
   replicas: {{ .Values.config.cluster.replicas }}
   {{- else }}
   replicas: 1
