@@ -27,7 +27,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
       
       - name: Install semver
         run: |-
@@ -80,6 +80,9 @@ jobs:
             echo "prevVersion      : $prevVersion"
             echo "newVersion       : $newVersion"
 
+            newVersionSemVer=$(semver -c $newVersion)
+            echo "newVersionSemVer : $newVersion"
+
             prevChartVersion=$(sed -rn 's/^version:\s+([0-9]+\.[0-9]+\.[0-9]+)/\1/p' "$directory/Chart.yaml")
             echo "prevChartVersion : $prevChartVersion"
 
@@ -96,10 +99,10 @@ jobs:
             newChartVersion=$(semver -i "$semverIncr" "$prevChartVersion")
             echo "newChartVersion  : $newChartVersion"
 
-            sed -i "s|^appVersion:\s.*|appVersion: $newVersion|;s|^version:\s.*|version: $newChartVersion|" "$directory/Chart.yaml"
+            sed -i "s|^appVersion:\s.*|appVersion: $newVersionSemVer|;s|^version:\s.*|version: $newChartVersion|" "$directory/Chart.yaml"
             
             git add "$directory/Chart.yaml"
-            if git commit -m "[$(basename "$directory") helm] bump chart to version: $newChartVersion appVersion: $newVersion"; then
+            if git commit -m "[$(basename "$directory") helm] bump chart to version: $newChartVersion appVersion: $newVersionSemVer"; then
               push=1
             fi
           done
