@@ -23,6 +23,11 @@ config:
     enabled: true
   websocket:
     enabled: true
+    ingress:
+      enabled: true
+      hosts:
+      - demo.nats.io
+      tlsSecretName: ws-tls
 container:
   image:
     pullPolicy: IfNotPresent
@@ -55,11 +60,6 @@ promExporter:
         secretKeyRef:
           name: token
           key: token
-ingress:
-  enabled: true
-  hosts:
-  - demo.nats.io
-  tlsSecretName: ws-tls
 podTemplate:
   configChecksumAnnotation: false
 natsBox:
@@ -330,6 +330,15 @@ func TestResourcesMergePatch(t *testing.T) {
 config:
   websocket:
     enabled: true
+    ingress:
+      enabled: true
+      hosts:
+      - demo.nats.io
+      merge:
+        metadata:
+          annotations:
+            test: test
+      patch: [{op: add, path: /metadata/labels/test, value: "test"}]
 container:
   merge:
     stdin: true
@@ -352,15 +361,6 @@ promExporter:
     patch: [{op: add, path: /metadata/labels/test, value: "test"}]
 service:
   enabled: true
-  merge:
-    metadata:
-      annotations:
-        test: test
-  patch: [{op: add, path: /metadata/labels/test, value: "test"}]
-ingress:
-  enabled: true
-  hosts:
-  - demo.nats.io
   merge:
     metadata:
       annotations:

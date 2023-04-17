@@ -1,4 +1,4 @@
-{{- with .Values.ingress }}
+{{- with .Values.config.websocket.ingress }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
