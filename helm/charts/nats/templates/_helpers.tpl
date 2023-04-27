@@ -62,9 +62,12 @@ Set default values.
 {{- end }}
 
 {{/*
-NATS Common labels
+NATS labels
 */}}
 {{- define "nats.labels" -}}
+{{- with .Values.global.labels -}}
+{{ toYaml . }}
+{{ end -}}
 helm.sh/chart: {{ include "nats.chart" . }}
 {{ include "nats.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
@@ -74,7 +77,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-NATS Selector labels
+NATS selector labels
 */}}
 {{- define "nats.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "nats.name" . }}
@@ -86,6 +89,9 @@ app.kubernetes.io/component: nats
 NATS Box labels
 */}}
 {{- define "natsBox.labels" -}}
+{{- with .Values.global.labels -}}
+{{ toYaml . }}
+{{ end -}}
 helm.sh/chart: {{ include "nats.chart" . }}
 {{ include "natsBox.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
@@ -95,7 +101,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-NATS Box Selector labels
+NATS Box selector labels
 */}}
 {{- define "natsBox.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "nats.name" . }}

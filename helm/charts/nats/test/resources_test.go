@@ -18,6 +18,8 @@ global:
   image:
     pullPolicy: Always
     registry: docker.io
+  labels:
+    global: global
 config:
   jetstream:
     enabled: true
@@ -127,6 +129,9 @@ natsBox:
 		},
 	}
 
+	expected.StatefulSet.Value.ObjectMeta.Labels["global"] = "global"
+	expected.StatefulSet.Value.Spec.Template.ObjectMeta.Labels["global"] = "global"
+
 	dd := ddg.Get(t)
 	ctr := expected.StatefulSet.Value.Spec.Template.Spec.Containers
 
@@ -172,6 +177,7 @@ natsBox:
 			},
 		},
 	})
+
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers = ctr
 	expected.StatefulSet.Value.Spec.Template.Spec.TopologySpreadConstraints = []corev1.TopologySpreadConstraint{
 		{
@@ -181,6 +187,8 @@ natsBox:
 		},
 	}
 
+	expected.NatsBoxDeployment.Value.ObjectMeta.Labels["global"] = "global"
+	expected.NatsBoxDeployment.Value.Spec.Template.ObjectMeta.Labels["global"] = "global"
 	nbCtr := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0]
 	// nats-box
 	nbCtr.Env = env
@@ -231,6 +239,7 @@ natsBox:
 	)
 	expected.NatsBoxDeployment.Value.Spec.Template.Spec.Volumes = nbVol
 
+	expected.NatsBoxContextsSecret.Value.ObjectMeta.Labels["global"] = "global"
 	expected.NatsBoxContextsSecret.Value.StringData["loadedSecret.json"] = `{
   "ca": "/etc/nats-certs/loadedSecret/tls.ca",
   "cert": "/etc/nats-certs/loadedSecret/tls.crt",
@@ -252,12 +261,14 @@ natsBox:
 }
 `
 
+	expected.NatsBoxContentsSecret.Value.ObjectMeta.Labels["global"] = "global"
 	expected.NatsBoxContentsSecret.Value.StringData = map[string]string{
 		"loadedContents.creds": "aabbcc",
 		"loadedContents.nk":    "ddeeff",
 	}
 
 	expected.Ingress.HasValue = true
+	expected.Ingress.Value.ObjectMeta.Labels["global"] = "global"
 	expected.Ingress.Value.Spec.TLS = []networkingv1.IngressTLS{
 		{
 			Hosts:      []string{"demo.nats.io"},
@@ -299,6 +310,7 @@ natsBox:
 		},
 	}
 
+	expected.HeadlessService.Value.ObjectMeta.Labels["global"] = "global"
 	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
 		{
 			Name:       "nats",
@@ -317,6 +329,7 @@ natsBox:
 		},
 	}
 
+	expected.Service.Value.ObjectMeta.Labels["global"] = "global"
 	expected.Service.Value.Spec.Ports = []corev1.ServicePort{
 		{
 			Name:       "nats",
@@ -329,6 +342,8 @@ natsBox:
 			TargetPort: intstr.FromString("websocket"),
 		},
 	}
+
+	expected.ConfigMap.Value.ObjectMeta.Labels["global"] = "global"
 
 	RenderAndCheck(t, test, expected)
 }
