@@ -400,6 +400,13 @@ configMap:
       annotations:
         test: test
   patch: [{op: add, path: /metadata/labels/test, value: "test"}]
+serviceAccount:
+  enabled: true
+  merge:
+    metadata:
+      annotations:
+        test: test
+  patch: [{op: add, path: /metadata/labels/test, value: "test"}]
 natsBox:
   contexts:
     default:
@@ -429,6 +436,13 @@ natsBox:
           test: test
     patch: [{op: add, path: /metadata/labels/test, value: "test"}]
   contentsSecret:
+    merge:
+      metadata:
+        annotations:
+          test: test
+    patch: [{op: add, path: /metadata/labels/test, value: "test"}]
+  serviceAccount:
+    enabled: true
     merge:
       metadata:
         annotations:
@@ -478,6 +492,7 @@ natsBox:
 		TTY:   true,
 	})
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers = ctr
+	expected.StatefulSet.Value.Spec.Template.Spec.ServiceAccountName = test.FullName
 
 	expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0].Stdin = true
 	expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0].TTY = true
@@ -493,6 +508,7 @@ natsBox:
 
 	expected.NatsBoxDeployment.Value.Spec.Template.ObjectMeta.Annotations = annotations()
 	expected.NatsBoxDeployment.Value.Spec.Template.ObjectMeta.Labels["test"] = "test"
+	expected.NatsBoxDeployment.Value.Spec.Template.Spec.ServiceAccountName = test.FullName + "-box"
 
 	expected.PodMonitor.HasValue = true
 	expected.PodMonitor.Value.ObjectMeta.Annotations = annotations()
@@ -514,8 +530,16 @@ natsBox:
 	expected.NatsBoxContentsSecret.Value.ObjectMeta.Annotations = annotations()
 	expected.NatsBoxContentsSecret.Value.ObjectMeta.Labels["test"] = "test"
 
+	expected.NatsBoxServiceAccount.HasValue = true
+	expected.NatsBoxServiceAccount.Value.ObjectMeta.Annotations = annotations()
+	expected.NatsBoxServiceAccount.Value.ObjectMeta.Labels["test"] = "test"
+
 	expected.Service.Value.ObjectMeta.Annotations = annotations()
 	expected.Service.Value.ObjectMeta.Labels["test"] = "test"
+
+	expected.ServiceAccount.HasValue = true
+	expected.ServiceAccount.Value.ObjectMeta.Annotations = annotations()
+	expected.ServiceAccount.Value.ObjectMeta.Labels["test"] = "test"
 
 	expected.HeadlessService.Value.ObjectMeta.Annotations = annotations()
 	expected.HeadlessService.Value.ObjectMeta.Labels["test"] = "test"

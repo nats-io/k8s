@@ -30,6 +30,12 @@ spec:
   {{- end }}
   {{- end }}
 
+  {{- with .Values.serviceAccount }}
+  {{- if .enabled }}
+  serviceAccountName: {{ .name | quote }}
+  {{- end }}
+  {{- end }}
+
   volumes:
   # nats config
   - name: config

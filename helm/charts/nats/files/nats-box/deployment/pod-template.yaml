@@ -7,6 +7,12 @@ spec:
   - {{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/deployment/container.yaml" "ctx" $) .) | nindent 4 }}
   {{- end }}
 
+  {{- with .Values.natsBox.serviceAccount }}
+  {{- if .enabled }}
+  serviceAccountName: {{ .name | quote }}
+  {{- end }}
+  {{- end }}
+
   volumes:
   # contexts secret
   - name: contexts

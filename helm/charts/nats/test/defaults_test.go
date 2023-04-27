@@ -335,6 +335,20 @@ exec sh -ec "$0"
 				},
 			},
 		},
+		NatsBoxServiceAccount: Resource[corev1.ServiceAccount]{
+			ID:       dr.NatsBoxServiceAccount.ID,
+			HasValue: false,
+			Value: corev1.ServiceAccount{
+				TypeMeta: v1.TypeMeta{
+					Kind:       "ServiceAccount",
+					APIVersion: "v1",
+				},
+				ObjectMeta: v1.ObjectMeta{
+					Name:   fullName + "-box",
+					Labels: natsBoxLabels(),
+				},
+			},
+		},
 		Service: Resource[corev1.Service]{
 			ID:       dr.Service.ID,
 			HasValue: true,
@@ -356,6 +370,20 @@ exec sh -ec "$0"
 						},
 					},
 					Selector: natsSelectorLabels(),
+				},
+			},
+		},
+		ServiceAccount: Resource[corev1.ServiceAccount]{
+			ID:       dr.ServiceAccount.ID,
+			HasValue: false,
+			Value: corev1.ServiceAccount{
+				TypeMeta: v1.TypeMeta{
+					Kind:       "ServiceAccount",
+					APIVersion: "v1",
+				},
+				ObjectMeta: v1.ObjectMeta{
+					Name:   fullName,
+					Labels: natsLabels(),
 				},
 			},
 		},

@@ -447,6 +447,16 @@ configMap:
   # defaults to "{{ include "nats.fullname" $ }}-config"
   name:
 
+# service account
+serviceAccount:
+  enabled: false
+  # merge or patch the service account
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceaccount-v1-core
+  merge: {}
+  patch: []
+  # defaults to "{{ include "nats.fullname" $ }}"
+  name:
+
 
 ############################################################
 # natsBox
@@ -544,6 +554,16 @@ natsBox:
     merge: {}
     patch: []
     # defaults to "{{ include "nats.fullname" $ }}-box-contents"
+    name:
+
+  # service account
+  serviceAccount:
+    enabled: false
+    # merge or patch the service account
+    # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceaccount-v1-core
+    merge: { }
+    patch: [ ]
+    # defaults to "{{ include "nats.fullname" $ }}-box"
     name:
 
 

@@ -26,7 +26,9 @@ type Resources struct {
 	NatsBoxContentsSecret Resource[corev1.Secret]
 	NatsBoxContextsSecret Resource[corev1.Secret]
 	NatsBoxDeployment     Resource[appsv1.Deployment]
+	NatsBoxServiceAccount Resource[corev1.ServiceAccount]
 	Service               Resource[corev1.Service]
+	ServiceAccount        Resource[corev1.ServiceAccount]
 	StatefulSet           Resource[appsv1.StatefulSet]
 	PodMonitor            Resource[monitoringv1.PodMonitor]
 	ExtraConfigMap        Resource[corev1.ConfigMap]
@@ -42,7 +44,9 @@ func (r *Resources) Iter() []MutableResource {
 		r.NatsBoxContentsSecret.Mutable(),
 		r.NatsBoxContextsSecret.Mutable(),
 		r.NatsBoxDeployment.Mutable(),
+		r.NatsBoxServiceAccount.Mutable(),
 		r.Service.Mutable(),
+		r.ServiceAccount.Mutable(),
 		r.StatefulSet.Mutable(),
 		r.PodMonitor.Mutable(),
 		r.ExtraConfigMap.Mutable(),
@@ -102,8 +106,14 @@ func GenerateResources(fullName string) *Resources {
 		NatsBoxDeployment: Resource[appsv1.Deployment]{
 			ID: "Deployment/" + fullName + "-box",
 		},
+		NatsBoxServiceAccount: Resource[corev1.ServiceAccount]{
+			ID: "ServiceAccount/" + fullName + "-box",
+		},
 		Service: Resource[corev1.Service]{
 			ID: "Service/" + fullName,
+		},
+		ServiceAccount: Resource[corev1.ServiceAccount]{
+			ID: "ServiceAccount/" + fullName,
 		},
 		StatefulSet: Resource[appsv1.StatefulSet]{
 			ID: "StatefulSet/" + fullName,

@@ -43,9 +43,11 @@ Set default values.
 {{- $_ := set .configMap                        "name" (.configMap.name                        | default (printf "%s-config" $name)) }}
 {{- $_ := set .headlessService                  "name" (.headlessService.name                  | default (printf "%s-headless" $name)) }}
 {{- $_ := set .natsBox.contentsSecret           "name" (.natsBox.contentsSecret.name           | default (printf "%s-box-contents" $name)) }}
-{{- $_ := set .natsBox.contextsSecret            "name" (.natsBox.contextsSecret.name          | default (printf "%s-box-contexts" $name)) }}
+{{- $_ := set .natsBox.contextsSecret           "name" (.natsBox.contextsSecret.name           | default (printf "%s-box-contexts" $name)) }}
 {{- $_ := set .natsBox.deployment               "name" (.natsBox.deployment.name               | default (printf "%s-box" $name)) }}
+{{- $_ := set .natsBox.serviceAccount           "name" (.natsBox.serviceAccount.name           | default (printf "%s-box" $name)) }}
 {{- $_ := set .service                          "name" (.service.name                          | default $name) }}
+{{- $_ := set .serviceAccount                   "name" (.serviceAccount.name                   | default $name) }}
 {{- $_ := set .statefulSet                      "name" (.statefulSet.name                      | default $name) }}
 {{- $_ := set .promExporter.podMonitor          "name" (.promExporter.podMonitor.name          | default $name) }}
 {{- end }}
@@ -99,17 +101,6 @@ NATS Box Selector labels
 app.kubernetes.io/name: {{ include "nats.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: nats-box
-{{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "nats.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "nats.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
 {{- end }}
 
 {{/*
