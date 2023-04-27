@@ -561,8 +561,8 @@ natsBox:
     enabled: false
     # merge or patch the service account
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceaccount-v1-core
-    merge: { }
-    patch: [ ]
+    merge: {}
+    patch: []
     # defaults to "{{ include "nats.fullname" $ }}-box"
     name:
 
