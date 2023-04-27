@@ -7,6 +7,9 @@ spec:
   - {{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/deployment/container.yaml" "ctx" $) .) | nindent 4 }}
   {{- end }}
 
+  # service discovery uses DNS; don't need service env vars
+  enableServiceLinks: false
+
   {{- with .Values.natsBox.serviceAccount }}
   {{- if .enabled }}
   serviceAccountName: {{ .name | quote }}

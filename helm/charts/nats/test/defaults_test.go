@@ -113,6 +113,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 
 	replicas1 := int32(1)
 	trueBool := true
+	falseBool := false
 	exactPath := networkingv1.PathTypeExact
 
 	return &Resources{
@@ -312,6 +313,7 @@ exec sh -ec "$0"
 									},
 								},
 							},
+							EnableServiceLinks: &falseBool,
 							Volumes: []corev1.Volume{
 								{
 									Name: "contexts",
@@ -518,6 +520,7 @@ exec sh -ec "$0"
 									},
 								},
 							},
+							EnableServiceLinks:    &falseBool,
 							ShareProcessNamespace: &trueBool,
 							Volumes: []corev1.Volume{
 								{

@@ -7,10 +7,6 @@ metadata:
     checksum/config: {{ sha256sum $configMap }}
     {{- end }}
 spec:
-  {{- if .Values.reloader.enabled }}
-  shareProcessNamespace: true
-  {{- end }}
-
   containers:
   # nats
   {{- $nats := dict }}
@@ -30,10 +26,17 @@ spec:
   {{- end }}
   {{- end }}
 
+  # service discovery uses DNS; don't need service env vars
+  enableServiceLinks: false
+
   {{- with .Values.serviceAccount }}
   {{- if .enabled }}
   serviceAccountName: {{ .name | quote }}
   {{- end }}
+  {{- end }}
+
+  {{- if .Values.reloader.enabled }}
+  shareProcessNamespace: true
   {{- end }}
 
   volumes:
