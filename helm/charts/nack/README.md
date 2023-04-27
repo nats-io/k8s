@@ -4,7 +4,7 @@
 
 ```console
 # First, need to install the CRDs manually.
-kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/v0.6.0/deploy/crds.yml
+kubectl apply -f https://github.com/nats-io/nack/releases/latest/download/crds.yml
 
 helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm install nats nats/nats
