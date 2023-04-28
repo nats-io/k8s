@@ -24,14 +24,7 @@ command:
   cd "$work_dir"
   exec sh -ec "$0"
 args:
-- |
-  stop_signal () {
-    exit 0
-  }
-  trap stop_signal SIGINT SIGTERM
-  while true; do
-    sleep 0.1
-  done
+- trap true INT TERM; sleep infinity & wait
 volumeMounts:
 - name: contexts
   mountPath: /etc/nats-contexts

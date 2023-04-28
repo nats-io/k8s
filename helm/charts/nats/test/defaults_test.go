@@ -274,14 +274,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 							Containers: []corev1.Container{
 								{
 									Args: []string{
-										`stop_signal () {
-  exit 0
-}
-trap stop_signal SIGINT SIGTERM
-while true; do
-  sleep 0.1
-done
-`,
+										"trap true INT TERM; sleep infinity & wait",
 									},
 									Command: []string{
 										"sh",
