@@ -14,7 +14,8 @@ port: {{ .port }}
 
 {{- with .tls }}
 {{- if .enabled }}
-tls: {{ include "nats.loadMergePatch" (merge (dict "file" "config/tls.yaml" "ctx" (merge (dict "tls" .) $)) .) | nindent 4 }}
+tls:
+  {{- include "nats.loadMergePatch" (merge (dict "file" "config/tls.yaml" "ctx" (merge (dict "tls" .) $)) .) | nindent 2 }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -25,7 +26,7 @@ tls: {{ include "nats.loadMergePatch" (merge (dict "file" "config/tls.yaml" "ctx
 {{- with .leafnode }}
 {{- if .enabled }}
 leafnode:
-  {{ include "nats.loadMergePatch" (merge (dict "file" "config/leafnode.yaml" "ctx" $) .) | nindent 2 }}
+  {{- include "nats.loadMergePatch" (merge (dict "file" "config/leafnode.yaml" "ctx" $) .) | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -35,7 +36,7 @@ leafnode:
 {{- with .websocket }}
 {{- if .enabled }}
 websocket:
-  {{ include "nats.loadMergePatch" (merge (dict "file" "config/websocket.yaml" "ctx" $) .) | nindent 2 }}
+  {{- include "nats.loadMergePatch" (merge (dict "file" "config/websocket.yaml" "ctx" $) .) | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -45,7 +46,7 @@ websocket:
 {{- with .mqtt }}
 {{- if .enabled }}
 mqtt:
-  {{ include "nats.loadMergePatch" (merge (dict "file" "config/mqtt.yaml" "ctx" $) .) | nindent 2 }}
+  {{- include "nats.loadMergePatch" (merge (dict "file" "config/mqtt.yaml" "ctx" $) .) | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -55,7 +56,7 @@ mqtt:
 {{- with .cluster }}
 {{- if .enabled }}
 cluster:
-  {{ include "nats.loadMergePatch" (merge (dict "file" "config/cluster.yaml" "ctx" $) .) | nindent 2 }}
+  {{- include "nats.loadMergePatch" (merge (dict "file" "config/cluster.yaml" "ctx" $) .) | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -65,7 +66,7 @@ cluster:
 {{- with .gateway }}
 {{- if .enabled }}
 gateway:
-  {{ include "nats.loadMergePatch" (merge (dict "file" "config/gateway.yaml" "ctx" $) .) | nindent 2 }}
+  {{- include "nats.loadMergePatch" (merge (dict "file" "config/gateway.yaml" "ctx" $) .) | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -93,7 +94,7 @@ prof_port: {{ .port }}
 {{- with $.Values.config.jetstream -}}
 {{- if .enabled }}
 jetstream:
-  {{ include "nats.loadMergePatch" (merge (dict "file" "config/jetstream.yaml" "ctx" $) .) | nindent 2 }}
+  {{- include "nats.loadMergePatch" (merge (dict "file" "config/jetstream.yaml" "ctx" $) .) | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -103,7 +104,7 @@ jetstream:
 {{- with $.Values.config.resolver -}}
 {{- if .enabled }}
 resolver:
-  {{ include "nats.loadMergePatch" (merge (dict "file" "config/resolver.yaml" "ctx" $) .) | nindent 2 }}
+  {{- include "nats.loadMergePatch" (merge (dict "file" "config/resolver.yaml" "ctx" $) .) | nindent 2 }}
 {{- end }}
 {{- end }}
 

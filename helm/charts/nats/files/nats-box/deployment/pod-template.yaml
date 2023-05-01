@@ -25,14 +25,9 @@ spec:
   - name: contents
     secret:
       secretName: {{ .Values.natsBox.contentsSecret.name }}
-  # context secrets
-  {{- range $ctxKey, $ctxVal := .Values.natsBox.contexts }}
-  {{- range $secretKey, $secretVal := dict "creds" "nats-creds" "nkey" "nats-nkeys" "tls" "nats-certs" }}
-  {{- $secret := get $ctxVal $secretKey }}
-  {{- if and $secret $secret.secretName }}
-  - name: ctx-{{ $ctxKey }}-{{ $secretKey }}
+  # secrets
+  {{- range (include "natsBox.secretNames" $ | fromJson).secretNames }}
+  - name: {{ .name | quote }}
     secret:
-      secretName: {{ $secret.secretName | quote }}
-  {{- end }}
-  {{- end }}
+      secretName: {{ .secretName | quote }}
   {{- end }}

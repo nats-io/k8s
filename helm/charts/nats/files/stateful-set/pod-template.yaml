@@ -49,14 +49,11 @@ spec:
   - name: pid
     emptyDir: {}
   {{- end }}
-  # TLS secrets
-  {{- range $protocol := list "nats" "leafnode" "websocket" "mqtt" "cluster" "gateway" }}
-  {{- $configProtocol := get $.Values.config $protocol }}
-  {{- if and (or (eq $protocol "nats") $configProtocol.enabled) $configProtocol.tls.enabled $configProtocol.tls.secretName }}
-  - name: {{ $protocol }}-tls
+  # secrets
+  {{- range (include "nats.secretNames" $ | fromJson).secretNames }}
+  - name: {{ .name | quote }}
     secret:
-      secretName: {{ $configProtocol.tls.secretName | quote }}
-  {{- end }}
+      secretName: {{ .secretName | quote }}
   {{- end }}
 
   {{- with .Values.podTemplate.topologySpreadConstraints }}

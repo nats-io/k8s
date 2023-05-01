@@ -480,18 +480,24 @@ natsBox:
       creds:
         # set contents in order to create a secret with the creds file contents
         contents:
-        # set secretName in order to mount an existing secret to to /etc/nats-creds/<context-name>
+        # set secretName in order to mount an existing secret to dir
         secretName:
+        # defaults to /etc/nats-creds/<context-name>
+        dir:
         key: nats.creds
       nkey:
         # set contents in order to create a secret with the nkey file contents
         contents:
-        # set secretName in order to mount an existing secret to /etc/nats-nkeys/<context-name>
+        # set secretName in order to mount an existing secret to dir
         secretName:
+        # defaults to /etc/nats-nkeys/<context-name>
+        dir:
         key: nats.nk
       tls:
-        # set secretName in order to mount an existing secret to /etc/nats-certs/<context-name>
+        # set secretName in order to mount an existing secret to dir
         secretName:
+        # defaults to /etc/nats-certs/<context-name>
+        dir:
         # set cert and key to name of secret data keys to enable mTLS
         cert:
         key:

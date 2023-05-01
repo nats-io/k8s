@@ -35,29 +35,41 @@ Set default values.
 */}}
 {{- define "nats.defaultValues" }}
 {{- if not .defaultValuesSet }}
-{{- $name := include "nats.fullname" . }}
-{{- with .Values }}
-{{- $_ := set .config.jetstream.fileStore.pvc   "name" (.config.jetstream.fileStore.pvc.name   | default (printf "%s-js" $name)) }}
-{{- $_ := set .config.resolver.pvc              "name" (.config.resolver.pvc.name              | default (printf "%s-resolver" $name)) }}
-{{- $_ := set .config.websocket.ingress         "name" (.config.websocket.ingress.name         | default (printf "%s-ws" $name)) }}
-{{- $_ := set .configMap                        "name" (.configMap.name                        | default (printf "%s-config" $name)) }}
-{{- $_ := set .headlessService                  "name" (.headlessService.name                  | default (printf "%s-headless" $name)) }}
-{{- $_ := set .natsBox.contentsSecret           "name" (.natsBox.contentsSecret.name           | default (printf "%s-box-contents" $name)) }}
-{{- $_ := set .natsBox.contextsSecret           "name" (.natsBox.contextsSecret.name           | default (printf "%s-box-contexts" $name)) }}
-{{- $_ := set .natsBox.deployment               "name" (.natsBox.deployment.name               | default (printf "%s-box" $name)) }}
-{{- $_ := set .natsBox.serviceAccount           "name" (.natsBox.serviceAccount.name           | default (printf "%s-box" $name)) }}
-{{- $_ := set .service                          "name" (.service.name                          | default $name) }}
-{{- $_ := set .serviceAccount                   "name" (.serviceAccount.name                   | default $name) }}
-{{- $_ := set .statefulSet                      "name" (.statefulSet.name                      | default $name) }}
-{{- $_ := set .promExporter.podMonitor          "name" (.promExporter.podMonitor.name          | default $name) }}
-{{- end }}
-{{- $values := get (include "tplYaml" (dict "doc" .Values "ctx" $) | fromJson) "doc" }}
-{{- $_ := set . "Values" $values }}
-{{- with .Values.config }}
-{{- $config := include "nats.loadMergePatch" (merge (dict "file" "config/config.yaml" "ctx" $) .) | fromYaml }}
-{{- $_ := set $ "config" $config }}
-{{- end }}
-{{- $_ := set . "defaultValuesSet" true }}
+  {{- $name := include "nats.fullname" . }}
+  {{- with .Values }}
+    {{- $_ := set .config.jetstream.fileStore.pvc   "name" (.config.jetstream.fileStore.pvc.name   | default (printf "%s-js" $name)) }}
+    {{- $_ := set .config.resolver.pvc              "name" (.config.resolver.pvc.name              | default (printf "%s-resolver" $name)) }}
+    {{- $_ := set .config.websocket.ingress         "name" (.config.websocket.ingress.name         | default (printf "%s-ws" $name)) }}
+    {{- $_ := set .configMap                        "name" (.configMap.name                        | default (printf "%s-config" $name)) }}
+    {{- $_ := set .headlessService                  "name" (.headlessService.name                  | default (printf "%s-headless" $name)) }}
+    {{- $_ := set .natsBox.contentsSecret           "name" (.natsBox.contentsSecret.name           | default (printf "%s-box-contents" $name)) }}
+    {{- $_ := set .natsBox.contextsSecret           "name" (.natsBox.contextsSecret.name           | default (printf "%s-box-contexts" $name)) }}
+    {{- $_ := set .natsBox.deployment               "name" (.natsBox.deployment.name               | default (printf "%s-box" $name)) }}
+    {{- $_ := set .natsBox.serviceAccount           "name" (.natsBox.serviceAccount.name           | default (printf "%s-box" $name)) }}
+    {{- $_ := set .service                          "name" (.service.name                          | default $name) }}
+    {{- $_ := set .serviceAccount                   "name" (.serviceAccount.name                   | default $name) }}
+    {{- $_ := set .statefulSet                      "name" (.statefulSet.name                      | default $name) }}
+    {{- $_ := set .promExporter.podMonitor          "name" (.promExporter.podMonitor.name          | default $name) }}
+  {{- end }}
+
+  {{- $values := get (include "tplYaml" (dict "doc" .Values "ctx" $) | fromJson) "doc" }}
+  {{- $_ := set . "Values" $values }}
+
+  {{- range $ctxKey, $ctxVal := .Values.natsBox.contexts }}
+  {{- range $secretKey, $secretVal := dict "creds" "nats-creds" "nkey" "nats-nkeys" "tls" "nats-certs" }}
+    {{- $secret := get $ctxVal $secretKey }}
+    {{- if $secret }}
+    {{- $_ := set $secret "dir" ($secret.dir | default (printf "/etc/%s/%s" $secretVal $ctxKey)) }}
+    {{- end }}
+  {{- end }}
+  {{- end }}
+
+  {{- with .Values.config }}
+  {{- $config := include "nats.loadMergePatch" (merge (dict "file" "config/config.yaml" "ctx" $) .) | fromYaml }}
+  {{- $_ := set $ "config" $config }}
+  {{- end }}
+
+  {{- $_ := set . "defaultValuesSet" true }}
 {{- end }}
 {{- end }}
 
@@ -123,6 +135,30 @@ imagePullPolicy: {{ .pullPolicy | default .global.image.pullPolicy }}
 {{- end }}
 {{- end }}
 
+{{- define "nats.secretNames" -}}
+{{- $secrets := list }}
+{{- range $protocol := list "nats" "leafnode" "websocket" "mqtt" "cluster" "gateway" }}
+  {{- $configProtocol := get $.Values.config $protocol }}
+  {{- if and (or (eq $protocol "nats") $configProtocol.enabled) $configProtocol.tls.enabled $configProtocol.tls.secretName }}
+    {{- $secrets = append $secrets (merge (dict "name" (printf "%s-tls" $protocol)) $configProtocol.tls) }}
+  {{- end }}
+{{- end }}
+{{- toJson (dict "secretNames" $secrets) }}
+{{- end }}
+
+{{- define "natsBox.secretNames" -}}
+{{- $secrets := list }}
+{{- range $ctxKey, $ctxVal := .Values.natsBox.contexts }}
+{{- range $secretKey, $secretVal := dict "creds" "nats-creds" "nkey" "nats-nkeys" "tls" "nats-certs" }}
+  {{- $secret := get $ctxVal $secretKey }}
+    {{- if and $secret $secret.secretName }}
+      {{- $secrets = append $secrets (merge (dict "name" (printf "ctx-%s-%s" $ctxKey $secretKey)) $secret) }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- toJson (dict "secretNames" $secrets) }}
+{{- end }}
+
 {{/*
 translates env var map to list
 */}}
@@ -150,7 +186,7 @@ output: JSON encoded map with 1 key:
 - doc: interface{} patched json result
 */}}
 {{- define "nats.loadMergePatch" -}}
-{{- $doc := tpl (.ctx.Files.Get (printf "files/%s" .file)) .ctx | fromYaml -}}
+{{- $doc := tpl (.ctx.Files.Get (printf "files/%s" .file)) .ctx | fromYaml | default dict -}}
 {{- $doc = mergeOverwrite $doc (deepCopy .merge) -}}
 {{- get (include "jsonpatch" (dict "doc" $doc "patch" .patch) | fromJson ) "doc" | toYaml -}}
 {{- end }}

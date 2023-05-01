@@ -15,7 +15,8 @@ url: nats://{{ .Values.headlessService.name }}
 {{- if .contents }}
 creds: /etc/nats-contents/{{ $contextName }}.creds
 {{- else if .secretName }}
-creds: /etc/nats-creds/{{ $contextName }}/{{ .key }}
+{{- $dir := trimSuffix "/" .dir }}
+creds: {{ $dir }}/{{ .key }}
 {{- end }}
 {{- end }}
 
@@ -24,20 +25,22 @@ creds: /etc/nats-creds/{{ $contextName }}/{{ .key }}
 {{- if .contents }}
 nkey: /etc/nats-contents/{{ $contextName }}.nk
 {{- else if .secretName }}
-nkey: /etc/nats-nkeys/{{ $contextName }}/{{ .key }}
+{{- $dir := trimSuffix "/" .dir }}
+nkey: {{ $dir }}/{{ .key }}
 {{- end }}
 {{- end }}
 
 # tls
 {{- with .tls }}
 {{- if .secretName }}
+{{- $dir := trimSuffix "/" .dir }}
 {{- if and .cert .key }}
-cert: /etc/nats-certs/{{ $contextName }}/{{ .cert }}
-key: /etc/nats-certs/{{ $contextName }}/{{ .key }}
+cert: {{ $dir }}/{{ .cert }}
+key: {{ $dir }}/{{ .key }}
 {{- end }}
 {{- if .ca }}
 {{- $caSet = true }}
-ca: /etc/nats-certs/{{ $contextName }}/{{ .ca }}
+ca: {{ $dir }}/{{ .ca }}
 {{- end }}
 {{- end }}
 {{- end }}

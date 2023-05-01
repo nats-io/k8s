@@ -30,12 +30,7 @@ volumeMounts:
   mountPath: /etc/nats-contexts
 - name: contents
   mountPath: /etc/nats-contents
-{{- range $ctxKey, $ctxVal := .Values.natsBox.contexts }}
-{{- range $secretKey, $secretVal := dict "creds" "nats-creds" "nkey" "nats-nkeys" "tls" "nats-certs" }}
-{{- $secret := get $ctxVal $secretKey }}
-{{- if and $secret $secret.secretName }}
-- name: ctx-{{ $ctxKey }}-{{ $secretKey }}
-  mountPath: /etc/{{ $secretVal }}/{{ $ctxKey }}
-{{- end }}
-{{- end }}
+{{- range (include "natsBox.secretNames" $ | fromJson).secretNames }}
+- name: {{ .name | quote }}
+  mountPath: {{ .dir | quote }}
 {{- end }}
