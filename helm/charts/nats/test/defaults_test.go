@@ -215,7 +215,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 		},
 		NatsBoxContentsSecret: Resource[corev1.Secret]{
 			ID:       dr.NatsBoxContentsSecret.ID,
-			HasValue: true,
+			HasValue: false,
 			Value: corev1.Secret{
 				TypeMeta: v1.TypeMeta{
 					Kind:       "Secret",
@@ -299,10 +299,6 @@ exec sh -ec "$0"
 											MountPath: "/etc/nats-contexts",
 											Name:      "contexts",
 										},
-										{
-											MountPath: "/etc/nats-contents",
-											Name:      "contents",
-										},
 									},
 								},
 							},
@@ -313,14 +309,6 @@ exec sh -ec "$0"
 									VolumeSource: corev1.VolumeSource{
 										Secret: &corev1.SecretVolumeSource{
 											SecretName: "nats-box-contexts",
-										},
-									},
-								},
-								{
-									Name: "contents",
-									VolumeSource: corev1.VolumeSource{
-										Secret: &corev1.SecretVolumeSource{
-											SecretName: "nats-box-contents",
 										},
 									},
 								},

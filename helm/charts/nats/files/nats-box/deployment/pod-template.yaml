@@ -22,9 +22,11 @@ spec:
     secret:
       secretName: {{ .Values.natsBox.contextsSecret.name }}
   # contents secret
+  {{- if .hasContentsSecret }}
   - name: contents
     secret:
       secretName: {{ .Values.natsBox.contentsSecret.name }}
+  {{- end }}
   # secrets
   {{- range (include "natsBox.secretNames" $ | fromJson).secretNames }}
   - name: {{ .name | quote }}

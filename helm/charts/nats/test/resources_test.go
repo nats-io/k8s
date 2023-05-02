@@ -196,6 +196,10 @@ natsBox:
 	nbCtr.ImagePullPolicy = "Always"
 	nbCtr.VolumeMounts = append(nbCtr.VolumeMounts,
 		corev1.VolumeMount{
+			MountPath: "/etc/nats-contents",
+			Name:      "contents",
+		},
+		corev1.VolumeMount{
 			Name:      "ctx-loadedSecret-creds",
 			MountPath: "/etc/nats-creds/loadedSecret",
 		},
@@ -212,6 +216,14 @@ natsBox:
 
 	nbVol := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Volumes
 	nbVol = append(nbVol,
+		corev1.Volume{
+			Name: "contents",
+			VolumeSource: corev1.VolumeSource{
+				Secret: &corev1.SecretVolumeSource{
+					SecretName: "nats-box-contents",
+				},
+			},
+		},
 		corev1.Volume{
 			Name: "ctx-loadedSecret-creds",
 			VolumeSource: corev1.VolumeSource{
@@ -261,6 +273,7 @@ natsBox:
 }
 `
 
+	expected.NatsBoxContentsSecret.HasValue = true
 	expected.NatsBoxContentsSecret.Value.ObjectMeta.Labels["global"] = "global"
 	expected.NatsBoxContentsSecret.Value.StringData = map[string]string{
 		"loadedContents.creds": "aabbcc",
