@@ -244,13 +244,13 @@ templates to the `nats.conf`:
 
 ### NATS Config Includes
 
-Any NATS Config key ending in `$include` will be replaced with an include directive.  Included files should be in paths relative to `/etc/nats-config`.  Example:
+Any NATS Config key ending in `$include` will be replaced with an include directive.  Included files should be in paths relative to `/etc/nats-config`.  Multiple `$include` keys are supported by using a prefix, and will be sorted alphabetically.  Example:
 
 ```yaml
 config:
   merge:
-    $include: auth.conf
-    zzz$include: params.conf
+    00$include: auth.conf
+    01$include: params.conf
 configMap:
   merge:
     data:
