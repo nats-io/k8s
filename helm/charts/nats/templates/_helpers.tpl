@@ -61,7 +61,7 @@ Set default values.
       {{- $secret := get $ctxVal $secretKey }}
       {{- if $secret }}
         {{- $_ := set $secret "dir" ($secret.dir | default (printf "/etc/%s/%s" $secretVal $ctxKey)) }}
-        {{- if $secret.contents }}
+        {{- if and (ne $secretKey "tls") $secret.contents }}
           {{- $hasContentsSecret = true }}
         {{- end }}
       {{- end }}
