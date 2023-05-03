@@ -6,7 +6,7 @@ keywords:
 - nats
 - messaging
 - cncf
-version: 1.0.0-beta.0
+version: 1.0.0-beta.1
 home: http://github.com/nats-io/k8s
 maintainers:
 - email: info@nats.io
