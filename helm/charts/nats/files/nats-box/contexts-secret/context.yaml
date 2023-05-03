@@ -1,0 +1,48 @@
+{{- $contextName := .contextName }}
+{{- $caSet := false }}
+
+# url
+{{- if .Values.service.enabled }}
+url: nats://{{ .Values.service.name }}
+{{- else }}
+url: nats://{{ .Values.headlessService.name }}
+{{- end }}
+
+{{- with .context }}
+
+# creds
+{{- with .creds}}
+{{- if .contents }}
+creds: /etc/nats-contents/{{ $contextName }}.creds
+{{- else if .secretName }}
+{{- $dir := trimSuffix "/" .dir }}
+creds: {{ $dir }}/{{ .key }}
+{{- end }}
+{{- end }}
+
+# nkey
+{{- with .nkey}}
+{{- if .contents }}
+nkey: /etc/nats-contents/{{ $contextName }}.nk
+{{- else if .secretName }}
+{{- $dir := trimSuffix "/" .dir }}
+nkey: {{ $dir }}/{{ .key }}
+{{- end }}
+{{- end }}
+
+# tls
+{{- with .tls }}
+{{- if .secretName }}
+{{- $dir := trimSuffix "/" .dir }}
+{{- if and .cert .key }}
+cert: {{ $dir }}/{{ .cert }}
+key: {{ $dir }}/{{ .key }}
+{{- end }}
+{{- if .ca }}
+{{- $caSet = true }}
+ca: {{ $dir }}/{{ .ca }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- end }}
