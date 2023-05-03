@@ -1,5 +1,9 @@
 # NATS Server
 
+**Beta Notice**: This branch contains the `nats` 1.x Helm Chart Beta.  The `values.yaml` format has changed significantly from 0.x, and upgrading from 0.x -> 1.x is not straightforward.  At this time, we are recommending only new installations using the 1.x Beta chart.  We will be developing an upgrade path from 0.x -> 1.x (captured by [issue 712](https://github.com/nats-io/k8s/issues/712)) prior to launching 1.x GA.
+
+---
+
 [NATS](https://nats.io) is a simple, secure and performant communications system for digital systems, services and devices.
 NATS is part of the Cloud Native Computing Foundation ([CNCF](https://cncf.io)).
 NATS has over [30 client language implementations](https://nats.io/download/), and its server can run on-premise, in the cloud, at the edge, and even on a Raspberry Pi.
@@ -134,9 +138,8 @@ container:
 
 ```yaml
 container:
-  nats:
-    image:
-      tag: x.y.z-alpine
+  image:
+    tag: x.y.z-alpine
 ```
 
 ### Operator Mode with NATS Resolver
