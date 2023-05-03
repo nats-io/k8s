@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.headlessService.name }}
+  labels:
+    {{- include "nats.labels" $ | nindent 4 }}
+spec:
+  selector:
+    {{- include "nats.selectorLabels" $ | nindent 4 }}
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  {{- range $protocol := list "nats" "leafnode" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
+  {{- $configProtocol := get $.Values.config $protocol }}
+  {{- if or (eq $protocol "nats") $configProtocol.enabled }}
+  - {{ dict "name" $protocol "port" $configProtocol.port "targetPort" $protocol | toYaml | nindent 4 }}
+  {{- end }}
+  {{- end }}

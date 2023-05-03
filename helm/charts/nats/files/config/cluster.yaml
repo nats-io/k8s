@@ -1,0 +1,17 @@
+{{- with .Values.config.cluster }}
+name: {{ $.Values.statefulSet.name }}
+port: {{ .port }}
+no_advertise: true
+routes:
+{{- $proto := ternary "tls" "nats" .tls.enabled }}
+{{- range $i, $_ := until (int .replicas) }}
+- {{ printf "%s://%s-%d.%s:6222" $proto $.Values.statefulSet.name $i $.Values.headlessService.name }}
+{{- end }}
+
+{{- with .tls }}
+{{- if .enabled }}
+tls:
+  {{- include "nats.loadMergePatch" (merge (dict "file" "config/tls.yaml" "ctx" (merge (dict "tls" .) $)) .) | nindent 2 }}
+{{- end }}
+{{- end }}
+{{- end }}
