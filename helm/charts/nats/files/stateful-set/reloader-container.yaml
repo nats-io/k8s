@@ -17,10 +17,11 @@ volumeMounts:
 - name: pid
   mountPath: /var/run/nats
 {{- range $mnt := .natsVolumeMounts }}
+{{- $found := false }}
 {{- range $.Values.reloader.natsVolumeMountPrefixes }}
-{{- if (hasPrefix . $mnt.mountPath) }}
+{{- if and (not $found) (hasPrefix . $mnt.mountPath) }}
+{{- $found = true }}
 - {{ toYaml $mnt | nindent 2}}
-{{- break }}
 {{- end }}
 {{- end }}
 {{- end }}
