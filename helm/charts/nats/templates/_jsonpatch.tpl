@@ -8,8 +8,10 @@ output: JSON encoded map with 1 key:
 */}}
 {{- define "jsonpatch" -}}
   {{- $params := fromJson (toJson .) -}}
+  {{- $patches := $params.patch -}}
+  {{- $docContainer := pick $params "doc" -}}
 
-  {{- range $patch := $params.patch -}}
+  {{- range $patch := $patches -}}
     {{- if not (hasKey $patch "op") -}}
       {{- fail "patch is missing op key" -}}
     {{- end -}}
@@ -33,9 +35,9 @@ output: JSON encoded map with 1 key:
     {{- $reSlice := list -}}
 
     {{- range $opPathKey := $opPathKeys -}}
-      {{- $obj := $params -}}
+      {{- $obj := $docContainer -}}
       {{- if and (eq $patch.op "copy") (eq $opPathKey "from") -}}
-        {{- $obj := fromJson (toJson $params) -}}
+        {{- $obj = (fromJson (toJson $docContainer)) -}}
       {{- end -}}
       {{- $key := "doc" -}}
       {{- $lastMap := dict "root" $obj -}}
@@ -213,5 +215,5 @@ output: JSON encoded map with 1 key:
     {{- end -}}
 
   {{- end -}}
-  {{- toJson (dict "doc" $params.doc) -}}
+  {{- toJson $docContainer -}}
 {{- end -}}
