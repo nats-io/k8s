@@ -192,8 +192,8 @@ output: JSON encoded map with 1 key:
 */}}
 {{- define "nats.loadMergePatch" -}}
 {{- $doc := tpl (.ctx.Files.Get (printf "files/%s" .file)) .ctx | fromYaml | default dict -}}
-{{- $doc = mergeOverwrite $doc (deepCopy .merge) -}}
-{{- get (include "jsonpatch" (dict "doc" $doc "patch" .patch) | fromJson ) "doc" | toYaml -}}
+{{- $doc = mergeOverwrite $doc (deepCopy (.merge | default dict)) -}}
+{{- get (include "jsonpatch" (dict "doc" $doc "patch" (.patch | default list)) | fromJson ) "doc" | toYaml -}}
 {{- end }}
 
 
