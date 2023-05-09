@@ -1,0 +1,16 @@
+name: beta2-mount-fix
+{{ include "nats.image" (merge (pick $.Values "global") .Values.natsBox.container.image) }}
+
+command:
+- sh
+- -ec
+- |
+  cd {{ .Values.config.jetstream.fileStore.dir | quote }}
+  mkdir -p jetstream
+  find . -maxdepth 1 -mindepth 1 -not -name 'lost+found' -not -name 'jetstream' -exec mv {} jetstream \;
+
+volumeMounts:
+{{- with .Values.config.jetstream.fileStore }}
+- name: {{ .pvc.name }}
+  mountPath: {{ .dir | quote }}
+{{- end }}

@@ -50,7 +50,6 @@ config:
 
     fileStore:
       enabled: true
-      # disk will be mounted to <dir>/jetstream
       dir: /data
 
       ############################################################

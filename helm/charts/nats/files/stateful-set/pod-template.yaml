@@ -7,6 +7,15 @@ metadata:
     checksum/config: {{ sha256sum $configMap }}
     {{- end }}
 spec:
+  {{- with .Values.config.jetstream }}
+  {{- if and .enabled .fileStore.enabled .fileStore.pvc.enabled }}
+  # just for 1.0.0-beta.3
+  # add an init container in order to fix mount from <= 1.0.0-beta.2
+  initContainers:
+  - {{ include "nats.loadMergePatch" (merge (dict "file" "stateful-set/beta2-mount-fix-container.yaml" "ctx" $) dict) | nindent 4 }}
+  {{- end }}
+  {{- end }}
+
   containers:
   # nats
   {{- $nats := dict }}

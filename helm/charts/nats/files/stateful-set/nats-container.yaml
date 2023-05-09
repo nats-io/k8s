@@ -73,7 +73,7 @@ volumeMounts:
 {{- if and .enabled .fileStore.enabled .fileStore.pvc.enabled }}
 {{- with .fileStore }}
 - name: {{ .pvc.name }}
-  mountPath: {{ printf "%s/jetstream" .dir | quote }}
+  mountPath: {{ .dir | quote }}
 {{- end }}
 {{- end }}
 {{- end }}

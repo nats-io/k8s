@@ -65,7 +65,7 @@ config:
 
 	vm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(vm, corev1.VolumeMount{
-		MountPath: "/data/jetstream",
+		MountPath: "/data",
 		Name:      test.FullName + "-js",
 	})
 
@@ -83,6 +83,29 @@ config:
 					Requests: corev1.ResourceList{
 						"storage": resource10Gi,
 					},
+				},
+			},
+		},
+	}
+
+	nbc := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0]
+	expected.StatefulSet.Value.Spec.Template.Spec.InitContainers = []corev1.Container{
+		{
+			Command: []string{
+				"sh",
+				"-ec",
+				`cd "/data"
+mkdir -p jetstream
+find . -maxdepth 1 -mindepth 1 -not -name 'lost+found' -not -name 'jetstream' -exec mv {} jetstream \;
+`,
+			},
+			Image:           nbc.Image,
+			ImagePullPolicy: nbc.ImagePullPolicy,
+			Name:            "beta2-mount-fix",
+			VolumeMounts: []corev1.VolumeMount{
+				{
+					MountPath: "/data",
+					Name:      test.FullName + "-js",
 				},
 			},
 		},
@@ -210,9 +233,32 @@ config:
 		},
 	}
 
+	nbc := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0]
+	expected.StatefulSet.Value.Spec.Template.Spec.InitContainers = []corev1.Container{
+		{
+			Command: []string{
+				"sh",
+				"-ec",
+				`cd "/mnt"
+mkdir -p jetstream
+find . -maxdepth 1 -mindepth 1 -not -name 'lost+found' -not -name 'jetstream' -exec mv {} jetstream \;
+`,
+			},
+			Image:           nbc.Image,
+			ImagePullPolicy: nbc.ImagePullPolicy,
+			Name:            "beta2-mount-fix",
+			VolumeMounts: []corev1.VolumeMount{
+				{
+					MountPath: "/mnt",
+					Name:      test.FullName + "-js",
+				},
+			},
+		},
+	}
+
 	vm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(vm, corev1.VolumeMount{
-		MountPath: "/mnt/jetstream",
+		MountPath: "/mnt",
 		Name:      test.FullName + "-js",
 	}, corev1.VolumeMount{
 		MountPath: "/mnt/resolver",
@@ -370,7 +416,7 @@ config:
 
 	vm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(vm, corev1.VolumeMount{
-		MountPath: "/data/jetstream",
+		MountPath: "/data",
 		Name:      test.FullName + "-js",
 	}, corev1.VolumeMount{
 		MountPath: "/data/resolver",
@@ -413,6 +459,29 @@ config:
 					},
 				},
 				StorageClassName: &storageClassGp3,
+			},
+		},
+	}
+
+	nbc := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0]
+	expected.StatefulSet.Value.Spec.Template.Spec.InitContainers = []corev1.Container{
+		{
+			Command: []string{
+				"sh",
+				"-ec",
+				`cd "/data"
+mkdir -p jetstream
+find . -maxdepth 1 -mindepth 1 -not -name 'lost+found' -not -name 'jetstream' -exec mv {} jetstream \;
+`,
+			},
+			Image:           nbc.Image,
+			ImagePullPolicy: nbc.ImagePullPolicy,
+			Name:            "beta2-mount-fix",
+			VolumeMounts: []corev1.VolumeMount{
+				{
+					MountPath: "/data",
+					Name:      test.FullName + "-js",
+				},
 			},
 		},
 	}
@@ -780,7 +849,7 @@ max_outstanding_catchup: 64MB
 
 	vm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(vm, corev1.VolumeMount{
-		MountPath: "/data/jetstream",
+		MountPath: "/data",
 		Name:      test.FullName + "-js",
 	})
 
@@ -798,6 +867,29 @@ max_outstanding_catchup: 64MB
 					Requests: corev1.ResourceList{
 						"storage": resource10Gi,
 					},
+				},
+			},
+		},
+	}
+
+	nbc := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0]
+	expected.StatefulSet.Value.Spec.Template.Spec.InitContainers = []corev1.Container{
+		{
+			Command: []string{
+				"sh",
+				"-ec",
+				`cd "/data"
+mkdir -p jetstream
+find . -maxdepth 1 -mindepth 1 -not -name 'lost+found' -not -name 'jetstream' -exec mv {} jetstream \;
+`,
+			},
+			Image:           nbc.Image,
+			ImagePullPolicy: nbc.ImagePullPolicy,
+			Name:            "beta2-mount-fix",
+			VolumeMounts: []corev1.VolumeMount{
+				{
+					MountPath: "/data",
+					Name:      test.FullName + "-js",
 				},
 			},
 		},
