@@ -67,7 +67,7 @@ config:
         # defaults to "{{ include "nats.fullname" $ }}-js"
         name:
 
-      # defaults to use all of the available pvc size
+      # defaults to the PVC size
       maxSize:
 
     memoryStore:

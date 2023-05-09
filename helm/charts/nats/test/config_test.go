@@ -56,6 +56,7 @@ config:
 		},
 	}
 	expected.Conf.Value["jetstream"] = map[string]any{
+		"max_file_store":   int64(10737418240),
 		"max_memory_store": int64(0),
 		"store_dir":        "/data",
 	}
@@ -806,7 +807,7 @@ config:
   jetstream:
     enabled: true
     merge:
-      000$include: "js.conf"
+      zzz$include: "js.conf"
   merge:
     $include: "my-config.conf"
     zzz$include: "my-config-last.conf"

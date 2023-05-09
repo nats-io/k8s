@@ -101,6 +101,7 @@ natsBox:
 	expected := DefaultResources(t, test)
 
 	expected.Conf.Value["jetstream"] = map[string]any{
+		"max_file_store":   int64(10737418240),
 		"max_memory_store": int64(0),
 		"store_dir":        "/data",
 	}
