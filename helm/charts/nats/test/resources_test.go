@@ -51,7 +51,7 @@ reloader:
           key: token
   natsVolumeMountPrefixes:
   - /etc/
-  - /data/
+  - /data
 promExporter:
   enabled: true
   port: 7778
@@ -101,6 +101,7 @@ natsBox:
 	expected := DefaultResources(t, test)
 
 	expected.Conf.Value["jetstream"] = map[string]any{
+		"max_file_store":   int64(10737418240),
 		"max_memory_store": int64(0),
 		"store_dir":        "/data",
 	}
@@ -141,7 +142,7 @@ natsBox:
 	ctr[0].ImagePullPolicy = "IfNotPresent"
 	ctr[0].VolumeMounts = append(ctr[0].VolumeMounts, corev1.VolumeMount{
 		Name:      test.FullName + "-js",
-		MountPath: "/data/jetstream",
+		MountPath: "/data",
 	})
 
 	// reloader
@@ -150,7 +151,7 @@ natsBox:
 	ctr[1].ImagePullPolicy = "Always"
 	ctr[1].VolumeMounts = append(ctr[1].VolumeMounts, corev1.VolumeMount{
 		Name:      test.FullName + "-js",
-		MountPath: "/data/jetstream",
+		MountPath: "/data",
 	})
 
 	// promExporter
@@ -303,6 +304,29 @@ natsBox:
 					Requests: corev1.ResourceList{
 						"storage": resource10Gi,
 					},
+				},
+			},
+		},
+	}
+
+	nbc := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0]
+	expected.StatefulSet.Value.Spec.Template.Spec.InitContainers = []corev1.Container{
+		{
+			Command: []string{
+				"sh",
+				"-ec",
+				`cd "/data"
+mkdir -p jetstream
+find . -maxdepth 1 -mindepth 1 -not -name 'lost+found' -not -name 'jetstream' -exec mv {} jetstream \;
+`,
+			},
+			Image:           nbc.Image,
+			ImagePullPolicy: nbc.ImagePullPolicy,
+			Name:            "beta2-mount-fix",
+			VolumeMounts: []corev1.VolumeMount{
+				{
+					MountPath: "/data",
+					Name:      test.FullName + "-js",
 				},
 			},
 		},

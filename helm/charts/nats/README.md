@@ -15,6 +15,9 @@ helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm upgrade --install nats nats/nats --devel
 ```
 
+## 1.x Beta Upgrade Notes
+- If using `1.0.0-beta.2` or lower with JetStream enabled, upgrade to `1.0.0-beta.3` first
+
 ## Values
 
 There are a handful of explicitly defined options which are documented with comments in the [values.yaml](values.yaml) file.
@@ -113,6 +116,7 @@ podTemplate:
   topologySpreadConstraints:
     kubernetes.io/hostname:
       maxSkew: 1
+      whenUnsatisfiable: DoNotSchedule
 ```
 
 ### NATS Container Resources
