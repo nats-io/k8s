@@ -17,7 +17,7 @@ config:
     port: 1005
   nats:
     port: 1001
-  leafnode:
+  leafnodes:
     enabled: true
     port: 1002
   websocket:
@@ -39,7 +39,7 @@ container:
   ports:
     nats:
       hostPort: 2001
-    leafnode:
+    leafnodes:
       hostPort: 2002
     websocket:
       hostPort: 2003
@@ -63,7 +63,7 @@ service:
       enabled: true
       port: 3001
       nodePort: 4001
-    leafnode:
+    leafnodes:
       enabled: true
       port: 3002
       nodePort: 4002
@@ -94,7 +94,7 @@ service:
 `
 	expected := DefaultResources(t, test)
 	expected.Conf.Value["port"] = int64(1001)
-	expected.Conf.Value["leafnode"] = map[string]any{
+	expected.Conf.Value["leafnodes"] = map[string]any{
 		"port":         int64(1002),
 		"no_advertise": true,
 	}
@@ -133,7 +133,7 @@ service:
 			HostPort:      2001,
 		},
 		{
-			Name:          "leafnode",
+			Name:          "leafnodes",
 			ContainerPort: 1002,
 			HostPort:      2002,
 		},
@@ -176,9 +176,9 @@ service:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnode",
+			Name:       "leafnodes",
 			Port:       1002,
-			TargetPort: intstr.FromString("leafnode"),
+			TargetPort: intstr.FromString("leafnodes"),
 		},
 		{
 			Name:       "websocket",
@@ -221,10 +221,10 @@ service:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnode",
+			Name:       "leafnodes",
 			Port:       3002,
 			NodePort:   4002,
-			TargetPort: intstr.FromString("leafnode"),
+			TargetPort: intstr.FromString("leafnodes"),
 		},
 		{
 			Name:       "websocket",

@@ -21,12 +21,12 @@ tls:
 {{- end }}
 
 ########################################
-# leafnode
+# leafnodes
 ########################################
-{{- with .leafnode }}
+{{- with .leafnodes }}
 {{- if .enabled }}
-leafnode:
-  {{- include "nats.loadMergePatch" (merge (dict "file" "config/leafnode.yaml" "ctx" $) .) | nindent 2 }}
+leafnodes:
+  {{- include "nats.loadMergePatch" (merge (dict "file" "config/leafnodes.yaml" "ctx" $) .) | nindent 2 }}
 {{- end }}
 {{- end }}
 

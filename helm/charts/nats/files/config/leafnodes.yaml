@@ -1,4 +1,4 @@
-{{- with .Values.config.leafnode }}
+{{- with .Values.config.leafnodes }}
 port: {{ .port }}
 no_advertise: true
 

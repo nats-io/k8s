@@ -142,7 +142,7 @@ imagePullPolicy: {{ .pullPolicy | default .global.image.pullPolicy }}
 
 {{- define "nats.secretNames" -}}
 {{- $secrets := list }}
-{{- range $protocol := list "nats" "leafnode" "websocket" "mqtt" "cluster" "gateway" }}
+{{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" }}
   {{- $configProtocol := get $.Values.config $protocol }}
   {{- if and (or (eq $protocol "nats") $configProtocol.enabled) $configProtocol.tls.enabled $configProtocol.tls.secretName }}
     {{- $secrets = append $secrets (merge (dict "name" (printf "%s-tls" $protocol)) $configProtocol.tls) }}

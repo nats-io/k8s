@@ -8,7 +8,7 @@ spec:
   selector:
     {{- include "nats.selectorLabels" $ | nindent 4 }}
   ports:
-  {{- range $protocol := list "nats" "leafnode" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
+  {{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
   {{- $configProtocol := get $.Values.config $protocol }}
   {{- $servicePort := get $.Values.service.ports $protocol }}
   {{- if and (or (eq $protocol "nats") $configProtocol.enabled) $servicePort.enabled }}

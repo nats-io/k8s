@@ -280,7 +280,7 @@ config:
           spec:
             storageClassName: gp3
         patch: [{op: add, path: /spec/accessModes/-, value: ReadWriteMany}]
-  leafnode:
+  leafnodes:
     enabled: true
     merge:
       no_advertise: false
@@ -333,7 +333,7 @@ config:
 		"max_file_store":          int64(1073741824),
 		"max_outstanding_catchup": int64(67108864),
 	}
-	expected.Conf.Value["leafnode"] = map[string]any{
+	expected.Conf.Value["leafnodes"] = map[string]any{
 		"port":         int64(7422),
 		"no_advertise": false,
 		"advertise":    "demo.nats.io:7422",
@@ -424,7 +424,7 @@ config:
 			ContainerPort: 4222,
 		},
 		{
-			Name:          "leafnode",
+			Name:          "leafnodes",
 			ContainerPort: 7422,
 		},
 		{
@@ -456,9 +456,9 @@ config:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnode",
+			Name:       "leafnodes",
 			Port:       7422,
-			TargetPort: intstr.FromString("leafnode"),
+			TargetPort: intstr.FromString("leafnodes"),
 		},
 		{
 			Name:       "websocket",
@@ -494,9 +494,9 @@ config:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnode",
+			Name:       "leafnodes",
 			Port:       7422,
-			TargetPort: intstr.FromString("leafnode"),
+			TargetPort: intstr.FromString("leafnodes"),
 		},
 		{
 			Name:       "websocket",
@@ -531,11 +531,11 @@ config:
       merge:
         verify_cert_and_check_known_urls: true
       patch: [{op: add, path: /verify_and_map, value: true}]
-  leafnode:
+  leafnodes:
     enabled: true
     tls:
       enabled: true
-      secretName: leafnode-tls
+      secretName: leafnodes-tls
   websocket:
     enabled: true
     tls:
@@ -563,7 +563,7 @@ config:
 			"tls://nats-2.nats-headless:6222",
 		},
 	}
-	expected.Conf.Value["leafnode"] = map[string]any{
+	expected.Conf.Value["leafnodes"] = map[string]any{
 		"port":         int64(7422),
 		"no_advertise": true,
 	}
@@ -585,7 +585,7 @@ config:
 	volumes := expected.StatefulSet.Value.Spec.Template.Spec.Volumes
 	natsVm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
 	reloaderVm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].VolumeMounts
-	for _, protocol := range []string{"nats", "leafnode", "websocket", "mqtt", "cluster", "gateway"} {
+	for _, protocol := range []string{"nats", "leafnodes", "websocket", "mqtt", "cluster", "gateway"} {
 		tls := map[string]any{
 			"cert_file": "/etc/nats-certs/" + protocol + "/tls.crt",
 			"key_file":  "/etc/nats-certs/" + protocol + "/tls.key",
@@ -626,7 +626,7 @@ config:
 
 	// reloader certs are alphabetized
 	reloaderArgs := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args
-	for _, protocol := range []string{"cluster", "gateway", "leafnode", "mqtt", "nats", "websocket"} {
+	for _, protocol := range []string{"cluster", "gateway", "leafnodes", "mqtt", "nats", "websocket"} {
 		if protocol == "nats" {
 			reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-certs/"+protocol+"/tls.ca")
 		}
@@ -641,7 +641,7 @@ config:
 			ContainerPort: 4222,
 		},
 		{
-			Name:          "leafnode",
+			Name:          "leafnodes",
 			ContainerPort: 7422,
 		},
 		{
@@ -673,9 +673,9 @@ config:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnode",
+			Name:       "leafnodes",
 			Port:       7422,
-			TargetPort: intstr.FromString("leafnode"),
+			TargetPort: intstr.FromString("leafnodes"),
 		},
 		{
 			Name:       "websocket",
@@ -711,9 +711,9 @@ config:
 			TargetPort: intstr.FromString("nats"),
 		},
 		{
-			Name:       "leafnode",
+			Name:       "leafnodes",
 			Port:       7422,
-			TargetPort: intstr.FromString("leafnode"),
+			TargetPort: intstr.FromString("leafnodes"),
 		},
 		{
 			Name:       "websocket",
