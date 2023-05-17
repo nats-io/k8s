@@ -21,7 +21,7 @@ args:
 {{- if .Values.config.jetstream.enabled }}
 - -jsz=all
 {{- end }}
-{{- if .Values.config.leafnode.enabled }}
+{{- if .Values.config.leafnodes.enabled }}
 - -leafz
 {{- end }}
 {{- if .Values.config.gateway.enabled }}
