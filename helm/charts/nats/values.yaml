@@ -95,14 +95,14 @@ config:
       merge: {}
       patch: []
 
-  leafnode:
+  leafnodes:
     enabled: false
     port: 7422
     tls:
       enabled: false
       # set secretName in order to mount an existing secret to dir
       secretName:
-      dir: /etc/nats-certs/leafnode
+      dir: /etc/nats-certs/leafnodes
       cert: tls.crt
       key: tls.key
       ca:
@@ -111,8 +111,8 @@ config:
       merge: {}
       patch: []
 
-    # merge or patch the leafnode config
-    # https://docs.nats.io/running-a-nats-service/configuration/leafnode/leafnode_conf
+    # merge or patch the leafnodes config
+    # https://docs.nats.io/running-a-nats-service/configuration/leafnodes/leafnode_conf
     merge: {}
     patch: []
 
@@ -282,7 +282,7 @@ container:
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#containerport-v1-core
   ports:
     nats: {}
-    leafnode: {}
+    leafnodes: {}
     websocket: {}
     mqtt: {}
     cluster: {}
@@ -379,7 +379,7 @@ service:
   ports:
     nats:
       enabled: true
-    leafnode:
+    leafnodes:
       enabled: true
     websocket:
       enabled: true

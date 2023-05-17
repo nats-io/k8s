@@ -3,7 +3,7 @@ name: nats
 {{ include "nats.image" (merge (pick $.Values "global") .Values.container.image) }}
 
 ports:
-{{- range $protocol := list "nats" "leafnode" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
+{{- range $protocol := list "nats" "leafnodes" "websocket" "mqtt" "cluster" "gateway" "monitor" "profiling" }}
 {{- $configProtocol := get $.Values.config $protocol }}
 {{- $containerPort := get $.Values.container.ports $protocol }}
 {{- if or (eq $protocol "nats") $configProtocol.enabled }}
