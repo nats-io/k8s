@@ -150,6 +150,7 @@ config:
     pvc:
       size: 5Gi
       storageClassName: gp3
+  serverNamePrefix: test_
 `
 	expected := DefaultResources(t, test)
 
@@ -211,8 +212,10 @@ config:
 		},
 	}
 
-	vm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
-	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(vm, corev1.VolumeMount{
+	ctr := &expected.StatefulSet.Value.Spec.Template.Spec.Containers[0]
+	ctr.Env[1].Value = "test_$(POD_NAME)"
+	
+	ctr.VolumeMounts = append(ctr.VolumeMounts, corev1.VolumeMount{
 		MountPath: "/mnt",
 		Name:      test.FullName + "-js",
 	}, corev1.VolumeMount{
@@ -220,7 +223,7 @@ config:
 		Name:      test.FullName + "-resolver",
 	})
 
-	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].Ports = []corev1.ContainerPort{
+	ctr.Ports = []corev1.ContainerPort{
 		{
 			Name:          "nats",
 			ContainerPort: 4222,
