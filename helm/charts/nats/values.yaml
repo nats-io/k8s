@@ -233,6 +233,10 @@ config:
     merge: {}
     patch: []
 
+  # adds a prefix to the server name, which defaults to the pod name
+  # helpful for ensuring server name is unique in a super cluster
+  serverNamePrefix: ""
+
   # merge or patch the nats config
   # https://docs.nats.io/running-a-nats-service/configuration
   # following special rules apply

@@ -407,6 +407,10 @@ exec sh -ec "$0"
 												},
 											},
 										},
+										{
+											Name: "SERVER_NAME",
+											Value: "$(POD_NAME)",
+										},
 									},
 									Image: dd.NatsImage,
 									Lifecycle: &corev1.Lifecycle{

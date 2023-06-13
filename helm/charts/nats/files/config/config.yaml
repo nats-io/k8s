@@ -1,7 +1,7 @@
 {{- $pidFile := ternary "/var/run/nats/nats.pid" "/var/run/nats.pid" .Values.reloader.enabled }}
 {{- with .Values.config }}
 
-server_name: << $POD_NAME >>
+server_name: << $SERVER_NAME >>
 lame_duck_grace_period: 10s
 lame_duck_duration: 30s
 pid_file: {{ $pidFile }}

@@ -20,6 +20,8 @@ env:
   valueFrom:
     fieldRef:
       fieldPath: metadata.name
+- name: SERVER_NAME
+  value: {{ printf "%s$(POD_NAME)" .Values.config.serverNamePrefix | quote }}
 {{- with .Values.container.env }}
 {{- include "nats.env" . }}
 {{- end }}

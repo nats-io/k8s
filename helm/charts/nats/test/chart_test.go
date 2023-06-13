@@ -202,6 +202,7 @@ func HelmRender(t *testing.T, test *Test) *Resources {
 	}
 
 	_ = os.Setenv("POD_NAME", "nats-0")
+	_ = os.Setenv("SERVER_NAME", "nats-0")
 	resources.Conf.Value, err = conf.ParseFile(filepath.Join(confDir, "nats.conf"))
 	require.NoError(t, err)
 	resources.Conf.HasValue = true
