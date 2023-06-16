@@ -246,7 +246,7 @@ bootconfig:
 
 ### Using LoadBalancers
 
-In case of using a load balancer for external access, it is recommended to disable no advertise
+In case of using a load balancer for external access, it is recommended to disable advertise
 so that internal ips from the NATS Servers are not advertised to the clients connecting through
 the load balancer.
 
