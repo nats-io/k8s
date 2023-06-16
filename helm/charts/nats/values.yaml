@@ -140,6 +140,11 @@ nats:
     # If not set and create is true, a name is generated using the fullname template
     name: ""
 
+      # Default ConfigMap settings:
+  configMap:
+    # Annotations to add to the config
+    annotations: {}
+
   # Toggle whether to automatically mount Service Account token in the pod
   # not set means default value, boolean true/false overrides default value
   # automountServiceAccountToken: true

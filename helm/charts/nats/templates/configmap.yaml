@@ -6,6 +6,10 @@ metadata:
   namespace: {{ include "nats.namespace" . }}
   labels:
     {{- include "nats.labels" . | nindent 4 }}
+  {{- if .Values.configMap.annotations }}
+  annotations:
+    {{- toYaml .Values.configMap.annotations | nindent 4 }}
+  {{- end }}
 data:
   nats.conf: |
     # NATS Clients Port
