@@ -215,10 +215,12 @@ spec:
       # reload to the server without restarting the pod.
       shareProcessNamespace: true
 
-      {{- if and .Values.nats.externalAccess .Values.nats.advertise }}
+      {{- if or (and .Values.nats.externalAccess .Values.nats.advertise) (gt (len .Values.additionalInitContainers) 0) }}
       # Initializer container required to be able to lookup
       # the external ip on which this node is running.
       initContainers:
+      {{- end }}
+      {{- if and .Values.nats.externalAccess .Values.nats.advertise }}
       - name: bootconfig
         command:
         - nats-pod-bootconfig
@@ -244,6 +246,10 @@ spec:
         - mountPath: /etc/nats-config/advertise
           name: advertiseconfig
           subPath: advertise
+      {{- end }}
+
+      {{- if gt (len .Values.additionalInitContainers) 0 }}
+      {{- toYaml .Values.additionalInitContainers | nindent 6 }}
       {{- end }}
 
       #################

@@ -414,6 +414,9 @@ statefulSetPodLabels: {}
 # Annotations to add to the NATS Service
 serviceAnnotations: {}
 
+# additionalInitContainers are the init containers to add to the NATS StatefulSet
+additionalInitContainers: []
+
 # additionalContainers are the sidecar containers to add to the NATS StatefulSet
 additionalContainers: []
 
