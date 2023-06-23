@@ -1,6 +1,6 @@
 # NATS Server
 
-**Beta Notice**: This branch contains the `nats` 1.x Helm Chart Beta.  The `values.yaml` format has changed significantly from 0.x, and upgrading from 0.x -> 1.x is not straightforward.  At this time, we are recommending only new installations using the 1.x Beta chart.  We will be developing an upgrade path from 0.x -> 1.x (captured by [issue 712](https://github.com/nats-io/k8s/issues/712)) prior to launching 1.x GA.
+**Beta Notice**: This branch contains the `nats` 1.x Helm Chart Beta.  The `values.yaml` schema has changed significantly from 0.x.  Read [UPGRADING.md](UPGRADING.md) for instructions on upgrading a 0.x release to 1.x.
 
 ---
 
