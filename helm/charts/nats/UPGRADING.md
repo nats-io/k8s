@@ -10,7 +10,7 @@ There are a number of immutable fields in the NATS Stateful Set and NATS Box dep
 config:
   # required if using JetStream file storage
   jetstream:
-    # make sure to uncomment the next line if using JetStream file storage
+    # uncomment the next line if using JetStream file storage
     # enabled: true
     fileStore:
       pvc:
@@ -21,7 +21,7 @@ config:
 
   # required if using a full or cache resolver
   resolver:
-    # make sure to uncomment the next line if using a full or cache resolver
+    # uncomment the next line if using a full or cache resolver
     # enabled: true
     pvc:
       name: nats-jwt-pvc
@@ -39,8 +39,11 @@ headlessService:
     $tplYaml: >-
       {{ include "nats.fullname" . }}
 
-# required to use new ClusterIP service for accessing NATS
+# required to use new ClusterIP service for Clients accessing NATS
+# if using TLS, this may require adding another SAN
 service:
+  # uncomment the next line to disable the new ClusterIP service
+  # enabled: false
   name:
     $tplYaml: >-
       {{ include "nats.fullname" . }}-svc
@@ -85,7 +88,6 @@ helm template \
   nats \
   nats/nats
 ```
-
 
 ## Update Kubernetes Resources to new values.yaml schema
 

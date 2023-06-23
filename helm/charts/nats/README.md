@@ -166,6 +166,36 @@ config:
       SYS_ACCOUNT_ID: SYS_ACCOUNT_JWT
 ```
 
+
+## Accessing NATS
+
+The chart contains 2 services by default, `service` and `headlessService`.
+
+### `service`
+
+The `service` is intended to be accessed by NATS Clients.  It is a `ClusterIP` service by default, however it can easily be changed to a different service type.
+
+The `nats`, `websocket`, `leafnodes`, and `mqtt` ports will be exposed through this service by default if they are enabled.
+
+Example: change this service type to a `LoadBalancer`:
+
+```yaml
+service:
+  merge:
+    spec:
+      type: LoadBalancer
+```
+
+### `headlessService`
+
+The `headlessService` is used for NATS Servers in the Stateful Set to discover one another.  It is primarily intended to be used for Cluster Route connections.
+
+### TLS Considerations
+
+The TLS Certificate used for Client Connections should have a SAN covering DNS Name that clients access the `service` at.
+
+The TLS Certificate used for Cluster Route Connections should have a SAN covering the DNS Name that routes access each other on the `headlessService` at.  This is `*.<headless-service-name>` by default.
+
 ## Advanced Features
 
 ### Templating Values
