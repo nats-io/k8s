@@ -183,43 +183,13 @@ Anything in `values.yaml` can be templated:
     yaml template
   ```
 
-Example - add cluster authorization:
+Example - change service name:
 
 ```yaml
-config:
-  cluster:
-    enabled: true
-    merge:
-      authorization:
-        user: foo
-        password:
-          $tplYaml: >
-            {{ bcrypt "bar" }}
-      routes:
-      - $tplYamlSpread: |
-          {{- range $i, $_ := until (int $.Values.config.cluster.replicas) }}
-          - {{ printf "nats://foo:bar@%s-%d.%s:6222" $.Values.statefulSet.name $i $.Values.headlessService.name }}
-          {{- end }}
-```
-
-templates to the `nats.conf`:
-
-```
-{
-  "cluster": {
-    "authorization": {
-      "password": "$2a$10$iPs.JbHVKFlFnE.NAN.jF.I1PNi72UycEE83TzyUd1rZsXfFQteQ6",
-      "user": "foo"
-    },
-    "routes": [
-      "nats://foo:bar@nats-0.nats-headless:6222",
-      "nats://foo:bar@nats-1.nats-headless:6222",
-      "nats://foo:bar@nats-2.nats-headless:6222"
-    ]
-  },
-  "port": 4222,
-  ...
-}
+service:
+  name:
+    $tplYaml: >-
+      {{ include "nats.fullname" . }}-svc
 ```
 
 ### NATS Config Units and Variables

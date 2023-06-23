@@ -27,6 +27,15 @@ config:
     # must be 2 or higher when jetstream is enabled
     replicas: 3
 
+    # settings for routeURLs generated to discover other pods in the Stateful Set
+    routeURLs:
+      # if both user and password are set, they will be added to route URLs and the cluster authorization block
+      user:
+      password:
+      # set to true to use FQDN in route URLs
+      useFQDN: false
+      k8sClusterDomain: cluster.local
+
     tls:
       enabled: false
       # set secretName in order to mount an existing secret to dir

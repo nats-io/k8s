@@ -111,9 +111,9 @@ service:
 		"no_advertise": true,
 		"port":         int64(1005),
 		"routes": []any{
-			"nats://nats-0.nats-headless:6222",
-			"nats://nats-1.nats-headless:6222",
-			"nats://nats-2.nats-headless:6222",
+			"nats://nats-0.nats-headless:1005",
+			"nats://nats-1.nats-headless:1005",
+			"nats://nats-2.nats-headless:1005",
 		},
 	}
 	expected.Conf.Value["gateway"] = map[string]any{
