@@ -144,6 +144,11 @@ config:
   cluster:
     enabled: true
     replicas: 2
+    routeURLs:
+      user: foo
+      password: bar
+      useFQDN: true
+      k8sClusterDomain: foo.bar.local
   resolver:
     enabled: true
     dir: /mnt/resolver
@@ -155,12 +160,16 @@ config:
 	expected := DefaultResources(t, test)
 
 	expected.Conf.Value["cluster"] = map[string]any{
+		"authorization": map[string]any{
+			"user":     "foo",
+			"password": "bar",
+		},
 		"name":         "nats",
 		"no_advertise": true,
 		"port":         int64(6222),
 		"routes": []any{
-			"nats://nats-0.nats-headless:6222",
-			"nats://nats-1.nats-headless:6222",
+			"nats://foo:bar@nats-0.nats-headless.nats.svc.foo.bar.local:6222",
+			"nats://foo:bar@nats-1.nats-headless.nats.svc.foo.bar.local:6222",
 		},
 	}
 	expected.Conf.Value["jetstream"] = map[string]any{
@@ -214,7 +223,7 @@ config:
 
 	ctr := &expected.StatefulSet.Value.Spec.Template.Spec.Containers[0]
 	ctr.Env[1].Value = "test_$(POD_NAME)"
-	
+
 	ctr.VolumeMounts = append(ctr.VolumeMounts, corev1.VolumeMount{
 		MountPath: "/mnt",
 		Name:      test.FullName + "-js",
