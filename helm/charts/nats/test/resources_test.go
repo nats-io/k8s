@@ -429,6 +429,12 @@ configMap:
       annotations:
         test: test
   patch: [{op: add, path: /metadata/labels/test, value: "test"}]
+podDisruptionBudget:
+  merge:
+    metadata:
+      annotations:
+        test: test
+  patch: [{op: add, path: /metadata/labels/test, value: "test"}]
 serviceAccount:
   enabled: true
   merge:
@@ -565,6 +571,9 @@ natsBox:
 
 	expected.Service.Value.ObjectMeta.Annotations = annotations()
 	expected.Service.Value.ObjectMeta.Labels["test"] = "test"
+
+	expected.PodDisruptionBudget.Value.ObjectMeta.Annotations = annotations()
+	expected.PodDisruptionBudget.Value.ObjectMeta.Labels["test"] = "test"
 
 	expected.ServiceAccount.HasValue = true
 	expected.ServiceAccount.Value.ObjectMeta.Annotations = annotations()

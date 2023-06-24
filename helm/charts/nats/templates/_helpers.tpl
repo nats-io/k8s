@@ -46,6 +46,7 @@ Set default values.
     {{- $_ := set .natsBox.contextsSecret           "name" (.natsBox.contextsSecret.name           | default (printf "%s-box-contexts" $name)) }}
     {{- $_ := set .natsBox.deployment               "name" (.natsBox.deployment.name               | default (printf "%s-box" $name)) }}
     {{- $_ := set .natsBox.serviceAccount           "name" (.natsBox.serviceAccount.name           | default (printf "%s-box" $name)) }}
+    {{- $_ := set .podDisruptionBudget              "name" (.podDisruptionBudget.name              | default $name) }}
     {{- $_ := set .service                          "name" (.service.name                          | default $name) }}
     {{- $_ := set .serviceAccount                   "name" (.serviceAccount.name                   | default $name) }}
     {{- $_ := set .statefulSet                      "name" (.statefulSet.name                      | default $name) }}
