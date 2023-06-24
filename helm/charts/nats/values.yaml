@@ -27,9 +27,10 @@ config:
     # must be 2 or higher when jetstream is enabled
     replicas: 3
 
-    # settings for routeURLs generated to discover other pods in the Stateful Set
+    # apply to generated route URLs that connect to other pods in the StatefulSet
     routeURLs:
-      # if both user and password are set, they will be added to route URLs and the cluster authorization block
+      # if both user and password are set, they will be added to route URLs
+      # and the cluster authorization block
       user:
       password:
       # set to true to use FQDN in route URLs
