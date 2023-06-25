@@ -466,6 +466,16 @@ configMap:
   # defaults to "{{ include "nats.fullname" $ }}-config"
   name:
 
+# pod disruption budget
+podDisruptionBudget:
+  enabled: true
+  # merge or patch the pod disruption budget
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#poddisruptionbudget-v1-policy
+  merge: {}
+  patch: []
+  # defaults to "{{ include "nats.fullname" $ }}"
+  name:
+
 # service account
 serviceAccount:
   enabled: false

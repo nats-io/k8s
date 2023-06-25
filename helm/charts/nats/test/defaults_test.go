@@ -1,10 +1,11 @@
 package test
 
 import (
+	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	policyv1 "k8s.io/api/policy/v1"
 	"sync"
 	"testing"
 
-	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/require"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -332,6 +333,50 @@ exec sh -ec "$0"
 				},
 			},
 		},
+		PodDisruptionBudget: Resource[policyv1.PodDisruptionBudget]{
+			ID:       dr.PodDisruptionBudget.ID,
+			HasValue: true,
+			Value: policyv1.PodDisruptionBudget{
+				TypeMeta: v1.TypeMeta{
+					Kind:       "PodDisruptionBudget",
+					APIVersion: "policy/v1",
+				},
+				ObjectMeta: v1.ObjectMeta{
+					Name:   fullName,
+					Labels: natsLabels(),
+				},
+				Spec: policyv1.PodDisruptionBudgetSpec{
+					MaxUnavailable: &intstr.IntOrString{IntVal: 1},
+					Selector: &v1.LabelSelector{
+						MatchLabels: natsSelectorLabels(),
+					},
+				},
+			},
+		},
+		PodMonitor: Resource[monitoringv1.PodMonitor]{
+			ID:       dr.PodMonitor.ID,
+			HasValue: false,
+			Value: monitoringv1.PodMonitor{
+				TypeMeta: v1.TypeMeta{
+					Kind:       "PodMonitor",
+					APIVersion: "monitoring.coreos.com/v1",
+				},
+				ObjectMeta: v1.ObjectMeta{
+					Name:   fullName,
+					Labels: natsLabels(),
+				},
+				Spec: monitoringv1.PodMonitorSpec{
+					PodMetricsEndpoints: []monitoringv1.PodMetricsEndpoint{
+						{
+							Port: "prom-metrics",
+						},
+					},
+					Selector: v1.LabelSelector{
+						MatchLabels: natsSelectorLabels(),
+					},
+				},
+			},
+		},
 		Service: Resource[corev1.Service]{
 			ID:       dr.Service.ID,
 			HasValue: true,
@@ -408,7 +453,7 @@ exec sh -ec "$0"
 											},
 										},
 										{
-											Name: "SERVER_NAME",
+											Name:  "SERVER_NAME",
 											Value: "$(POD_NAME)",
 										},
 									},
@@ -529,30 +574,6 @@ exec sh -ec "$0"
 					},
 					ServiceName:         fullName + "-headless",
 					PodManagementPolicy: "Parallel",
-				},
-			},
-		},
-		PodMonitor: Resource[monitoringv1.PodMonitor]{
-			ID:       dr.PodMonitor.ID,
-			HasValue: false,
-			Value: monitoringv1.PodMonitor{
-				TypeMeta: v1.TypeMeta{
-					Kind:       "PodMonitor",
-					APIVersion: "monitoring.coreos.com/v1",
-				},
-				ObjectMeta: v1.ObjectMeta{
-					Name:   fullName,
-					Labels: natsLabels(),
-				},
-				Spec: monitoringv1.PodMonitorSpec{
-					PodMetricsEndpoints: []monitoringv1.PodMetricsEndpoint{
-						{
-							Port: "prom-metrics",
-						},
-					},
-					Selector: v1.LabelSelector{
-						MatchLabels: natsSelectorLabels(),
-					},
 				},
 			},
 		},

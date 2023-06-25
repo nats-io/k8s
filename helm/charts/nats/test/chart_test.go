@@ -16,6 +16,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
+	policyv1 "k8s.io/api/policy/v1"
 )
 
 type Resources struct {
@@ -27,10 +28,11 @@ type Resources struct {
 	NatsBoxContextsSecret Resource[corev1.Secret]
 	NatsBoxDeployment     Resource[appsv1.Deployment]
 	NatsBoxServiceAccount Resource[corev1.ServiceAccount]
+	PodDisruptionBudget   Resource[policyv1.PodDisruptionBudget]
+	PodMonitor            Resource[monitoringv1.PodMonitor]
 	Service               Resource[corev1.Service]
 	ServiceAccount        Resource[corev1.ServiceAccount]
 	StatefulSet           Resource[appsv1.StatefulSet]
-	PodMonitor            Resource[monitoringv1.PodMonitor]
 	ExtraConfigMap        Resource[corev1.ConfigMap]
 	ExtraService          Resource[corev1.Service]
 }
@@ -109,6 +111,12 @@ func GenerateResources(fullName string) *Resources {
 		NatsBoxServiceAccount: Resource[corev1.ServiceAccount]{
 			ID: "ServiceAccount/" + fullName + "-box",
 		},
+		PodDisruptionBudget: Resource[policyv1.PodDisruptionBudget]{
+			ID: "PodDisruptionBudget/" + fullName,
+		},
+		PodMonitor: Resource[monitoringv1.PodMonitor]{
+			ID: "PodMonitor/" + fullName,
+		},
 		Service: Resource[corev1.Service]{
 			ID: "Service/" + fullName,
 		},
@@ -117,9 +125,6 @@ func GenerateResources(fullName string) *Resources {
 		},
 		StatefulSet: Resource[appsv1.StatefulSet]{
 			ID: "StatefulSet/" + fullName,
-		},
-		PodMonitor: Resource[monitoringv1.PodMonitor]{
-			ID: "PodMonitor/" + fullName,
 		},
 		ExtraConfigMap: Resource[corev1.ConfigMap]{
 			ID: "ConfigMap/" + fullName + "-extra",
