@@ -287,7 +287,7 @@ config:
 container:
   image:
     repository: nats
-    tag: 2.9.17-alpine
+    tag: 2.9.19-alpine
     pullPolicy:
     registry:
 
