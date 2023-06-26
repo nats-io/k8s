@@ -32,12 +32,30 @@ statefulSet:
   patch:
   - op: remove
     path: /spec/selector/matchLabels/app.kubernetes.io~1component
+  - $tplYamlSpread: |-
+      {{- if and 
+        .Values.config.jetstream.enabled
+        .Values.config.jetstream.fileStore.enabled
+        .Values.config.jetstream.fileStore.pvc.enabled
+        .Values.config.resolver.enabled
+        .Values.config.resolver.pvc.enabled
+      }}
+      - op: move
+        from: /spec/volumeClaimTemplates/0
+        path: /spec/volumeClaimTemplates/1
+      {{- else}}
+      []
+      {{- end }}
 
 # required
 headlessService:
   name:
     $tplYaml: >-
       {{ include "nats.fullname" . }}
+
+# required unless 0.x values explicitly set nats.serviceAccount.create=false
+serviceAccount:
+  enabled: true
 
 # required to use new ClusterIP service for Clients accessing NATS
 # if using TLS, this may require adding another SAN
@@ -102,7 +120,7 @@ After migrating to the new values schema, ensure that changes you expect in reso
 | Headless Service        | `templates/service.yaml`        | `templates/headless-service.yaml`         |
 | ClusterIP Service       | N/A                             | `templates/service.yaml`                  |
 | Network Policy          | `templates/networkpolicy.yaml`  | N/A                                       |
-| Pod Disruption Budget   | `templates/pdb.yaml`            | N/A                                       |
+| Pod Disruption Budget   | `templates/pdb.yaml`            | `templates/pod-disruption-budget.yaml`    |
 | Service Account         | `templates/rbac.yaml`           | `templates/service-account.yaml`          |
 | Resource                | `templates/`                    | `templates/`                              |
 | Resource                | `templates/`                    | `templates/`                              |
@@ -111,7 +129,6 @@ After migrating to the new values schema, ensure that changes you expect in reso
 | NatsBox Service Account | N/A                             | `templates/nats-box/service-account.yaml` |
 | NatsBox Contents Secret | N/A                             | `templates/nats-box/contents-secret.yaml` |
 | NatsBox Contexts Secret | N/A                             | `templates/nats-box/contexts-secret.yaml` |
-
 
 For example, to check that the Stateful Set matches:
 
