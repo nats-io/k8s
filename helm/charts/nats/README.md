@@ -1,6 +1,6 @@
 # NATS Server
 
-**Beta Notice**: This branch contains the `nats` 1.x Helm Chart Beta.  The `values.yaml` format has changed significantly from 0.x, and upgrading from 0.x -> 1.x is not straightforward.  At this time, we are recommending only new installations using the 1.x Beta chart.  We will be developing an upgrade path from 0.x -> 1.x (captured by [issue 712](https://github.com/nats-io/k8s/issues/712)) prior to launching 1.x GA.
+**Beta Notice**: This branch contains the `nats` 1.x Helm Chart Beta.  The `values.yaml` schema has changed significantly from 0.x.  Read [UPGRADING.md](UPGRADING.md) for instructions on upgrading a 0.x release to 1.x.
 
 ---
 
@@ -165,6 +165,36 @@ config:
     resolver_preload:
       SYS_ACCOUNT_ID: SYS_ACCOUNT_JWT
 ```
+
+
+## Accessing NATS
+
+The chart contains 2 services by default, `service` and `headlessService`.
+
+### `service`
+
+The `service` is intended to be accessed by NATS Clients.  It is a `ClusterIP` service by default, however it can easily be changed to a different service type.
+
+The `nats`, `websocket`, `leafnodes`, and `mqtt` ports will be exposed through this service by default if they are enabled.
+
+Example: change this service type to a `LoadBalancer`:
+
+```yaml
+service:
+  merge:
+    spec:
+      type: LoadBalancer
+```
+
+### `headlessService`
+
+The `headlessService` is used for NATS Servers in the Stateful Set to discover one another.  It is primarily intended to be used for Cluster Route connections.
+
+### TLS Considerations
+
+The TLS Certificate used for Client Connections should have a SAN covering DNS Name that clients access the `service` at.
+
+The TLS Certificate used for Cluster Route Connections should have a SAN covering the DNS Name that routes access each other on the `headlessService` at.  This is `*.<headless-service-name>` by default.
 
 ## Advanced Features
 
