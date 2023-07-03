@@ -299,6 +299,9 @@ extraResources:
 - apiVersion: networking.istio.io/v1beta1
   kind: VirtualService
   metadata:
+    namespace:
+      $tplYamlSpread: >
+        {{ include "nats.metadataNamespace" $ }}
     name:
       $tplYaml: >
         {{ include "nats.fullname" $ | quote }}

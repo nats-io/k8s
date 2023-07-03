@@ -2,6 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  {{- include "nats.metadataNamespace" $ | nindent 2 }}
   name: {{ .name }}
   labels:
     {{- include "nats.labels" $ | nindent 4 }}
