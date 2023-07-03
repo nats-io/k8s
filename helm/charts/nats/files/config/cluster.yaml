@@ -10,7 +10,7 @@ routes:
 {{- end }}
 {{- $domain := $.Values.headlessService.name  }}
 {{- if .routeURLs.useFQDN }}
-  {{- $domain = printf "%s.%s.svc.%s" $domain $.Release.Namespace .routeURLs.k8sClusterDomain }}
+  {{- $domain = printf "%s.%s.svc.%s" $domain (include "nats.namespace" $) .routeURLs.k8sClusterDomain }}
 {{- end }}
 {{- $port := (int .port) }}
 {{- range $i, $_ := until (int .replicas) }}

@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  {{- include "nats.metadataNamespace" $ | nindent 2 }}
   name: {{ .Values.statefulSet.name }}
   labels:
     {{- include "nats.labels" $ | nindent 4 }}

@@ -31,6 +31,22 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+Print the namespace
+*/}}
+{{- define "nats.namespace" -}}
+{{- default .Release.Namespace .Values.namespaceOverride }}
+{{- end }}
+
+{{/*
+Print the namespace for the metadata section
+*/}}
+{{- define "nats.metadataNamespace" -}}
+{{- with .Values.namespaceOverride }}
+namespace: {{ . | quote }}
+{{- end }}
+{{- end }}
+
+{{/*
 Set default values.
 */}}
 {{- define "nats.defaultValues" }}
