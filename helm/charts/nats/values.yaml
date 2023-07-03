@@ -14,6 +14,16 @@ global:
   labels: {}
 
 ################################################################################
+# Naming options
+################################################################################
+# override name of the chart
+nameOverride:
+# override full name of the chart+release
+fullnameOverride:
+# override the namespace that resources are installed into
+namespaceOverride:
+
+################################################################################
 # NATS Stateful Set and associated resources
 ################################################################################
 

@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  {{- include "nats.metadataNamespace" $ | nindent 2 }}
   name: {{ .Values.natsBox.deployment.name }}
   labels:
     {{- include "natsBox.labels" $ | nindent 4 }}

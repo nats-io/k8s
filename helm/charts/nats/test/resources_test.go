@@ -20,6 +20,7 @@ global:
     registry: docker.io
   labels:
     global: global
+namespaceOverride: foo
 config:
   jetstream:
     enabled: true
@@ -131,6 +132,7 @@ natsBox:
 	}
 
 	expected.StatefulSet.Value.ObjectMeta.Labels["global"] = "global"
+	expected.StatefulSet.Value.ObjectMeta.Namespace = "foo"
 	expected.StatefulSet.Value.Spec.Template.ObjectMeta.Labels["global"] = "global"
 
 	dd := ddg.Get(t)
@@ -189,6 +191,7 @@ natsBox:
 	}
 
 	expected.NatsBoxDeployment.Value.ObjectMeta.Labels["global"] = "global"
+	expected.NatsBoxDeployment.Value.ObjectMeta.Namespace = "foo"
 	expected.NatsBoxDeployment.Value.Spec.Template.ObjectMeta.Labels["global"] = "global"
 	nbCtr := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0]
 	// nats-box
@@ -253,6 +256,7 @@ natsBox:
 	expected.NatsBoxDeployment.Value.Spec.Template.Spec.Volumes = nbVol
 
 	expected.NatsBoxContextsSecret.Value.ObjectMeta.Labels["global"] = "global"
+	expected.NatsBoxContextsSecret.Value.ObjectMeta.Namespace = "foo"
 	expected.NatsBoxContextsSecret.Value.StringData["loadedSecret.json"] = `{
   "ca": "/etc/nats-certs/loadedSecret/tls.ca",
   "cert": "/etc/nats-certs/loadedSecret/tls.crt",
@@ -276,6 +280,7 @@ natsBox:
 
 	expected.NatsBoxContentsSecret.HasValue = true
 	expected.NatsBoxContentsSecret.Value.ObjectMeta.Labels["global"] = "global"
+	expected.NatsBoxContentsSecret.Value.ObjectMeta.Namespace = "foo"
 	expected.NatsBoxContentsSecret.Value.StringData = map[string]string{
 		"loadedContents.creds": "aabbcc",
 		"loadedContents.nk":    "ddeeff",
@@ -283,6 +288,7 @@ natsBox:
 
 	expected.Ingress.HasValue = true
 	expected.Ingress.Value.ObjectMeta.Labels["global"] = "global"
+	expected.Ingress.Value.ObjectMeta.Namespace = "foo"
 	expected.Ingress.Value.Spec.TLS = []networkingv1.IngressTLS{
 		{
 			Hosts:      []string{"demo.nats.io"},
@@ -325,6 +331,7 @@ natsBox:
 	}
 
 	expected.HeadlessService.Value.ObjectMeta.Labels["global"] = "global"
+	expected.HeadlessService.Value.ObjectMeta.Namespace = "foo"
 	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
 		{
 			Name:       "nats",
@@ -344,6 +351,7 @@ natsBox:
 	}
 
 	expected.Service.Value.ObjectMeta.Labels["global"] = "global"
+	expected.Service.Value.ObjectMeta.Namespace = "foo"
 	expected.Service.Value.Spec.Ports = []corev1.ServicePort{
 		{
 			Name:       "nats",
@@ -358,6 +366,7 @@ natsBox:
 	}
 
 	expected.ConfigMap.Value.ObjectMeta.Labels["global"] = "global"
+	expected.ConfigMap.Value.ObjectMeta.Namespace = "foo"
 
 	RenderAndCheck(t, test, expected)
 }
