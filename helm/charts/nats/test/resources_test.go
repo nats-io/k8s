@@ -79,9 +79,8 @@ natsBox:
         key: nats.nk
       tls:
         secretName: loaded-tls
-        cert: tls.crt
-        key: tls.key
-        ca: tls.ca
+      merge:
+        ca: /etc/my-ca/ca.crt
     loadedContents:
       creds:
         contents: aabbcc
@@ -258,7 +257,7 @@ natsBox:
 	expected.NatsBoxContextsSecret.Value.ObjectMeta.Labels["global"] = "global"
 	expected.NatsBoxContextsSecret.Value.ObjectMeta.Namespace = "foo"
 	expected.NatsBoxContextsSecret.Value.StringData["loadedSecret.json"] = `{
-  "ca": "/etc/nats-certs/loadedSecret/tls.ca",
+  "ca": "/etc/my-ca/ca.crt",
   "cert": "/etc/nats-certs/loadedSecret/tls.crt",
   "creds": "/etc/nats-creds/loadedSecret/nats.creds",
   "key": "/etc/nats-certs/loadedSecret/tls.key",

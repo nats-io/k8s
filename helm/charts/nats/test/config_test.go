@@ -539,8 +539,8 @@ config:
     tls:
       enabled: true
       secretName: nats-tls
-      ca: tls.ca
       merge:
+        ca_file: /etc/my-ca/ca.crt
         verify_cert_and_check_known_urls: true
       patch: [{op: add, path: /verify_and_map, value: true}]
   leafnodes:
@@ -603,8 +603,7 @@ config:
 			"key_file":  "/etc/nats-certs/" + protocol + "/tls.key",
 		}
 		if protocol == "nats" {
-			tls["ca_file"] = "/etc/nats-certs/" + protocol + "/tls.ca"
-			tls["verify"] = true
+			tls["ca_file"] = "/etc/my-ca/ca.crt"
 			tls["verify_cert_and_check_known_urls"] = true
 			tls["verify_and_map"] = true
 			expected.Conf.Value["tls"] = tls
@@ -640,7 +639,7 @@ config:
 	reloaderArgs := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args
 	for _, protocol := range []string{"cluster", "gateway", "leafnodes", "mqtt", "nats", "websocket"} {
 		if protocol == "nats" {
-			reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-certs/"+protocol+"/tls.ca")
+			reloaderArgs = append(reloaderArgs, "-config", "/etc/my-ca/ca.crt")
 		}
 		reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-certs/"+protocol+"/tls.crt", "-config", "/etc/nats-certs/"+protocol+"/tls.key")
 	}

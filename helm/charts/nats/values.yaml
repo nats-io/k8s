@@ -54,7 +54,6 @@ config:
       dir: /etc/nats-certs/cluster
       cert: tls.crt
       key: tls.key
-      ca:
       # merge or patch the tls config
       # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
       merge: {}
@@ -109,7 +108,6 @@ config:
       dir: /etc/nats-certs/nats
       cert: tls.crt
       key: tls.key
-      ca:
       # merge or patch the tls config
       # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
       merge: {}
@@ -125,7 +123,6 @@ config:
       dir: /etc/nats-certs/leafnodes
       cert: tls.crt
       key: tls.key
-      ca:
       # merge or patch the tls config
       # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
       merge: {}
@@ -146,7 +143,6 @@ config:
       dir: /etc/nats-certs/websocket
       cert: tls.crt
       key: tls.key
-      ca:
       # merge or patch the tls config
       # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
       merge: {}
@@ -189,7 +185,6 @@ config:
       dir: /etc/nats-certs/mqtt
       cert: tls.crt
       key: tls.key
-      ca:
       # merge or patch the tls config
       # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
       merge: {}
@@ -210,7 +205,6 @@ config:
       dir: /etc/nats-certs/gateway
       cert: tls.crt
       key: tls.key
-      ca:
       # merge or patch the tls config
       # https://docs.nats.io/running-a-nats-service/configuration/securing_nats/tls
       merge: {}
@@ -526,16 +520,14 @@ natsBox:
         # defaults to /etc/nats-nkeys/<context-name>
         dir:
         key: nats.nk
+      # used to connect with client certificates
       tls:
         # set secretName in order to mount an existing secret to dir
         secretName:
         # defaults to /etc/nats-certs/<context-name>
         dir:
-        # set cert and key to name of secret data keys to enable mTLS
-        cert:
-        key:
-        # set ca to name of secret data key to verify server CA
-        ca:
+        cert: tls.crt
+        key: tls.ca
 
       # merge or patch the context
       # https://docs.nats.io/using-nats/nats-tools/nats_cli#nats-contexts
