@@ -1,5 +1,4 @@
 {{- $contextName := .contextName }}
-{{- $caSet := false }}
 
 # url
 {{- if .Values.service.enabled }}
@@ -34,14 +33,8 @@ nkey: {{ $dir }}/{{ .key }}
 {{- with .tls }}
 {{- if .secretName }}
 {{- $dir := trimSuffix "/" .dir }}
-{{- if and .cert .key }}
-cert: {{ $dir }}/{{ .cert }}
-key: {{ $dir }}/{{ .key }}
-{{- end }}
-{{- if .ca }}
-{{- $caSet = true }}
-ca: {{ $dir }}/{{ .ca }}
-{{- end }}
+cert: {{ $dir }}/{{ .cert | default "tls.crt" }}
+key: {{ $dir }}/{{ .key | default "tls.key" }}
 {{- end }}
 {{- end }}
 
