@@ -181,6 +181,30 @@ imagePullPolicy: {{ .pullPolicy | default .global.image.pullPolicy }}
 {{- toJson (dict "secretNames" $secrets) }}
 {{- end }}
 
+{{- define "nats.tlsCAVolume" -}}
+{{- with .Values.tlsCA }}
+{{- if and .enabled (or .configMapName .secretName) }}
+- name: tls-ca
+{{- if .configMapName }}
+  configMap:
+    name: {{ .configMapName | quote }}
+{{- else if .secretName }}
+  secret:
+    secretName: {{ .secretName | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "nats.tlsCAVolumeMount" -}}
+{{- with .Values.tlsCA }}
+{{- if and .enabled (or .configMapName .secretName) }}
+- name: tls-ca
+  mountPath: {{ .dir | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{/*
 translates env var map to list
 */}}
