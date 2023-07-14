@@ -29,7 +29,13 @@ type DynamicDefaultsGetter struct {
 	dd  DynamicDefaults
 }
 
-var ddg DynamicDefaultsGetter
+var (
+	ddg              DynamicDefaultsGetter
+	appProtocolTCP   = "tcp"
+	appProtocolTLS   = "tls"
+	appProtocolHTTP  = "http"
+	appProtocolHTTPS = "https"
+)
 
 func (d *DynamicDefaultsGetter) Get(t *testing.T) DynamicDefaults {
 	t.Helper()
@@ -159,14 +165,16 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 				Spec: corev1.ServiceSpec{
 					Ports: []corev1.ServicePort{
 						{
-							Name:       "nats",
-							Port:       4222,
-							TargetPort: intstr.FromString("nats"),
+							Name:        "nats",
+							Port:        4222,
+							TargetPort:  intstr.FromString("nats"),
+							AppProtocol: &appProtocolTCP,
 						},
 						{
-							Name:       "monitor",
-							Port:       8222,
-							TargetPort: intstr.FromString("monitor"),
+							Name:        "monitor",
+							Port:        8222,
+							TargetPort:  intstr.FromString("monitor"),
+							AppProtocol: &appProtocolHTTP,
 						},
 					},
 					Selector:                 natsSelectorLabels(),
@@ -392,9 +400,10 @@ exec sh -ec "$0"
 				Spec: corev1.ServiceSpec{
 					Ports: []corev1.ServicePort{
 						{
-							Name:       "nats",
-							Port:       4222,
-							TargetPort: intstr.FromString("nats"),
+							Name:        "nats",
+							Port:        4222,
+							TargetPort:  intstr.FromString("nats"),
+							AppProtocol: &appProtocolTCP,
 						},
 					},
 					Selector: natsSelectorLabels(),

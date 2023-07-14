@@ -13,6 +13,13 @@ spec:
   {{- $configProtocol := get $.Values.config $protocol }}
   {{- $servicePort := get $.Values.service.ports $protocol }}
   {{- if and (or (eq $protocol "nats") $configProtocol.enabled) $servicePort.enabled }}
-  - {{ merge (dict "name" $protocol "targetPort" $protocol) (omit $servicePort "enabled") (dict "port" $configProtocol.port) | toYaml | nindent 4 }}
+  {{- $tlsEnabled := false }}
+  {{- if hasKey $configProtocol "tls" }}
+    {{- $tlsEnabled = $configProtocol.tls.enabled }}
+  {{- else if eq $protocol "monitor" }}
+    {{- $tlsEnabled = $.Values.config.nats.tls.enabled }}
+  {{- end }}
+  {{- $appProtocol := or (eq $protocol "websocket") (eq $protocol "monitor") | ternary ($tlsEnabled | ternary "https" "http") ($tlsEnabled | ternary "tls" "tcp") }}
+  - {{ merge (dict "name" $protocol "targetPort" $protocol "appProtocol" $appProtocol) (omit $servicePort "enabled") (dict "port" $configProtocol.port) | toYaml | nindent 4 }}
   {{- end }}
   {{- end }}

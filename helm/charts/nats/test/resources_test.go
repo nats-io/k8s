@@ -333,19 +333,22 @@ natsBox:
 	expected.HeadlessService.Value.ObjectMeta.Namespace = "foo"
 	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "nats",
-			Port:       4222,
-			TargetPort: intstr.FromString("nats"),
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "websocket",
-			Port:       8080,
-			TargetPort: intstr.FromString("websocket"),
+			Name:        "websocket",
+			Port:        8080,
+			TargetPort:  intstr.FromString("websocket"),
+			AppProtocol: &appProtocolHTTP,
 		},
 		{
-			Name:       "monitor",
-			Port:       8222,
-			TargetPort: intstr.FromString("monitor"),
+			Name:        "monitor",
+			Port:        8222,
+			TargetPort:  intstr.FromString("monitor"),
+			AppProtocol: &appProtocolHTTP,
 		},
 	}
 
@@ -353,14 +356,16 @@ natsBox:
 	expected.Service.Value.ObjectMeta.Namespace = "foo"
 	expected.Service.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "nats",
-			Port:       4222,
-			TargetPort: intstr.FromString("nats"),
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "websocket",
-			Port:       8080,
-			TargetPort: intstr.FromString("websocket"),
+			Name:        "websocket",
+			Port:        8080,
+			TargetPort:  intstr.FromString("websocket"),
+			AppProtocol: &appProtocolHTTP,
 		},
 	}
 
@@ -610,32 +615,37 @@ natsBox:
 
 	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "nats",
-			Port:       4222,
-			TargetPort: intstr.FromString("nats"),
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "websocket",
-			Port:       8080,
-			TargetPort: intstr.FromString("websocket"),
+			Name:        "websocket",
+			Port:        8080,
+			TargetPort:  intstr.FromString("websocket"),
+			AppProtocol: &appProtocolHTTP,
 		},
 		{
-			Name:       "monitor",
-			Port:       8222,
-			TargetPort: intstr.FromString("monitor"),
+			Name:        "monitor",
+			Port:        8222,
+			TargetPort:  intstr.FromString("monitor"),
+			AppProtocol: &appProtocolHTTP,
 		},
 	}
 
 	expected.Service.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "nats",
-			Port:       4222,
-			TargetPort: intstr.FromString("nats"),
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "websocket",
-			Port:       8080,
-			TargetPort: intstr.FromString("websocket"),
+			Name:        "websocket",
+			Port:        8080,
+			TargetPort:  intstr.FromString("websocket"),
+			AppProtocol: &appProtocolHTTP,
 		},
 	}
 
