@@ -14,7 +14,7 @@ global:
   labels: {}
 
 ################################################################################
-# Naming options
+# Common options
 ################################################################################
 # override name of the chart
 nameOverride:
@@ -22,6 +22,19 @@ nameOverride:
 fullnameOverride:
 # override the namespace that resources are installed into
 namespaceOverride:
+
+# reference a common CA Certificate or Bundle in all nats config `tls` blocks and nats-box contexts
+# note: `tls.verify` still must be set in the appropriate nats config `tls` blocks to require mTLS
+tlsCA:
+  enabled: false
+  # set configMapName in order to mount an existing configMap to dir
+  configMapName:
+  # set secretName in order to mount an existing secretName to dir
+  secretName:
+  # directory to mount the configMap or secret to
+  dir: /etc/nats-ca-cert
+  # key in the configMap or secret that contains the CA Certificate or Bundle
+  key: ca.crt
 
 ################################################################################
 # NATS Stateful Set and associated resources
@@ -218,6 +231,10 @@ config:
   monitor:
     enabled: true
     port: 8222
+    tls:
+      # config.nats.tls must be enabled also
+      # when enabled, monitoring port will use HTTPS with the options from config.nats.tls
+      enabled: false
 
   profiling:
     enabled: false
@@ -527,7 +544,7 @@ natsBox:
         # defaults to /etc/nats-certs/<context-name>
         dir:
         cert: tls.crt
-        key: tls.ca
+        key: tls.key
 
       # merge or patch the context
       # https://docs.nats.io/using-nats/nats-tools/nats_cli#nats-contexts

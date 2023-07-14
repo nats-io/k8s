@@ -15,7 +15,7 @@ url: nats://{{ .Values.headlessService.name }}
 creds: /etc/nats-contents/{{ $contextName }}.creds
 {{- else if .secretName }}
 {{- $dir := trimSuffix "/" .dir }}
-creds: {{ $dir }}/{{ .key }}
+creds: {{ printf "%s/%s" $dir (.key | default "nats.creds") | quote }}
 {{- end }}
 {{- end }}
 
@@ -25,7 +25,7 @@ creds: {{ $dir }}/{{ .key }}
 nkey: /etc/nats-contents/{{ $contextName }}.nk
 {{- else if .secretName }}
 {{- $dir := trimSuffix "/" .dir }}
-nkey: {{ $dir }}/{{ .key }}
+nkey: {{ printf "%s/%s" $dir (.key | default "nats.nk") | quote }}
 {{- end }}
 {{- end }}
 
@@ -33,8 +33,16 @@ nkey: {{ $dir }}/{{ .key }}
 {{- with .tls }}
 {{- if .secretName }}
 {{- $dir := trimSuffix "/" .dir }}
-cert: {{ $dir }}/{{ .cert | default "tls.crt" }}
-key: {{ $dir }}/{{ .key | default "tls.key" }}
+cert: {{ printf "%s/%s" $dir (.cert | default "tls.crt") | quote }}
+key: {{ printf "%s/%s" $dir (.key | default "tls.key") | quote }}
+{{- end }}
+{{- end }}
+
+# tlsCA
+{{- with $.Values.tlsCA }}
+{{- if and .enabled (or .configMapName .secretName) }}
+{{- $dir := trimSuffix "/" .dir }}
+ca: {{ printf "%s/%s" $dir (.key | default "ca.crt") | quote }}
 {{- end }}
 {{- end }}
 
