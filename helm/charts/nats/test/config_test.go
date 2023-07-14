@@ -106,19 +106,22 @@ config:
 
 	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "nats",
-			Port:       4222,
-			TargetPort: intstr.FromString("nats"),
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "cluster",
-			Port:       6222,
-			TargetPort: intstr.FromString("cluster"),
+			Name:        "cluster",
+			Port:        6222,
+			TargetPort:  intstr.FromString("cluster"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "monitor",
-			Port:       8222,
-			TargetPort: intstr.FromString("monitor"),
+			Name:        "monitor",
+			Port:        8222,
+			TargetPort:  intstr.FromString("monitor"),
+			AppProtocol: &appProtocolHTTP,
 		},
 	}
 
@@ -249,19 +252,22 @@ config:
 
 	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "nats",
-			Port:       4222,
-			TargetPort: intstr.FromString("nats"),
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "cluster",
-			Port:       6222,
-			TargetPort: intstr.FromString("cluster"),
+			Name:        "cluster",
+			Port:        6222,
+			TargetPort:  intstr.FromString("cluster"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "monitor",
-			Port:       8222,
-			TargetPort: intstr.FromString("monitor"),
+			Name:        "monitor",
+			Port:        8222,
+			TargetPort:  intstr.FromString("monitor"),
+			AppProtocol: &appProtocolHTTP,
 		},
 	}
 
@@ -463,62 +469,73 @@ config:
 
 	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "nats",
-			Port:       4222,
-			TargetPort: intstr.FromString("nats"),
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "leafnodes",
-			Port:       7422,
-			TargetPort: intstr.FromString("leafnodes"),
+			Name:        "leafnodes",
+			Port:        7422,
+			TargetPort:  intstr.FromString("leafnodes"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "websocket",
-			Port:       8080,
-			TargetPort: intstr.FromString("websocket"),
+			Name:        "websocket",
+			Port:        8080,
+			TargetPort:  intstr.FromString("websocket"),
+			AppProtocol: &appProtocolHTTP,
 		},
 		{
-			Name:       "mqtt",
-			Port:       1883,
-			TargetPort: intstr.FromString("mqtt"),
+			Name:        "mqtt",
+			Port:        1883,
+			TargetPort:  intstr.FromString("mqtt"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "cluster",
-			Port:       6222,
-			TargetPort: intstr.FromString("cluster"),
+			Name:        "cluster",
+			Port:        6222,
+			TargetPort:  intstr.FromString("cluster"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "gateway",
-			Port:       7222,
-			TargetPort: intstr.FromString("gateway"),
+			Name:        "gateway",
+			Port:        7222,
+			TargetPort:  intstr.FromString("gateway"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "monitor",
-			Port:       8222,
-			TargetPort: intstr.FromString("monitor"),
+			Name:        "monitor",
+			Port:        8222,
+			TargetPort:  intstr.FromString("monitor"),
+			AppProtocol: &appProtocolHTTP,
 		},
 	}
 
 	expected.Service.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "nats",
-			Port:       4222,
-			TargetPort: intstr.FromString("nats"),
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "leafnodes",
-			Port:       7422,
-			TargetPort: intstr.FromString("leafnodes"),
+			Name:        "leafnodes",
+			Port:        7422,
+			TargetPort:  intstr.FromString("leafnodes"),
+			AppProtocol: &appProtocolTCP,
 		},
 		{
-			Name:       "websocket",
-			Port:       8080,
-			TargetPort: intstr.FromString("websocket"),
+			Name:        "websocket",
+			Port:        8080,
+			TargetPort:  intstr.FromString("websocket"),
+			AppProtocol: &appProtocolHTTP,
 		},
 		{
-			Name:       "mqtt",
-			Port:       1883,
-			TargetPort: intstr.FromString("mqtt"),
+			Name:        "mqtt",
+			Port:        1883,
+			TargetPort:  intstr.FromString("mqtt"),
+			AppProtocol: &appProtocolTCP,
 		},
 	}
 
@@ -679,62 +696,73 @@ config:
 
 	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "nats",
-			Port:       4222,
-			TargetPort: intstr.FromString("nats"),
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTLS,
 		},
 		{
-			Name:       "leafnodes",
-			Port:       7422,
-			TargetPort: intstr.FromString("leafnodes"),
+			Name:        "leafnodes",
+			Port:        7422,
+			TargetPort:  intstr.FromString("leafnodes"),
+			AppProtocol: &appProtocolTLS,
 		},
 		{
-			Name:       "websocket",
-			Port:       8080,
-			TargetPort: intstr.FromString("websocket"),
+			Name:        "websocket",
+			Port:        8080,
+			TargetPort:  intstr.FromString("websocket"),
+			AppProtocol: &appProtocolHTTPS,
 		},
 		{
-			Name:       "mqtt",
-			Port:       1883,
-			TargetPort: intstr.FromString("mqtt"),
+			Name:        "mqtt",
+			Port:        1883,
+			TargetPort:  intstr.FromString("mqtt"),
+			AppProtocol: &appProtocolTLS,
 		},
 		{
-			Name:       "cluster",
-			Port:       6222,
-			TargetPort: intstr.FromString("cluster"),
+			Name:        "cluster",
+			Port:        6222,
+			TargetPort:  intstr.FromString("cluster"),
+			AppProtocol: &appProtocolTLS,
 		},
 		{
-			Name:       "gateway",
-			Port:       7222,
-			TargetPort: intstr.FromString("gateway"),
+			Name:        "gateway",
+			Port:        7222,
+			TargetPort:  intstr.FromString("gateway"),
+			AppProtocol: &appProtocolTLS,
 		},
 		{
-			Name:       "monitor",
-			Port:       8222,
-			TargetPort: intstr.FromString("monitor"),
+			Name:        "monitor",
+			Port:        8222,
+			TargetPort:  intstr.FromString("monitor"),
+			AppProtocol: &appProtocolHTTPS,
 		},
 	}
 
 	expected.Service.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "nats",
-			Port:       4222,
-			TargetPort: intstr.FromString("nats"),
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTLS,
 		},
 		{
-			Name:       "leafnodes",
-			Port:       7422,
-			TargetPort: intstr.FromString("leafnodes"),
+			Name:        "leafnodes",
+			Port:        7422,
+			TargetPort:  intstr.FromString("leafnodes"),
+			AppProtocol: &appProtocolTLS,
 		},
 		{
-			Name:       "websocket",
-			Port:       8080,
-			TargetPort: intstr.FromString("websocket"),
+			Name:        "websocket",
+			Port:        8080,
+			TargetPort:  intstr.FromString("websocket"),
+			AppProtocol: &appProtocolHTTPS,
 		},
 		{
-			Name:       "mqtt",
-			Port:       1883,
-			TargetPort: intstr.FromString("mqtt"),
+			Name:        "mqtt",
+			Port:        1883,
+			TargetPort:  intstr.FromString("mqtt"),
+			AppProtocol: &appProtocolTLS,
 		},
 	}
 
@@ -842,6 +870,7 @@ extraResources:
         - name: gateway
           port: 7222
           targetPort: gateway
+          appProtocol: tcp
 - $tplYaml: |
     apiVersion: v1
     kind: ConfigMap
@@ -863,9 +892,10 @@ extraResources:
 	expected.ExtraService.HasValue = true
 	expected.ExtraService.Value.Spec.Ports = []corev1.ServicePort{
 		{
-			Name:       "gateway",
-			Port:       7222,
-			TargetPort: intstr.FromString("gateway"),
+			Name:        "gateway",
+			Port:        7222,
+			TargetPort:  intstr.FromString("gateway"),
+			AppProtocol: &appProtocolTCP,
 		},
 	}
 
