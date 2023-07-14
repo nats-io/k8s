@@ -49,6 +49,8 @@ spec:
   - name: pid
     emptyDir: {}
   {{- end }}
+  # tlsCA
+  {{- include "nats.tlsCAVolume" $ | nindent 2 }}
   # secrets
   {{- range (include "nats.secretNames" $ | fromJson).secretNames }}
   - name: {{ .name | quote }}

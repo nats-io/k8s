@@ -17,8 +17,6 @@ spec:
   {{- $tlsEnabled := false }}
   {{- if hasKey $configProtocol "tls" }}
     {{- $tlsEnabled = $configProtocol.tls.enabled }}
-  {{- else if eq $protocol "monitor" }}
-    {{- $tlsEnabled = $.Values.config.nats.tls.enabled }}
   {{- end }}
   {{- $appProtocol := or (eq $protocol "websocket") (eq $protocol "monitor") | ternary ($tlsEnabled | ternary "https" "http") ($tlsEnabled | ternary "tls" "tcp") }}
   - {{ dict "name" $protocol "port" $configProtocol.port "targetPort" $protocol "appProtocol" $appProtocol | toYaml | nindent 4 }}

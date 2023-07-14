@@ -75,7 +75,11 @@ gateway:
 ########################################
 {{- with .monitor }}
 {{- if .enabled }}
+{{- if .tls.enabled }}
+https_port: {{ .port }}
+{{- else }}
 http_port: {{ .port }}
+{{- end }}
 {{- end }}
 {{- end }}
 

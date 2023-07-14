@@ -65,12 +65,15 @@ livenessProbe:
 {{- end }}
 
 volumeMounts:
+# nats config
 - name: config
   mountPath: /etc/nats-config
+# PID volume
 {{- if .Values.reloader.enabled }}
 - name: pid
   mountPath: /var/run/nats
 {{- end}}
+# JetStream PVC
 {{- with .Values.config.jetstream }}
 {{- if and .enabled .fileStore.enabled .fileStore.pvc.enabled }}
 {{- with .fileStore }}
@@ -79,12 +82,16 @@ volumeMounts:
 {{- end }}
 {{- end }}
 {{- end }}
+# resolver PVC
 {{- with .Values.config.resolver }}
 {{- if and .enabled .pvc.enabled }}
 - name: {{ .pvc.name }}
   mountPath: {{ .dir | quote }}
 {{- end }}
 {{- end }}
+# tlsCA
+{{- include "nats.tlsCAVolumeMount" $ }}
+# secrets
 {{- range (include "nats.secretNames" $ | fromJson).secretNames }}
 - name: {{ .name | quote }}
   mountPath: {{ .dir | quote }}
