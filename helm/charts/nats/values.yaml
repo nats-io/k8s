@@ -247,7 +247,7 @@ nats:
     # Jetstream Unique Tag prevent placing a stream in the same availability zone twice.
     uniqueTag:
 
-    max_outstanding_catchup:
+    maxOutstandingCatchup:
 
     ##########################
     #                        #
