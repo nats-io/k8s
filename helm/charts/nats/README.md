@@ -1,7 +1,5 @@
 # NATS Server
 
-**Beta Notice**: This branch contains the `nats` 1.x Helm Chart Beta.  The `values.yaml` schema has changed significantly from 0.x.  Read [UPGRADING.md](UPGRADING.md) for instructions on upgrading a 0.x release to 1.x.
-
 ---
 
 [NATS](https://nats.io) is a simple, secure and performant communications system for digital systems, services and devices.
@@ -11,12 +9,12 @@ NATS can secure and simplify design and operation of modern distributed systems.
 
 ```shell
 helm repo add nats https://nats-io.github.io/k8s/helm/charts/
-# --devel flag is required while 1.x is in beta
-helm upgrade --install nats nats/nats --devel
+helm upgrade --install nats nats/nats
 ```
 
-## 1.x Beta Upgrade Notes
-- If using `1.0.0-beta.2` or lower with JetStream enabled, upgrade to `1.0.0-beta.3` first
+## Upgrade Nodes
+
+- **Upgrading from 0.x**: The `values.yaml` schema changed significantly from 0.x to 1.x.  Read [UPGRADING.md](UPGRADING.md) for instructions on upgrading a 0.x release to 1.x.
 
 ## Values
 
