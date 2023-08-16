@@ -1,17 +1,8 @@
-# Artifact Hub repository metadata file
-#
-# Some settings like the verified publisher flag or the ignored packages won't
-# be applied until the next time the repository is processed. Please keep in
-# mind that the repository won't be processed if it has not changed since the
-# last time it was processed. Depending on the repository kind, this is checked
-# in a different way. For Helm http based repositories, we consider it has
-# changed if the `index.yaml` file changes. For git based repositories, it does
-# when the hash of the last commit in the branch you set up changes. This does
-# NOT apply to ownership claim operations, which are processed immediately.
-#
-repositoryID: 14c17493-c338-4acf-a923-badee42eb5a0
+repositoryID: 2a9059c3-1ce8-41ac-9536-13cdde1abaee
 owners:
   - name: Caleb Lloyd
-    email: caleb@nats.io
+    email: caleb@synadia.com
   - name: Wally Quevedo
-    email: wally@nats.io
+    email: wally@synadia.com
+  - name: Byron Ruth
+    name: byron@synadia.com
