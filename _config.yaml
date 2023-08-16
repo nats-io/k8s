@@ -1,6 +1,0 @@
-exclude:
-  - helm/charts/nats
-  - helm/charts/stan
-  - helm/charts/nack
-  - helm/charts/surveyor
-  - helm/charts/nats-account-server
