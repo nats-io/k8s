@@ -50,8 +50,8 @@ Everything in the NATS Config or Kubernetes Resources can be overridden by `merg
 | `podTemplate`                    | [k8s PodTemplate](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core)                         | yes                                     |
 | `headlessService`                | [k8s Service](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core)                         | yes                                     |
 | `configMap`                      | [k8s ConfiegMap](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#configmap-v1-core)                    | yes                                     |
-| `natsBox.context.default`        | [NATS Context](https://docs.nats.io/using-nats/nats-tools/nats_cli#nats-contexts)                                           | yes                                     |
-| `natsBox.context.[name]`         | [NATS Context](https://docs.nats.io/using-nats/nats-tools/nats_cli#nats-contexts)                                           | no                                      |
+| `natsBox.contexts.default`        | [NATS Context](https://docs.nats.io/using-nats/nats-tools/nats_cli#nats-contexts)                                           | yes                                     |
+| `natsBox.contexts.[name]`         | [NATS Context](https://docs.nats.io/using-nats/nats-tools/nats_cli#nats-contexts)                                           | no                                      |
 | `natsBox.container`              | nats-box [k8s Container](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core)            | yes                                     |
 | `natsBox.deployment`             | [k8s Deployment](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#deployment-v1-apps)                   | yes                                     |
 | `natsBox.podTemplate`            | [k8s PodTemplate](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core)                         | yes                                     |
