@@ -1,4 +1,3 @@
-{{- $pidFile := ternary "/var/run/nats/nats.pid" "/var/run/nats.pid" .Values.reloader.enabled }}
 name: nats
 {{ include "nats.image" (merge (pick $.Values "global") .Values.container.image) }}
 
@@ -32,7 +31,7 @@ lifecycle:
       # send the lame duck shutdown signal to trigger a graceful shutdown
       command:
       - nats-server
-      - -sl=ldm={{ $pidFile }}
+      - -sl=ldm=/var/run/nats/nats.pid
 
 {{- if .Values.config.monitor.enabled }}
 startupProbe:
@@ -69,10 +68,8 @@ volumeMounts:
 - name: config
   mountPath: /etc/nats-config
 # PID volume
-{{- if .Values.reloader.enabled }}
 - name: pid
   mountPath: /var/run/nats
-{{- end}}
 # JetStream PVC
 {{- with .Values.config.jetstream }}
 {{- if and .enabled .fileStore.enabled .fileStore.pvc.enabled }}

@@ -45,10 +45,8 @@ spec:
     configMap:
       name: {{ .Values.configMap.name }}
   # PID volume
-  {{- if .Values.reloader.enabled }}
   - name: pid
     emptyDir: {}
-  {{- end }}
   # tlsCA
   {{- include "nats.tlsCAVolume" $ | nindent 2 }}
   # secrets
