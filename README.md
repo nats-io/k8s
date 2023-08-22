@@ -1,7 +1,6 @@
 <img width="2487" alt="Screen Shot 2020-10-12 at 4 59 32 PM" src="https://user-images.githubusercontent.com/26195/95800603-99d95f00-0cac-11eb-968b-f3e4dde3ff8d.png">
 
 [![License][License-Image]][License-Url]
-[![Version](https://d25lcipzij17d.cloudfront.net/badge.svg?id=go&type=5&v=0.13.0)](https://github.com/nats-io/k8s/releases/tag/v0.13.0)
 
 [License-Url]: https://www.apache.org/licenses/LICENSE-2.0
 [License-Image]: https://img.shields.io/badge/License-Apache2-blue.svg
