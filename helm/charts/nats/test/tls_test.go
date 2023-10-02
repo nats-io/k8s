@@ -1,9 +1,10 @@
 package test
 
 import (
+	"testing"
+
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"testing"
 )
 
 func TestConfigTls(t *testing.T) {
@@ -116,6 +117,10 @@ config:
 			Name:      protocol + "-tls",
 		})
 	}
+
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].StartupProbe.HTTPGet.Scheme = corev1.URISchemeHTTPS
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].ReadinessProbe.HTTPGet.Scheme = corev1.URISchemeHTTPS
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].LivenessProbe.HTTPGet.Scheme = corev1.URISchemeHTTPS
 
 	expected.StatefulSet.Value.Spec.Template.Spec.Volumes = volumes
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = natsVm
