@@ -308,7 +308,7 @@ config:
 container:
   image:
     repository: nats
-    tag: 2.10.1-alpine
+    tag: 2.10.2-alpine
     pullPolicy:
     registry:
 
