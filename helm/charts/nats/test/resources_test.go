@@ -17,6 +17,8 @@ func TestResourceOptions(t *testing.T) {
 global:
   image:
     pullPolicy: Always
+    pullSecretNames:
+    - testPullSecret
     registry: docker.io
   labels:
     global: global
@@ -133,6 +135,11 @@ natsBox:
 	expected.StatefulSet.Value.ObjectMeta.Labels["global"] = "global"
 	expected.StatefulSet.Value.ObjectMeta.Namespace = "foo"
 	expected.StatefulSet.Value.Spec.Template.ObjectMeta.Labels["global"] = "global"
+	expected.StatefulSet.Value.Spec.Template.Spec.ImagePullSecrets = []corev1.LocalObjectReference{
+		{
+			Name: "testPullSecret",
+		},
+	}
 
 	dd := ddg.Get(t)
 	ctr := expected.StatefulSet.Value.Spec.Template.Spec.Containers
@@ -192,6 +199,12 @@ natsBox:
 	expected.NatsBoxDeployment.Value.ObjectMeta.Labels["global"] = "global"
 	expected.NatsBoxDeployment.Value.ObjectMeta.Namespace = "foo"
 	expected.NatsBoxDeployment.Value.Spec.Template.ObjectMeta.Labels["global"] = "global"
+	expected.NatsBoxDeployment.Value.Spec.Template.Spec.ImagePullSecrets = []corev1.LocalObjectReference{
+		{
+			Name: "testPullSecret",
+		},
+	}
+
 	nbCtr := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0]
 	// nats-box
 	nbCtr.Env = env

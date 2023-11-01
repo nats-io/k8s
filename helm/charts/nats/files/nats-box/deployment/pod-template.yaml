@@ -2,10 +2,6 @@ metadata:
   labels:
     {{- include "natsBox.labels" $ | nindent 4 }}
 spec:
-  {{- with .Values.global.image.pullSecrets }}
-  imagePullSecrets:
-  {{- toYaml . | nindent 4 }}
-  {{- end }}
   containers:
   {{- with .Values.natsBox.container }}
   - {{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/deployment/container.yaml" "ctx" $) .) | nindent 4 }}
@@ -13,6 +9,13 @@ spec:
 
   # service discovery uses DNS; don't need service env vars
   enableServiceLinks: false
+  
+  {{- with .Values.global.image.pullSecretNames }}
+  imagePullSecrets:
+  {{- range . }}
+  - name: {{ . | quote }}
+  {{- end }}
+  {{- end }}
 
   {{- with .Values.natsBox.serviceAccount }}
   {{- if .enabled }}

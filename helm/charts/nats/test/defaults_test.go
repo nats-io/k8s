@@ -1,10 +1,11 @@
 package test
 
 import (
-	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
-	policyv1 "k8s.io/api/policy/v1"
 	"sync"
 	"testing"
+
+	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	policyv1 "k8s.io/api/policy/v1"
 
 	"github.com/stretchr/testify/require"
 	appsv1 "k8s.io/api/apps/v1"
@@ -312,6 +313,7 @@ exec sh -ec "$0"
 								},
 							},
 							EnableServiceLinks: &falseBool,
+							ImagePullSecrets:   make([]corev1.LocalObjectReference, 0),
 							Volumes: []corev1.Volume{
 								{
 									Name: "contexts",
@@ -560,6 +562,7 @@ exec sh -ec "$0"
 								},
 							},
 							EnableServiceLinks:    &falseBool,
+							ImagePullSecrets:      make([]corev1.LocalObjectReference, 0),
 							ShareProcessNamespace: &trueBool,
 							Volumes: []corev1.Volume{
 								{
