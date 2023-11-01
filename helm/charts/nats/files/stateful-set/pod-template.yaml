@@ -7,6 +7,10 @@ metadata:
     checksum/config: {{ sha256sum $configMap }}
     {{- end }}
 spec:
+  {{- with .Values.global.image.pullSecrets }}
+  imagePullSecrets:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
   containers:
   # nats
   {{- $nats := dict }}

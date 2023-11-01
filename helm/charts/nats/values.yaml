@@ -6,6 +6,12 @@ global:
     # global image pull policy to use for all container images in the chart
     # can be overridden by individual image pullPolicy
     pullPolicy:
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistrKeySecretName
     # global registry to use for all container images in the chart
     # can be overridden by individual image registry
     registry:
