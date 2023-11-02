@@ -313,7 +313,6 @@ exec sh -ec "$0"
 								},
 							},
 							EnableServiceLinks: &falseBool,
-							ImagePullSecrets:   make([]corev1.LocalObjectReference, 0),
 							Volumes: []corev1.Volume{
 								{
 									Name: "contexts",
@@ -562,7 +561,6 @@ exec sh -ec "$0"
 								},
 							},
 							EnableServiceLinks:    &falseBool,
-							ImagePullSecrets:      make([]corev1.LocalObjectReference, 0),
 							ShareProcessNamespace: &trueBool,
 							Volumes: []corev1.Volume{
 								{
