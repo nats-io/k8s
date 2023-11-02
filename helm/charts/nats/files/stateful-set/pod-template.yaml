@@ -7,10 +7,6 @@ metadata:
     checksum/config: {{ sha256sum $configMap }}
     {{- end }}
 spec:
-  {{- with .Values.global.image.pullSecrets }}
-  imagePullSecrets:
-  {{- toYaml . | nindent 4 }}
-  {{- end }}
   containers:
   # nats
   {{- $nats := dict }}
@@ -32,6 +28,13 @@ spec:
 
   # service discovery uses DNS; don't need service env vars
   enableServiceLinks: false
+  
+  {{- with .Values.global.image.pullSecretNames }}
+  imagePullSecrets:
+  {{- range . }}
+  - name: {{ . | quote }}
+  {{- end }}
+  {{- end }}
 
   {{- with .Values.serviceAccount }}
   {{- if .enabled }}
