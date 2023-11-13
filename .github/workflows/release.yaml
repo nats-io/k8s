@@ -29,7 +29,7 @@ jobs:
           version: v3.11.2
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.5.0
+        uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: helm/charts
           config: helm/cr.yaml
