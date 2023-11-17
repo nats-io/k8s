@@ -2,7 +2,7 @@ name: prom-exporter
 {{ include "nats.image" (merge (pick $.Values "global") .Values.promExporter.image) }}
 
 ports:
-- name: prom-metrics
+- name: {{ .Values.promExporter.portName }}
   containerPort: {{ .Values.promExporter.port }}
 
 {{- with .Values.promExporter.env }}

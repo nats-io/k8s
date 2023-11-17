@@ -382,6 +382,7 @@ promExporter:
     pullPolicy:
     registry:
 
+  portName: prom-metrics
   port: 7777
   # env var map, see nats.env for an example
   env: {}
