@@ -52,6 +52,8 @@ serviceMonitor:
   annotations: {}
   # interval:
   # scrapeTimeout:
+  relabelings: []
+  metricRelabelings: []
 
 ingress:
   enabled: false
