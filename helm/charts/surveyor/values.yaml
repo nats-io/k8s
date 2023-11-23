@@ -112,6 +112,11 @@ config:
   #     name: nats-sys-creds
   #     key: sys.creds
 
+  # nkey:
+  #   secret:
+  #     name: nats-sys-nkey
+  #     key: sys.nkey
+
   # Required for NATS mutual TLS
   # tls:
   #    secret:
