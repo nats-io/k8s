@@ -2556,6 +2556,20 @@ entries:
     version: 0.3.0
   nats-kafka:
   - apiVersion: v2
+    appVersion: 1.4.1
+    created: "2023-11-27T15:30:07.161218424Z"
+    description: A multi-connector bridge between NATS and Kafka.
+    digest: 0100d1bc5b81e15ecd4b4c5d245742ae95487b51f0133833c2024f90de500e29
+    maintainers:
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
+    name: nats-kafka
+    type: application
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/nats-kafka-0.15.1/nats-kafka-0.15.1.tgz
+    version: 0.15.1
+  - apiVersion: v2
     appVersion: 1.4.0
     created: "2023-11-15T20:05:20.932904811Z"
     description: A multi-connector bridge between NATS and Kafka.
@@ -3422,4 +3436,4 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/surveyor-0.9.2.tgz
     version: 0.9.2
-generated: "2023-11-15T20:05:20.933355579Z"
+generated: "2023-11-27T15:30:07.161660403Z"
