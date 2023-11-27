@@ -44,6 +44,10 @@ spec:
             - --creds=/creds/{{ .secret.key }}
            {{- end }}
 
+           {{- with .nkey }}
+            - --nkey=/nkey/{{ .secret.key }}
+           {{- end }}
+
            {{- with .servers }}
             - -s={{ . }}
            {{- end }}
@@ -86,6 +90,11 @@ spec:
               mountPath: /creds/
               readOnly: true
             {{- end }}
+            {{- with .Values.config.nkey }}
+            - name: nkey
+              mountPath: /nkey/
+              readOnly: true
+            {{- end }}
             {{- with .Values.config.tls }}
             - name: {{ .secret.name }}-volume
               mountPath: /etc/nats-certs/clients/
@@ -113,6 +122,11 @@ spec:
       volumes:
         {{- with .Values.config.credentials }}
         - name: creds
+          secret:
+            secretName: {{ .secret.name }}
+        {{- end }}
+        {{- with .Values.config.nkey }}
+        - name: nkey
           secret:
             secretName: {{ .secret.name }}
         {{- end }}
