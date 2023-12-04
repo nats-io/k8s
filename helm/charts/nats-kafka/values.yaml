@@ -8,7 +8,7 @@ replicaCount: 1
 
 image:
   repository: natsio/nats-kafka
-  tag: 1.4.1
+  tag: 1.4.2
   pullPolicy: IfNotPresent
   # registry: docker.io
 
