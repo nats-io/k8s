@@ -44,4 +44,4 @@ data:
     }
     {{- end }}
 
-    connect: {{ toPrettyJson .Values.natskafka.connect | indent 4 }}
+    connect: {{ toRawJson .Values.natskafka.connect | indent 4 }}
