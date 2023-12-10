@@ -1,8 +1,8 @@
 # NATS JetStream Controller (NACK)
 
-## TL;DR;
+## TL;DR
 
-```console
+```bash
 # First, need to install the CRDs manually.
 kubectl apply -f https://github.com/nats-io/nack/releases/latest/download/crds.yml
 
@@ -18,32 +18,33 @@ using a NATS client with JetStream support for management or the `nats` utility.
 
 ### Getting started
 
-First, we'll need to NATS cluster that has enabled JetStream.  You can install
+First, we'll need to NATS cluster that has enabled JetStream. You can install
 one as follows:
 
 ```yaml
-nats:
+natsBox:
+  enabled: false
+
+config:
   jetstream:
     enabled: true
 
-    memStorage:
+    memoryStore:
       enabled: true
-      size: 2Gi
+      maxSize: 256Mi
 
-    fileStorage:
+    memoryStore:
       enabled: true
-      storageDirectory: /data/jetstream
-      size: 10Gi
-
-natsbox:
-  enabled: false
+      pvc:
+        enabled: true
+        size: 256Mi
 ```
 
 ```sh
 helm install nats nats/nats -f deploy-nats.yaml
 ```
 
-Now install the JetStream CRDs and Controller.  In case of using credentials, you need to make them available as a secret:
+Now install the JetStream CRDs and Controller. In case of using credentials, you need to make them available as a secret:
 
 ```sh
 kubectl create secret generic nats-user-creds --from-file ./nsc/nkeys/creds/KO/JS1/js.creds
@@ -54,14 +55,14 @@ Then deploy:
 ```yaml
 jetstream:
   enabled: true
-  
-  nats:
-   url: nats://nats:4222
 
-   credentials:
-     secret:
-       name: nats-user-creds
-       key: "js.creds"
+  nats:
+    url: nats://nats:4222
+
+    credentials:
+      secret:
+        name: nats-user-creds
+        key: "js.creds"
 ```
 
 ```sh
