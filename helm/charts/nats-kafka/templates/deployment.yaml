@@ -36,11 +36,11 @@ spec:
               mountPath: /etc/nats-kafka/tls
               readOnly: true
             {{ end }}
-            {{ if .Values.natskafka.nats.credentials }}
+            {{- if .Values.natskafka.nats.credentials }}
             - name: creds-volume
               mountPath: /etc/nats-kafka/creds
               readOnly: true
-            {{ end }}
+            {{- end }}
             {{- if .Values.natskafka.additionalVolumeMounts }}
               {{- toYaml .Values.natskafka.additionalVolumeMounts | nindent 12 }}
             {{- end }}
