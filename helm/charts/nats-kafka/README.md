@@ -96,3 +96,31 @@ natskafka:
       topic: bar
       subject: baz
 ```
+
+**Using Nats Credentials**
+
+If you need a nats credential for authentication:
+
+```yaml
+natskafka:
+  nats:
+    servers:
+      - "nats://1.2.3.4:4222"
+    credentials:
+      secret:
+        name: nats-sys-creds
+        key: sys.creds
+  connect:
+    - type: "NATSToKafka"
+      brokers:
+        - "1.2.3.4:9092"
+      id: whizz
+      topic: bar
+      subject: bang
+    - type: "KafkaToNATS"
+      brokers:
+        - "1.2.3.4:9092"
+      id: foo
+      topic: bar
+      subject: baz
+```
