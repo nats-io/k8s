@@ -88,11 +88,11 @@ spec:
           secret:
             secretName: {{ .Values.natskafka.monitoring.tls.secret }}
         {{ end }}
-        {{ if .Values.natskafka.nats.credentials }}
+        {{- with .Values.natskafka.nats.credentials }}
         - name: creds-volume
           secret:
-            secretName: {{ .Values.natskafka.nats.credentials.secret.name }}
-        {{ end }}
+            secretName: {{ .secret.name }}
+        {{- end }}
         {{- if .Values.natskafka.additionalVolumes }}
           {{- toYaml .Values.natskafka.additionalVolumes | nindent 8 }}
         {{- end }}
