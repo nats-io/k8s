@@ -64,4 +64,12 @@ natskafka:
     connectTimeout: 5000
     maxReconnects: 120
     reconnectWait: 5000
+
+    # The credentials file to load in to connect to the NATS Server.
+    #
+    # credentials:
+    #   secret:
+    #     name: nats-sys-creds
+    #     key: sys.creds
+    
   connect: []
