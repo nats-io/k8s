@@ -27,6 +27,9 @@ data:
       ConnectTimeout: {{ .Values.natskafka.nats.connectTimeout }},
       MaxReconnects: {{ .Values.natskafka.nats.maxReconnects }},
       ReconnectWait: {{ .Values.natskafka.nats.reconnectWait }},
+      {{- with .Values.natskafka.nats.credentials }}
+      UserCredentials: /etc/nats-kafka/creds/{{ .secret.key }},
+      {{- end }}
     }
 
     {{ if or .Values.natskafka.monitoring.httpPort .Values.natskafka.monitoring.httpsPort }}
