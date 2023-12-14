@@ -36,9 +36,9 @@ spec:
               mountPath: /etc/nats-kafka/tls
               readOnly: true
             {{ end }}
-            {{ if .Values.natskafka.nats.userCredentials }}
-            - name: credentials-volume
-              mountPath: /etc/nats-kafka/credentials
+            {{ if .Values.natskafka.nats.credentials }}
+            - name: creds-volume
+              mountPath: /etc/nats-kafka/creds
               readOnly: true
             {{ end }}
             {{- if .Values.natskafka.additionalVolumeMounts }}
@@ -88,10 +88,10 @@ spec:
           secret:
             secretName: {{ .Values.natskafka.monitoring.tls.secret }}
         {{ end }}
-        {{ if .Values.natskafka.nats.userCredentials }}
-        - name: credentials-volume
+        {{ if .Values.natskafka.nats.credentials }}
+        - name: creds-volume
           secret:
-            secretName: {{ .Values.natskafka.nats.userCredentials }}
+            secretName: {{ .Values.natskafka.nats.credentials.secret.name }}
         {{ end }}
         {{- if .Values.natskafka.additionalVolumes }}
           {{- toYaml .Values.natskafka.additionalVolumes | nindent 8 }}

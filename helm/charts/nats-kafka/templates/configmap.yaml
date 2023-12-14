@@ -27,8 +27,8 @@ data:
       ConnectTimeout: {{ .Values.natskafka.nats.connectTimeout }},
       MaxReconnects: {{ .Values.natskafka.nats.maxReconnects }},
       ReconnectWait: {{ .Values.natskafka.nats.reconnectWait }},
-      {{ if .Values.natskafka.nats.userCredentials }}
-      {{ with .Values.natskafka.nats.userCredentials }} UserCredentials: /etc/nats-kafka/credentials/{{ . }}, {{ end }}
+      {{ if .Values.natskafka.nats.credentials }}
+      UserCredentials: /etc/nats-kafka/creds/{{ .Values.natskafka.nats.credentials.secret.key }}, {{ end }}
       {{ end }}
     }
 
