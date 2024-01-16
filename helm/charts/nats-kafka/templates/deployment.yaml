@@ -22,6 +22,7 @@ spec:
         {{- toYaml .Values.natskafka.podLabels | nindent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: {{ include "nats-kafka.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ include "nats-kafka.image" .Values.image }}
