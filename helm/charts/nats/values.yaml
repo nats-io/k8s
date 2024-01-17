@@ -353,7 +353,7 @@ reloader:
   enabled: true
   image:
     repository: natsio/nats-server-config-reloader
-    tag: 0.14.1
+    tag: 0.14.2
     pullPolicy:
     registry:
 
@@ -564,7 +564,7 @@ natsBox:
   container:
     image:
       repository: natsio/nats-box
-      tag: 0.14.1
+      tag: 0.14.2
       pullPolicy:
       registry:
 
