@@ -6,6 +6,10 @@ fullnameOverride: ""
 namespaceOverride: ""
 replicaCount: 1
 
+serviceAccount:
+  create: false
+  name: default
+
 image:
   repository: natsio/nats-kafka
   tag: 1.4.2
