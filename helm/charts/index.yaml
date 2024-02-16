@@ -3413,6 +3413,20 @@ entries:
     version: 0.2.0
   surveyor:
   - apiVersion: v2
+    appVersion: 0.5.4
+    created: "2024-02-16T14:59:22.149145723Z"
+    description: NATS Monitoring, Simplified.
+    digest: f39ab071f25e3ad69760eb3bce4da22896de31294b3f855d77f5f55749417742
+    maintainers:
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
+    name: surveyor
+    type: application
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/surveyor-0.16.6/surveyor-0.16.6.tgz
+    version: 0.16.6
+  - apiVersion: v2
     appVersion: 0.5.3
     created: "2023-12-12T18:23:51.43713997Z"
     description: NATS Monitoring, Simplified.
@@ -3584,4 +3598,4 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/surveyor-0.9.2.tgz
     version: 0.9.2
-generated: "2024-02-05T14:13:22.489454698Z"
+generated: "2024-02-16T14:59:22.14964461Z"
