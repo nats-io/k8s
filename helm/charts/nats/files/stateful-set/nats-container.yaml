@@ -75,6 +75,15 @@ livenessProbe:
 {{- end }}
 
 volumeMounts:
+{{- if .Values.container.extraVolumeMounts }}
+{{- range .Values.container.extraVolumeMounts }}
+- name: {{ .name }}
+  mountPath: {{ .mountPath }}
+  {{- if .subPath }}
+  subPath: {{ .subPath }}
+  {{- end }}
+{{- end }}
+{{- end }}
 # nats config
 - name: config
   mountPath: /etc/nats-config

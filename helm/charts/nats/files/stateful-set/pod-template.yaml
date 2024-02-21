@@ -47,6 +47,9 @@ spec:
   {{- end }}
 
   volumes:
+{{- with .Values.container.extraVolumes }}
+{{- toYaml . | nindent 2 }}
+{{- end }}
   # nats config
   - name: config
     configMap:
