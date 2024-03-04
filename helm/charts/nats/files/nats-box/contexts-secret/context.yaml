@@ -39,10 +39,12 @@ key: {{ printf "%s/%s" $dir (.key | default "tls.key") | quote }}
 {{- end }}
 
 # tlsCA
+{{- if $.Values.config.nats.tls.enabled }}
 {{- with $.Values.tlsCA }}
 {{- if and .enabled (or .configMapName .secretName) }}
 {{- $dir := trimSuffix "/" .dir }}
 ca: {{ printf "%s/%s" $dir (.key | default "ca.crt") | quote }}
+{{- end }}
 {{- end }}
 {{- end }}
 
