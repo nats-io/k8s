@@ -83,6 +83,7 @@ config:
 
   jetstream:
     enabled: false
+    domain:
 
     fileStore:
       enabled: true

@@ -1,4 +1,7 @@
 {{- with .Values.config.jetstream }}
+{{- if .domain }}
+domain: {{ .domain }}
+{{- end }}
 {{- with .memoryStore }}
 {{- if .enabled }}
 {{- with .maxSize }}
