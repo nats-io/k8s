@@ -10,9 +10,10 @@ spec:
   # service discovery uses DNS; don't need service env vars
   enableServiceLinks: false
   
-  {{- with .Values.global.image.pullSecretNames }}
+  {{- $imagePullSecrets := default .Values.global.image.pullSecretNames .Values.natsBox.container.image.pullSecretNames }}
+  {{- if $imagePullSecrets }}
   imagePullSecrets:
-  {{- range . }}
+  {{- range $imagePullSecrets }}
   - name: {{ . | quote }}
   {{- end }}
   {{- end }}

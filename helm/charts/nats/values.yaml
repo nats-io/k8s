@@ -315,6 +315,7 @@ container:
     tag: 2.10.12-alpine
     pullPolicy:
     registry:
+    pullSecretNames: []
 
   # container port options
   # must be enabled in the config section also
@@ -567,6 +568,7 @@ natsBox:
       tag: 0.14.2
       pullPolicy:
       registry:
+      pullSecretNames: []
 
     # env var map, see nats.env for an example
     env: {}
