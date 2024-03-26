@@ -10,7 +10,6 @@ command:
 - sh
 - -ec
 - |
-  work_dir="$(pwd)"
   mkdir -p "$XDG_CONFIG_HOME/nats"
   cd "$XDG_CONFIG_HOME/nats"
   if ! [ -s context ]; then
@@ -21,7 +20,7 @@ command:
     echo -n {{ .Values.natsBox.defaultContextName | quote }} > context.txt
   fi
   {{- end }}
-  cd "$work_dir"
+  cd "$HOME"
   exec sh -ec "$0"
 args:
 - trap true INT TERM; sleep infinity & wait
