@@ -22,7 +22,8 @@ command:
   fi
   {{- end }}
   cd "$work_dir"
-  exec /entrypoint.sh "$0" "$@"
+  exec /entrypoint.sh "$@"
+- --
 args:
 - sh
 - -ec

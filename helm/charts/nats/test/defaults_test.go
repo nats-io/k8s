@@ -301,8 +301,9 @@ if ! [ -f context.txt ]; then
   echo -n "default" > context.txt
 fi
 cd "$work_dir"
-exec /entrypoint.sh "$0" "$@"
+exec /entrypoint.sh "$@"
 `,
+										"--",
 									},
 									Image: dd.NatsBoxImage,
 									Name:  "nats-box",
