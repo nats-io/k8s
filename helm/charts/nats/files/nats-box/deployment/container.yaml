@@ -22,8 +22,11 @@ command:
   fi
   {{- end }}
   cd "$work_dir"
-  exec sh -ec "$0"
+  exec /entrypoint.sh "$@"
+- --
 args:
+- sh
+- -ec
 - trap true INT TERM; sleep infinity & wait
 volumeMounts:
 # contexts secret

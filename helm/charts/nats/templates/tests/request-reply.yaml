@@ -7,6 +7,8 @@ kind: Pod
 {{- with .container }}
 {{- $_ := set . "merge" (dict
   "args" (list
+    "sh"
+    "-ec"
     "nats reply --echo echo & pid=\"$!\"; sleep 1; nats request echo hi > /tmp/resp; kill \"$pid\"; wait; grep -qF hi /tmp/resp"
   )
 ) }}
