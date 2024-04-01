@@ -284,6 +284,8 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 							Containers: []corev1.Container{
 								{
 									Args: []string{
+										"sh",
+										"-ec",
 										"trap true INT TERM; sleep infinity & wait",
 									},
 									Command: []string{
@@ -299,7 +301,7 @@ if ! [ -f context.txt ]; then
   echo -n "default" > context.txt
 fi
 cd "$work_dir"
-exec sh -ec "$0"
+exec /entrypoint.sh "$0" "$@"
 `,
 									},
 									Image: dd.NatsBoxImage,
