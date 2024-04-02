@@ -80,7 +80,7 @@ config:
 				AccessModes: []corev1.PersistentVolumeAccessMode{
 					"ReadWriteOnce",
 				},
-				Resources: corev1.ResourceRequirements{
+				Resources: corev1.VolumeResourceRequirements{
 					Requests: corev1.ResourceList{
 						"storage": resource10Gi,
 					},
@@ -198,7 +198,7 @@ config:
 				AccessModes: []corev1.PersistentVolumeAccessMode{
 					"ReadWriteOnce",
 				},
-				Resources: corev1.ResourceRequirements{
+				Resources: corev1.VolumeResourceRequirements{
 					Requests: corev1.ResourceList{
 						"storage": resource5Gi,
 					},
@@ -214,7 +214,7 @@ config:
 				AccessModes: []corev1.PersistentVolumeAccessMode{
 					"ReadWriteOnce",
 				},
-				Resources: corev1.ResourceRequirements{
+				Resources: corev1.VolumeResourceRequirements{
 					Requests: corev1.ResourceList{
 						"storage": resource5Gi,
 					},
@@ -409,7 +409,7 @@ config:
 					"ReadWriteOnce",
 					"ReadWriteMany",
 				},
-				Resources: corev1.ResourceRequirements{
+				Resources: corev1.VolumeResourceRequirements{
 					Requests: corev1.ResourceList{
 						"storage": resource10Gi,
 					},
@@ -426,7 +426,7 @@ config:
 					"ReadWriteOnce",
 					"ReadWriteMany",
 				},
-				Resources: corev1.ResourceRequirements{
+				Resources: corev1.VolumeResourceRequirements{
 					Requests: corev1.ResourceList{
 						"storage": resource1Gi,
 					},
@@ -607,7 +607,7 @@ max_outstanding_catchup: 64MB
 				AccessModes: []corev1.PersistentVolumeAccessMode{
 					"ReadWriteOnce",
 				},
-				Resources: corev1.ResourceRequirements{
+				Resources: corev1.VolumeResourceRequirements{
 					Requests: corev1.ResourceList{
 						"storage": resource10Gi,
 					},
