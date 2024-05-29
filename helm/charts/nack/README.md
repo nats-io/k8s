@@ -33,7 +33,7 @@ config:
       enabled: true
       maxSize: 256Mi
 
-    memoryStore:
+    fileStore:
       enabled: true
       pvc:
         enabled: true
