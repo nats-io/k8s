@@ -564,7 +564,7 @@ natsBox:
   container:
     image:
       repository: natsio/nats-box
-      tag: 0.14.4
+      tag: 0.14.3
       pullPolicy:
       registry:
 
