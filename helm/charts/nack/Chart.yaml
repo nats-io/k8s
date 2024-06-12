@@ -1,12 +1,12 @@
 apiVersion: v2
-appVersion: 0.14.3
+appVersion: 0.14.4
 description: A Helm chart for NACK
 name: nack
 keywords:
 - nats
 - jetstream
 - cncf
-version: 0.25.3
+version: 0.25.4
 maintainers:
 - email: info@nats.io
   name: The NATS Authors
