@@ -99,9 +99,8 @@ service:
 		"no_advertise": true,
 	}
 	expected.Conf.Value["websocket"] = map[string]any{
-		"port":        int64(1003),
-		"compression": true,
-		"no_tls":      true,
+		"port":   int64(1003),
+		"no_tls": true,
 	}
 	expected.Conf.Value["mqtt"] = map[string]any{
 		"port": int64(1004),

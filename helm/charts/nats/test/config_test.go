@@ -306,7 +306,7 @@ config:
   websocket:
     enabled: true
     merge:
-      compression: false
+      compression: true
     patch: [{op: add, path: /same_origin, value: true}]
   mqtt:
     enabled: true
@@ -358,7 +358,7 @@ config:
 	}
 	expected.Conf.Value["websocket"] = map[string]any{
 		"port":        int64(8080),
-		"compression": false,
+		"compression": true,
 		"no_tls":      true,
 		"same_origin": true,
 	}
