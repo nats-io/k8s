@@ -109,9 +109,8 @@ natsBox:
 	}
 
 	expected.Conf.Value["websocket"] = map[string]any{
-		"port":        int64(8080),
-		"no_tls":      true,
-		"compression": true,
+		"port":   int64(8080),
+		"no_tls": true,
 	}
 
 	env := []corev1.EnvVar{
@@ -513,9 +512,8 @@ natsBox:
 	expected := DefaultResources(t, test)
 
 	expected.Conf.Value["websocket"] = map[string]any{
-		"port":        int64(8080),
-		"no_tls":      true,
-		"compression": true,
+		"port":   int64(8080),
+		"no_tls": true,
 	}
 
 	annotations := func() map[string]string {

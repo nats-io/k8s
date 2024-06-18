@@ -65,8 +65,7 @@ config:
 		"no_advertise": true,
 	}
 	expected.Conf.Value["websocket"] = map[string]any{
-		"port":        int64(8080),
-		"compression": true,
+		"port": int64(8080),
 	}
 	expected.Conf.Value["mqtt"] = map[string]any{
 		"port": int64(1883),
