@@ -35,6 +35,7 @@ jetstream:
   # Enabled must be true, and a secret name specified for this to work
   tls:
     enabled: false
+    tlsFirst: false
     # the secret containing the client ca.crt, tls.crt, and tls.key for NATS
     secretName:
     # Reference

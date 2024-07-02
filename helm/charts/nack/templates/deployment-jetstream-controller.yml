@@ -113,6 +113,9 @@ spec:
           {{- if and .Values.jetstream.tls.enabled .Values.jetstream.tls.settings.client_ca }}
           - --tlsca={{ .Values.jetstream.tls.settings.client_ca }}
           {{- end }}
+          {{- if .Values.jetstream.tls.tlsFirst }}
+          - --tlsfirst={{ .Values.jetstream.tls.tlsFirst }}
+          {{- end }}
           {{- with .Values.jetstream.additionalArgs }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
