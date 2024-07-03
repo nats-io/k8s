@@ -2,8 +2,8 @@ apiVersion: v2
 name: surveyor
 description: NATS Monitoring, Simplified.
 type: application
-version: 0.16.6
-appVersion: 0.5.4
+version: 0.17.0
+appVersion: 0.6.0
 maintainers:
 - email: info@nats.io
   name: The NATS Authors
