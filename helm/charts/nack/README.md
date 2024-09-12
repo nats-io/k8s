@@ -18,12 +18,17 @@ using a NATS client with JetStream support for management or the `nats` utility.
 
 ### Getting started
 
-First, we'll need to NATS cluster that has enabled JetStream. You can install
+First, we'll need to install the CRDs.
+```bash
+kubectl apply -f https://github.com/nats-io/nack/releases/latest/download/crds.yml
+```
+
+Then, we'll need a NATS cluster that has enabled JetStream. You can install
 one as follows:
 
 ```yaml
 natsBox:
-  enabled: false
+  enabled: true
 
 config:
   jetstream:
@@ -81,10 +86,12 @@ NAME       STATE     STREAM NAME   SUBJECTS
 mystream   Created   mystream      [orders.*]
 
 # Create a push-based consumer
-$ kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/main/deploy/examples/consumer_push.yml
+$ wget -q https://raw.githubusercontent.com/nats-io/nack/main/deploy/examples/consumer_push.yml
+$ kubectl apply -f consumer_push.yml
 
 # Create a pull based consumer
-$ kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/main/deploy/examples/consumer_pull.yml
+$ wget -q https://raw.githubusercontent.com/nats-io/nack/main/deploy/examples/consumer_pull.yml
+$ kubectl apply -f consumer_pull.yml
 
 # Check if they were successfully created.
 $ kubectl get consumers
@@ -102,13 +109,9 @@ data into `mystream`.
 
 ```sh
 # Run nats-box that includes the NATS management utilities.
-$ kubectl apply -f https://nats-io.github.io/k8s/tools/nats-box.yml
-$ kubectl exec -it nats-box -- /bin/sh -l
+kubectl exec -it deploy/nats-box -- /bin/sh -l
 
 # Publish a couple of messages
-$ nats context save jetstream -s nats://nats:4222
-$ nats context select jetstream
-
 $ nats pub orders.received "order 1"
 $ nats pub orders.received "order 2"
 ```
