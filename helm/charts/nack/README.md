@@ -112,8 +112,8 @@ data into `mystream`.
 kubectl exec -it deploy/nats-box -- /bin/sh -l
 
 # Publish a couple of messages
-$ nats pub orders.received "order 1"
-$ nats pub orders.received "order 2"
+$ nats req orders.received "order 1"
+$ nats req orders.received "order 2"
 ```
 
 First, we'll read the data using a pull-based consumer. In `consumer_pull.yml`
