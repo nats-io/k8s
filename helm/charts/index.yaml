@@ -2,6 +2,24 @@ apiVersion: v1
 entries:
   nack:
   - apiVersion: v2
+    appVersion: 0.16.0
+    created: "2024-09-24T17:26:39.771595019Z"
+    description: A Helm chart for NACK
+    digest: 501cd9a2b8372aed2effc05d4688bb4aa0ecb7d923d331ad4d036df004663b00
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - jetstream
+    - cncf
+    maintainers:
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
+    name: nack
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/nack-0.27.0/nack-0.27.0.tgz
+    version: 0.27.0
+  - apiVersion: v2
     appVersion: 0.15.1
     created: "2024-08-28T12:58:14.577365205Z"
     description: A Helm chart for NACK
@@ -3882,4 +3900,4 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/surveyor-0.9.2.tgz
     version: 0.9.2
-generated: "2024-08-30T20:59:48.761809055Z"
+generated: "2024-09-24T17:26:39.935152674Z"
