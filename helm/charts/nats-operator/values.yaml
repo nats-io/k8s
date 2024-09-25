@@ -5,11 +5,11 @@ rbacEnabled: true
 
 ## Operator scope
 ## NOTE: If true
-## * Make sure that no othe NATS operator is running in the cluster
+## * Make sure that no other NATS operator is running in the cluster
 ## * The Release namespace must be "nats-io"
 clusterScoped: false
 
-## Set default Replica Coint for the Operator
+## Set default Replica Count for the Operator
 replicaCount: 1
 
 image:
@@ -17,9 +17,9 @@ image:
   registry: docker.io
   repository: natsio/nats-operator
   tag: 0.8.3
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
   ##
   pullPolicy: Always
   ## Optionally specify an array of imagePullSecrets.
@@ -83,7 +83,7 @@ resources: {}
 #   memory: 64Mi
 
 ## Configure extra options for liveness and readiness probes
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
 livenessProbe:
   enabled: true
   initialDelaySeconds: 30
