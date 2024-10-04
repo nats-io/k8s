@@ -1,6 +1,10 @@
 metadata:
   labels:
     {{- include "natsBox.labels" $ | nindent 4 }}
+  annotations:
+    {{- if .Values.global.podAnnotations }}
+    {{- toYaml .Values.global.podAnnotations | nindent 4 }}
+    {{- end }}
 spec:
   containers:
   {{- with .Values.natsBox.container }}

@@ -6,6 +6,9 @@ metadata:
     {{- $configMap := include "nats.loadMergePatch" (merge (dict "file" "config-map.yaml" "ctx" $) $.Values.configMap) }}
     checksum/config: {{ sha256sum $configMap }}
     {{- end }}
+    {{- if .Values.global.podAnnotations }}
+    {{- toYaml .Values.global.podAnnotations | nindent 4 }}
+    {{- end }}
 spec:
   containers:
   # nats
