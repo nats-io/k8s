@@ -123,8 +123,8 @@ podTemplate:
 container:
   env:
     # different from k8s units, suffix must be B, KiB, MiB, GiB, or TiB
-    # should be ~90% of memory limit
-    GOMEMLIMIT: 7GiB
+    # should be ~80% of memory limit
+    GOMEMLIMIT: 6GiB
   merge:
     # recommended limit is at least 2 CPU cores and 8Gi Memory for production JetStream clusters
     resources:
