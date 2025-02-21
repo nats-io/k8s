@@ -7,7 +7,7 @@ jetstream:
   enabled: true
   image:
     repository: natsio/jetstream-controller
-    tag: 0.16.1
+    tag: 0.17.1
     pullPolicy: IfNotPresent
     # registry: docker.io
 
@@ -46,7 +46,10 @@ jetstream:
       client_ca: "/etc/nats/certs/ca.crt"
       timeout: 3
 
-  # additional arguments to pass to the controller process
+  # Additional arguments to pass to the controller process
+  # Enable controller-runtime backend
+  # additionalArgs:
+  # - --control-loop
   additionalArgs: []
 
 # restrict the controller to only watch resources in it's current namespace
@@ -95,11 +98,16 @@ rbacRules: |
     resources:
     - streams
     - streams/status
+    - objectstores
+    - objectstores/status
+    - keyvalues
+    - keyvalues/status
     - consumers
     - consumers/status
     - streamtemplates
     - streamtemplates/status
     - accounts
+    - accounts/status
     verbs:
     - create
     - get

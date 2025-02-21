@@ -3,75 +3,36 @@
 ## TL;DR
 
 ```bash
-# First, need to install the CRDs manually.
-kubectl apply -f https://github.com/nats-io/nack/releases/latest/download/crds.yml
-
 helm repo add nats https://nats-io.github.io/k8s/helm/charts/
-helm install nats nats/nats
-helm install nack-jsc nats/nack --set jetstream.nats.url=nats://nats:4222
+
+helm upgrade --install nats nats/nats --set config.jetstream.enabled=true --set config.cluster.enabled=true
+
+helm upgrade --install nack nats/nack --set jetstream.nats.url=nats://nats.default.svc.cluster.local:4222
 ```
 
-The JetStream controllers allows you to manage [NATS JetStream](https://github.com/nats-io/jetstream)
-[Streams](https://github.com/nats-io/jetstream#streams-1) and
-[Consumers](https://github.com/nats-io/jetstream#consumers-1) via K8S CRDs as an alternative to
-using a NATS client with JetStream support for management or the `nats` utility.
+The JetStream controllers allows you to manage [NATS JetStream](https://docs.nats.io/nats-concepts/jetstream) [Streams](https://docs.nats.io/nats-concepts/jetstream/streams), [Consumers](https://docs.nats.io/nats-concepts/jetstream/consumers), [Key/Value Stores](https://docs.nats.io/nats-concepts/jetstream/key-value-store), and [Object Stores](https://docs.nats.io/nats-concepts/jetstream/obj_store) via Kubernetes CRDs.
+
+Resources managed by NACK controllers are expected to _exclusively_ be managed by NACK, and configuration state will be enforced if mutated by an external client.
 
 ### Getting started
 
-First, we'll need to install the CRDs.
-```bash
-kubectl apply -f https://github.com/nats-io/nack/releases/latest/download/crds.yml
-```
-
-Then, we'll need a NATS cluster that has enabled JetStream. You can install
+We'll need a NATS cluster that has enabled JetStream. You can install
 one as follows:
 
-```yaml
-natsBox:
-  enabled: true
-
-config:
-  jetstream:
-    enabled: true
-
-    memoryStore:
-      enabled: true
-      maxSize: 256Mi
-
-    fileStore:
-      enabled: true
-      pvc:
-        enabled: true
-        size: 256Mi
+```sh
+helm upgrade --install nats nats/nats --set config.jetstream.enabled=true --set config.cluster.enabled=true
 ```
+
+Now install the JetStream Controller.
 
 ```sh
-helm install nats nats/nats -f deploy-nats.yaml
+helm upgrade --install nack nats/nack --set jetstream.nats.url=nats://nats.default.svc.cluster.local:4222
 ```
 
-Now install the JetStream CRDs and Controller. In case of using credentials, you need to make them available as a secret:
+If upgrading from a previous version, update the CRDs.
 
 ```sh
-kubectl create secret generic nats-user-creds --from-file ./nsc/nkeys/creds/KO/JS1/js.creds
-```
-
-Then deploy:
-
-```yaml
-jetstream:
-  enabled: true
-
-  nats:
-    url: nats://nats:4222
-
-    credentials:
-      secret:
-        name: nats-user-creds
-        key: "js.creds"
-```
-
-```sh
-helm install nack nats/nack -f deploy-nack.yaml
+kubectl apply -f https://github.com/nats-io/nack/releases/latest/download/crds.yml
 ```
 
 Now we can create some Streams and Consumers.
@@ -83,7 +44,7 @@ $ kubectl apply -f https://raw.githubusercontent.com/nats-io/nack/main/deploy/ex
 # Check if it was successfully created.
 $ kubectl get streams
 NAME       STATE     STREAM NAME   SUBJECTS
-mystream   Created   mystream      [orders.*]
+mystream   Ready     mystream      [orders.*]
 
 # Create a push-based consumer
 $ wget -q https://raw.githubusercontent.com/nats-io/nack/main/deploy/examples/consumer_push.yml
@@ -96,8 +57,8 @@ $ kubectl apply -f consumer_pull.yml
 # Check if they were successfully created.
 $ kubectl get consumers
 NAME               STATE     STREAM     CONSUMER           ACK POLICY
-my-pull-consumer   Created   mystream   my-pull-consumer   explicit
-my-push-consumer   Created   mystream   my-push-consumer   none
+my-pull-consumer   Ready     mystream   my-pull-consumer   explicit
+my-push-consumer   Ready     mystream   my-push-consumer   none
 
 # If you end up in an Errored state, run kubectl describe for more info.
 #     kubectl describe streams mystream
@@ -109,7 +70,7 @@ data into `mystream`.
 
 ```sh
 # Run nats-box that includes the NATS management utilities.
-kubectl exec -it deploy/nats-box -- /bin/sh -l
+kubectl exec -it deployment/nats-box -- /bin/sh -l
 
 # Publish a couple of messages
 $ nats req orders.received "order 1"
