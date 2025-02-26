@@ -315,6 +315,10 @@ container:
     tag: 2.10.25-alpine
     pullPolicy:
     registry:
+    # if digest is provided, it overrides tag (example: "sha256:abcdef1234567890")
+    digest:
+    # if fullImageName is provided, it overrides registry, repository, tag, and digest
+    fullImageName:
 
   # container port options
   # must be enabled in the config section also
@@ -356,6 +360,8 @@ reloader:
     tag: 0.16.1
     pullPolicy:
     registry:
+    digest:
+    fullImageName:
 
   # env var map, see nats.env for an example
   env: {}
@@ -381,6 +387,8 @@ promExporter:
     tag: 0.16.0
     pullPolicy:
     registry:
+    digest:
+    fullImageName:
 
   port: 7777
   # env var map, see nats.env for an example
@@ -567,6 +575,8 @@ natsBox:
       tag: 0.16.0
       pullPolicy:
       registry:
+      digest:
+      fullImageName:
 
     # env var map, see nats.env for an example
     env: {}
