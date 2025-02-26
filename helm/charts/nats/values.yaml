@@ -316,7 +316,7 @@ container:
     pullPolicy:
     registry:
     # if digest is provided, it overrides tag (example: "sha256:abcdef1234567890")
-    digest: 
+    digest:
     # if fullImageName is provided, it overrides registry, repository, tag, and digest
     fullImageName:
 
