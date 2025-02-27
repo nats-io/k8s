@@ -100,6 +100,7 @@ spec:
               mountPath: /etc/nats-certs/clients/
               readOnly: true
             {{- end }}
+
             {{- if .Values.config.jetstream.enabled }}
             {{- with .Values.config.jetstream.accounts }}
 
