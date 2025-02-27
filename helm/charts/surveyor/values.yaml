@@ -142,13 +142,13 @@ config:
     #   password: password
 
 # Mount arbitrary volumes to surveyor pods
-extraVolumeMounts:
-  - name: ca-certs
-    mountPath: /etc/ssl/certs/ca-certificates.crt
-    readOnly: true
-
+#extraVolumeMounts:
+#  - name: ca-certs
+#    mountPath: /etc/ssl/certs/ca-certificates.crt
+#    readOnly: true
+#
 # Configure arbitrary volumes for surveyor pods
-extraVolumes:
-  - name: ca-certs
-    configMap:
-      name: ca-certs
+#extraVolumes:
+#  - name: ca-certs
+#    configMap:
+#      name: ca-certs
