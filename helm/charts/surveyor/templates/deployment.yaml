@@ -117,6 +117,10 @@ spec:
               mountPath: /jetstream
             {{- end }}
             {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12}}
+            {{- end }}
+            
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -153,6 +157,9 @@ spec:
           configMap:
             name: {{ include "surveyor.fullname" $ }}-accounts
         {{- end }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
 
       {{- with .Values.nodeSelector }}
