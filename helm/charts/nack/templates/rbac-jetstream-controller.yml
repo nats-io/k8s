@@ -13,6 +13,8 @@ kind: {{ $kind }}
 metadata:
   name: {{ template "jsc.serviceAccountName" . }}-{{ $kindSuffix }}
   namespace: {{ include "jsc.namespace" . }}
+  labels:
+    {{- tpl (toYaml .Values.rbacLabels) . | nindent 4 }}
 {{ tpl .Values.rbacRules . }}
 
 ---
