@@ -118,6 +118,13 @@ podTemplate:
 ```
 
 ### NATS Container Resources
+We recommend setting **requests and limits** and setting them to **the same value**, for the following reason:
+
+* It will [guarantee](https://www.datadoghq.com/blog/kubernetes-cpu-requests-limits/#predictability:~:text=If%20containers%20are,available%20capacity%20decreases.) that you nats pod will have predictable performance
+* NATS server [automatically sets](https://github.com/nats-io/nats-server/blob/v2.11.0/main.go#L131-L132) [GOMAXPROCS](https://github.com/golang/go/blob/go1.24.1/src/runtime/extern.go#L230-L234) value to the number of CPU cores set in limits section. If `limits` are not set, NATS process will end up with default GOMAXPROCS value, which is the number of physical cores on the node, and that can lead to [poor performance](https://github.com/golang/go/issues/33803)
+* The pod will get assigned to ["Guaranteed" QoS class](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#guaranteed), which are least likely to face eviction when there are not enough available resources on the node
+
+Deviate from this recommendation only if you understand the implications of the settings that you choose.
 
 ```yaml
 container:
