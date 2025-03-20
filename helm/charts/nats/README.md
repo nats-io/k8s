@@ -134,7 +134,7 @@ container:
     # Should be ~80% of memory limit
     GOMEMLIMIT: 6GiB
   merge:
-    # Recommended minimum: at least 2 CPU cores and 8GiB memory for production JetStream clusters
+    # Recommended minimum: at least 2 CPU cores and 8Gi memory for production JetStream clusters
     resources:
       requests:
         cpu: "2"
