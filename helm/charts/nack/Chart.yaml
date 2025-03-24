@@ -6,7 +6,7 @@ keywords:
 - nats
 - jetstream
 - cncf
-version: 0.28.0
+version: 0.28.1
 maintainers:
 - email: info@nats.io
   name: The NATS Authors
