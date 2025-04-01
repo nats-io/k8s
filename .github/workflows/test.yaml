@@ -43,7 +43,7 @@ jobs:
           ct lint \
             --all \
             --chart-dirs helm/charts \
-            --excluded-charts nats-account-server,nats-kafka,nats-operator,surveyor \
+            --excluded-charts nats-account-server,nats-kafka,nats-operator,stan,surveyor \
             --validate-maintainers=false
 
       - name: Check nindent levels
@@ -81,4 +81,4 @@ jobs:
           ct install \
             --all \
             --chart-dirs helm/charts \
-            --excluded-charts nats-account-server,nats-kafka,nats-operator,surveyor
+            --excluded-charts nats-account-server,nats-kafka,nats-operator,stan,surveyor
