@@ -53,7 +53,6 @@ jobs:
             if find \
               helm/charts/nack \
               helm/charts/nats \
-              helm/charts/stan \
               -type f \
               -not -name "*.md" \
               -not -name "*.go" \
