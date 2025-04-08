@@ -314,8 +314,6 @@ spec:
           - -routez
           - -subz
           - -varz
-          - -channelz
-          - -serverz
           - http://localhost:8222/
           {{- end }}
           ports:
