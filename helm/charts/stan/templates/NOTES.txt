@@ -1,7 +1,0 @@
-
-You can find more information about running NATS Streaming on Kubernetes
-in the NATS documentation website:
-
-  https://docs.nats.io/nats-on-kubernetes/nats-kubernetes
-
-Thanks for using NATS Streaming!
