@@ -151,7 +151,7 @@ tolerations: []
 #    value: "value"
 #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
-# Resource requests and limits for primary nats container
+# Resource requests and limits for primary nack container
 # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 resources: {}
 
