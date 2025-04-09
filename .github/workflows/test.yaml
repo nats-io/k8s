@@ -4,8 +4,8 @@ name: test
 on:
   pull_request:
     paths:
-      - 'helm/charts/**'
-      - '.github/workflows/test.yaml'
+      - "helm/charts/**"
+      - ".github/workflows/test.yaml"
 
 jobs:
   lint-test:
@@ -43,7 +43,7 @@ jobs:
           ct lint \
             --all \
             --chart-dirs helm/charts \
-            --excluded-charts nats-account-server,nats-kafka,nats-operator,stan,surveyor \
+            --excluded-charts nats-account-server,nats-kafka,nats-operator,surveyor \
             --validate-maintainers=false
 
       - name: Check nindent levels
@@ -81,4 +81,4 @@ jobs:
           ct install \
             --all \
             --chart-dirs helm/charts \
-            --excluded-charts nats-account-server,nats-kafka,nats-operator,stan,surveyor
+            --excluded-charts nats-account-server,nats-kafka,nats-operator,surveyor
