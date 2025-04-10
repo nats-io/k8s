@@ -238,6 +238,7 @@ config:
     tls:
       # config.nats.tls must be enabled also
       # when enabled, monitoring port will use HTTPS with the options from config.nats.tls
+      # if promExporter is also enabled, consider setting promExporter.monitorDomain
       enabled: false
 
   profiling:
@@ -391,6 +392,9 @@ promExporter:
     fullImageName:
 
   port: 7777
+  # if config.monitor.tls.enabled is set to true, monitorDomain must be set to the common name
+  # or a SAN used in the tls certificate
+  monitorDomain: localhost
   # env var map, see nats.env for an example
   env: {}
 
