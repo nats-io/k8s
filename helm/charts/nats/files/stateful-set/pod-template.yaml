@@ -70,4 +70,6 @@ spec:
   {{- end }}
   {{- end}}
   
+  # terminationGracePeriodSeconds determines how long to wait for graceful shutdown
+  # this should be at least `lameDuckGracePeriod` + 20s shutdown overhead
   terminationGracePeriodSeconds: 60
