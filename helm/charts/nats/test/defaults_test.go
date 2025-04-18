@@ -563,8 +563,9 @@ exec /entrypoint.sh "$@"
 									},
 								},
 							},
-							EnableServiceLinks:    &falseBool,
-							ShareProcessNamespace: &trueBool,
+							TerminationGracePeriodSeconds: int64Ptr(60),
+							EnableServiceLinks:            &falseBool,
+							ShareProcessNamespace:         &trueBool,
 							Volumes: []corev1.Volume{
 								{
 									Name: "config",
@@ -629,4 +630,10 @@ func TestDefaultValues(t *testing.T) {
 	test := DefaultTest()
 	expected := DefaultResources(t, test)
 	RenderAndCheck(t, test, expected)
+}
+
+func int64Ptr(i int) *int64 {
+	i64 := (int64)(i)
+
+	return &i64
 }
