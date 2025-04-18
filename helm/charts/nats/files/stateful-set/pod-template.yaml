@@ -69,3 +69,5 @@ spec:
   - {{ merge (dict "topologyKey" $k "labelSelector" (dict "matchLabels" (include "nats.selectorLabels" $ | fromYaml))) $v | toYaml | nindent 4 }}
   {{- end }}
   {{- end}}
+  
+  terminationGracePeriodSeconds: 60
