@@ -60,7 +60,7 @@ Everything in the NATS Config or Kubernetes Resources can be overridden by `merg
 
 ### Merge
 
-Merging is performed using the Helm `merge` function.  Example - add NATS accounts and container resources:
+Merging is performed using the Helm [`merge` function](https://helm.sh/docs/chart_template_guide/function_list/#merge-mustmerge).  Example - add NATS accounts and container resources:
 
 ```yaml
 config:
