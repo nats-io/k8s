@@ -358,7 +358,7 @@ reloader:
   enabled: true
   image:
     repository: natsio/nats-server-config-reloader
-    tag: 0.17.1
+    tag: 0.17.2
     pullPolicy:
     registry:
     digest:
@@ -385,7 +385,7 @@ promExporter:
   enabled: false
   image:
     repository: natsio/prometheus-nats-exporter
-    tag: 0.17.2
+    tag: 0.17.3
     pullPolicy:
     registry:
     digest:
