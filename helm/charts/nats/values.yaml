@@ -410,7 +410,7 @@ promExporter:
     enabled: false
 
     # merge or patch the pod monitor
-    # https://prometheus-operator.dev/docs/operator/api/#monitoring.coreos.com/v1.PodMonitor
+    # https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PodMonitor
     merge: {}
     patch: []
     # defaults to "{{ include "nats.fullname" $ }}"
