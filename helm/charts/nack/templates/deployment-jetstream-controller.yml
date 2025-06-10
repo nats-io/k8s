@@ -25,6 +25,7 @@ spec:
       labels:
         app: {{ template "jsc.name" . }}
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
