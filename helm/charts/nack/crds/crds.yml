@@ -291,6 +291,9 @@ spec:
                 description: When true, the KV Store will initiate TLS before server INFO.
                 type: boolean
                 default: false
+              jsDomain:
+                description: The JetStream domain to use for the stream.
+                type: string
           status:
             type: object
             properties:
@@ -318,7 +321,7 @@ spec:
       jsonPath: .status.conditions[?(@.type == 'Ready')].reason
     - name: Stream Name
       type: string
-      description: The name of the Jetstream Stream.
+      description: The name of the JetStream Stream.
       jsonPath: .spec.name
     - name: Subjects
       type: string
@@ -486,7 +489,7 @@ spec:
       jsonPath: .status.conditions[?(@.type == 'Ready')].reason
     - name: Stream Name
       type: string
-      description: The name of the Jetstream Stream.
+      description: The name of the JetStream Stream.
       jsonPath: .spec.name
     - name: Subjects
       type: string
@@ -678,6 +681,9 @@ spec:
                 description: When true, the KV Store will initiate TLS before server INFO.
                 type: boolean
                 default: false
+              jsDomain:
+                description: The JetStream domain to use for the consumer.
+                type: string
           status:
             type: object
             properties:
@@ -705,11 +711,11 @@ spec:
       jsonPath: .status.conditions[?(@.type == 'Ready')].reason
     - name: Stream
       type: string
-      description: The name of the Jetstream Stream.
+      description: The name of the JetStream Stream.
       jsonPath: .spec.streamName
     - name: Consumer
       type: string
-      description: The name of the Jetstream Consumer.
+      description: The name of the JetStream Consumer.
       jsonPath: .spec.durableName
     - name: Ack Policy
       type: string
@@ -829,11 +835,11 @@ spec:
       jsonPath: .status.conditions[?(@.type == 'Ready')].reason
     - name: Stream
       type: string
-      description: The name of the Jetstream Stream.
+      description: The name of the JetStream Stream.
       jsonPath: .spec.streamName
     - name: Consumer
       type: string
-      description: The name of the Jetstream Consumer.
+      description: The name of the JetStream Consumer.
       jsonPath: .spec.durableName
     - name: Ack Policy
       type: string
@@ -966,7 +972,7 @@ spec:
       jsonPath: .status.conditions[?(@.type == 'Ready')].reason
     - name: Stream Template Name
       type: string
-      description: The name of the Jetstream Stream Template.
+      description: The name of the JetStream Stream Template.
       jsonPath: .spec.name
     - name: Subjects
       type: string
@@ -1281,6 +1287,9 @@ spec:
                 description: When true, the KV Store will initiate TLS before server INFO.
                 type: boolean
                 default: false
+              jsDomain:
+                description: The JetStream domain to use for the KV store.
+                type: string
           status:
             type: object
             properties:
@@ -1419,9 +1428,12 @@ spec:
                     items:
                       type: string
               tlsFirst:
-                description: When true, the KV Store will initiate TLS before server INFO.
+                description: When true, the Object Store will initiate TLS before server INFO.
                 type: boolean
                 default: false
+              jsDomain:
+                description: The JetStream domain to use for the Object Store.
+                type: string
           status:
             type: object
             properties:
