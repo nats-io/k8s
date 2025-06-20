@@ -73,6 +73,9 @@ additionalVolumes: []
 # additionalVolumeMounts are the additional volume mounts to add
 additionalVolumeMounts: []
 
+# Custom labels to be added to the ClusterRole or Role
+rbacLabels: {}
+  # rbac.authorization.k8s.io/aggregate-to-admin: "true"
 # Rules to be applied to ClusterRole or Role
 # Set as a string so that it can be templated to allow further customization
 rbacRules: |
