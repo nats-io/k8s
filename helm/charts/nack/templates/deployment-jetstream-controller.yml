@@ -81,7 +81,7 @@ spec:
       {{- end }}
       containers:
         - name: jsc
-          image: {{ include "jsc.image" .Values.jetstream.image }}
+          image: {{ include "jsc.image" . }}
           imagePullPolicy: {{ .Values.jetstream.image.pullPolicy }}
           workingDir: /nack
           command:

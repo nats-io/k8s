@@ -37,9 +37,10 @@ Fix image keys for chart versions <= 0.17.5
 Print the image
 */}}
 {{- define "jsc.image" -}}
-{{- $image := printf "%s:%s" .repository .tag }}
-{{- if .registry }}
-{{- $image = printf "%s/%s" .registry $image }}
+{{- $imageDict := .Values.jetstream.image }}
+{{- $image := printf "%s:%s" $imageDict.repository (default .Chart.AppVersion $imageDict.tag) }}
+{{- if $imageDict.registry }}
+{{- $image = printf "%s/%s" $imageDict.registry $image }}
 {{- end }}
 {{- $image -}}
 {{- end }}
