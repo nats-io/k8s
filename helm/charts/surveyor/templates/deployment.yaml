@@ -48,6 +48,14 @@ spec:
             - --nkey=/nkey/{{ .secret.key }}
            {{- end }}
 
+           {{- with .user }}
+            - --user={{ . }}
+           {{- end }}
+
+           {{- with .password }}
+            - --password=/password-auth/{{ .secret.key }}
+           {{- end }}
+
            {{- with .servers }}
             - -s={{ . }}
            {{- end }}
@@ -95,6 +103,11 @@ spec:
               mountPath: /nkey/
               readOnly: true
             {{- end }}
+            {{- with .Values.config.password }}
+            - name: password-auth
+              mountPath: /password-auth/
+              readOnly: true
+            {{- end }}
             {{- with .Values.config.tls }}
             - name: {{ .secret.name }}-volume
               mountPath: /etc/nats-certs/clients/
@@ -131,6 +144,11 @@ spec:
         {{- end }}
         {{- with .Values.config.nkey }}
         - name: nkey
+          secret:
+            secretName: {{ .secret.name }}
+        {{- end }}
+        {{- with .Values.config.password }}
+        - name: password-auth
           secret:
             secretName: {{ .secret.name }}
         {{- end }}
