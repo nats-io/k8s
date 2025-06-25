@@ -53,7 +53,7 @@ spec:
            {{- end }}
 
            {{- with .password }}
-            - --password=/password-auth/{{ .secret.key }}
+            - --password=$(NATS_ADMIN_PASSWORD)
            {{- end }}
 
            {{- with .servers }}
@@ -88,6 +88,14 @@ spec:
             - name: http
               containerPort: 7777
               protocol: TCP
+          {{- if .Values.config.password }}
+          env:
+            - name: NATS_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.password.secret.name }}
+                  key: {{ .Values.config.password.secret.key }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -101,11 +109,6 @@ spec:
             {{- with .Values.config.nkey }}
             - name: nkey
               mountPath: /nkey/
-              readOnly: true
-            {{- end }}
-            {{- with .Values.config.password }}
-            - name: password-auth
-              mountPath: /password-auth/
               readOnly: true
             {{- end }}
             {{- with .Values.config.tls }}
@@ -144,11 +147,6 @@ spec:
         {{- end }}
         {{- with .Values.config.nkey }}
         - name: nkey
-          secret:
-            secretName: {{ .secret.name }}
-        {{- end }}
-        {{- with .Values.config.password }}
-        - name: password-auth
           secret:
             secretName: {{ .secret.name }}
         {{- end }}
