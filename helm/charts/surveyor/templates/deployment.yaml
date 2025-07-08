@@ -48,14 +48,6 @@ spec:
             - --nkey=/nkey/{{ .secret.key }}
            {{- end }}
 
-           {{- with .user }}
-            - --user={{ . }}
-           {{- end }}
-
-           {{- with .password }}
-            - --password=$(NATS_ADMIN_PASSWORD)
-           {{- end }}
-
            {{- with .servers }}
             - -s={{ . }}
            {{- end }}
@@ -88,14 +80,18 @@ spec:
             - name: http
               containerPort: 7777
               protocol: TCP
-          {{- if .Values.config.password }}
           env:
-            - name: NATS_ADMIN_PASSWORD
+            {{- if .Values.config.user }}
+            - name: NATS_SURVEYOR_USER
+              value: {{ .Values.config.user }}
+            {{- end }}
+            {{- if .Values.config.password }}
+            - name: NATS_SURVEYOR_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.config.password.secret.name }}
                   key: {{ .Values.config.password.secret.key }}
-          {{- end }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
