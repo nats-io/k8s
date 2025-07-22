@@ -119,6 +119,16 @@ config:
   #     name: nats-sys-nkey
   #     key: sys.nkey
 
+  # User/password authentication (alternative to credentials/nkey)
+  # Username as plain text
+  # user: admin
+
+  # Password must use secret for security
+  # password:
+  #   secret:
+  #     name: nats-user-auth
+  #     key: password
+
   # Required for NATS mutual TLS
   # tls:
   #    secret:
@@ -140,7 +150,6 @@ config:
     # - name: basic
     #   username: username
     #   password: password
-
 # Mount arbitrary volumes to surveyor pods
 #extraVolumeMounts:
 #  - name: ca-certs
