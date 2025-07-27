@@ -14,7 +14,11 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+deploymentAnnotations: {}
+deploymentLabels: {}
+
 podAnnotations: {}
+podLabels: {}
 
 podSecurityContext:
   {}
