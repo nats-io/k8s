@@ -232,6 +232,14 @@ spec:
                 description: When true, enables direct access to messages from the origin stream.
                 type: boolean
                 default: false
+              allowMsgTtl:
+                description: When true, allows header initiated per-message TTLs. If disabled, then the `NATS-TTL` header will be ignored.
+                type: boolean
+                default: false
+              subjectDeleteMarkerTtl:
+                description: Enables and sets a duration for adding server markers for delete, purge and max age limits.
+                type: string
+                default: ''
               consumerLimits:
                 type: object
                 properties:
