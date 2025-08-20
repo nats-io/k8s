@@ -16,8 +16,7 @@ global:
 
   # global labels will be applied to all resources deployed by the chart
   labels: {}
-  annotations:
-    foo: bar
+  annotations: {}
 
 ################################################################################
 # Common options
