@@ -108,6 +108,21 @@ config:
   # Enable monitoring account metrics.
   accounts: false
 
+  # stays as ENV; works with token-file + user
+  #user: "sys"
+
+  # tokenFile:
+  #   enabled: true
+    # optional: change the volume name
+    # volumeName: nats-token
+    # where to mount inside the container
+    # mountPath: /var/run/secrets/tokens
+    # filename inside the mount where kubelet writes the token
+    # filename: nats-token
+    # optional extras for projected tokens:
+    # audience: nats-auth
+    # expirationSeconds: 3600
+
   # Required if NATS auth is enabled
   # credentials:
   #   secret:
