@@ -56,6 +56,14 @@ spec:
             - --accounts
            {{- end }}
 
+           {{- with .accountsDetailed }}
+            - --accounts-detailed
+           {{- end }}
+
+           {{- with .jsz }}
+            - --jsz={{ . }}
+           {{- end }}
+
            {{- with .timeout }}
             - --timeout={{ . }}
            {{- end }}
@@ -147,7 +155,7 @@ spec:
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12}}
             {{- end }}
-            
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
