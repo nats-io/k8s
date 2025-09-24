@@ -56,6 +56,14 @@ spec:
             - --accounts
            {{- end }}
 
+           {{- with .accountsDetailed }}
+            - --accounts-detailed
+           {{- end }}
+
+           {{- with .jsz }}
+            - --jsz={{ . }}
+           {{- end }}
+
            {{- with .timeout }}
             - --timeout={{ . }}
            {{- end }}
@@ -70,6 +78,12 @@ spec:
            {{- end }}
             - --tlskey=/etc/nats-certs/clients/{{ .key }}
             - --tlscert=/etc/nats-certs/clients/{{ .cert }}
+           {{- end }}
+
+           {{- with .tokenFile }}
+           {{- if .enabled }}
+            - --token-file={{ .mountPath }}/{{ .filename }}
+           {{- end }}
            {{- end }}
            {{- end }}
 
@@ -129,10 +143,19 @@ spec:
               mountPath: /jetstream
             {{- end }}
             {{- end }}
+
+            {{- with .Values.config.tokenFile }}
+            {{- if .enabled }}
+            - name: {{ default "nats-token" .volumeName }}
+              mountPath: {{ .mountPath }}
+              readOnly: true
+            {{- end }}
+            {{- end }}
+
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12}}
             {{- end }}
-            
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -170,6 +193,23 @@ spec:
             name: {{ include "surveyor.fullname" $ }}-accounts
         {{- end }}
         {{- end }}
+
+        {{- with .Values.config.tokenFile }}
+        {{- if .enabled }}
+        - name: {{ default "nats-token" .volumeName }}
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: {{ .filename }}
+                  {{- if .audience }}
+                  audience: {{ .audience }}
+                  {{- end }}
+                  {{- if .expirationSeconds }}
+                  expirationSeconds: {{ .expirationSeconds }}
+                  {{- end }}
+        {{- end }}
+        {{- end }}
+
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

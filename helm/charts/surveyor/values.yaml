@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: natsio/nats-surveyor
-  tag: 0.9.2
+  tag: 0.9.4
   pullPolicy: IfNotPresent
   # registry: docker.io
 
@@ -16,12 +16,10 @@ fullnameOverride: ""
 
 podAnnotations: {}
 
-podSecurityContext:
-  {}
+podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -57,8 +55,7 @@ serviceMonitor:
 
 ingress:
   enabled: false
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -69,8 +66,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources:
-  {}
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -107,6 +103,27 @@ config:
 
   # Enable monitoring account metrics.
   accounts: false
+
+  # Enable granular per-account bytes and message metrics
+  accountsDetailed: false
+
+  # jsz metrics optionally
+  jsz:
+
+  # stays as ENV; works with token-file + user
+  #user: "sys"
+
+  # tokenFile:
+  #   enabled: true
+  # optional: change the volume name
+  # volumeName: nats-token
+  # where to mount inside the container
+  # mountPath: /var/run/secrets/tokens
+  # filename inside the mount where kubelet writes the token
+  # filename: nats-token
+  # optional extras for projected tokens:
+  # audience: nats-auth
+  # expirationSeconds: 3600
 
   # Required if NATS auth is enabled
   # credentials:

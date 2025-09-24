@@ -314,7 +314,7 @@ config:
 container:
   image:
     repository: nats
-    tag: 2.11.7-alpine
+    tag: 2.11.9-alpine
     pullPolicy:
     registry:
     # if digest is provided, it overrides tag (example: "sha256:abcdef1234567890")
@@ -359,7 +359,7 @@ reloader:
   enabled: true
   image:
     repository: natsio/nats-server-config-reloader
-    tag: 0.19.0
+    tag: 0.19.1
     pullPolicy:
     registry:
     digest:
