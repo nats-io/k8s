@@ -28,13 +28,18 @@ jobs:
 
       - name: Get latest NACK release
         id: get_release
-        # We use gh rather than curl, so that our requests can be authenticated and avoid anonymous rate limits
         run: |
-          RELEASE_TAG="$(gh release --repo nats-io/nack view --json tagName --jq .tagName)"
+          # Using curl and jq for robust JSON parsing
+          RELEASE_TAG=$(curl -s https://api.github.com/repos/nats-io/nack/releases/latest | jq -r '.tag_name')
+
+          # Fallback check if release fetch failed
+          if [[ -z "$RELEASE_TAG" ]] || [[ "$RELEASE_TAG" == "null" ]]; then
+            echo "Failed to fetch latest NACK release"
+            exit 1
+          fi
+
           echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
           echo "Latest NACK release: $RELEASE_TAG"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download CRDs from latest release
         id: download_crds
