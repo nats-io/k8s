@@ -1,0 +1,160 @@
+name: Update NACK CRDs
+
+on:
+  schedule:
+    # Run daily at 14:00 UTC
+    - cron: "0 14 * * *"
+  workflow_dispatch:
+    # Allow manual triggering
+
+permissions: {}
+
+jobs:
+  check_and_update:
+    name: Update NACK CRDs
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          # Need credentials preserved, to push a branch with changes
+          persist-credentials: true
+
+      - name: Get latest NACK release
+        id: get_release
+        # We use gh rather than curl, so that our requests can be authenticated and avoid anonymous rate limits
+        run: |
+          RELEASE_TAG="$(gh release --repo nats-io/nack view --json tagName --jq .tagName)"
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
+          echo "Latest NACK release: $RELEASE_TAG"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download CRDs from latest release
+        id: download_crds
+        env:
+          RELEASE_TAG: ${{ steps.get_release.outputs.release_tag }}
+        run: |
+          # Download the CRDs file from the latest release
+          echo "Downloading CRDs from NACK release $RELEASE_TAG"
+          curl -sSL "https://raw.githubusercontent.com/nats-io/nack/$RELEASE_TAG/deploy/crds.yml" -o /tmp/crds.yml
+
+          # Check if download was successful
+          if [[ ! -f /tmp/crds.yml ]]; then
+            echo "Failed to download CRDs"
+            exit 1
+          fi
+
+          echo "Successfully downloaded CRDs"
+
+      - name: Check for differences
+        id: check_diff
+        run: |
+          # Compare the downloaded CRDs with the current one
+          if diff -q /tmp/crds.yml helm/charts/nack/crds/crds.yml > /dev/null 2>&1; then
+            echo "CRDs are up to date"
+            echo "updated=false" >> $GITHUB_OUTPUT
+          else
+            echo "CRDs need updating"
+            echo "updated=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update CRDs if needed
+        if: steps.check_diff.outputs.updated == 'true'
+        run: |
+          cp /tmp/crds.yml helm/charts/nack/crds/crds.yml
+          echo "Updated CRDs from NACK release ${{ steps.get_release.outputs.release_tag }}"
+
+      - name: Update Chart versions
+        if: steps.check_diff.outputs.updated == 'true'
+        id: update_chart
+        env:
+          RELEASE_TAG: ${{ steps.get_release.outputs.release_tag }}
+        run: |
+          # Extract version number from tag (remove 'v' prefix if present)
+          NEW_APP_VERSION="${RELEASE_TAG#v}"
+
+          # Get current versions
+          CURRENT_CHART_VERSION=$(grep '^version:' helm/charts/nack/Chart.yaml | awk '{print $2}')
+          CURRENT_APP_VERSION=$(grep '^appVersion:' helm/charts/nack/Chart.yaml | awk '{print $2}')
+
+          # Bump the patch version of the chart
+          IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_CHART_VERSION"
+          MAJOR="${VERSION_PARTS[0]}"
+          MINOR="${VERSION_PARTS[1]}"
+          PATCH="${VERSION_PARTS[2]}"
+          NEW_PATCH=$((PATCH + 1))
+          NEW_CHART_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+
+          # Update Chart.yaml with new versions
+          sed -i "s/^version: .*/version: ${NEW_CHART_VERSION}/" helm/charts/nack/Chart.yaml
+          sed -i "s/^appVersion: .*/appVersion: ${NEW_APP_VERSION}/" helm/charts/nack/Chart.yaml
+
+          echo "Updated Chart.yaml:"
+          echo "  - Chart version: ${CURRENT_CHART_VERSION} → ${NEW_CHART_VERSION}"
+          echo "  - App version: ${CURRENT_APP_VERSION} → ${NEW_APP_VERSION}"
+
+          # Store for use in PR
+          echo "chart_version=${NEW_CHART_VERSION}" >> $GITHUB_OUTPUT
+          echo "app_version=${NEW_APP_VERSION}" >> $GITHUB_OUTPUT
+          echo "old_chart_version=${CURRENT_CHART_VERSION}" >> $GITHUB_OUTPUT
+          echo "old_app_version=${CURRENT_APP_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Get current CRDs version
+        if: steps.check_diff.outputs.updated == 'true'
+        id: get_current_version
+        run: |
+          # Try to extract version from the current CRDs file comments or annotations
+          # This is a best effort - if we can't find it, we'll just say "previous version"
+          if grep -q "nack/v" helm/charts/nack/crds/crds.yml 2>/dev/null; then
+            CURRENT_VERSION=$(grep -oP 'nack/v[\d.]+' helm/charts/nack/crds/crds.yml | head -1 || echo "previous version")
+          else
+            CURRENT_VERSION="previous version"
+          fi
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.check_diff.outputs.updated == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+          commit-message: |
+            Update NACK CRDs to ${{ steps.get_release.outputs.release_tag }}
+
+            - Sync CRDs from nats-io/nack release ${{ steps.get_release.outputs.release_tag }}
+            - Bump chart version and update appVersion
+
+          title: "Update NACK CRDs to ${{ steps.get_release.outputs.release_tag }}"
+          body: |
+            This PR updates the NACK CRDs and chart versions to match the latest release from the [nats-io/nack](https://github.com/nats-io/nack) repository.
+
+            **Update Details:**
+            - NACK Release: [${{ steps.get_release.outputs.release_tag }}](https://github.com/nats-io/nack/releases/tag/${{ steps.get_release.outputs.release_tag }})
+            - CRDs Source: https://github.com/nats-io/nack/blob/${{ steps.get_release.outputs.release_tag }}/deploy/crds.yml
+
+            **Version Changes:**
+            | Component | Current | New |
+            |-----------|---------|-----|
+            | Chart version | `${{ steps.update_chart.outputs.old_chart_version }}` | `${{ steps.update_chart.outputs.chart_version }}` |
+            | App version | `${{ steps.update_chart.outputs.old_app_version }}` | `${{ steps.update_chart.outputs.app_version }}` |
+
+            **Changes:**
+            - Updated `helm/charts/nack/crds/crds.yml` with latest CRDs
+            - Bumped chart version in `helm/charts/nack/Chart.yaml`
+            - Updated appVersion to match NACK release
+
+            **Release Notes:**
+            - [View NACK release notes](https://github.com/nats-io/nack/releases/tag/${{ steps.get_release.outputs.release_tag }})
+
+            This PR was automatically created by the NACK CRDs update workflow.
+
+          branch: auto/update-nack-crds-${{ steps.get_release.outputs.release_tag }}
+          base: main
+          delete-branch: true
