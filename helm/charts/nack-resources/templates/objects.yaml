@@ -1,0 +1,80 @@
+{{- $globals := .Values.nats | default dict -}}
+{{- range .Values.objectStores }}
+---
+apiVersion: jetstream.nats.io/v1beta2
+kind: ObjectStore
+metadata:
+  name: {{ printf "%s-%s" $.Release.Name .bucket | trunc 63 | trimSuffix "-" }}
+spec:
+  bucket: {{ .bucket | quote }}
+
+  {{- with .description }}
+  description: {{ . | quote }}
+  {{- end }}
+
+  {{- with .ttl }}
+  ttl: {{ . | quote }}
+  {{- end }}
+  {{- with .maxBytes }}
+  maxBytes: {{ . }}
+  {{- end }}
+
+  {{- with .storage }}
+  storage: {{ . }}
+  {{- end }}
+  {{- with .replicas }}
+  replicas: {{ . }}
+  {{- end }}
+
+  {{- with .placement }}
+  placement:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .compression }}
+  compression: {{ . }}
+  {{- end }}
+
+  {{- with .metadata }}
+  metadata:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+{{- with $globals.account }}
+  account: {{ . | quote }}
+  {{- end }}
+  {{- with $globals.servers }}
+  servers:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $globals.jsDomain }}
+  jsDomain: {{ . | quote }}
+  {{- end }}
+  {{- with $globals.creds }}
+  creds: {{ . | quote }}
+  {{- end }}
+  {{- with $globals.nkey }}
+  nkey: {{ . | quote }}
+  {{- end }}
+  {{- if $globals.tls }}
+  tls:
+      {{- with $globals.tls.clientCert }}
+    clientCert: {{. | quote }}
+      {{- end }}
+      {{- with $globals.tls.clientKey }}
+    clientKey: {{. | quote }}
+      {{- end }}
+      {{- with $globals.tls.rootCas }}
+    rootCas:
+{{ toYaml . | nindent 6 }}
+      {{- end }}
+  {{- end }}
+  {{- with $globals.tlsFirst }}
+  tlsFirst: {{ . }}
+  {{- end }}
+
+  {{- with .preventDelete }}
+  preventDelete: {{ . }}
+  {{- end }}
+  {{- with .preventUpdate }}
+  preventUpdate: {{ . }}
+  {{- end }}
+{{- end }}

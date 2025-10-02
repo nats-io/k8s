@@ -1,0 +1,360 @@
+# Connection settings used by all Streams/Consumers/ObjectStores/KeyValues unless overridden per-item via `connection`
+nats:
+  # Name of the account to which the resource belongs.
+  account: ""
+  # A list of servers for creating stream. Example: ["nats://nats.default.svc:4222"].
+  servers: []
+  # The JetStream domain to use for the stream.
+  jsDomain: ""
+  # NATS user credentials for connecting to servers. Ensure the controller mounts the creds at this path.
+  creds: ""
+  # NATS user NKey for connecting to servers.
+  nkey: ""
+  # A client's TLS certs and keys.
+  tls:
+    # A client's cert filepath. Should be mounted.
+    clientCert: ""
+    # A client's key filepath. Should be mounted.
+    clientKey: ""
+    # A list of filepaths to CAs. Should be mounted.
+    rootCas: []
+  # When true, the KV Store will initiate TLS before server INFO.
+  tlsFirst: false
+
+# Preflight checks
+preflight:
+  crdChecks:
+    enabled: true
+
+# No streams created by default. Uncomment & edit an item below.
+streams: []
+# Example Stream item. Uncomment to use and adjust values.
+#   # A unique name for the Stream.
+#   # REQUIRED. Pattern: '^[^.*>]*$'
+# - name: mystream
+#   #
+#   # A list of subjects to consume, supports wildcards.
+#   # REQUIRED (at least one subject).
+#   subjects: ["example.>"]
+#   #
+#   # The description of the stream.
+#   description: ""
+#   #
+#   # How messages are retained in the Stream; once exceeded, old messages are removed.
+#   # One of: limits | interest | workqueue. Default: limits.
+#   retention: limits
+#   #
+#   # How many Consumers can be defined for a given Stream. -1 for unlimited.
+#   # Default: -1.
+#   maxConsumers: -1
+#   #
+#   # How many messages may be in a Stream; oldest messages are removed when exceeded.
+#   # -1 for unlimited. Default: -1.
+#   maxMsgs: -1
+#   #
+#   # How big the Stream may be; when the combined size exceeds this, old messages are removed.
+#   # -1 for unlimited. Default: -1.
+#   maxBytes: -1
+#   #
+#   # The maximum number of messages per subject. Default: 0 (unlimited).
+#   maxMsgsPerSubject: 0
+#   #
+#   # The largest message that will be accepted by the Stream. -1 for unlimited. Default: -1.
+#   maxMsgSize: -1
+#   #
+#   # Maximum age of any message in the stream, expressed in Go's time.Duration format.
+#   # Empty for unlimited. Default: "".
+#   maxAge: ""
+#   #
+#   #  When a Stream reach it's limits either old messages are deleted or new ones are denied.
+#   # One of: old | new. Default: old.
+#   discard: old
+#   #
+#   # Applies discard policy on a per-subject basis. Requires discard policy 'new' and 'maxMsgs' to be set.
+#   # Default: false.
+#   discardPerSubject: false
+#   #
+#   # The storage backend to use for the Stream. One of: file | memory. Default: memory.
+#   storage: memory
+#   #
+#   # How many replicas to keep for each message. Minimum: 1. Default: 1.
+#   replicas: 1
+#   #
+#   # Disables acknowledging messages that are received by the Stream. Default: false.
+#   noAck: false
+#   #
+#   # The duration window to track duplicate messages for. Unset by default.
+#   # duplicateWindow: ""
+#   #
+#   # A stream's placement. Unset by default.
+#   # placement: {}
+#   #
+#   # A stream mirror. Choose mirror OR sources, not both. Unset by default.
+#   #   # name: ""                    # source stream
+#   #   # optStartSeq: 0
+#   #   # optStartTime: ""           # RFC3339 timestamp
+#   #   # filterSubject: ""
+#   #   # externalApiPrefix: ""
+#   #   # externalDeliverPrefix: ""
+#   #   # subjectTransforms: []       # list of {source,dest}
+#   # mirror: {}
+#   #
+#   # A stream's sources to aggregate from. Alternative to mirror. Unset by default.
+#   #   # - name: other-stream
+#   #   #   optStartSeq: 0
+#   #   #   optStartTime: ""          # RFC3339 timestamp
+#   #   #   filterSubject: ""
+#   #   #   externalApiPrefix: ""
+#   #   #   externalDeliverPrefix: ""
+#   #   #   subjectTransforms: []     # list of {source,dest}
+#   # sources: []
+#   #
+#   # Seal an existing stream so no new messages may be added. Default: false.
+#   sealed: false
+#   #
+#   # When true, restricts the ability to delete messages from a stream via the API. Cannot be changed once true. Default: false.
+#   denyDelete: false
+#   #
+#   # When true, restricts the ability to purge a stream via the API. Cannot be changed once true. Default: false.
+#   denyPurge: false
+#   #
+#   # When true, allows the use of the Nats-Rollup header to replace contents with a single new message. Default: false.
+#   allowRollup: false
+#   #
+#   # Stream specific compression. One of: "" | s2 | none. Default: "".
+#   compression: ""
+#   #
+#   # Sequence number from which the Stream will start. Default: 0.
+#   firstSequence: 0
+#   #
+#   # SubjectTransform for applying a subject transform to matching messages when received. Unset by default.
+#   # subjectTransform: {}
+#   #
+#   # Republish configuration of the stream. Unset by default.
+#   #   # source: ""                 # Messages will be published from this subject
+#   #   # destination: ""            # Messages will be additionally published to this subject
+#   # republish: {}
+#   #
+#   # When true, allow higher performance, direct access to get individual messages. Default: false.
+#   allowDirect: false
+#   #
+#   # When true, enables direct access to messages from the origin stream. Default: false.
+#   mirrorDirect: false
+#   #
+#   # When true, allows header initiated per-message TTLs. If disabled, the `NATS-TTL` header is ignored. Default: false.
+#   allowMsgTtl: false
+#   #
+#   # Enables and sets a duration for adding server markers for delete, purge and max age limits. Default: "".
+#   subjectDeleteMarkerTtl: ""
+#   #
+#   # Default Consumer limits for this stream (e.g., inactiveThreshold, maxAckPending). Unset by default.
+#   # consumerLimits: {}
+#   #
+#   # Additional Stream metadata as key:value pairs. Default: {}.
+#   metadata: {}
+#   #
+#   # When true, the managed Stream will not be deleted when the resource is deleted. Default: false.
+#   preventDelete: false
+#   #
+#   # When true, the managed Stream will not be updated when the resource is updated. Default: false.
+#   preventUpdate: false
+
+# No consumers created by default. Uncomment & edit an item below.
+consumers: []
+# Example Consumer item. Uncomment to use and adjust values.
+#   # The name of the Consumer.
+#   # REQUIRED. Pattern: '^[^.*>]+$'
+# - durableName: myconsumer
+#   #
+#   # The name of the Stream to create the Consumer in.
+#   # REQUIRED: must match an existing Stream.
+#   streamName: mystream
+#   #
+#   # Where to start consuming from.
+#   # One of: all | last | new | byStartSequence | byStartTime. Default: all.
+#   # Requires 'optStartSeq' for byStartSequence, or 'optStartTime' for byStartTime.
+#   deliverPolicy: all
+#   #
+#   # Start at this sequence when deliverPolicy=byStartSequence. Minimum: 0.
+#   optStartSeq: 0
+#   #
+#   # Start at this time when deliverPolicy=byStartTime. Time format: RFC3339. Default: "".
+#   optStartTime: ""
+#   #
+#   # Subject to deliver observed messages to. When unset, a Pull-based Consumer is created. Default: unset.
+#   deliverSubject: ""
+#   #
+#   # How messages should be acknowledged. One of: none | all | explicit. Default: none.
+#   ackPolicy: none
+#   #
+#   # How long to allow messages to remain un-acknowledged before attempting redelivery. Default: 1ns.
+#   ackWait: 1ns
+#   #
+#   # Maximum number of redeliveries (-1 for unlimited).
+#   maxDeliver: -1
+#   #
+#   # List of durations representing a retry time scale for NaK'd or retried messages. Example: ["1s","5s","30s"].
+#   backoff: []
+#   #
+#   # Select only a specific incoming subject; supports wildcards. Default: "".
+#   filterSubject: ""
+#   #
+#   # List of incoming subjects; supports wildcards. Available since NATS 2.10. Default: [].
+#   filterSubjects: []
+#   #
+#   # How messages are sent. One of: instant | original. Default: instant.
+#   replayPolicy: instant
+#   #
+#   # What percentage of acknowledgements should be sampled for observability, e.g. "100%". Default: unset.
+#   sampleFreq: ""
+#   #
+#   # Number of outstanding pulls allowed on a Pull consumer; pulls after this are ignored. Default: 0.
+#   maxWaiting: 0
+#   #
+#   # Rate at which messages will be delivered to clients, in bits per second. Default: 0 (unlimited).
+#   rateLimitBps: 0
+#   #
+#   # Maximum pending Acks before consumers are paused. Default: 0.
+#   maxAckPending: 0
+#   #
+#   # Queue group name for push-based delivery. Default: "".
+#   deliverGroup: ""
+#   #
+#   # The description of the consumer. Default: "".
+#   description: ""
+#   #
+#   # Enables flow control for push-based consumers. Default: false.
+#   flowControl: false
+#   #
+#   # When true, only the headers of messages in the stream are delivered, not the bodies; adds Nats-Msg-Size header. Default: false.
+#   headersOnly: false
+#   #
+#   # Idle heartbeat interval for push-based consumers, Go time.Duration. Default: unset.
+#   heartbeatInterval: ""
+#   #
+#   # Largest batch property that may be specified when doing a pull. Default: 0.
+#   maxRequestBatch: 0
+#   #
+#   # Maximum expires duration that may be set when doing a pull. Default: unset.
+#   maxRequestExpires: ""
+#   #
+#   # Maximum max_bytes value that may be set when doing a pull. Default: 0.
+#   maxRequestMaxBytes: 0
+#   #
+#   # Additional Consumer metadata as key:value pairs. Default: {}.
+#   metadata: {}
+#   #
+#   # When true, the managed Consumer will not be deleted when the resource is deleted. Default: false.
+#   preventDelete: false
+#   #
+#   # When true, the managed Consumer will not be updated when the resource is updated. Default: false.
+#   preventUpdate: false
+
+# No object stores created by default. Uncomment & edit an item below.
+objectStores: []
+# Example Object Store item. Uncomment to use and adjust values.
+#   # A unique name for the Object Store bucket.
+#   # REQUIRED.
+# - bucket: myobjects
+#   #
+#   # The description of the Object Store. Default: "".
+#   description: ""
+#   #
+#   # Time-to-live for objects, Go time.Duration. Default: unset.
+#   ttl: ""
+#   #
+#   # Maximum size of the Store in bytes. 0 means unlimited.
+#   maxBytes: 0
+#   #
+#   # Storage backend to use. One of: file | memory. Default: memory.
+#   storage: memory
+#   #
+#   # Number of replicas to keep in clustered JetStream. Min: 1, Max: 5. Default: 1.
+#   replicas: 1
+#   #
+#   # Object Store placement via tags or cluster name. Unset by default.
+#   #   # cluster: ""
+#   #   # tags: []
+#   # placement: {}
+#   #
+#   # Enable compression for objects. Default: false.
+#   compression: false
+#   #
+#   # Additional Object Store metadata as key:value pairs. Default: {}.
+#   metadata: {}
+#   #
+#   # When true, the managed Object Store will not be deleted when the resource is deleted. Default: false.
+#   preventDelete: false
+#   #
+#   # When true, the managed Object Store will not be updated when the resource is updated. Default: false.
+#   preventUpdate: false
+
+# No key-value stores created by default. Uncomment & edit an item below.
+keyValues: []
+# Example KeyValue item. Uncomment to use and adjust values.
+#   # A unique name for the KV Store bucket.
+#   # REQUIRED.
+# - bucket: mykv
+#   #
+#   # The description of the KV Store. Default: "".
+#   description: ""
+#   #
+#   # Maximum size of a value in bytes. 0 means unlimited.
+#   maxValueSize: 0
+#   #
+#   # Number of historical values to keep per key. Default: 0.
+#   history: 0
+#   #
+#   # Time expiry for keys, Go time.Duration. Default: unset.
+#   ttl: ""
+#   #
+#   # Maximum size of the KV Store in bytes. 0 means unlimited.
+#   maxBytes: 0
+#   #
+#   # Storage backend to use for the KV Store. One of: file | memory. Default: memory.
+#   storage: memory
+#   #
+#   # Number of replicas to keep in clustered JetStream. Min: 1, Max: 5. Default: 1.
+#   replicas: 1
+#   #
+#   # KV Store placement via tags or cluster name. Unset by default.
+#   #   # cluster: ""
+#   #   # tags: []
+#   # placement: {}
+#   #
+#   # Republish configuration for the KV Store. Unset by default.
+#   #   # source: ""                 # Messages will be published from this subject
+#   #   # destination: ""            # Messages will be additionally published to this subject after Bucket
+#   # republish: {}
+#   #
+#   # A KV Store mirror. Unset by default.
+#   #   # name: ""
+#   #   # optStartSeq: 0
+#   #   # optStartTime: ""           # RFC3339 timestamp
+#   #   # filterSubject: ""
+#   #   # externalApiPrefix: ""
+#   #   # externalDeliverPrefix: ""
+#   #   # subjectTransforms: []       # list of {source,dest}
+#   # mirror: {}
+#   #
+#   # A KV Store's sources (aggregate from other buckets). Alternative to mirror. Unset by default.
+#   #   # - name: other-kv
+#   #   #   optStartSeq: 0
+#   #   #   optStartTime: ""          # RFC3339 timestamp
+#   #   #   filterSubject: ""
+#   #   #   externalApiPrefix: ""
+#   #   #   externalDeliverPrefix: ""
+#   #   #   subjectTransforms: []     # list of {source,dest}
+#   # sources: []
+#   #
+#   # KV Store compression. Default: false.
+#   compression: false
+#   #
+#   # Additional KV Store metadata as key:value pairs. Default: {}.
+#   metadata: {}
+#   #
+#   # When true, the managed KV Store will not be deleted when the resource is deleted. Default: false.
+#   preventDelete: false
+#   #
+#   # When true, the managed KV Store will not be updated when the resource is updated. Default: false.
+#   preventUpdate: false
