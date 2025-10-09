@@ -99,3 +99,5 @@ spec:
             port: 9090
           initialDelaySeconds: 10
           timeoutSeconds: 5
+        resources:
+          {{- toYaml .Values.accountserver.resources | nindent 10 }}
