@@ -5,6 +5,8 @@ apiVersion: jetstream.nats.io/v1beta2
 kind: ObjectStore
 metadata:
   name: {{ printf "%s-%s" $.Release.Name .bucket | trunc 63 | trimSuffix "-" }}
+  labels:
+{{ include "nack-resources.labels" $ | nindent 4 }}
 spec:
   bucket: {{ .bucket | quote }}
 

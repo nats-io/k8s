@@ -6,6 +6,8 @@ kind: Consumer
 metadata:
   # include stream and durable in the resource name to avoid collisions
   name: {{ printf "%s-%s-%s" $.Release.Name .streamName .durableName | trunc 63 | trimSuffix "-" }}
+  labels:
+{{ include "nack-resources.labels" $ | nindent 4 }}
 spec:
   streamName: {{ .streamName | quote }}
   durableName: {{ .durableName | quote }}

@@ -1,3 +1,8 @@
+# Standard Helm values
+nameOverride: ""
+fullnameOverride: ""
+commonLabels: {}
+
 # Connection settings used by all Streams/Consumers/ObjectStores/KeyValues unless overridden per-item via `connection`
 nats:
   # Name of the account to which the resource belongs.

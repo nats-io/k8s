@@ -5,10 +5,11 @@ apiVersion: jetstream.nats.io/v1beta2
 kind: Stream
 metadata:
   name: {{ printf "%s-%s" $.Release.Name .name | trunc 63 | trimSuffix "-" }}
+  labels:
+{{ include "nack-resources.labels" $ | nindent 4 }}
 spec:
   name: {{ .name | quote }}
-  subjects:
-{{ toYaml (.subjects | default (list)) | nindent 4 }}
+  subjects: {{ toYaml (.subjects | default (list)) | nindent 4 }}
   {{- with .description }}
   description: {{ . | quote }}
   {{- end }}
