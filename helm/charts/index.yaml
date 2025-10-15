@@ -724,6 +724,26 @@ entries:
   nats:
   - apiVersion: v2
     appVersion: 2.11.9
+    created: "2025-10-15T17:26:54.113983769Z"
+    description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
+      Communications Technology.
+    digest: 8656ad7917a7cbfe1d19c2a0a1419d6dcd9f37ec32d828da7d6ac65b6f9c890c
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    maintainers:
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
+    name: nats
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/nats-1.3.15/nats-1.3.15.tgz
+    version: 1.3.15
+  - apiVersion: v2
+    appVersion: 2.11.9
     created: "2025-09-10T07:27:35.767553975Z"
     description: A Helm chart for the NATS.io High Speed Cloud Native Distributed
       Communications Technology.
@@ -3365,6 +3385,27 @@ entries:
   nats-account-server:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-10-15T17:26:54.264295414Z"
+    description: A Helm chart for the NATS.io JWT Account Server
+    digest: 5c6acf1778a5b0cb0681bd62a32db63040c7dc6742c3e6f38efdc29216265a8c
+    home: http://github.com/nats-io/k8s
+    icon: https://nats.io/img/nats-icon-color.png
+    keywords:
+    - nats
+    - messaging
+    - cncf
+    - jwt
+    - auth
+    maintainers:
+    - email: info@nats.io
+      name: The NATS Authors
+      url: https://github.com/nats-io
+    name: nats-account-server
+    urls:
+    - https://github.com/nats-io/k8s/releases/download/nats-account-server-0.8.1/nats-account-server-0.8.1.tgz
+    version: 0.8.1
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2021-05-11T10:21:31.160483-07:00"
     description: A Helm chart for the NATS.io JWT Account Server
     digest: 0626e7465b72a164f6de98fa4ad0d58080b9fec4f46f6d6d2d7456520f3c1667
@@ -4588,4 +4629,4 @@ entries:
     urls:
     - https://github.com/nats-io/k8s/releases/download/v0.9.2/surveyor-0.9.2.tgz
     version: 0.9.2
-generated: "2025-09-24T17:19:56.446425683Z"
+generated: "2025-10-15T17:26:54.264933273Z"
