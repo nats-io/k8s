@@ -46,4 +46,4 @@ volumeMounts:
 {{- end }}
 
 resources:
-{{- toYaml .Values.natsBox.container.resources | nindent 2 }}
+{{- toYaml .Values.natsBox.container.resources | nindent 4 }}
