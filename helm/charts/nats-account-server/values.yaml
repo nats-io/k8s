@@ -15,6 +15,7 @@
 accountserver:
   image: "natsio/nats-account-server:1.0.0"
   pullPolicy: IfNotPresent
+  resources: {}
 
 store:
   type: file

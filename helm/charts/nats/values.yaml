@@ -351,6 +351,15 @@ container:
   merge: {}
   patch: []
 
+  # container resources
+  resources: {}
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+
 ############################################################
 # stateful set -> pod template -> reloader container
 ############################################################
@@ -579,6 +588,7 @@ natsBox:
       registry:
       digest:
       fullImageName:
+      resources: {}
 
     # env var map, see nats.env for an example
     env: {}
