@@ -100,9 +100,34 @@ jobs:
             echo "newChartVersion  : $newChartVersion"
 
             sed -i "s|^appVersion:\s.*|appVersion: $newVersionSemVer|;s|^version:\s.*|version: $newChartVersion|" "$directory/Chart.yaml"
-            
+
+            # Download CRDs for NACK controller updates
+            if [ "$dependencyName" = "natsio/jetstream-controller" ]; then
+              echo "Downloading CRDs for NACK v$newVersionSemVer..."
+              crd_url="https://github.com/nats-io/nack/releases/download/v${newVersionSemVer}/crds.yml"
+              crd_path="$directory/crds/crds.yml"
+
+              # Ensure directory exists
+              mkdir -p "$(dirname "$crd_path")"
+
+              if curl -fsSL "$crd_url" -o "$crd_path"; then
+                echo "✓ CRDs downloaded successfully from $crd_url"
+                git add "$crd_path"
+              else
+                echo "✗ Error: Failed to download CRDs from $crd_url"
+                echo "Cannot proceed with version bump without CRD update"
+                exit 1
+              fi
+            fi
+
+            # Prepare commit message
+            commit_msg="[$(basename "$directory") helm] bump chart to version: $newChartVersion appVersion: $newVersionSemVer"
+            if [ "$dependencyName" = "natsio/jetstream-controller" ]; then
+              commit_msg="$commit_msg (with CRDs)"
+            fi
+
             git add "$directory/Chart.yaml"
-            if git commit -m "[$(basename "$directory") helm] bump chart to version: $newChartVersion appVersion: $newVersionSemVer"; then
+            if git commit -m "$commit_msg"; then
               push=1
             fi
           done
