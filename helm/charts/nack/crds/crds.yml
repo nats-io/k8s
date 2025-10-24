@@ -240,6 +240,22 @@ spec:
                 description: Enables and sets a duration for adding server markers for delete, purge and max age limits.
                 type: string
                 default: ''
+              allowMsgCounter:
+                description: When true, enables message counters for the stream.
+                type: boolean
+                default: false
+              allowAtomicPublish:
+                description: When true, enables atomic batch publishing.
+                type: boolean
+                default: false
+              allowMsgSchedules:
+                description: When true, enables message scheduling.
+                type: boolean
+                default: false
+              persistMode:
+                description: Configures stream persistence settings (async or default).
+                type: string
+                default: ''
               consumerLimits:
                 type: object
                 properties:
@@ -632,6 +648,19 @@ spec:
               inactiveThreshold:
                 description: The idle time an Ephemeral Consumer allows before it is removed.
                 type: string
+              priorityPolicy:
+                description: Priority policy for consumer (pinned_client, overflow, prioritized, or none).
+                type: string
+                default: ''
+              pinnedTtl:
+                description: TTL for pinned client when using pinned_client priority policy.
+                type: string
+                default: ''
+              priorityGroups:
+                description: List of priority groups for the consumer. For now, only one group is supported.
+                type: array
+                items:
+                  type: string
               replicas:
                 description: When set do not inherit the replica count from the stream but specifically set it to this amount.
                 type: integer
