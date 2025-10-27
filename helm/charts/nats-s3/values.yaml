@@ -1,79 +1,29 @@
-# nameOverride overrides nats-kafka.name
 nameOverride: ""
-# fullnameOverride overrides nats-kafka.fullname
 fullnameOverride: ""
-# namespaceOverride overrides nats-kafka.namespace
 namespaceOverride: ""
 replicaCount: 1
 
-serviceAccount:
-  create: false
-  name: default
-
 image:
-  repository: natsio/nats-kafka
-  tag: 1.4.2
+  repository: ghcr.io/wpnpeiris/nats-s3
+  tag: latest
   pullPolicy: IfNotPresent
-  # registry: docker.io
 
-natskafka:
-  reconnectInterval: 5000
-  connectTimeout: 5000
-  logging:
-    time: true
-    debug: false
-    trace: false
-    colors: true
-    pid: true
-  monitoring:
-    httpHost: ""
-    # 0 means no monitoring, -1 means some available port
-    httpPort: 0
-    httpsPort: 0
-    tls:
-      secret: ""
-      root: ""
-      cert: ""
-      key: ""
-  deploymentLabels: {}
-  podLabels: {}
-  configPath: # default: "/etc/nats-kafka/nats-kafka.conf"
-  additionalArguments: []
-  additionalVolumes: {}
-  additionalVolumeMounts: {}
+service:
+  type: NodePort
+  port: 5222
+  targetPort: 5222
+  nodePort: 30222  # Uncomment if using NodePort
 
-  # Resources for nats-kafka container
-  # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-  resources: {}
+nats:
+  servers: "nats://nats:4222"
 
-  # Affinity for pod assignment
-  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-  affinity: {}
-
-  # Node labels for pod assignment
-  # Ref: https://kubernetes.io/docs/user-guide/node-selection/
-  nodeSelector: {}
-
-  # Node tolerations for server scheduling to nodes with taints
-  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  #
-  tolerations: []
-  #  - key: "key"
-  #    operator: "Equal|Exists"
-  #    value: "value"
-  #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
-
-  nats:
-    servers: []
-    connectTimeout: 5000
-    maxReconnects: 120
-    reconnectWait: 5000
-
-    # The credentials file to load in to connect to the NATS Server.
-    #
-    # credentials:
-    #   secret:
-    #     name: nats-sys-creds
-    #     key: sys.creds
-    
-  connect: []
+auth:
+  # Enable authentication (disabled by default)
+  enabled: true
+  
+  # Use existing secret (takes precedence if set)
+  existingSecret: ""
+  
+  # Username/Password authentication
+  username: "natsadmin"
+  password: "natsadmin"

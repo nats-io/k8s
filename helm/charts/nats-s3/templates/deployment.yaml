@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nats-s3.fullname" . }}
+  namespace: {{ .Values.namespaceOverride | default .Release.Namespace }}
+  labels:
+    app: nats-s3
+    {{- include "nats-s3.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: nats-s3
+      {{- include "nats-s3.selectorLabels" . | nindent 6 }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: nats-s3
+        {{- include "nats-s3.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: nats-s3
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - "--listen"
+        - "0.0.0.0:{{ .Values.service.targetPort }}"
+        - "--natsServers"
+        - "{{ .Values.nats.servers }}"
+        - "--s3.credentials"
+        - "/etc/nats-s3/credentials.json"
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+          protocol: TCP
+        volumeMounts:
+        - name: credentials
+          mountPath: /etc/nats-s3
+          readOnly: true
+        resources: {}
+      volumes:
+      - name: credentials
+        secret:
+          secretName: {{ .Values.auth.existingSecret | default "nats-s3-credentials" }}
+status: {}
