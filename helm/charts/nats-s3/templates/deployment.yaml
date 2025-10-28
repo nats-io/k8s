@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "nats-s3.fullname" . }}
+  name: nats-s3
   namespace: {{ .Values.namespaceOverride | default .Release.Namespace }}
   labels:
     app: nats-s3
