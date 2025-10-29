@@ -1,4 +1,4 @@
-# nats-kafka
+# nats-s3
 
 ## TL;DR;
 
