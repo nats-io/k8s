@@ -5,6 +5,10 @@ kind: Deployment
 metadata:
   name: {{ template "jsc.name" . }}
   namespace: {{ include "jsc.namespace" . }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+    {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
+  {{- end }}
   labels:
     app: {{ template "jsc.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
