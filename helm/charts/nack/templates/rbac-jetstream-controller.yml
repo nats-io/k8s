@@ -7,12 +7,16 @@ kind: ServiceAccount
 metadata:
   name: {{ template "jsc.serviceAccountName" . }}
   namespace: {{ include "jsc.namespace" . }}
+  labels:
+    {{- include "jsc.labels" . | nindent 4 }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: {{ $kind }}
 metadata:
   name: {{ template "jsc.serviceAccountName" . }}-{{ $kindSuffix }}
   namespace: {{ include "jsc.namespace" . }}
+  labels:
+    {{- include "jsc.labels" . | nindent 4 }}
 {{ tpl .Values.rbacRules . }}
 
 ---
@@ -21,6 +25,8 @@ kind: {{ printf "%sBinding" $kind}}
 metadata:
   name: {{ template "jsc.serviceAccountName" . }}-{{ $kindSuffix }}-binding
   namespace: {{ include "jsc.namespace" . }}
+  labels:
+    {{- include "jsc.labels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
   name: {{ template "jsc.serviceAccountName" . }}
