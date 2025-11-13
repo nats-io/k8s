@@ -2,24 +2,10 @@
 Expand the name of the chart.
 */}}
 {{- define "jsc.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
-{{- define "jsc.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- if .Values.useLegacyNames }}
+{{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end -}}
 
@@ -31,27 +17,32 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-Common labels
+Common labels - returns modern or legacy labels based on useLegacyNames flag.
 */}}
 {{- define "jsc.labels" -}}
+{{- if .Values.useLegacyNames -}}
+app: {{ include "jsc.name" . }}
+chart: {{ include "jsc.chart" . }}
+{{- else -}}
 helm.sh/chart: {{ include "jsc.chart" . }}
 {{ include "jsc.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- /* Legacy labels - DEPRECATED: These labels are kept for backwards compatibility and may be removed in a future major version. Please use the standard app.kubernetes.io labels above. */ -}}
-{{- "\n" -}}
-app: {{ include "jsc.name" . }}
-chart: {{ include "jsc.chart" . }}
+{{- end -}}
 {{- end }}
 
 {{/*
-Selector labels
+Selector labels - returns modern or legacy labels based on useLegacyNames flag.
 */}}
 {{- define "jsc.selectorLabels" -}}
+{{- if .Values.useLegacyNames -}}
+app: {{ include "jsc.name" . }}
+{{- else -}}
 app.kubernetes.io/name: {{ include "jsc.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
 {{- end }}
 
 {{/*
