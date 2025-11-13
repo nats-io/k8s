@@ -40,6 +40,10 @@ helm.sh/chart: {{ include "jsc.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- /* Legacy labels - DEPRECATED: These labels are kept for backwards compatibility and may be removed in a future major version. Please use the standard app.kubernetes.io labels above. */ -}}
+{{- "\n" -}}
+app: {{ include "jsc.name" . }}
+chart: {{ include "jsc.chart" . }}
 {{- end }}
 
 {{/*
