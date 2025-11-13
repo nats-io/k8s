@@ -3,15 +3,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "jsc.name" . }}
+  name: {{ template "jsc.fullname" . }}
   namespace: {{ include "jsc.namespace" . }}
   labels:
-    app: {{ template "jsc.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "jsc.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "jsc.name" . }}
+      {{- include "jsc.selectorLabels" . | nindent 6 }}
 
   # Singleton Replica per JetStream controller
   replicas: 1
@@ -23,8 +22,7 @@ spec:
         {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
       labels:
-        app: {{ template "jsc.name" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        {{- include "jsc.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
