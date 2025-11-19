@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "jsc.fullname" . }}
+  name: {{ template "jsc.name" . }}
   namespace: {{ include "jsc.namespace" . }}
   labels:
     {{- include "jsc.labels" . | nindent 4 }}
