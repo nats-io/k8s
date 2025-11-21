@@ -178,3 +178,13 @@ config:
 #  - name: ca-certs
 #    configMap:
 #      name: ca-certs
+
+# Attach arbitrary environment variables to the surveyor pod
+# extraEnv:
+# - name: MY_ENV_VAR
+#   value: my_value
+
+# Add arbitrary arguments to the surveyor pod
+# extraArgs:
+# - --arg1
+# - --arg2
