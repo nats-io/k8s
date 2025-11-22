@@ -117,6 +117,10 @@ rbacRules: |
     - update
     - delete
 
+# Annotations to add to the deployment
+deploymentAnnotations: {}
+
+# Annotations to add to pods managed by the deployment
 podAnnotations: {}
 
 # Toggle whether to use setup a Pod Security Context
