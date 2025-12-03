@@ -557,6 +557,7 @@ spec:
                 enum:
                 - all
                 - last
+                - lastPerSubject
                 - new
                 # Requires optStartSeq
                 - byStartSequence
