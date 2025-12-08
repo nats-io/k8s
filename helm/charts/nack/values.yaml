@@ -55,6 +55,12 @@ jetstream:
 # restrict the controller to only watch resources in it's current namespace
 namespaced: false
 
+# Use legacy naming and labels for backwards compatibility with existing installations.
+# When true: uses .Release.Name for resource names and simple labels (app, chart)
+# When false: uses .Chart.Name for resource names and modern Kubernetes labels (app.kubernetes.io/*)
+# Set to false when using NACK as a subchart to avoid naming collisions and use standard labels.
+useLegacyNames: true
+
 nameOverride: ""
 namespaceOverride: ""
 imagePullSecrets: []
