@@ -648,6 +648,10 @@ spec:
               inactiveThreshold:
                 description: The idle time an Ephemeral Consumer allows before it is removed.
                 type: string
+              pauseUntil:
+                description: RFC3339 timestamp until which the consumer should be paused.
+                type: string
+                default: ''
               priorityPolicy:
                 description: Priority policy for consumer (pinned_client, overflow, prioritized, or none).
                 type: string
@@ -1179,6 +1183,10 @@ spec:
               ttl:
                 description: The time expiry for keys.
                 type: string
+              limitMarkerTtl:
+                description: LimitMarkerTTL is how long the bucket keeps markers when
+                  keys are removed by the TTL setting, 0 meaning markers are not supported
+                type: integer
               maxBytes:
                 description: The maximum size of the KV Store in bytes.
                 type: integer
