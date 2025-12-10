@@ -6,12 +6,11 @@ metadata:
   name: {{ template "jsc.name" . }}
   namespace: {{ include "jsc.namespace" . }}
   labels:
-    app: {{ template "jsc.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- include "jsc.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "jsc.name" . }}
+      {{- include "jsc.selectorLabels" . | nindent 6 }}
 
   # Singleton Replica per JetStream controller
   replicas: 1
@@ -23,8 +22,7 @@ spec:
         {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
       labels:
-        app: {{ template "jsc.name" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        {{- include "jsc.selectorLabels" . | nindent 8 }}
         {{- if .Values.podLabels }}
         {{- toYaml .Values.podLabels | nindent 8 }}
         {{- end }}
@@ -84,7 +82,7 @@ spec:
       {{- end }}
       containers:
         - name: jsc
-          image: {{ include "jsc.image" .Values.jetstream.image }}
+          image: {{ include "jsc.image" . }}
           imagePullPolicy: {{ .Values.jetstream.image.pullPolicy }}
           workingDir: /nack
           command:

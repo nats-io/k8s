@@ -123,6 +123,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 	trueBool := true
 	falseBool := false
 	exactPath := networkingv1.PathTypeExact
+	promMetrics := "prom-metrics"
 
 	return &Resources{
 		Conf: Resource[map[string]any]{
@@ -380,7 +381,7 @@ exec /entrypoint.sh "$@"
 				Spec: monitoringv1.PodMonitorSpec{
 					PodMetricsEndpoints: []monitoringv1.PodMetricsEndpoint{
 						{
-							Port: "prom-metrics",
+							Port: &promMetrics,
 						},
 					},
 					Selector: v1.LabelSelector{

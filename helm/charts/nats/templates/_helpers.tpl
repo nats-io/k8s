@@ -282,7 +282,7 @@ output: string with following format rules
 */}}
 {{- define "nats.formatConfig" -}}
   {{-
-    (regexReplaceAll "\"<<\\s+(.*)\\s+>>\""
+    (regexReplaceAll "\"<<\\s+(.*?)\\s+>>\""
       (regexReplaceAll "\".*\\$include\": \"(.*)\",?" (include "toPrettyRawJson" .) "include ${1};")
     "${1}")
   -}}

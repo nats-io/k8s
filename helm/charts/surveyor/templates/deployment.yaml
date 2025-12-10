@@ -56,6 +56,14 @@ spec:
             - --accounts
            {{- end }}
 
+           {{- with .accountsDetailed }}
+            - --accounts-detailed
+           {{- end }}
+
+           {{- with .jsz }}
+            - --jsz={{ . }}
+           {{- end }}
+
            {{- with .timeout }}
             - --timeout={{ . }}
            {{- end }}
@@ -71,6 +79,12 @@ spec:
             - --tlskey=/etc/nats-certs/clients/{{ .key }}
             - --tlscert=/etc/nats-certs/clients/{{ .cert }}
            {{- end }}
+
+           {{- with .tokenFile }}
+           {{- if .enabled }}
+            - --token-file={{ .mountPath }}/{{ .filename }}
+           {{- end }}
+           {{- end }}
            {{- end }}
 
            {{- if .Values.config.jetstream.enabled }}
@@ -80,6 +94,18 @@ spec:
             - name: http
               containerPort: 7777
               protocol: TCP
+          env:
+            {{- if .Values.config.user }}
+            - name: NATS_SURVEYOR_USER
+              value: {{ .Values.config.user }}
+            {{- end }}
+            {{- if .Values.config.password }}
+            - name: NATS_SURVEYOR_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.password.secret.name }}
+                  key: {{ .Values.config.password.secret.key }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -117,10 +143,19 @@ spec:
               mountPath: /jetstream
             {{- end }}
             {{- end }}
+
+            {{- with .Values.config.tokenFile }}
+            {{- if .enabled }}
+            - name: {{ default "nats-token" .volumeName }}
+              mountPath: {{ .mountPath }}
+              readOnly: true
+            {{- end }}
+            {{- end }}
+
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12}}
             {{- end }}
-            
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -158,6 +193,23 @@ spec:
             name: {{ include "surveyor.fullname" $ }}-accounts
         {{- end }}
         {{- end }}
+
+        {{- with .Values.config.tokenFile }}
+        {{- if .enabled }}
+        - name: {{ default "nats-token" .volumeName }}
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: {{ .filename }}
+                  {{- if .audience }}
+                  audience: {{ .audience }}
+                  {{- end }}
+                  {{- if .expirationSeconds }}
+                  expirationSeconds: {{ .expirationSeconds }}
+                  {{- end }}
+        {{- end }}
+        {{- end }}
+
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
