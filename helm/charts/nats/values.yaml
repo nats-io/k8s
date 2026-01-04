@@ -477,7 +477,8 @@ statefulSet:
 podTemplate:
   # adds a hash of the ConfigMap as a pod annotation
   # this will cause the StatefulSet to roll when the ConfigMap is updated
-  configChecksumAnnotation: true
+  # set to true to force pod rollouts on config changes instead of using the reloader for hot updates
+  configChecksumAnnotation: false
 
   # map of topologyKey: topologySpreadConstraint
   # labelSelector will be added to match StatefulSet pods
