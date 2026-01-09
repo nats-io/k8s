@@ -1,7 +1,7 @@
 {{- with .Values.config.cluster }}
 name: {{ $.Values.statefulSet.name }}
 port: {{ .port }}
-no_advertise: true
+no_advertise: {{ .noAdvertise }}
 routes:
 {{- $proto := ternary "tls" "nats" .tls.enabled }}
 {{- $auth := "" }}
