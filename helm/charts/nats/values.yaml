@@ -689,3 +689,6 @@ natsBox:
 #                 {{ .Values.config.websocket.port }}
 #
 extraResources: []
+
+s3:
+  enabled: false
