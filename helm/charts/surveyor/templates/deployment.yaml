@@ -90,6 +90,10 @@ spec:
            {{- if .Values.config.jetstream.enabled }}
             - --jetstream=/jetstream
            {{- end }}
+
+           {{- with .Values.extraArgs }}
+           {{- toYaml . | nindent 12 }}
+           {{- end }}
           ports:
             - name: http
               containerPort: 7777
@@ -105,6 +109,9 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.config.password.secret.name }}
                   key: {{ .Values.config.password.secret.key }}
+            {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
           livenessProbe:
             httpGet:
