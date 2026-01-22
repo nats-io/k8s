@@ -110,6 +110,9 @@ config:
   # jsz metrics optionally
   jsz:
 
+  # Only query stream/consumer leaders for JSZ metrics
+  jszLeadersOnly: false
+
   # stays as ENV; works with token-file + user
   #user: "sys"
 
