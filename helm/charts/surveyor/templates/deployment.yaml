@@ -64,6 +64,10 @@ spec:
             - --jsz={{ . }}
            {{- end }}
 
+           {{- if .jszLeadersOnly }}
+            - --jsz-leaders-only
+           {{- end }}
+
            {{- with .timeout }}
             - --timeout={{ . }}
            {{- end }}
