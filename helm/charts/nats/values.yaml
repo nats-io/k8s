@@ -53,6 +53,11 @@ config:
     port: 6222
     # must be 2 or higher when jetstream is enabled
     replicas: 3
+    # set to false to allow cluster nodes to advertise their addresses
+    # so that clients can reconnect without extra DNS lookups.
+    # Note: in case clients have external connectivity make sure to define the `advertise` section as well.
+    # If clients are behind a load balancer it is best to leave this as is.
+    noAdvertise: true
 
     # apply to generated route URLs that connect to other pods in the StatefulSet
     routeURLs:
