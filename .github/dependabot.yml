@@ -4,23 +4,35 @@ updates:
   directory: "/"
   schedule:
     interval: "weekly"
+  cooldown:
+    default-days: 1
 - package-ecosystem: docker
   directory: /helm/charts/nack
   schedule:
     interval: daily
+  cooldown:
+    default-days: 1
 - package-ecosystem: docker
   directory: /helm/charts/nats-kafka
   schedule:
     interval: daily
+  cooldown:
+    default-days: 1
 - package-ecosystem: docker
   directory: /helm/charts/nats-operator
   schedule:
     interval: daily
+  cooldown:
+    default-days: 1
 - package-ecosystem: docker
   directory: /helm/charts/nats
   schedule:
     interval: daily
+  cooldown:
+    default-days: 1
 - package-ecosystem: docker
   directory: /helm/charts/surveyor
   schedule:
     interval: daily
+  cooldown:
+    default-days: 1
