@@ -123,6 +123,7 @@ rbacRules: |
     - update
     - delete
 
+podLabels: {}
 podAnnotations: {}
 
 # Toggle whether to use setup a Pod Security Context
