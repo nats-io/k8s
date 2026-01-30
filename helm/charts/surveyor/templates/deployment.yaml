@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        {{- include "surveyor.selectorLabels" . | nindent 8 }}
+        {{- include "surveyor.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -111,6 +111,10 @@ spec:
                   key: {{ .Values.config.password.secret.key }}
             {{- end }}
           livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          readinessProbe:
             httpGet:
               path: /healthz
               port: http
