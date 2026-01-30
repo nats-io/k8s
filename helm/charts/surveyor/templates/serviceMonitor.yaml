@@ -3,13 +3,14 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "surveyor.fullname" . }}
-  {{- if .Values.serviceMonitor.labels }}
   labels:
-    {{- toYaml .Values.serviceMonitor.labels | nindent 4 }}
-  {{- end }}
-  {{- if .Values.serviceMonitor.annotations }}
+    {{- include "surveyor.labels" . | nindent 4 }}
+    {{- with .Values.serviceMonitor.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.serviceMonitor.annotations }}
   annotations:
-    {{- toYaml .Values.serviceMonitor.annotations | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   endpoints:

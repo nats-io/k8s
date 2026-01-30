@@ -2,6 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+global:
+  # global labels will be applied to all resources deployed by the chart
+  labels: {}
+
 replicaCount: 1
 
 image:
