@@ -3,6 +3,11 @@
 #  NACK JetStream Controller  #
 #                             #
 ###############################
+
+global:
+  # global labels will be applied to all resources deployed by the chart
+  labels: {}
+
 jetstream:
   enabled: true
   image:
@@ -47,10 +52,11 @@ jetstream:
       timeout: 3
 
   # Additional arguments to pass to the controller process
-  # Enable controller-runtime backend
-  # additionalArgs:
-  # - --control-loop
   additionalArgs: []
+
+  # Enable controller-runtime backend
+  # See https://github.com/nats-io/nack/blob/50d1f5/README.md#controller-modes
+  controlLoop: false
 
 # restrict the controller to only watch resources in it's current namespace
 namespaced: false

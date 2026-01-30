@@ -22,7 +22,7 @@ spec:
         {{- toYaml .Values.podAnnotations | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "jsc.selectorLabels" . | nindent 8 }}
+        {{- include "jsc.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -114,6 +114,12 @@ spec:
           {{- if .Values.jetstream.tls.tlsFirst }}
           - --tlsfirst={{ .Values.jetstream.tls.tlsFirst }}
           {{- end }}
+          {{- if or .Values.jetstream.controlLoop (has "--control-loop" .Values.jetstream.additionalArgs) }}
+          - --health-probe-bind-address=:8081
+          {{- if not (has "--control-loop" .Values.jetstream.additionalArgs) }} # Do not duplicate the flag for upgrading users
+          - --control-loop
+          {{- end }}
+          {{- end }}
           {{- with .Values.jetstream.additionalArgs }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
@@ -129,6 +135,20 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          {{- if or .Values.jetstream.controlLoop (has "--control-loop" .Values.jetstream.additionalArgs) }}
+          livenessProbe:
+            httpGet:
+                path: /healthz
+                port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+                path: /readyz
+                port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          {{- end }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
