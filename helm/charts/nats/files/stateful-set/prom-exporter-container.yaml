@@ -16,6 +16,7 @@ args:
 - -routez
 - -subz
 - -varz
+- -healthz
 - -prefix=nats
 - -use_internal_server_id
 {{- if .Values.config.jetstream.enabled }}
