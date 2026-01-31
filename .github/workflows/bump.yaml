@@ -7,12 +7,13 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Configure Git
         run: |
@@ -22,10 +23,10 @@ jobs:
 
       - name: Dependabot metadata
         id: dependabot-metadata
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a # v2.5.0
 
       - name: Install node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: 18
       
@@ -60,7 +61,7 @@ jobs:
             }
           ]'
 
-          deps='${{ steps.dependabot-metadata.outputs.updated-dependencies-json }}'
+          deps='${STEPS_DEPENDABOT_METADATA_OUTPUTS_UPDATED_DEPENDENCIES_JSON}'
 
           for i in $(seq 0 "$(("$(echo "$config" | jq length) - 1"))"); do
             directory="$(echo "$config" | jq -r ".[$i].directory")"
@@ -135,3 +136,6 @@ jobs:
           if [ "$push" = "1" ]; then
             git push -u origin "$GITHUB_HEAD_REF"
           fi
+
+        env:
+          STEPS_DEPENDABOT_METADATA_OUTPUTS_UPDATED_DEPENDENCIES_JSON: ${{ steps.dependabot-metadata.outputs.updated-dependencies-json }}
