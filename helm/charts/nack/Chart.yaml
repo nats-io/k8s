@@ -1,7 +1,7 @@
 apiVersion: v2
 name: nack
-version: 0.32.0
-appVersion: 0.21.1
+version: 0.33.0
+appVersion: 0.22.1
 description: A Helm chart for NACK - NAts Controller for Kubernetes
 keywords:
 - nats
