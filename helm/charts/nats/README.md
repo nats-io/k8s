@@ -122,7 +122,7 @@ podTemplate:
 We recommend setting both **requests and limits** - for both **CPU and memory** - **to the same value** for the following reasons:
 
 * It ensures your NATS pod has [predictable performance](https://www.datadoghq.com/blog/kubernetes-cpu-requests-limits/#predictability:~:text=If%20containers%20are,available%20capacity%20decreases.).  
-* The NATS server [automatically sets](https://github.com/nats-io/nats-server/blob/v2.11.0/main.go#L131-L132) [GOMAXPROCS](https://github.com/golang/go/blob/go1.24.1/src/runtime/extern.go#L230-L234) to the number of CPU cores defined in the `limits` section. If `limits` are not set, GOMAXPROCS defaults to the node's physical core count, which can lead to [poor performance](https://github.com/golang/go/issues/33803).  
+* The Go runtime [automatically sets](https://go.dev/doc/go1.25#container-aware-gomaxprocs) [GOMAXPROCS](https://pkg.go.dev/runtime#GOMAXPROCS) to the number of CPU cores defined in the `limits` section. If `limits` are not set, GOMAXPROCS defaults to the node's physical core count, which can lead to [poor performance](https://github.com/golang/go/issues/33803).  
 * The pod will be assigned to the ["Guaranteed" QoS class](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/#guaranteed), making it less likely to be evicted when node resources are constrained.
 * When deciding how much CPU time to dedicate to Garbage Collection, the Go Runtime assumes that it has access to `GOMAXPROCS*N` seconds of CPU time in `N` second of wall time. [It can cause issues, if this assumption is not true.](https://github.com/golang/go/issues/59715)
 
