@@ -1,0 +1,156 @@
+{{- $globals := .Values.nats | default dict -}}
+{{- range .Values.streams }}
+---
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: {{ printf "%s-%s" $.Release.Name .name | trunc 63 | trimSuffix "-" }}
+  labels:
+{{ include "nack-resources.labels" $ | nindent 4 }}
+spec:
+  name: {{ .name | quote }}
+  subjects: {{ toYaml (.subjects | default (list)) | nindent 4 }}
+  {{- with .description }}
+  description: {{ . | quote }}
+  {{- end }}
+  {{- with .retention }}
+  retention: {{ . }}
+  {{- end }}
+  {{- with .maxConsumers }}
+  maxConsumers: {{ . }}
+  {{- end }}
+  {{- with .maxMsgs }}
+  maxMsgs: {{ . }}
+  {{- end }}
+  {{- with .maxBytes }}
+  maxBytes: {{ . }}
+  {{- end }}
+  {{- with .maxMsgsPerSubject }}
+  maxMsgsPerSubject: {{ . }}
+  {{- end }}
+  {{- with .maxMsgSize }}
+  maxMsgSize: {{ . }}
+  {{- end }}
+  {{- with .maxAge }}
+  maxAge: {{ . | quote }}
+  {{- end }}
+  {{- with .discard }}
+  discard: {{ . }}
+  {{- end }}
+  {{- with .discardPerSubject }}
+  discardPerSubject: {{ . }}
+  {{- end }}
+  {{- with .storage }}
+  storage: {{ . }}
+  {{- end }}
+  {{- with .replicas }}
+  replicas: {{ . }}
+  {{- end }}
+  {{- with .noAck }}
+  noAck: {{ . }}
+  {{- end }}
+  {{- with .duplicateWindow }}
+  duplicateWindow: {{ . | quote }}
+  {{- end }}
+  {{- with .placement }}
+  placement:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .mirror }}
+  mirror:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .sources }}
+  sources:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .sealed }}
+  sealed: {{ . }}
+  {{- end }}
+  {{- with .denyDelete }}
+  denyDelete: {{ . }}
+  {{- end }}
+  {{- with .denyPurge }}
+  denyPurge: {{ . }}
+  {{- end }}
+  {{- with .allowRollup }}
+  allowRollup: {{ . }}
+  {{- end }}
+  {{- with .compression }}
+  compression: {{ . | quote }}
+  {{- end }}
+  {{- with .firstSequence }}
+  firstSequence: {{ . }}
+  {{- end }}
+
+  {{- with .subjectTransform }}
+  subjectTransform:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .republish }}
+  republish:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .allowDirect }}
+  allowDirect: {{ . }}
+  {{- end }}
+  {{- with .mirrorDirect }}
+  mirrorDirect: {{ . }}
+  {{- end }}
+
+  {{- with .allowMsgTtl }}
+  allowMsgTtl: {{ . }}
+  {{- end }}
+  {{- with .subjectDeleteMarkerTtl }}
+  subjectDeleteMarkerTtl: {{ . | quote }}
+  {{- end }}
+
+  {{- with .consumerLimits }}
+  consumerLimits:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .metadata }}
+  metadata:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $globals.account }}
+  account: {{ . | quote }}
+  {{- end }}
+  {{- with $globals.servers }}
+  servers:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $globals.jsDomain }}
+  jsDomain: {{ . | quote }}
+  {{- end }}
+  {{- with $globals.creds }}
+  creds: {{ . | quote }}
+  {{- end }}
+  {{- with $globals.nkey }}
+  nkey: {{ . | quote }}
+  {{- end }}
+  {{- if $globals.tls }}
+  tls:
+      {{- with $globals.tls.clientCert }}
+    clientCert: {{. | quote }}
+      {{- end }}
+      {{- with $globals.tls.clientKey }}
+    clientKey: {{. | quote }}
+      {{- end }}
+      {{- with $globals.tls.rootCas }}
+    rootCas:
+{{ toYaml . | nindent 6 }}
+      {{- end }}
+  {{- end }}
+  {{- with $globals.tlsFirst }}
+  tlsFirst: {{ . }}
+  {{- end }}
+
+  {{- with .preventDelete }}
+  preventDelete: {{ . }}
+  {{- end }}
+  {{- with .preventUpdate }}
+  preventUpdate: {{ . }}
+  {{- end }}
+{{- end }}
