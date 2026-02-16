@@ -41,9 +41,7 @@ Print the namespace
 Print the namespace for the metadata section
 */}}
 {{- define "nats.metadataNamespace" -}}
-{{- with .Values.namespaceOverride }}
-namespace: {{ . | quote }}
-{{- end }}
+namespace: {{ include "nats.namespace" . | quote }}
 {{- end }}
 
 {{/*
