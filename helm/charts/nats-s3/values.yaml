@@ -1,0 +1,29 @@
+nameOverride: ""
+fullnameOverride: ""
+namespaceOverride: ""
+replicaCount: 1
+
+image:
+  repository: ghcr.io/wpnpeiris/nats-s3
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 5222
+  targetPort: 5222
+  nodePort: 30222  # Uncomment if using NodePort
+
+nats:
+  servers: "nats://nats:4222"
+
+auth:
+  # Enable authentication (disabled by default)
+  enabled: true
+  
+  # Use existing secret (takes precedence if set)
+  existingSecret: ""
+  
+  # Username/Password authentication
+  username: "natsadmin"
+  password: "natsadmin"
