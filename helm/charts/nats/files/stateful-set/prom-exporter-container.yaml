@@ -17,7 +17,11 @@ args:
 - -subz
 - -varz
 - -prefix=nats
+{{- if .Values.promExporter.useInternalServerName }}
+- -use_internal_server_name
+{{- else}}
 - -use_internal_server_id
+{{- end }}
 {{- if .Values.config.jetstream.enabled }}
 - -jsz=all
 {{- end }}

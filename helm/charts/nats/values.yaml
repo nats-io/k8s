@@ -411,6 +411,8 @@ promExporter:
   monitorDomain: localhost
   # env var map, see nats.env for an example
   env: {}
+  # if true, use the internal server name instead of the server id
+  useInternalServerName: false
 
   # merge or patch the container
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
