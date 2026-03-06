@@ -12,7 +12,7 @@ helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm upgrade --install nats nats/nats
 ```
 
-## Upgrade Nodes
+## Upgrade Notes
 
 - **Upgrading from 0.x**: The `values.yaml` schema changed significantly from 0.x to 1.x.  Read [UPGRADING.md](UPGRADING.md) for instructions on upgrading a 0.x release to 1.x.
 
