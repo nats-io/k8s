@@ -111,6 +111,9 @@ config:
   # Enable granular per-account bytes and message metrics
   accountsDetailed: false
 
+  # Enable gatewayz metrics.
+  gatewayz: false
+
   # jsz metrics optionally
   jsz:
 
