@@ -61,7 +61,7 @@ jobs:
             }
           ]'
 
-          deps='${STEPS_DEPENDABOT_METADATA_OUTPUTS_UPDATED_DEPENDENCIES_JSON}'
+          deps="${STEPS_DEPENDABOT_METADATA_OUTPUTS_UPDATED_DEPENDENCIES_JSON}"
 
           for i in $(seq 0 "$(("$(echo "$config" | jq length) - 1"))"); do
             directory="$(echo "$config" | jq -r ".[$i].directory")"
