@@ -7,6 +7,15 @@ metadata:
     checksum/config: {{ sha256sum $configMap }}
     {{- end }}
 spec:
+  {{- with .Values.podTemplate.nodeSelector }}
+  nodeSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.podTemplate.tolerations }}
+  tolerations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   containers:
   # nats
   {{- $nats := dict }}
