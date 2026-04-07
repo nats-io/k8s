@@ -56,6 +56,10 @@ spec:
             - --accounts
            {{- end }}
 
+           {{- with .gatewayz }}
+            - --gatewayz
+           {{- end }}
+
            {{- with .accountsDetailed }}
             - --accounts-detailed
            {{- end }}
