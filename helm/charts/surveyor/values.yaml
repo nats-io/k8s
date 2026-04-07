@@ -10,7 +10,7 @@ replicaCount: 1
 
 image:
   repository: natsio/nats-surveyor
-  tag: 0.9.7
+  tag: 0.9.9
   pullPolicy: IfNotPresent
   # registry: docker.io
 
@@ -113,6 +113,9 @@ config:
 
   # Enable gatewayz metrics.
   gatewayz: false
+
+  # Enable raftz metrics.
+  raftz: false
 
   # jsz metrics optionally
   jsz:

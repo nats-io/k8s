@@ -60,6 +60,10 @@ spec:
             - --gatewayz
            {{- end }}
 
+           {{- with .raftz }}
+            - --raftz
+           {{- end }}
+
            {{- with .accountsDetailed }}
             - --accounts-detailed
            {{- end }}
