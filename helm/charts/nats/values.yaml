@@ -482,7 +482,18 @@ statefulSet:
 podTemplate:
   # adds a hash of the ConfigMap as a pod annotation
   # this will cause the StatefulSet to roll when the ConfigMap is updated
-  # set to true to force pod rollouts on config changes instead of using the reloader for hot updates
+  #
+  # when false (default), the reloader sidecar sends SIGHUP to the NATS server
+  # on config changes; this works for hot-reloadable parameters only
+  #
+  # non-reloadable parameters (e.g. jetstream max_mem, max_file, store_dir,
+  # and other server-level settings) require a full server restart to take effect;
+  # with configChecksumAnnotation: false, changes to these parameters will be
+  # silently ignored after the reload signal
+  # see: https://github.com/nats-io/nats-server/issues/7990
+  #
+  # set to true to force a rolling restart on any config change, ensuring
+  # non-reloadable parameters are always applied
   configChecksumAnnotation: false
 
   # map of topologyKey: topologySpreadConstraint
