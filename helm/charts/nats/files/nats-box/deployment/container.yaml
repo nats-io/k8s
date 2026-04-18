@@ -51,5 +51,5 @@ resources:
 # security context
 {{- with .Values.natsBox.container.securityContext }}
 securityContext:
-{{- toYaml . | nindent 2 }}
+  {{- toYaml . | nindent 2 }}
 {{- end }}
