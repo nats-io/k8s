@@ -365,6 +365,9 @@ container:
   #    cpu: 100m
   #    memory: 128Mi
 
+  # security context
+  securityContext: {}
+
 ############################################################
 # stateful set -> pod template -> reloader container
 ############################################################
@@ -385,6 +388,9 @@ reloader:
   # will be mounted into the reloader container
   natsVolumeMountPrefixes:
     - /etc/
+
+  # security context
+  securityContext: {}
 
   # merge or patch the container
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
@@ -411,6 +417,9 @@ promExporter:
   monitorDomain: localhost
   # env var map, see nats.env for an example
   env: {}
+
+  # security context
+  securityContext: {}
 
   # merge or patch the container
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
@@ -493,6 +502,9 @@ podTemplate:
   #     maxSkew: 1
   #
   topologySpreadConstraints: {}
+
+  # security context
+  securityContext: {}
 
   # merge or patch the pod template
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
@@ -594,7 +606,8 @@ natsBox:
       registry:
       digest:
       fullImageName:
-      resources: {}
+    resources: {}
+    securityContext: {}
 
     # env var map, see nats.env for an example
     env: {}
@@ -619,6 +632,9 @@ natsBox:
 
   # deployment -> pod template
   podTemplate:
+    # security context
+    securityContext: {}
+
     # merge or patch the pod template
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
     merge: {}
