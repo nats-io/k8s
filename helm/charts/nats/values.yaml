@@ -399,7 +399,7 @@ promExporter:
   enabled: false
   image:
     repository: natsio/prometheus-nats-exporter
-    tag: 0.18.0
+    tag: 0.19.2
     pullPolicy:
     registry:
     digest:
