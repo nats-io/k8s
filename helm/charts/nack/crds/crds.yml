@@ -144,6 +144,18 @@ spec:
                         dest:
                           description: Destination subject.
                           type: string
+                  consumer:
+                    description: Reference a durable consumer when sourcing/mirroring (nats-server 2.14+).
+                    type: object
+                    required:
+                      - name
+                    properties:
+                      name:
+                        description: Durable consumer name on the source stream.
+                        type: string
+                      deliverSubject:
+                        description: Deliver subject for the durable push consumer.
+                        type: string
               sources:
                 description: A stream's sources.
                 type: array
@@ -176,6 +188,18 @@ spec:
                           dest:
                             description: Destination subject.
                             type: string
+                    consumer:
+                      description: Reference a durable consumer when sourcing/mirroring (nats-server 2.14+).
+                      type: object
+                      required:
+                        - name
+                      properties:
+                        name:
+                          description: Durable consumer name on the source stream.
+                          type: string
+                        deliverSubject:
+                          description: Deliver subject for the durable push consumer.
+                          type: string
               sealed:
                 description: Seal an existing stream so no new messages may be added.
                 type: boolean
@@ -250,6 +274,10 @@ spec:
                 default: false
               allowMsgSchedules:
                 description: When true, enables message scheduling.
+                type: boolean
+                default: false
+              allowBatched:
+                description: When true, enables fast-ingest batch publishing (nats-server 2.14+).
                 type: boolean
                 default: false
               persistMode:
@@ -580,6 +608,7 @@ spec:
                 - none
                 - all
                 - explicit
+                - flow_control
                 default: none
               ackWait:
                 description: How long to allow messages to remain un-acknowledged before attempting redelivery.
@@ -810,6 +839,7 @@ spec:
                 - none
                 - all
                 - explicit
+                - flow_control
                 default: none
               ackWait:
                 description: How long to allow messages to remain un-acknowledged before attempting redelivery.
