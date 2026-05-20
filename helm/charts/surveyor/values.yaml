@@ -10,7 +10,7 @@ replicaCount: 1
 
 image:
   repository: natsio/nats-surveyor
-  tag: 0.9.9
+  tag: 0.9.10
   pullPolicy: IfNotPresent
   # registry: docker.io
 
