@@ -29,3 +29,8 @@ args:
 {{- end }}
 {{- $monitorProto := ternary "https" "http" .Values.config.monitor.tls.enabled }}
 - {{ $monitorProto }}://{{ .Values.promExporter.monitorDomain }}:{{ .Values.config.monitor.port }}/
+
+{{- with .Values.promExporter.securityContext }}
+securityContext:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
