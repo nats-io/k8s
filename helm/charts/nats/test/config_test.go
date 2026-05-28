@@ -633,6 +633,9 @@ extraResources:
     labels:
       $tplYaml: |
         {{ include "nats.labels" $ }}
+    annotations:
+      $tplYaml: |
+        {{ include "nats.annotations" $ }}
   spec:
     selector:
       labels:
@@ -651,6 +654,9 @@ extraResources:
       name: {{ include "nats.fullname" $ }}-extra
       labels:
         {{- include "nats.labels" $ | nindent 4 }}
+			annotations:
+				$tplYaml: |
+					{{ include "nats.annotations" $ }}
     data:
       foo: bar
 `

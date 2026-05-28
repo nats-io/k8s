@@ -331,6 +331,9 @@ extraResources:
     labels:
       $tplYaml: |
         {{ include "nats.labels" $ }}
+    annotations:
+      $tplYaml: |
+        {{ include "nats.annotations" $ }}
   spec:
     hosts:
     - demo.nats.io
