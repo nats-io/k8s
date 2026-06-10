@@ -494,6 +494,14 @@ podTemplate:
   #
   topologySpreadConstraints: {}
 
+  # node selection for NATS StatefulSet pods
+  # if empty, Kubernetes will schedule on any node
+  nodeSelector: {}
+
+  # tolerations for NATS StatefulSet pods
+  # if empty, no tolerations are applied
+  tolerations: []
+
   # merge or patch the pod template
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
   merge: {}
@@ -619,6 +627,14 @@ natsBox:
 
   # deployment -> pod template
   podTemplate:
+    # node selection for nats-box pods
+    # if empty, Kubernetes will schedule on any node
+    nodeSelector: {}
+
+    # tolerations for nats-box pods
+    # if empty, no tolerations are applied
+    tolerations: []
+    
     # merge or patch the pod template
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#pod-v1-core
     merge: {}
