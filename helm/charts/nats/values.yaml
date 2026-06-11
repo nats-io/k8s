@@ -318,7 +318,7 @@ config:
 container:
   image:
     repository: nats
-    tag: 2.14.0-alpine
+    tag: 2.14.2-alpine
     pullPolicy:
     registry:
     # if digest is provided, it overrides tag (example: "sha256:abcdef1234567890")
@@ -399,7 +399,7 @@ promExporter:
   enabled: false
   image:
     repository: natsio/prometheus-nats-exporter
-    tag: 0.20.0
+    tag: 0.20.1
     pullPolicy:
     registry:
     digest:
@@ -589,7 +589,7 @@ natsBox:
   container:
     image:
       repository: natsio/nats-box
-      tag: 0.19.5
+      tag: 0.19.7
       pullPolicy:
       registry:
       digest:
