@@ -1,0 +1,10 @@
+apiVersion: v2
+version: 0.3.3
+appVersion: 1.4.2
+type: application
+name: nats-s3
+description: S3-compatible object storage powered by NATS JetStream
+maintainers:
+- email: info@nats.io
+  name: Community Effort
+  url: https://github.com/wpnpeiris/nats-s3
