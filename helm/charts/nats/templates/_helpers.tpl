@@ -144,6 +144,15 @@ app.kubernetes.io/component: nats-box
 {{- end }}
 
 {{/*
+NATS annotations
+*/}}
+{{- define "nats.annotations" -}}
+{{- with .Values.global.annotations -}}
+{{ toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
 Print the image
 */}}
 {{- define "nats.image" }}
