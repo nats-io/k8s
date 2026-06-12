@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - release/nats-1.3
+      - release/nats-2.12
 
 jobs:
   release:
