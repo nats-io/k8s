@@ -135,6 +135,9 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          {{- with .Values.jetstream.env }}
+          {{- include "jsc.env" . | nindent 10 }}
+          {{- end }}
           {{- if or .Values.jetstream.controlLoop (has "--control-loop" .Values.jetstream.additionalArgs) }}
           livenessProbe:
             httpGet:

@@ -87,3 +87,20 @@ Print the image
 {{- end }}
 {{- $image -}}
 {{- end }}
+
+{{/*
+Render environment variables from a map.
+Supports both simple string values and complex valueFrom references.
+*/}}
+{{- define "jsc.env" -}}
+{{- range $k, $v := . }}
+{{- if kindIs "string" $v }}
+- name: {{ $k | quote }}
+  value: {{ $v | quote }}
+{{- else if kindIs "map" $v }}
+- {{ merge (dict "name" $k) $v | toYaml | nindent 2 }}
+{{- else }}
+{{- fail (cat "env var" $k "must be string or map, got" (kindOf $v)) }}
+{{- end }}
+{{- end }}
+{{- end }}
