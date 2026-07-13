@@ -1,8 +1,8 @@
 {{- with .Values.config }}
 
 server_name: << $SERVER_NAME >>
-lame_duck_grace_period: 10s
-lame_duck_duration: 30s
+lame_duck_grace_period: {{ .lameDuckGracePeriod | quote }}
+lame_duck_duration: {{ .lameDuckDuration | quote }}
 pid_file: /var/run/nats/nats.pid
 
 ########################################

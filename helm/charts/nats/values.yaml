@@ -274,6 +274,15 @@ config:
     merge: {}
     patch: []
 
+  # period the server waits after entering lame duck mode before starting
+  # to evict clients
+  lameDuckGracePeriod: 10s
+  # period over which the server evicts all clients after the grace period
+  # https://docs.nats.io/running-a-nats-service/nats_admin/lame_duck_mode
+  # note: podTemplate.terminationGracePeriodSeconds should be at least
+  # lameDuckGracePeriod + lameDuckDuration + 20s shutdown overhead
+  lameDuckDuration: 30s
+
   # adds a prefix to the server name, which defaults to the pod name
   # helpful for ensuring server name is unique in a super cluster
   serverNamePrefix: ""
@@ -350,6 +359,37 @@ container:
   #           name: nats-auth
   #           key: token
   env: {}
+
+  # probes are only applied when config.monitor is enabled
+  # scheme is set to HTTPS automatically when config.monitor.tls is enabled
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#probe-v1-core
+  startupProbe:
+    httpGet:
+      path: /healthz
+      port: monitor
+    initialDelaySeconds: 10
+    timeoutSeconds: 5
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 90
+  readinessProbe:
+    httpGet:
+      path: /healthz?js-server-only=true
+      port: monitor
+    initialDelaySeconds: 10
+    timeoutSeconds: 5
+    periodSeconds: 10
+    successThreshold: 1
+    failureThreshold: 3
+  livenessProbe:
+    httpGet:
+      path: /healthz?js-enabled-only=true
+      port: monitor
+    initialDelaySeconds: 10
+    timeoutSeconds: 5
+    periodSeconds: 30
+    successThreshold: 1
+    failureThreshold: 3
 
   # merge or patch the container
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#container-v1-core
@@ -484,6 +524,11 @@ podTemplate:
   # this will cause the StatefulSet to roll when the ConfigMap is updated
   # set to true to force pod rollouts on config changes instead of using the reloader for hot updates
   configChecksumAnnotation: false
+
+  # how long to wait for graceful shutdown
+  # should be at least config.lameDuckGracePeriod + config.lameDuckDuration
+  # + 20s shutdown overhead
+  terminationGracePeriodSeconds: 60
 
   # map of topologyKey: topologySpreadConstraint
   # labelSelector will be added to match StatefulSet pods

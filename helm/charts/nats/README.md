@@ -145,6 +145,29 @@ container:
         memory: 8Gi
 ```
 
+### Graceful Shutdown and Health Probes
+
+On pod shutdown, a `preStop` hook puts the NATS Server into [lame duck mode](https://docs.nats.io/running-a-nats-service/nats_admin/lame_duck_mode).
+The server waits `config.lameDuckGracePeriod` before it begins evicting clients, then spreads client evictions over `config.lameDuckDuration`.
+`podTemplate.terminationGracePeriodSeconds` should allow time for both, plus roughly 20s of shutdown overhead.
+
+The nats container's `startupProbe`, `readinessProbe`, and `livenessProbe` are applied whenever `config.monitor` is enabled (the default), and their defaults follow the recommended [NATS health check configuration](https://docs.nats.io/running-a-nats-service/nats_admin/monitoring#health-healthz).
+`scheme: HTTPS` is added automatically when `config.monitor.tls` is enabled.
+Probe fields set in your values are deep-merged over the chart defaults.
+Example - extend the lame duck window and relax the liveness probe:
+
+```yaml
+config:
+  lameDuckGracePeriod: 10s
+  lameDuckDuration: 2m
+container:
+  livenessProbe:
+    periodSeconds: 60
+podTemplate:
+  # 10s grace period + 2m duration + 20s overhead
+  terminationGracePeriodSeconds: 150
+```
+
 ### Specify Image Version
 
 The container image can now be overridden by specifying either the image tag, an image digest, or a full image name. Examples below illustrate the options:
