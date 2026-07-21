@@ -25,3 +25,8 @@ volumeMounts:
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{- with .Values.reloader.securityContext }}
+securityContext:
+  {{- toYaml . | nindent 2 }}
+{{- end }}

@@ -47,3 +47,9 @@ volumeMounts:
 
 resources:
   {{- toYaml .Values.natsBox.container.resources | nindent 2 }}
+
+# security context
+{{- with .Values.natsBox.container.securityContext }}
+securityContext:
+  {{- toYaml . | nindent 2 }}
+{{- end }}

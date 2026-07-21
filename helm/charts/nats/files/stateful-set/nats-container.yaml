@@ -107,3 +107,8 @@ volumeMounts:
 
 resources:
   {{- toYaml .Values.container.resources | nindent 2 }}
+
+{{- with .Values.container.securityContext }}
+securityContext:
+  {{- toYaml . | nindent 2 }}
+{{- end }}

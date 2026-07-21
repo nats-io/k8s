@@ -28,7 +28,7 @@ spec:
 
   # service discovery uses DNS; don't need service env vars
   enableServiceLinks: false
-  
+
   {{- with .Values.global.image.pullSecretNames }}
   imagePullSecrets:
   {{- range . }}
@@ -69,7 +69,13 @@ spec:
   - {{ merge (dict "topologyKey" $k "labelSelector" (dict "matchLabels" (include "nats.selectorLabels" $ | fromYaml))) $v | toYaml | nindent 4 }}
   {{- end }}
   {{- end}}
-  
+
   # terminationGracePeriodSeconds determines how long to wait for graceful shutdown
   # this should be at least `lameDuckGracePeriod` + 20s shutdown overhead
   terminationGracePeriodSeconds: 60
+
+  # security context
+  {{- with .Values.podTemplate.securityContext }}
+  securityContext:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
