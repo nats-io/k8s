@@ -71,5 +71,6 @@ spec:
   {{- end}}
   
   # terminationGracePeriodSeconds determines how long to wait for graceful shutdown
-  # this should be at least `lameDuckGracePeriod` + 20s shutdown overhead
-  terminationGracePeriodSeconds: 60
+  # this should be at least config.lameDuckGracePeriod + config.lameDuckDuration
+  # + 20s shutdown overhead
+  terminationGracePeriodSeconds: {{ .Values.podTemplate.terminationGracePeriodSeconds }}

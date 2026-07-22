@@ -662,3 +662,36 @@ natsBox:
 
 	RenderAndCheck(t, test, expected)
 }
+
+func TestGracefulShutdownAndProbeOptions(t *testing.T) {
+	t.Parallel()
+	test := DefaultTest()
+	test.Values = `
+config:
+  lameDuckGracePeriod: 5s
+  lameDuckDuration: 2m
+container:
+  startupProbe:
+    failureThreshold: 120
+  readinessProbe:
+    httpGet:
+      path: /healthz
+  livenessProbe:
+    periodSeconds: 60
+podTemplate:
+  terminationGracePeriodSeconds: 150
+`
+	expected := DefaultResources(t, test)
+
+	expected.Conf.Value["lame_duck_grace_period"] = "5s"
+	expected.Conf.Value["lame_duck_duration"] = "2m"
+
+	ctr := &expected.StatefulSet.Value.Spec.Template.Spec.Containers[0]
+	ctr.StartupProbe.FailureThreshold = 120
+	ctr.ReadinessProbe.HTTPGet.Path = "/healthz"
+	ctr.LivenessProbe.PeriodSeconds = 60
+
+	expected.StatefulSet.Value.Spec.Template.Spec.TerminationGracePeriodSeconds = int64Ptr(150)
+
+	RenderAndCheck(t, test, expected)
+}

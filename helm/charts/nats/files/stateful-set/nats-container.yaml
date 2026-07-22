@@ -35,42 +35,16 @@ lifecycle:
 
 {{- with .Values.config.monitor }}
 {{- if .enabled }}
+{{- $tlsPatch := dict }}
+{{- if .tls.enabled }}
+{{- $tlsPatch = dict "httpGet" (dict "scheme" "HTTPS") }}
+{{- end }}
 startupProbe:
-  httpGet:
-    path: /healthz
-    port: monitor
-    {{- if .tls.enabled }}
-    scheme: HTTPS
-    {{- end}}
-  initialDelaySeconds: 10
-  timeoutSeconds: 5
-  periodSeconds: 10
-  successThreshold: 1
-  failureThreshold: 90
+  {{- mergeOverwrite (deepCopy $.Values.container.startupProbe) $tlsPatch | toYaml | nindent 2 }}
 readinessProbe:
-  httpGet:
-    path: /healthz?js-server-only=true
-    port: monitor
-    {{- if .tls.enabled }}
-    scheme: HTTPS
-    {{- end}}
-  initialDelaySeconds: 10
-  timeoutSeconds: 5
-  periodSeconds: 10
-  successThreshold: 1
-  failureThreshold: 3
+  {{- mergeOverwrite (deepCopy $.Values.container.readinessProbe) $tlsPatch | toYaml | nindent 2 }}
 livenessProbe:
-  httpGet:
-    path: /healthz?js-enabled-only=true
-    port: monitor
-    {{- if .tls.enabled }}
-    scheme: HTTPS
-    {{- end}}
-  initialDelaySeconds: 10
-  timeoutSeconds: 5
-  periodSeconds: 30
-  successThreshold: 1
-  failureThreshold: 3
+  {{- mergeOverwrite (deepCopy $.Values.container.livenessProbe) $tlsPatch | toYaml | nindent 2 }}
 {{- end }}
 {{- end }}
 
