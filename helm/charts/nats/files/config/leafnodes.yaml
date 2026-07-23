@@ -2,6 +2,34 @@
 port: {{ .port }}
 no_advertise: true
 
+{{- with .remotes }}
+remotes:
+{{- range $remote := . }}
+{{- if not (or $remote.url $remote.urls) }}
+{{- fail "config.leafnodes.remotes entries must set url or urls" }}
+{{- end }}
+- urls:
+  {{- with $remote.url }}
+  - {{ . | quote }}
+  {{- end }}
+  {{- range $remote.urls }}
+  - {{ . | quote }}
+  {{- end }}
+  {{- with $remote.account }}
+  account: {{ . | quote }}
+  {{- end }}
+  {{- with $remote.credentials }}
+  {{- if .secretName }}
+  credentials: {{ printf "%s/%s" (trimSuffix "/" .dir) .key | quote }}
+  {{- end }}
+  {{- end }}
+  {{- with $remote.tls }}
+  tls:
+    {{- include "nats.loadMergePatch" (merge (dict "file" "config/tls.yaml" "ctx" (merge (dict "tls" .) $)) .) | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
 {{- with .tls }}
 {{- if .enabled }}
 tls:

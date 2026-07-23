@@ -212,6 +212,44 @@ config:
       SYS_ACCOUNT_ID: SYS_ACCOUNT_JWT
 ```
 
+### Leafnode Remotes and Synadia Cloud (NGS)
+
+`config.leafnodes.remotes` solicits [leafnode](https://docs.nats.io/running-a-nats-service/configuration/leafnodes) connections to remote NATS servers, with credentials mounted from an existing Kubernetes Secret.
+The config reloader watches the mounted credentials and certificate files, so rotating the Secret hot-reloads the server.
+
+Example - connect to [Synadia Cloud](https://docs.synadia.com/cloud) (NGS):
+
+```shell
+kubectl create secret generic ngs-creds --from-file=nats.creds=/path/to/ngs.creds
+```
+
+```yaml
+config:
+  leafnodes:
+    enabled: true
+    remotes:
+    - url: tls://connect.ngs.global:7422
+      credentials:
+        secretName: ngs-creds
+```
+
+Each remote must set `url` or `urls`.
+`account` binds the remote to a local account, and a per-remote `tls` block mounts client certificates from a Secret; `tls://` URLs use TLS with system CAs without needing a `tls` block.
+Note that enabling leafnodes also opens the leafnode accept port (7422 by default) on this server.
+
+Other remote options remain available through the leafnodes `patch` (note that setting `remotes` inside `config.leafnodes.merge` would replace the whole generated list):
+
+```yaml
+config:
+  leafnodes:
+    enabled: true
+    remotes:
+    - url: tls://hub.example.com:7422
+      credentials:
+        secretName: hub-creds
+    patch: [{op: add, path: /remotes/0/hub, value: true}]
+```
+
 
 ## Accessing NATS
 

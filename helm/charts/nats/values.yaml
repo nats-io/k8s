@@ -138,6 +138,42 @@ config:
   leafnodes:
     enabled: false
     port: 7422
+
+    # solicit connections to remote NATS servers as a leafnode
+    # https://docs.nats.io/running-a-nats-service/configuration/leafnodes/leafnode_conf
+    # each remote must set url or urls
+    # other remote options (hub, deny_imports, etc.) can be added with the leafnodes patch
+    # example - connect to Synadia Cloud:
+    #
+    # remotes:
+    # - url: tls://connect.ngs.global:7422
+    #   credentials:
+    #     secretName: ngs-creds
+    #
+    # remotes:
+    # - url or urls, the remote server(s) to connect to
+    #   url:
+    #   urls: []
+    #   # local account to bind to this remote
+    #   account:
+    #   # mount an existing secret containing a credentials file
+    #   credentials:
+    #     secretName:
+    #     # key in the secret that contains the credentials file
+    #     key: nats.creds
+    #     # defaults to /etc/nats-creds/leafnodes-remote-<index>
+    #     dir:
+    #   # client certificates for this remote
+    #   # note: tls:// urls use TLS with system CAs without needing this block
+    #   tls:
+    #     # set secretName in order to mount an existing secret to dir
+    #     secretName:
+    #     # defaults to /etc/nats-certs/leafnodes-remote-<index>
+    #     dir:
+    #     cert: tls.crt
+    #     key: tls.key
+    remotes: []
+
     tls:
       enabled: false
       # set secretName in order to mount an existing secret to dir

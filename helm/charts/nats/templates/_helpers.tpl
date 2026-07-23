@@ -86,6 +86,16 @@ Set default values.
   {{- end }}
   {{- $_ := set $ "hasContentsSecret" $hasContentsSecret }}
 
+  {{- range $i, $remote := .Values.config.leafnodes.remotes }}
+    {{- with $remote.credentials }}
+      {{- $_ := set . "dir" (.dir | default (printf "/etc/nats-creds/leafnodes-remote-%d" $i)) }}
+      {{- $_ := set . "key" (.key | default "nats.creds") }}
+    {{- end }}
+    {{- with $remote.tls }}
+      {{- $_ := set . "dir" (.dir | default (printf "/etc/nats-certs/leafnodes-remote-%d" $i)) }}
+    {{- end }}
+  {{- end }}
+
   {{- with .Values.config }}
   {{- $config := include "nats.loadMergePatch" (merge (dict "file" "config/config.yaml" "ctx" $) .) | fromYaml }}
   {{- $_ := set $ "config" $config }}
@@ -173,6 +183,20 @@ imagePullPolicy: {{ .pullPolicy | default .global.image.pullPolicy }}
     {{- $secrets = append $secrets (merge (dict "name" (printf "%s-tls" $protocol)) $configProtocol.tls) }}
   {{- end }}
 {{- end }}
+{{- if .Values.config.leafnodes.enabled }}
+  {{- range $i, $remote := .Values.config.leafnodes.remotes }}
+    {{- with $remote.credentials }}
+      {{- if .secretName }}
+        {{- $secrets = append $secrets (dict "name" (printf "leafnodes-remote-%d-creds" $i) "secretName" .secretName "dir" .dir) }}
+      {{- end }}
+    {{- end }}
+    {{- with $remote.tls }}
+      {{- if .secretName }}
+        {{- $secrets = append $secrets (dict "name" (printf "leafnodes-remote-%d-tls" $i) "secretName" .secretName "dir" .dir) }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
 {{- toJson (dict "secretNames" $secrets) }}
 {{- end }}
 
@@ -258,7 +282,7 @@ output: YAML list of reloader config files
   {{- with .config -}}
   {{- if kindIs "map" . -}}
     {{- range $k, $v := . -}}
-      {{- if or (eq $k "cert_file") (eq $k "key_file") (eq $k "ca_file") }}
+      {{- if or (eq $k "cert_file") (eq $k "key_file") (eq $k "ca_file") (eq $k "credentials") }}
 - -config
 - {{ $v }}
       {{- else if hasSuffix "$include" $k }}
@@ -267,6 +291,10 @@ output: YAML list of reloader config files
       {{- else }}
         {{- include "nats.reloaderConfig" (dict "config" $v "dir" $dir) }}
       {{- end -}}
+    {{- end -}}
+  {{- else if kindIs "slice" . -}}
+    {{- range . -}}
+      {{- include "nats.reloaderConfig" (dict "config" . "dir" $dir) -}}
     {{- end -}}
   {{- end -}}
   {{- end -}}

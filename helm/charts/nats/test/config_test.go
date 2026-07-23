@@ -619,6 +619,140 @@ max_outstanding_catchup: 64MB
 	RenderAndCheck(t, test, expected)
 }
 
+func TestConfigLeafnodeRemotes(t *testing.T) {
+	t.Parallel()
+	test := DefaultTest()
+	test.Values = `
+config:
+  leafnodes:
+    enabled: true
+    remotes:
+    - url: tls://connect.ngs.global:7422
+      account: A
+      credentials:
+        secretName: ngs-creds
+    - urls:
+      - tls://hub-1.example.com:7422
+      - tls://hub-2.example.com:7422
+      tls:
+        secretName: hub-tls
+`
+	expected := DefaultResources(t, test)
+
+	expected.Conf.Value["leafnodes"] = map[string]any{
+		"port":         int64(7422),
+		"no_advertise": true,
+		"remotes": []any{
+			map[string]any{
+				"account":     "A",
+				"credentials": "/etc/nats-creds/leafnodes-remote-0/nats.creds",
+				"urls":        []any{"tls://connect.ngs.global:7422"},
+			},
+			map[string]any{
+				"tls": map[string]any{
+					"cert_file": "/etc/nats-certs/leafnodes-remote-1/tls.crt",
+					"key_file":  "/etc/nats-certs/leafnodes-remote-1/tls.key",
+				},
+				"urls": []any{
+					"tls://hub-1.example.com:7422",
+					"tls://hub-2.example.com:7422",
+				},
+			},
+		},
+	}
+
+	volumes := expected.StatefulSet.Value.Spec.Template.Spec.Volumes
+	volumes = append(volumes, corev1.Volume{
+		Name: "leafnodes-remote-0-creds",
+		VolumeSource: corev1.VolumeSource{
+			Secret: &corev1.SecretVolumeSource{
+				SecretName: "ngs-creds",
+			},
+		},
+	}, corev1.Volume{
+		Name: "leafnodes-remote-1-tls",
+		VolumeSource: corev1.VolumeSource{
+			Secret: &corev1.SecretVolumeSource{
+				SecretName: "hub-tls",
+			},
+		},
+	})
+	expected.StatefulSet.Value.Spec.Template.Spec.Volumes = volumes
+
+	credsVm := corev1.VolumeMount{
+		MountPath: "/etc/nats-creds/leafnodes-remote-0",
+		Name:      "leafnodes-remote-0-creds",
+	}
+	tlsVm := corev1.VolumeMount{
+		MountPath: "/etc/nats-certs/leafnodes-remote-1",
+		Name:      "leafnodes-remote-1-tls",
+	}
+	natsVm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(natsVm, credsVm, tlsVm)
+	reloaderVm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].VolumeMounts
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].VolumeMounts = append(reloaderVm, credsVm, tlsVm)
+
+	reloaderArgs := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args
+	reloaderArgs = append(reloaderArgs,
+		"-config", "/etc/nats-creds/leafnodes-remote-0/nats.creds",
+		"-config", "/etc/nats-certs/leafnodes-remote-1/tls.crt",
+		"-config", "/etc/nats-certs/leafnodes-remote-1/tls.key")
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args = reloaderArgs
+
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].Ports = []corev1.ContainerPort{
+		{
+			Name:          "nats",
+			ContainerPort: 4222,
+		},
+		{
+			Name:          "leafnodes",
+			ContainerPort: 7422,
+		},
+		{
+			Name:          "monitor",
+			ContainerPort: 8222,
+		},
+	}
+
+	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
+		{
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
+		},
+		{
+			Name:        "leafnodes",
+			Port:        7422,
+			TargetPort:  intstr.FromString("leafnodes"),
+			AppProtocol: &appProtocolTCP,
+		},
+		{
+			Name:        "monitor",
+			Port:        8222,
+			TargetPort:  intstr.FromString("monitor"),
+			AppProtocol: &appProtocolHTTP,
+		},
+	}
+
+	expected.Service.Value.Spec.Ports = []corev1.ServicePort{
+		{
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
+		},
+		{
+			Name:        "leafnodes",
+			Port:        7422,
+			TargetPort:  intstr.FromString("leafnodes"),
+			AppProtocol: &appProtocolTCP,
+		},
+	}
+
+	RenderAndCheck(t, test, expected)
+}
+
 func TestExtraResources(t *testing.T) {
 	t.Parallel()
 	test := DefaultTest()
