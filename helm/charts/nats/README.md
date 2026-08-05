@@ -215,7 +215,7 @@ config:
 ### Leafnode Remotes and Synadia Cloud (NGS)
 
 `config.leafnodes.remotes` solicits [leafnode](https://docs.nats.io/running-a-nats-service/configuration/leafnodes) connections to remote NATS servers, with credentials mounted from an existing Kubernetes Secret.
-The config reloader watches the mounted credentials and certificate files, so rotating the Secret hot-reloads the server.
+Rotating a mounted credentials or certificate Secret takes effect on the next connection attempt to the remote, not on established connections: the server reads the credentials file fresh on every attempt, and the config reloader re-applies changed certificate files for future attempts.
 
 Example - connect to [Synadia Cloud](https://docs.synadia.com/cloud) (NGS):
 
@@ -233,9 +233,28 @@ config:
         secretName: ngs-creds
 ```
 
-Each remote must set `url` or `urls`.
-`account` binds the remote to a local account, and a per-remote `tls` block mounts client certificates from a Secret; `tls://` URLs use TLS with system CAs without needing a `tls` block.
+Each remote must set `url` or `urls`; if both are set, they are combined.
+`account` binds the remote to a local account.
+The per-remote `tls` block must be enabled like the other `tls` blocks in the chart: enabling it forces a TLS connection to the remote, mounts client certificates from a Secret when `secretName` is set, and applies the global `tlsCA` as `ca_file`, which replaces the system CAs.
+`tls://` URLs use TLS with system CAs without needing a `tls` block, so leave it disabled for remotes with publicly trusted certificates such as NGS.
 Note that enabling leafnodes also opens the leafnode accept port (7422 by default) on this server.
+
+Example - connect to a hub that uses certificates from a private CA:
+
+```yaml
+tlsCA:
+  enabled: true
+  configMapName: private-ca
+config:
+  leafnodes:
+    enabled: true
+    remotes:
+    - url: tls://hub.example.com:7422
+      credentials:
+        secretName: hub-creds
+      tls:
+        enabled: true
+```
 
 Other remote options remain available through the leafnodes `patch` (note that setting `remotes` inside `config.leafnodes.merge` would replace the whole generated list):
 
@@ -249,7 +268,6 @@ config:
         secretName: hub-creds
     patch: [{op: add, path: /remotes/0/hub, value: true}]
 ```
-
 
 ## Accessing NATS
 

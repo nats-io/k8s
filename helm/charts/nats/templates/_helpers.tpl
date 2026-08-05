@@ -191,7 +191,7 @@ imagePullPolicy: {{ .pullPolicy | default .global.image.pullPolicy }}
       {{- end }}
     {{- end }}
     {{- with $remote.tls }}
-      {{- if .secretName }}
+      {{- if and .enabled .secretName }}
         {{- $secrets = append $secrets (dict "name" (printf "leafnodes-remote-%d-tls" $i) "secretName" .secretName "dir" .dir) }}
       {{- end }}
     {{- end }}
@@ -282,7 +282,7 @@ output: YAML list of reloader config files
   {{- with .config -}}
   {{- if kindIs "map" . -}}
     {{- range $k, $v := . -}}
-      {{- if or (eq $k "cert_file") (eq $k "key_file") (eq $k "ca_file") (eq $k "credentials") }}
+      {{- if or (eq $k "cert_file") (eq $k "key_file") (eq $k "ca_file") }}
 - -config
 - {{ $v }}
       {{- else if hasSuffix "$include" $k }}

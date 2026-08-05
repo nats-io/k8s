@@ -635,6 +635,7 @@ config:
       - tls://hub-1.example.com:7422
       - tls://hub-2.example.com:7422
       tls:
+        enabled: true
         secretName: hub-tls
 `
 	expected := DefaultResources(t, test)
@@ -694,7 +695,6 @@ config:
 
 	reloaderArgs := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args
 	reloaderArgs = append(reloaderArgs,
-		"-config", "/etc/nats-creds/leafnodes-remote-0/nats.creds",
 		"-config", "/etc/nats-certs/leafnodes-remote-1/tls.crt",
 		"-config", "/etc/nats-certs/leafnodes-remote-1/tls.key")
 	expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args = reloaderArgs
@@ -747,6 +747,253 @@ config:
 			Port:        7422,
 			TargetPort:  intstr.FromString("leafnodes"),
 			AppProtocol: &appProtocolTCP,
+		},
+	}
+
+	RenderAndCheck(t, test, expected)
+}
+
+func TestConfigLeafnodeRemoteTlsCA(t *testing.T) {
+	t.Parallel()
+	test := DefaultTest()
+	test.Values = `
+config:
+  leafnodes:
+    enabled: true
+    remotes:
+    - url: tls://hub.example.com:7422
+      credentials:
+        secretName: hub-creds
+      tls:
+        enabled: true
+tlsCA:
+  enabled: true
+  configMapName: nats-ca
+`
+	expected := DefaultResources(t, test)
+
+	expected.Conf.Value["leafnodes"] = map[string]any{
+		"port":         int64(7422),
+		"no_advertise": true,
+		"remotes": []any{
+			map[string]any{
+				"credentials": "/etc/nats-creds/leafnodes-remote-0/nats.creds",
+				"tls": map[string]any{
+					"ca_file": "/etc/nats-ca-cert/ca.crt",
+				},
+				"urls": []any{"tls://hub.example.com:7422"},
+			},
+		},
+	}
+
+	tlsCAVol := corev1.Volume{
+		Name: "tls-ca",
+		VolumeSource: corev1.VolumeSource{
+			ConfigMap: &corev1.ConfigMapVolumeSource{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: "nats-ca",
+				},
+			},
+		},
+	}
+	credsVol := corev1.Volume{
+		Name: "leafnodes-remote-0-creds",
+		VolumeSource: corev1.VolumeSource{
+			Secret: &corev1.SecretVolumeSource{
+				SecretName: "hub-creds",
+			},
+		},
+	}
+	stsVols := expected.StatefulSet.Value.Spec.Template.Spec.Volumes
+	expected.StatefulSet.Value.Spec.Template.Spec.Volumes = append(stsVols, tlsCAVol, credsVol)
+
+	tlsCAVm := corev1.VolumeMount{
+		Name:      "tls-ca",
+		MountPath: "/etc/nats-ca-cert",
+	}
+	credsVm := corev1.VolumeMount{
+		MountPath: "/etc/nats-creds/leafnodes-remote-0",
+		Name:      "leafnodes-remote-0-creds",
+	}
+	natsVm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(natsVm, tlsCAVm, credsVm)
+	reloaderVm := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].VolumeMounts
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].VolumeMounts = append(reloaderVm, tlsCAVm, credsVm)
+
+	natsBoxVols := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Volumes
+	expected.NatsBoxDeployment.Value.Spec.Template.Spec.Volumes = append(natsBoxVols, tlsCAVol)
+	natsBoxVms := expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0].VolumeMounts
+	expected.NatsBoxDeployment.Value.Spec.Template.Spec.Containers[0].VolumeMounts = append(natsBoxVms, tlsCAVm)
+
+	reloaderArgs := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args
+	reloaderArgs = append(reloaderArgs, "-config", "/etc/nats-ca-cert/ca.crt")
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args = reloaderArgs
+
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].Ports = []corev1.ContainerPort{
+		{
+			Name:          "nats",
+			ContainerPort: 4222,
+		},
+		{
+			Name:          "leafnodes",
+			ContainerPort: 7422,
+		},
+		{
+			Name:          "monitor",
+			ContainerPort: 8222,
+		},
+	}
+
+	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
+		{
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
+		},
+		{
+			Name:        "leafnodes",
+			Port:        7422,
+			TargetPort:  intstr.FromString("leafnodes"),
+			AppProtocol: &appProtocolTCP,
+		},
+		{
+			Name:        "monitor",
+			Port:        8222,
+			TargetPort:  intstr.FromString("monitor"),
+			AppProtocol: &appProtocolHTTP,
+		},
+	}
+
+	expected.Service.Value.Spec.Ports = []corev1.ServicePort{
+		{
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
+		},
+		{
+			Name:        "leafnodes",
+			Port:        7422,
+			TargetPort:  intstr.FromString("leafnodes"),
+			AppProtocol: &appProtocolTCP,
+		},
+	}
+
+	RenderAndCheck(t, test, expected)
+}
+
+func TestConfigLeafnodeRemotesRenderFail(t *testing.T) {
+	t.Parallel()
+	for _, tt := range []struct {
+		name    string
+		values  string
+		wantErr string
+	}{
+		{
+			name: "MissingUrl",
+			values: `
+config:
+  leafnodes:
+    enabled: true
+    remotes:
+    - account: A
+`,
+			wantErr: "config.leafnodes.remotes entries must set url or urls",
+		},
+		{
+			name: "CredentialsMissingSecretName",
+			values: `
+config:
+  leafnodes:
+    enabled: true
+    remotes:
+    - url: tls://connect.ngs.global:7422
+      credentials:
+        key: my.creds
+`,
+			wantErr: "config.leafnodes.remotes credentials must set secretName",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			test := DefaultTest()
+			test.Values = tt.values
+			HelmRenderError(t, test, tt.wantErr)
+		})
+	}
+}
+
+func TestReloaderTlsInConfigList(t *testing.T) {
+	t.Parallel()
+	test := DefaultTest()
+	test.Values = `
+config:
+  gateway:
+    enabled: true
+    merge:
+      gateways:
+      - name: hub
+        url: nats://gw.example.com:7222
+        tls:
+          cert_file: /etc/nats-certs/gw/tls.crt
+          key_file: /etc/nats-certs/gw/tls.key
+`
+	expected := DefaultResources(t, test)
+
+	expected.Conf.Value["gateway"] = map[string]any{
+		"name": "nats",
+		"port": int64(7222),
+		"gateways": []any{
+			map[string]any{
+				"name": "hub",
+				"url":  "nats://gw.example.com:7222",
+				"tls": map[string]any{
+					"cert_file": "/etc/nats-certs/gw/tls.crt",
+					"key_file":  "/etc/nats-certs/gw/tls.key",
+				},
+			},
+		},
+	}
+
+	reloaderArgs := expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args
+	reloaderArgs = append(reloaderArgs,
+		"-config", "/etc/nats-certs/gw/tls.crt",
+		"-config", "/etc/nats-certs/gw/tls.key")
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[1].Args = reloaderArgs
+
+	expected.StatefulSet.Value.Spec.Template.Spec.Containers[0].Ports = []corev1.ContainerPort{
+		{
+			Name:          "nats",
+			ContainerPort: 4222,
+		},
+		{
+			Name:          "gateway",
+			ContainerPort: 7222,
+		},
+		{
+			Name:          "monitor",
+			ContainerPort: 8222,
+		},
+	}
+
+	expected.HeadlessService.Value.Spec.Ports = []corev1.ServicePort{
+		{
+			Name:        "nats",
+			Port:        4222,
+			TargetPort:  intstr.FromString("nats"),
+			AppProtocol: &appProtocolTCP,
+		},
+		{
+			Name:        "gateway",
+			Port:        7222,
+			TargetPort:  intstr.FromString("gateway"),
+			AppProtocol: &appProtocolTCP,
+		},
+		{
+			Name:        "monitor",
+			Port:        8222,
+			TargetPort:  intstr.FromString("monitor"),
+			AppProtocol: &appProtocolHTTP,
 		},
 	}
 

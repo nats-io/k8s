@@ -153,7 +153,7 @@ func DefaultTest() *Test {
 	}
 }
 
-func HelmRender(t *testing.T, test *Test) *Resources {
+func helmRenderOptions(t *testing.T, test *Test) (string, *helm.Options) {
 	t.Helper()
 
 	helmChartPath, err := filepath.Abs("..")
@@ -161,19 +161,22 @@ func HelmRender(t *testing.T, test *Test) *Resources {
 
 	tmpFile, err := os.CreateTemp("", "values.*.yaml")
 	require.NoError(t, err)
-	defer os.Remove(tmpFile.Name())
+	t.Cleanup(func() { os.Remove(tmpFile.Name()) })
 
-	if _, err := tmpFile.Write([]byte(test.Values)); err != nil {
-		tmpFile.Close()
-		require.NoError(t, err)
-	}
-	err = tmpFile.Close()
+	_, err = tmpFile.Write([]byte(test.Values))
 	require.NoError(t, err)
+	require.NoError(t, tmpFile.Close())
 
-	options := &helm.Options{
+	return helmChartPath, &helm.Options{
 		ValuesFiles:    []string{tmpFile.Name()},
 		KubectlOptions: k8s.NewKubectlOptions("", "", test.Namespace),
 	}
+}
+
+func HelmRender(t *testing.T, test *Test) *Resources {
+	t.Helper()
+
+	helmChartPath, options := helmRenderOptions(t, test)
 	output := helm.RenderTemplate(t, options, helmChartPath, test.ReleaseName, nil)
 	outputs := strings.Split(output, "---")
 
@@ -213,6 +216,15 @@ func HelmRender(t *testing.T, test *Test) *Resources {
 	resources.Conf.HasValue = true
 
 	return resources
+}
+
+func HelmRenderError(t *testing.T, test *Test, wantSubstr string) {
+	t.Helper()
+
+	helmChartPath, options := helmRenderOptions(t, test)
+	_, err := helm.RenderTemplateE(t, options, helmChartPath, test.ReleaseName, nil)
+	require.Error(t, err)
+	require.Contains(t, err.Error(), wantSubstr)
 }
 
 func RenderAndCheck(t *testing.T, test *Test, expected *Resources) {
