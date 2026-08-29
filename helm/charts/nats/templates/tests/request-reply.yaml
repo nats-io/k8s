@@ -28,6 +28,14 @@ kind: Pod
   )
   "spec" (dict
     "restartPolicy" "Never"
+    "initContainers" (list
+      (dict
+        "name" "wait-for-nats"
+        "image" "busybox:1.36"
+        "command" (list "sh" "-c")
+        "args" (list (printf "echo 'Waiting for NATS service'; until nc -z -v -w5 %s 4222; do echo 'NATS not ready yet'; sleep 2; done; echo 'NATS service ready'" $.Values.service.name))
+      )
+    )
   )
 ) }}
 {{- $_ := set . "patch" list }}
