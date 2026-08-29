@@ -250,6 +250,11 @@ config:
     enabled: false
     port: 65432
 
+  promExporter:
+    # Get detailed connection metrics for each client.
+    # promExporter needs to be enabled
+    connzDetailed: false
+
   resolver:
     enabled: false
     dir: /data/resolver
