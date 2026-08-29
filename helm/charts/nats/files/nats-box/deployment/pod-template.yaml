@@ -2,6 +2,15 @@ metadata:
   labels:
     {{- include "natsBox.labels" $ | nindent 4 }}
 spec:
+  {{- with .Values.natsBox.podTemplate.nodeSelector }}
+  nodeSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.natsBox.podTemplate.tolerations }}
+  tolerations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   containers:
   {{- with .Values.natsBox.container }}
   - {{ include "nats.loadMergePatch" (merge (dict "file" "nats-box/deployment/container.yaml" "ctx" $) .) | nindent 4 }}
