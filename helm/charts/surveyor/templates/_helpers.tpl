@@ -54,6 +54,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Define the namespace where the content of the chart will be deployed.
+Defaults to .Release.Namespace; can be overridden via .Values.namespaceOverride.
+*/}}
+{{- define "surveyor.namespace" -}}
+{{- default .Release.Namespace .Values.namespaceOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "surveyor.serviceAccountName" -}}
