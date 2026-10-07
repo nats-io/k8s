@@ -129,6 +129,11 @@ rbacRules: |
     - update
     - delete
 
+# Create ClusterRoles aggregated into the builtin view, edit and admin roles,
+# so users with those roles can read (view) or manage (edit, admin) NACK resources.
+aggregateRbac:
+  enabled: true
+
 podAnnotations: {}
 
 # Toggle whether to use setup a Pod Security Context
