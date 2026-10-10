@@ -1,4 +1,6 @@
 {{- with .Values.config.resolver.pvc }}
+apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: {{ .name }}
 spec:

@@ -1,4 +1,6 @@
 {{- with .Values.config.jetstream.fileStore.pvc }}
+apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: {{ .name }}
 spec:
