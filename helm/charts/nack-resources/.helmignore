@@ -1,0 +1,12 @@
+#  Common VCS dirs
+.git/
+.github/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Archives and charts
+*.tgz
+*.tar.gz
+Chart.lock
