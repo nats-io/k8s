@@ -210,8 +210,8 @@ github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 h1:C3w9PqII01/Oq
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822/go.mod h1:+n7T8mK8HuQTcFwEeznm/DIxMOiR9yIdICNftLE1DvQ=
 github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f h1:y5//uYreIhSUg3J1GEMiLbxo1LJaP8RfCpH6pymGZus=
 github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f/go.mod h1:ZdcZmHo+o7JKHSa8/e818NopupXU1YMK5fe1lsApnBw=
-github.com/nats-io/nats-server/v2 v2.15.0 h1:M99yf0y05rTr46/qc/Is6ZAowI58Ryp2SjufLCUeVJc=
-github.com/nats-io/nats-server/v2 v2.15.0/go.mod h1:5qLF4CDGzZVFt//3fUrY1ePpwbi05r7QHPNroSUtolk=
+github.com/nats-io/nats-server/v2 v2.15.1 h1:fK3AeYFIji1Smng60jB0hVoAPZezA/UzsaI3BqXFNEI=
+github.com/nats-io/nats-server/v2 v2.15.1/go.mod h1:yeuYRtKVKIFtmMz2/YPk+6hvmNBnk+WwTUzErBdH6IE=
 github.com/nxadm/tail v1.4.8 h1:nPr65rt6Y5JFSKQO7qToXr7pePgD6Gwiw05lkbyAQTE=
 github.com/nxadm/tail v1.4.8/go.mod h1:+ncqLTQzXmGhMZNUePPaPqPvBxHAIsmXswZKocGu+AU=
 github.com/onsi/ginkgo v1.16.5 h1:8xi0RTUf59SOSfEtZMvwTvXYMzG4gV23XVHOZiXNtnE=
