@@ -3,6 +3,7 @@ package test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
 	corev1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -694,4 +695,148 @@ podTemplate:
 	expected.StatefulSet.Value.Spec.Template.Spec.TerminationGracePeriodSeconds = int64Ptr(150)
 
 	RenderAndCheck(t, test, expected)
+}
+
+func TestHTTPRoute(t *testing.T) {
+	t.Parallel()
+
+	test := DefaultTest()
+	test.Values = `
+namespaceOverride: foo
+config:
+  websocket:
+    enabled: true
+    port: 8081
+    httpRoute:
+      enabled: true
+      parentRefs:
+      - name: my-gateway
+        namespace: gateway-system
+        sectionName: https
+      hostnames:
+      - demo.nats.io
+`
+	actual := HelmRender(t, test)
+	require.True(t, actual.HTTPRoute.HasValue)
+
+	route := actual.HTTPRoute.Value
+	require.Equal(t, "gateway.networking.k8s.io/v1", route["apiVersion"])
+	require.Equal(t, "HTTPRoute", route["kind"])
+	require.Equal(t, "foo", route["metadata"].(map[string]any)["namespace"])
+
+	spec := route["spec"].(map[string]any)
+	require.Equal(t, []any{
+		map[string]any{"name": "my-gateway", "namespace": "gateway-system", "sectionName": "https"},
+	}, spec["parentRefs"])
+	require.Equal(t, []any{"demo.nats.io"}, spec["hostnames"])
+	require.Equal(t, []any{
+		map[string]any{
+			"matches":     []any{map[string]any{"path": map[string]any{"type": "PathPrefix", "value": "/"}}},
+			"backendRefs": []any{map[string]any{"name": test.FullName, "port": float64(8081)}},
+		},
+	}, spec["rules"])
+}
+
+func TestHTTPRouteNotRendered(t *testing.T) {
+	t.Parallel()
+
+	const routeOn = `
+    httpRoute:
+      enabled: true
+      parentRefs:
+      - name: my-gateway
+`
+	cases := map[string]string{
+		"no parentRefs": `
+config:
+  websocket:
+    enabled: true
+    httpRoute:
+      enabled: true
+`,
+		"route disabled": `
+config:
+  websocket:
+    enabled: true
+    httpRoute:
+      enabled: false
+      parentRefs:
+      - name: my-gateway
+`,
+		"websocket disabled":              "config:\n  websocket:\n    enabled: false\n" + routeOn,
+		"service disabled":                "service:\n  enabled: false\nconfig:\n  websocket:\n    enabled: true\n" + routeOn,
+		"websocket service port disabled": "service:\n  ports:\n    websocket:\n      enabled: false\nconfig:\n  websocket:\n    enabled: true\n" + routeOn,
+	}
+
+	for name, values := range cases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			test := DefaultTest()
+			test.Values = values
+			require.False(t, HelmRender(t, test).HTTPRoute.HasValue)
+		})
+	}
+}
+
+func TestHTTPRouteBackendPortFollowsService(t *testing.T) {
+	t.Parallel()
+
+	test := DefaultTest()
+	test.Values = `
+service:
+  ports:
+    websocket:
+      port: 80
+config:
+  websocket:
+    enabled: true
+    httpRoute:
+      enabled: true
+      parentRefs:
+      - name: my-gateway
+`
+	route := HelmRender(t, test).HTTPRoute.Value
+	rules := route["spec"].(map[string]any)["rules"].([]any)
+	backend := rules[0].(map[string]any)["backendRefs"].([]any)[0].(map[string]any)
+	require.Equal(t, float64(80), backend["port"])
+}
+
+func TestHTTPRouteMergePatchAndPath(t *testing.T) {
+	t.Parallel()
+
+	test := DefaultTest()
+	test.Values = `
+global:
+  labels:
+    global: global
+config:
+  websocket:
+    enabled: true
+    httpRoute:
+      enabled: true
+      path: /ws
+      pathType: Exact
+      parentRefs:
+      - name: my-gateway
+      merge:
+        metadata:
+          annotations:
+            merged: "true"
+      patch:
+      - op: add
+        path: /metadata/labels/patched
+        value: "true"
+`
+	route := HelmRender(t, test).HTTPRoute.Value
+	meta := route["metadata"].(map[string]any)
+	require.Equal(t, "nats-ws", meta["name"])
+	require.Equal(t, map[string]any{"merged": "true"}, meta["annotations"])
+	labels := meta["labels"].(map[string]any)
+	require.Equal(t, "true", labels["patched"])
+	require.Equal(t, "global", labels["global"])
+
+	rules := route["spec"].(map[string]any)["rules"].([]any)
+	match := rules[0].(map[string]any)["matches"].([]any)[0].(map[string]any)
+	require.Equal(t, map[string]any{"type": "Exact", "value": "/ws"}, match["path"])
 }
