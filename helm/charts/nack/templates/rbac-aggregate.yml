@@ -1,0 +1,57 @@
+{{- if .Values.aggregateRbac.enabled }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "jsc.name" . }}-aggregate-view
+  labels:
+    {{- include "jsc.labels" . | nindent 4 }}
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+rules:
+- apiGroups:
+  - jetstream.nats.io
+  resources:
+  - streams
+  - streams/status
+  - consumers
+  - consumers/status
+  - streamtemplates
+  - streamtemplates/status
+  - keyvalues
+  - keyvalues/status
+  - objectstores
+  - objectstores/status
+  - accounts
+  - accounts/status
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "jsc.name" . }}-aggregate-edit
+  labels:
+    {{- include "jsc.labels" . | nindent 4 }}
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+rules:
+- apiGroups:
+  - jetstream.nats.io
+  resources:
+  - streams
+  - consumers
+  - streamtemplates
+  - keyvalues
+  - objectstores
+  - accounts
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+{{- end }}
