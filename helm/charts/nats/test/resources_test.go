@@ -310,6 +310,10 @@ natsBox:
 	resource10Gi, _ := resource.ParseQuantity("10Gi")
 	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{
 		{
+			TypeMeta: v1.TypeMeta{
+				APIVersion: "v1",
+				Kind:       "PersistentVolumeClaim",
+			},
 			ObjectMeta: v1.ObjectMeta{
 				Name: test.FullName + "-js",
 			},
