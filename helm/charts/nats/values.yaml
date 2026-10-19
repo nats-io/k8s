@@ -574,7 +574,7 @@ podDisruptionBudget:
 
 # service account
 serviceAccount:
-  enabled: false
+  enabled: true
   # merge or patch the service account
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceaccount-v1-core
   merge: {}
@@ -689,7 +689,7 @@ natsBox:
 
   # service account
   serviceAccount:
-    enabled: false
+    enabled: true
     # merge or patch the service account
     # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#serviceaccount-v1-core
     merge: {}
