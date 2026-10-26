@@ -15,12 +15,17 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: nats-server-bump
+  cancel-in-progress: false
+
 env:
   CHART_DIR: helm/charts/nats
 
 jobs:
   bump:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
