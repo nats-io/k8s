@@ -1,0 +1,156 @@
+# Opens a pull request bumping the nats Helm chart to the newest stable
+# nats-server release once the matching image tag is published on Docker Hub.
+# The Docker Hub check is the gate: the official image only appears after the
+# docker-library/official-images PR for that release has merged and built.
+# Runs daily and is idempotent; it updates the same branch and PR until merged.
+# The branch is regenerated from main on every run, so manual commits on it
+# are overwritten. The repository deletes merged branches automatically.
+# See .github/nats-server-bump.md for the GitHub App secrets this needs.
+name: nats-server-bump
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+env:
+  CHART_DIR: helm/charts/nats
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Determine versions
+        id: versions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |-
+          set -euo pipefail
+
+          current="$(sed -En 's/^appVersion:[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+)[[:space:]]*$/\1/p' "$CHART_DIR/Chart.yaml")"
+          chart="$(sed -En 's/^version:[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+)[[:space:]]*$/\1/p' "$CHART_DIR/Chart.yaml")"
+          if [ -z "$current" ] || [ -z "$chart" ]; then
+            echo "Could not read appVersion and version from $CHART_DIR/Chart.yaml"
+            exit 1
+          fi
+
+          # Highest published stable release (vX.Y.Z, not draft, not pre-release).
+          # Releases rather than tags, so a tag pushed ahead of its release cannot
+          # be selected. Taking the max across all lines means maintenance
+          # releases on older lines (e.g. 2.14.x while 2.15.x is current) are ignored.
+          latest="$(gh api --paginate 'repos/nats-io/nats-server/releases?per_page=100' \
+            --jq '.[] | select(.draft == false and .prerelease == false) | .tag_name' \
+            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | sort -V | tail -n 1)"
+          if [ -z "$latest" ]; then
+            echo "Could not determine latest nats-server release"
+            exit 1
+          fi
+
+          echo "appVersion    : $current"
+          echo "chart version : $chart"
+          echo "latest        : $latest"
+
+          if [ "$(printf '%s\n%s\n' "$current" "$latest" | sort -V | tail -n 1)" = "$current" ]; then
+            echo "Chart already at $current; nothing to do"
+            echo "bump=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # The chart version is set equal to the server version. The chart
+          # repository skips already-published versions, so reusing or lowering
+          # the chart version would silently leave the bump unpublished.
+          if [ "$(printf '%s\n%s\n' "$chart" "$latest" | sort -V | tail -n 1)" = "$chart" ]; then
+            echo "Chart version $chart is not below $latest; a chart-only bump needs manual handling"
+            exit 1
+          fi
+
+          # Gate on the official image existing on Docker Hub.
+          image_tag="${latest}-alpine"
+          status="$(curl -sS -o /dev/null -w '%{http_code}' "https://hub.docker.com/v2/repositories/library/nats/tags/${image_tag}")"
+          case "$status" in
+            200)
+              echo "Image nats:${image_tag} is available"
+              ;;
+            404)
+              echo "Image nats:${image_tag} is not published yet; waiting"
+              echo "bump=false" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+            *)
+              echo "Unexpected HTTP $status from Docker Hub"
+              exit 1
+              ;;
+          esac
+
+          echo "bump=true" >> "$GITHUB_OUTPUT"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+          echo "image_tag=$image_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Go
+        if: steps.versions.outputs.bump == 'true'
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.26'
+          check-latest: true
+          cache: true
+          cache-dependency-path: helm/charts/nats/test/go.sum
+
+      - name: Update chart files
+        if: steps.versions.outputs.bump == 'true'
+        env:
+          CURRENT: ${{ steps.versions.outputs.current }}
+          LATEST: ${{ steps.versions.outputs.latest }}
+        run: |-
+          set -euo pipefail
+
+          sed -i "s|^appVersion:[[:space:]].*|appVersion: $LATEST|;s|^version:[[:space:]].*|version: $LATEST|" "$CHART_DIR/Chart.yaml"
+
+          # Only the nats-server image line matches the current version exactly.
+          sed -E -i "s|^([[:space:]]*tag:[[:space:]]*)${CURRENT}-alpine[[:space:]]*$|\1${LATEST}-alpine|" "$CHART_DIR/values.yaml"
+          if [ "$(grep -cE "^[[:space:]]*tag:[[:space:]]*${LATEST}-alpine[[:space:]]*$" "$CHART_DIR/values.yaml")" != "1" ]; then
+            echo "Expected exactly one nats image tag line in $CHART_DIR/values.yaml"
+            exit 1
+          fi
+
+          cd "$CHART_DIR/test"
+          go get "github.com/nats-io/nats-server/v2@v${LATEST}"
+          go mod tidy
+          go test
+
+          cd "$GITHUB_WORKSPACE"
+          git --no-pager diff --stat
+
+      - name: Create GitHub App token
+        if: steps.versions.outputs.bump == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.NATS_BUMP_APP_ID }}
+          private-key: ${{ secrets.NATS_BUMP_APP_PRIVATE_KEY }}
+
+      - name: Create pull request
+        if: steps.versions.outputs.bump == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: bump/nats-server
+          signoff: true
+          commit-message: Bump nats to v${{ steps.versions.outputs.latest }}
+          title: Bump nats to v${{ steps.versions.outputs.latest }}
+          body: |-
+            Bumps the nats chart from ${{ steps.versions.outputs.current }} to ${{ steps.versions.outputs.latest }}.
+
+            - Release notes: https://github.com/nats-io/nats-server/releases/tag/v${{ steps.versions.outputs.latest }}
+            - Image: https://hub.docker.com/_/nats/tags?name=${{ steps.versions.outputs.image_tag }}
+
+            Generated by the `nats-server-bump` workflow.

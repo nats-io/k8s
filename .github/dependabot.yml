@@ -30,6 +30,9 @@ updates:
     interval: daily
   cooldown:
     default-days: 1
+  # nats-server bumps are handled by .github/workflows/nats-server-bump.yaml
+  ignore:
+  - dependency-name: nats
 - package-ecosystem: docker
   directory: /helm/charts/surveyor
   schedule:
