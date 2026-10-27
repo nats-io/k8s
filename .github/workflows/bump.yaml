@@ -12,6 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
           persist-credentials: false
 
@@ -19,7 +20,6 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git checkout -b "$GITHUB_HEAD_REF"
 
       - name: Dependabot metadata
         id: dependabot-metadata
@@ -34,7 +34,16 @@ jobs:
         run: |-
           npm install -g semver
 
+      - name: Setup Go
+        if: ${{ steps.dependabot-metadata.outputs.directory == '/helm/charts/nats' }}
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: helm/charts/nats/test/go.mod
+          cache: true
+          cache-dependency-path: helm/charts/nats/test/go.sum
+
       - name: Bump
+        id: bump
         run: |-
           set -e
           push=0
@@ -82,7 +91,15 @@ jobs:
             echo "newVersion       : $newVersion"
 
             newVersionSemVer=$(semver -c $newVersion)
-            echo "newVersionSemVer : $newVersion"
+            echo "newVersionSemVer : $newVersionSemVer"
+
+            # skip if a previous run already bumped this chart, e.g. when someone
+            # else pushes to the Dependabot branch and this workflow runs again
+            prevAppVersion=$(sed -rn 's/^appVersion:\s+(.*)/\1/p' "$directory/Chart.yaml")
+            if [ "$prevAppVersion" = "$newVersionSemVer" ]; then
+              echo "appVersion is already $newVersionSemVer, skipping"
+              continue
+            fi
 
             prevChartVersion=$(sed -rn 's/^version:\s+([0-9]+\.[0-9]+\.[0-9]+)/\1/p' "$directory/Chart.yaml")
             echo "prevChartVersion : $prevChartVersion"
@@ -101,6 +118,18 @@ jobs:
             echo "newChartVersion  : $newChartVersion"
 
             sed -i "s|^appVersion:\s.*|appVersion: $newVersionSemVer|;s|^version:\s.*|version: $newChartVersion|" "$directory/Chart.yaml"
+
+            # Update the nats-server Go dependency used by the chart tests
+            if [ "$dependencyName" = "nats" ]; then
+              echo "Updating nats-server Go dependency to v$newVersionSemVer..."
+              (
+                cd "$directory/test"
+                go get "github.com/nats-io/nats-server/v2@v$newVersionSemVer"
+                go mod tidy
+                go test
+              )
+              git add "$directory/test/go.mod" "$directory/test/go.sum"
+            fi
 
             # Download CRDs for NACK controller updates
             if [ "$dependencyName" = "natsio/jetstream-controller" ]; then
@@ -133,9 +162,14 @@ jobs:
             fi
           done
 
-          if [ "$push" = "1" ]; then
-            git push -u origin "$GITHUB_HEAD_REF"
-          fi
+          echo "push=$push" >> "$GITHUB_OUTPUT"
 
         env:
           STEPS_DEPENDABOT_METADATA_OUTPUTS_UPDATED_DEPENDENCIES_JSON: ${{ steps.dependabot-metadata.outputs.updated-dependencies-json }}
+
+      - name: Push
+        if: ${{ steps.bump.outputs.push == '1' }}
+        run: |-
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_HEAD_REF}"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
