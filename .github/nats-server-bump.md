@@ -2,18 +2,14 @@
 
 The `nats-server-bump` workflow (`.github/workflows/nats-server-bump.yaml`) runs daily and opens a pull request bumping the `nats` Helm chart to the newest stable nats-server release. This document describes what the workflow does, what it needs in order to run, and how to set that up.
 
+For CLI usage, detailed decision rules, validation behavior, and dependency pin maintenance, see the [script reference](workflows/README-nats_server_bump.md).
+
 ## What the workflow does
 
-1. Reads `appVersion` from `helm/charts/nats/Chart.yaml`.
-2. Finds the highest published stable release in `nats-io/nats-server`. Drafts and pre-releases (`-RC.n`, `-beta.n`) are skipped. Using releases rather than tags means a tag pushed ahead of its release is not selected. Taking the highest release means maintenance releases on an older line (for example 2.14.x while 2.15.x is current) are ignored.
-3. Stops if the chart is already at that version. Fails if the chart `version` is already at or above the new release, since the chart repository skips already-published versions and a reused version would leave the bump unpublished. That only happens after a chart-only version bump and needs manual handling.
-4. Stops if the `nats:X.Y.Z-alpine` tag does not exist on Docker Hub yet. The official image is published only after the corresponding `docker-library/official-images` pull request has been merged and built, so this check is the gate that waits for that process.
-5. Updates the same files as a manual bump (see nats-io/k8s PR 1198):
-   - `helm/charts/nats/Chart.yaml`: `appVersion` and `version` are both set to the new release.
-   - `helm/charts/nats/values.yaml`: the nats-server image tag.
-   - `helm/charts/nats/test/go.mod` and `go.sum`: via `go get` and `go mod tidy`.
-6. Runs the chart's Go tests.
-7. Opens a pull request titled `Bump nats to vX.Y.Z` from the branch `bump/nats-server`. The branch name is fixed, so re-runs update the existing PR instead of opening duplicates. The repository's automatic head-branch deletion removes the branch after merge.
+1. Runs the Python `check` command to validate the chart, find the highest published stable server release, and check its official Alpine image. If that release's image is pending, it waits rather than selecting an older release.
+2. Runs `update` to set the chart's `appVersion`, chart `version`, and server image tag to the selected release, preserving YAML formatting and comments.
+3. Updates `helm/charts/nats/test/go.mod` and `go.sum` via `go get` and `go mod tidy`, then runs the chart's Go tests.
+4. Opens a pull request titled `Bump nats to vX.Y.Z` from the branch `bump/nats-server`. The branch name is fixed, so re-runs update the existing PR instead of opening duplicates. The repository's automatic head-branch deletion removes the branch after merge.
 
 The workflow can also be started manually from the Actions tab (`workflow_dispatch`).
 

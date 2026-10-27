@@ -6,6 +6,7 @@
 # The branch is regenerated from main on every run, so manual commits on it
 # are overwritten. The repository deletes merged branches automatically.
 # See .github/nats-server-bump.md for the GitHub App secrets this needs.
+# Script usage and pin maintenance: README-nats_server_bump.md in this directory.
 name: nats-server-bump
 
 on:
@@ -21,10 +22,11 @@ concurrency:
 
 env:
   CHART_DIR: helm/charts/nats
+  PYTHONDONTWRITEBYTECODE: '1'
 
 jobs:
   bump:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
       contents: read
@@ -34,72 +36,34 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Setup uv and Python
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: '0.13.5'
+          checksum: f68d291c75783122dad58ab77def0e13f3233f358731db5d6d7e8715603b928f
+          python-version: '3.14.9'
+          download-from-astral-mirror: false
+          enable-cache: false
+
+      - name: Install pinned GitHub CLI
+        env:
+          GH_VERSION: '2.103.0'
+          GH_SHA256: fdd768eb70f6409f80fcfa9f3a1c0adf0fc98d827ab3ce0bed2ac22762c5d786
+        run: |-
+          set -euo pipefail
+          archive="$RUNNER_TEMP/gh.tar.gz"
+          curl --fail --silent --show-error --location --max-time 120 \
+            "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz" \
+            --output "$archive"
+          printf '%s  %s\n' "$GH_SHA256" "$archive" | sha256sum --check --strict
+          tar -xzf "$archive" -C "$RUNNER_TEMP" "gh_${GH_VERSION}_linux_amd64/bin/gh"
+          echo "$RUNNER_TEMP/gh_${GH_VERSION}_linux_amd64/bin" >> "$GITHUB_PATH"
+
       - name: Determine versions
         id: versions
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |-
-          set -euo pipefail
-
-          current="$(sed -En 's/^appVersion:[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+)[[:space:]]*$/\1/p' "$CHART_DIR/Chart.yaml")"
-          chart="$(sed -En 's/^version:[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+)[[:space:]]*$/\1/p' "$CHART_DIR/Chart.yaml")"
-          if [ -z "$current" ] || [ -z "$chart" ]; then
-            echo "Could not read appVersion and version from $CHART_DIR/Chart.yaml"
-            exit 1
-          fi
-
-          # Highest published stable release (vX.Y.Z, not draft, not pre-release).
-          # Releases rather than tags, so a tag pushed ahead of its release cannot
-          # be selected. Taking the max across all lines means maintenance
-          # releases on older lines (e.g. 2.14.x while 2.15.x is current) are ignored.
-          latest="$(gh api --paginate 'repos/nats-io/nats-server/releases?per_page=100' \
-            --jq '.[] | select(.draft == false and .prerelease == false) | .tag_name' \
-            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | sort -V | tail -n 1)"
-          if [ -z "$latest" ]; then
-            echo "Could not determine latest nats-server release"
-            exit 1
-          fi
-
-          echo "appVersion    : $current"
-          echo "chart version : $chart"
-          echo "latest        : $latest"
-
-          if [ "$(printf '%s\n%s\n' "$current" "$latest" | sort -V | tail -n 1)" = "$current" ]; then
-            echo "Chart already at $current; nothing to do"
-            echo "bump=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # The chart version is set equal to the server version. The chart
-          # repository skips already-published versions, so reusing or lowering
-          # the chart version would silently leave the bump unpublished.
-          if [ "$(printf '%s\n%s\n' "$chart" "$latest" | sort -V | tail -n 1)" = "$chart" ]; then
-            echo "Chart version $chart is not below $latest; a chart-only bump needs manual handling"
-            exit 1
-          fi
-
-          # Gate on the official image existing on Docker Hub.
-          image_tag="${latest}-alpine"
-          status="$(curl -sS -o /dev/null -w '%{http_code}' "https://hub.docker.com/v2/repositories/library/nats/tags/${image_tag}")"
-          case "$status" in
-            200)
-              echo "Image nats:${image_tag} is available"
-              ;;
-            404)
-              echo "Image nats:${image_tag} is not published yet; waiting"
-              echo "bump=false" >> "$GITHUB_OUTPUT"
-              exit 0
-              ;;
-            *)
-              echo "Unexpected HTTP $status from Docker Hub"
-              exit 1
-              ;;
-          esac
-
-          echo "bump=true" >> "$GITHUB_OUTPUT"
-          echo "current=$current" >> "$GITHUB_OUTPUT"
-          echo "latest=$latest" >> "$GITHUB_OUTPUT"
-          echo "image_tag=$image_tag" >> "$GITHUB_OUTPUT"
+        run: uv run --locked .github/workflows/nats_server_bump.py check --chart-dir "$CHART_DIR"
 
       - name: Setup Go
         if: steps.versions.outputs.bump == 'true'
@@ -116,23 +80,19 @@ jobs:
           CURRENT: ${{ steps.versions.outputs.current }}
           LATEST: ${{ steps.versions.outputs.latest }}
         run: |-
+          uv run --locked .github/workflows/nats_server_bump.py update \
+            --chart-dir "$CHART_DIR" --current "$CURRENT" --latest "$LATEST"
+
+      - name: Update Go dependency and test chart
+        if: steps.versions.outputs.bump == 'true'
+        working-directory: helm/charts/nats/test
+        env:
+          LATEST: ${{ steps.versions.outputs.latest }}
+        run: |-
           set -euo pipefail
-
-          sed -i "s|^appVersion:[[:space:]].*|appVersion: $LATEST|;s|^version:[[:space:]].*|version: $LATEST|" "$CHART_DIR/Chart.yaml"
-
-          # Only the nats-server image line matches the current version exactly.
-          sed -E -i "s|^([[:space:]]*tag:[[:space:]]*)${CURRENT}-alpine[[:space:]]*$|\1${LATEST}-alpine|" "$CHART_DIR/values.yaml"
-          if [ "$(grep -cE "^[[:space:]]*tag:[[:space:]]*${LATEST}-alpine[[:space:]]*$" "$CHART_DIR/values.yaml")" != "1" ]; then
-            echo "Expected exactly one nats image tag line in $CHART_DIR/values.yaml"
-            exit 1
-          fi
-
-          cd "$CHART_DIR/test"
           go get "github.com/nats-io/nats-server/v2@v${LATEST}"
           go mod tidy
           go test
-
-          cd "$GITHUB_WORKSPACE"
           git --no-pager diff --stat
 
       - name: Create GitHub App token
