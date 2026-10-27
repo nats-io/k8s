@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
     - 'helm/charts/nats/**'
-    - .github/workflows/nats-helm.yml
+    - .github/workflows/nats-helm.yaml
 
 jobs:
   test:
