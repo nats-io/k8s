@@ -22,7 +22,7 @@ Tests use **terratest** with `helm.RenderTemplate` to render templates locally a
 ct install --all --chart-dirs helm/charts \
   --excluded-charts nats-account-server,nats-kafka,nats-operator,surveyor
 ```
-CI creates a microk8s cluster (tested against K8s 1.30, 1.31, 1.32) and applies NACK CRDs before running install tests.
+CI creates a microk8s cluster (tested against K8s 1.35, 1.36) and applies NACK CRDs before running install tests.
 
 ### Render templates locally (for quick validation)
 ```sh
@@ -123,7 +123,7 @@ In `config.merge`:
 
 | Workflow | Trigger | What it does |
 |---|---|---|
-| `test.yaml` | PR touching `helm/charts/**` | ct lint, nindent check, ct install on microk8s (K8s 1.30-1.32) |
+| `test.yaml` | PR touching `helm/charts/**` | ct lint, nindent check, ct install on microk8s (K8s 1.35-1.36) |
 | `nats-helm.yaml` | PR touching `helm/charts/nats/**` | Go tests (`go test` in `helm/charts/nats/test`) |
 | `release.yaml` | Push to `main` | chart-releaser publishes to gh-pages |
 | `bump.yaml` | Dependabot PRs | Auto-bumps Chart.yaml version/appVersion, downloads NACK CRDs |
