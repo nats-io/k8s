@@ -47,7 +47,7 @@ spec:
                 - workqueue
                 default: limits
               maxConsumers:
-                description: How many Consumers can be defined for a given Stream. -1 for unlimited.
+                description: How many Consumers can be defined for a given Stream. -1 for unlimited. From nats-server 2.15, -1 falls back to the account limit or server default (1000).
                 type: integer
                 minimum: -1
                 default: -1
@@ -412,7 +412,7 @@ spec:
                 - workqueue
                 default: limits
               maxConsumers:
-                description: How many Consumers can be defined for a given Stream. -1 for unlimited.
+                description: How many Consumers can be defined for a given Stream. -1 for unlimited. From nats-server 2.15, -1 falls back to the account limit or server default (1000).
                 type: integer
                 minimum: -1
                 default: -1
