@@ -51,6 +51,18 @@ jetstream:
       client_ca: "/etc/nats/certs/ca.crt"
       timeout: 3
 
+  # Environment variables to add to the controller container
+  # ref: https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
+  #
+  # env:
+  #   GOMEMLIMIT: 7GiB
+  #   MY_SECRET:
+  #     valueFrom:
+  #       secretKeyRef:
+  #         name: my-secret
+  #         key: token
+  env: {}
+
   # Additional arguments to pass to the controller process
   additionalArgs: []
 
