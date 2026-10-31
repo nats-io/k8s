@@ -125,6 +125,10 @@ delivered: 1 / consumer seq: 2 / stream seq: 2 / ack: false
 order 2
 ```
 
+### Aggregated RBAC roles
+
+By default the chart creates the ClusterRoles `<release>-aggregate-view` and `<release>-aggregate-edit`. They are aggregated into the builtin Kubernetes `view`, `edit` and `admin` roles, so users with those roles can read (`view`, `edit`, `admin`) or manage (`edit`, `admin`) the NACK resources (`streams`, `consumers`, `streamtemplates`, `keyvalues`, `objectstores`, `accounts`). Disable them with `--set aggregateRbac.enabled=false`.
+
 ### Local Development
 
 ```sh
