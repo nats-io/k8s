@@ -1,0 +1,21 @@
+apiVersion: v2
+name: nack-resources
+version: 0.0.1
+description: A Helm chart for NACK resources - Install NATS JetStream resources (Streams, Consumers, KeyValues, ObjectStores) via NACK CRDs
+sources:
+  - https://github.com/nats-io/nack
+  - https://github.com/nats-io/k8s
+keywords:
+  - nats
+  - jetstream
+  - nack
+  - streams
+  - consumers
+  - keyvalue
+  - objectstore
+home: http://github.com/nats-io/k8s
+maintainers:
+  - email: info@nats.io
+    name: The NATS Authors
+    url: https://github.com/nats-io
+icon: https://nats.io/img/nats-icon-color.png

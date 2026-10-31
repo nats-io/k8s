@@ -1,0 +1,139 @@
+{{- $globals := .Values.nats | default dict -}}
+{{- range .Values.consumers }}
+---
+apiVersion: jetstream.nats.io/v1beta2
+kind: Consumer
+metadata:
+  # include stream and durable in the resource name to avoid collisions
+  name: {{ printf "%s-%s-%s" $.Release.Name .streamName .durableName | trunc 63 | trimSuffix "-" }}
+  labels:
+{{ include "nack-resources.labels" $ | nindent 4 }}
+spec:
+  streamName: {{ .streamName | quote }}
+  durableName: {{ .durableName | quote }}
+  {{- with .deliverPolicy }}
+  deliverPolicy: {{ . }}
+  {{- end }}
+  {{- with .optStartSeq }}
+  optStartSeq: {{ . }}
+  {{- end }}
+  {{- with .optStartTime }}
+  optStartTime: {{ . | quote }}
+  {{- end }}
+  {{- with .replayPolicy }}
+  replayPolicy: {{ . }}
+  {{- end }}
+  {{- with .deliverSubject }}
+  deliverSubject: {{ . | quote }}
+  {{- end }}
+  {{- with .deliverGroup }}
+  deliverGroup: {{ . | quote }}
+  {{- end }}
+  {{- with .filterSubject }}
+  filterSubject: {{ . | quote }}
+  {{- end }}
+  {{- with .filterSubjects }}
+  filterSubjects:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .ackPolicy }}
+  ackPolicy: {{ . }}
+  {{- end }}
+  {{- with .ackWait }}
+  ackWait: {{ . | quote }}
+  {{- end }}
+  {{- with .maxDeliver }}
+  maxDeliver: {{ . }}
+  {{- end }}
+  {{- with .backoff }}
+  backoff:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .maxAckPending }}
+  maxAckPending: {{ . }}
+  {{- end }}
+
+  {{- with .sampleFreq }}
+  sampleFreq: {{ . | quote }}
+  {{- end }}
+  {{- with .rateLimitBps }}
+  rateLimitBps: {{ . }}
+  {{- end }}
+  {{- with .flowControl }}
+  flowControl: {{ . }}
+  {{- end }}
+  {{- with .heartbeatInterval }}
+  heartbeatInterval: {{ . | quote }}
+  {{- end }}
+  {{- with .headersOnly }}
+  headersOnly: {{ . }}
+  {{- end }}
+
+  {{- with .maxWaiting }}
+  maxWaiting: {{ . }}
+  {{- end }}
+  {{- with .maxRequestBatch }}
+  maxRequestBatch: {{ . }}
+  {{- end }}
+  {{- with .maxRequestExpires }}
+  maxRequestExpires: {{ . | quote }}
+  {{- end }}
+  {{- with .maxRequestMaxBytes }}
+  maxRequestMaxBytes: {{ . }}
+  {{- end }}
+
+  {{- with .inactiveThreshold }}
+  inactiveThreshold: {{ . | quote }}
+  {{- end }}
+  {{- with .replicas }}
+  replicas: {{ . }}
+  {{- end }}
+  {{- with .memStorage }}
+  memStorage: {{ . }}
+  {{- end }}
+
+  {{- with .metadata }}
+  metadata:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+{{- with $globals.account }}
+  account: {{ . | quote }}
+  {{- end }}
+  {{- with $globals.servers }}
+  servers:
+{{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $globals.jsDomain }}
+  jsDomain: {{ . | quote }}
+  {{- end }}
+  {{- with $globals.creds }}
+  creds: {{ . | quote }}
+  {{- end }}
+  {{- with $globals.nkey }}
+  nkey: {{ . | quote }}
+  {{- end }}
+  {{- if $globals.tls }}
+  tls:
+      {{- with $globals.tls.clientCert }}
+    clientCert: {{. | quote }}
+      {{- end }}
+      {{- with $globals.tls.clientKey }}
+    clientKey: {{. | quote }}
+      {{- end }}
+      {{- with $globals.tls.rootCas }}
+    rootCas:
+{{ toYaml . | nindent 6 }}
+      {{- end }}
+  {{- end }}
+  {{- with $globals.tlsFirst }}
+  tlsFirst: {{ . }}
+  {{- end }}
+
+  {{- with .preventDelete }}
+  preventDelete: {{ . }}
+  {{- end }}
+  {{- with .preventUpdate }}
+  preventUpdate: {{ . }}
+  {{- end }}
+{{- end }}
