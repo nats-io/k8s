@@ -13,6 +13,9 @@ env:
 args:
 - -port={{ .Values.promExporter.port }}
 - -connz
+{{- if .Values.config.promExporter.connzDetailed }}
+- -connz_detailed
+{{- end }}
 - -routez
 - -subz
 - -varz
