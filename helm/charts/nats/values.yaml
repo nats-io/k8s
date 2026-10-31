@@ -192,6 +192,32 @@ config:
       # defaults to "{{ include "nats.fullname" $ }}-ws"
       name:
 
+    ############################################################
+    # Gateway API HTTPRoute
+    ############################################################
+    # service must be enabled also
+    # the Gateway (listeners, TLS) is managed outside this chart
+    httpRoute:
+      enabled: false
+      # must contain at least 1 parentRef otherwise the route will not be created
+      # https://gateway-api.sigs.k8s.io/reference/spec/#parentreference
+      # - name: my-gateway
+      #   namespace: gateway-system
+      #   sectionName: https
+      parentRefs: []
+      # optional, inherited from the Gateway listener when empty
+      hostnames: []
+      path: /
+      # Exact, PathPrefix or RegularExpression
+      pathType: PathPrefix
+
+      # merge or patch the HTTPRoute
+      # https://gateway-api.sigs.k8s.io/reference/spec/#httproute
+      merge: {}
+      patch: []
+      # defaults to "{{ include "nats.fullname" $ }}-ws"
+      name:
+
     # merge or patch the websocket config
     # https://docs.nats.io/running-a-nats-service/configuration/websocket/websocket_conf
     merge: {}
