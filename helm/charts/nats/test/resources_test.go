@@ -384,6 +384,12 @@ natsBox:
 	expected.ConfigMap.Value.ObjectMeta.Labels["global"] = "global"
 	expected.ConfigMap.Value.ObjectMeta.Namespace = "foo"
 
+	expected.ServiceAccount.Value.ObjectMeta.Labels["global"] = "global"
+	expected.ServiceAccount.Value.ObjectMeta.Namespace = "foo"
+
+	expected.NatsBoxServiceAccount.Value.ObjectMeta.Labels["global"] = "global"
+	expected.NatsBoxServiceAccount.Value.ObjectMeta.Namespace = "foo"
+
 	RenderAndCheck(t, test, expected)
 }
 

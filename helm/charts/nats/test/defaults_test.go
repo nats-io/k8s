@@ -282,6 +282,7 @@ func DefaultResources(t *testing.T, test *Test) *Resources {
 							Labels: natsBoxLabels(),
 						},
 						Spec: corev1.PodSpec{
+							ServiceAccountName: fullName + "-box",
 							Containers: []corev1.Container{
 								{
 									Args: []string{
@@ -334,7 +335,7 @@ exec /entrypoint.sh "$@"
 		},
 		NatsBoxServiceAccount: Resource[corev1.ServiceAccount]{
 			ID:       dr.NatsBoxServiceAccount.ID,
-			HasValue: false,
+			HasValue: true,
 			Value: corev1.ServiceAccount{
 				TypeMeta: v1.TypeMeta{
 					Kind:       "ServiceAccount",
@@ -417,7 +418,7 @@ exec /entrypoint.sh "$@"
 		},
 		ServiceAccount: Resource[corev1.ServiceAccount]{
 			ID:       dr.ServiceAccount.ID,
-			HasValue: false,
+			HasValue: true,
 			Value: corev1.ServiceAccount{
 				TypeMeta: v1.TypeMeta{
 					Kind:       "ServiceAccount",
@@ -451,6 +452,7 @@ exec /entrypoint.sh "$@"
 							Labels: natsLabels(),
 						},
 						Spec: corev1.PodSpec{
+							ServiceAccountName: fullName,
 							Containers: []corev1.Container{
 								{
 									Args: []string{
