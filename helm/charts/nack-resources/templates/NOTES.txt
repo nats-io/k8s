@@ -1,0 +1,9 @@
+Thank you for installing the nack-resources chart.
+
+This chart renders NATS JetStream resources (Streams, Consumers, KeyValues, ObjectStores)
+managed by the NACK controllers. Ensure the NACK CRDs and controllers are installed.
+
+You can find more information about running NATS JetStream Controller on
+Kubernetes here:
+
+  https://github.com/nats-io/nack
