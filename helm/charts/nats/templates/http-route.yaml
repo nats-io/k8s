@@ -1,0 +1,6 @@
+{{- include "nats.defaultValues" . }}
+{{- with .Values.config.websocket.httpRoute }}
+{{- if and .enabled .parentRefs $.Values.config.websocket.enabled $.Values.service.enabled $.Values.service.ports.websocket.enabled }}
+{{- include "nats.loadMergePatch" (merge (dict "file" "http-route.yaml" "ctx" $) .) }}
+{{- end }}
+{{- end }}

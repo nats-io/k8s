@@ -23,6 +23,7 @@ type Resources struct {
 	Conf                  Resource[map[string]any]
 	ConfigMap             Resource[corev1.ConfigMap]
 	HeadlessService       Resource[corev1.Service]
+	HTTPRoute             Resource[map[string]any]
 	Ingress               Resource[networkingv1.Ingress]
 	NatsBoxContentsSecret Resource[corev1.Secret]
 	NatsBoxContextsSecret Resource[corev1.Secret]
@@ -42,6 +43,7 @@ func (r *Resources) Iter() []MutableResource {
 		r.Conf.Mutable(),
 		r.ConfigMap.Mutable(),
 		r.HeadlessService.Mutable(),
+		r.HTTPRoute.Mutable(),
 		r.Ingress.Mutable(),
 		r.NatsBoxContentsSecret.Mutable(),
 		r.NatsBoxContextsSecret.Mutable(),
@@ -95,6 +97,9 @@ func GenerateResources(fullName string) *Resources {
 		},
 		HeadlessService: Resource[corev1.Service]{
 			ID: "Service/" + fullName + "-headless",
+		},
+		HTTPRoute: Resource[map[string]any]{
+			ID: "HTTPRoute/" + fullName + "-ws",
 		},
 		Ingress: Resource[networkingv1.Ingress]{
 			ID: "Ingress/" + fullName + "-ws",

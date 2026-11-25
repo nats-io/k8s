@@ -1,0 +1,24 @@
+{{- with .Values.config.websocket.httpRoute }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  {{- include "nats.metadataNamespace" $ | nindent 2 }}
+  name: {{ .name }}
+  labels:
+    {{- include "nats.labels" $ | nindent 4 }}
+spec:
+  parentRefs:
+  {{- toYaml .parentRefs | nindent 2 }}
+  {{- with .hostnames }}
+  hostnames:
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  rules:
+  - matches:
+    - path:
+        type: {{ .pathType | quote }}
+        value: {{ .path | quote }}
+    backendRefs:
+    - name: {{ $.Values.service.name }}
+      port: {{ $.Values.service.ports.websocket.port | default $.Values.config.websocket.port }}
+{{- end }}
