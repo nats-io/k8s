@@ -277,8 +277,10 @@ output: YAML list of reloader config files
 nats.formatConfig
 input: map[string]interface{}
 output: string with following format rules
-1. keys ending in $natsRaw are unquoted
-2. keys ending in $natsInclude are converted to include directives
+1. values wrapped in double angle brackets are unquoted
+   value: "<<1>>" --> value: 1
+2. keys ending in $include are converted to include directives
+   value: "test.conf" -->  include test.conf;
 */}}
 {{- define "nats.formatConfig" -}}
   {{-
