@@ -73,6 +73,10 @@ config:
 	resource10Gi, _ := resource.ParseQuantity("10Gi")
 	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{
 		{
+			TypeMeta: v1.TypeMeta{
+				APIVersion: "v1",
+				Kind:       "PersistentVolumeClaim",
+			},
 			ObjectMeta: v1.ObjectMeta{
 				Name: test.FullName + "-js",
 			},
@@ -191,6 +195,10 @@ config:
 	storageClassGp3 := "gp3"
 	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{
 		{
+			TypeMeta: v1.TypeMeta{
+				APIVersion: "v1",
+				Kind:       "PersistentVolumeClaim",
+			},
 			ObjectMeta: v1.ObjectMeta{
 				Name: test.FullName + "-js",
 			},
@@ -207,6 +215,10 @@ config:
 			},
 		},
 		{
+			TypeMeta: v1.TypeMeta{
+				APIVersion: "v1",
+				Kind:       "PersistentVolumeClaim",
+			},
 			ObjectMeta: v1.ObjectMeta{
 				Name: test.FullName + "-resolver",
 			},
@@ -401,6 +413,10 @@ config:
 	storageClassGp3 := "gp3"
 	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{
 		{
+			TypeMeta: v1.TypeMeta{
+				APIVersion: "v1",
+				Kind:       "PersistentVolumeClaim",
+			},
 			ObjectMeta: v1.ObjectMeta{
 				Name: test.FullName + "-js",
 			},
@@ -418,6 +434,10 @@ config:
 			},
 		},
 		{
+			TypeMeta: v1.TypeMeta{
+				APIVersion: "v1",
+				Kind:       "PersistentVolumeClaim",
+			},
 			ObjectMeta: v1.ObjectMeta{
 				Name: test.FullName + "-resolver",
 			},
@@ -600,6 +620,10 @@ max_outstanding_catchup: 64MB
 	resource10Gi, _ := resource.ParseQuantity("10Gi")
 	expected.StatefulSet.Value.Spec.VolumeClaimTemplates = []corev1.PersistentVolumeClaim{
 		{
+			TypeMeta: v1.TypeMeta{
+				APIVersion: "v1",
+				Kind:       "PersistentVolumeClaim",
+			},
 			ObjectMeta: v1.ObjectMeta{
 				Name: test.FullName + "-js",
 			},
